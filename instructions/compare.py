@@ -17,27 +17,9 @@ class CMP(Instruction):
         if ctx.RungStatus:
             expression = "return " + hook_expression(self.args[0])
 
-            from engine.st.hooks import make_async_st, getHook, setHook
-
-            async def callHook(name, args):
-                from core.registry.instructionregistry import InstructionRegistry
-                from engine.instruction import Instruction
-                instance:Instruction = InstructionRegistry.get(name)(name=name, args=args)
-                await instance.execute(ctx)
-
-            expression = make_async_st(expression)
-
-            exec_env = {
-                "get": getHook,
-                "set_": setHook,
-                "call": callHook
-            }
-            
-            try:
-                exec(expression, exec_env)
-                ctx.RungStatus = await exec_env["__st_main__"]()
-            except Exception as e:
-                raise STException("CMP", expression, e) from e
+            from engine.st.hooks import run_exec_env
+            #expression = make_async_st(expression)
+            ctx.RungStatus = await run_exec_env(expression, ctx, "CMP")
 
 @InstructionRegistry.register
 class LIM(Instruction):

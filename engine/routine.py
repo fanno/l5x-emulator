@@ -93,25 +93,9 @@ class Routine:
                                 runRoutine = True
                                 break
             case RoutineType.ST:
-                from engine.st.hooks import getHook, setHook
+                from engine.st.hooks import run_exec_env
 
-                async def callHook(name, args):
-                    from core.registry.instructionregistry import InstructionRegistry
-                    from engine.instruction import Instruction
-                    instance:Instruction = InstructionRegistry.get(name)(name=name, args=args)
-                    await instance.execute(ctx)
-
-                exec_env = {
-                    "get": getHook,
-                    "set_": setHook,
-                    "call": callHook
-                }
-                try:
-                    exec(self.ST, exec_env)
-                    await exec_env["__st_main__"]()
-                except Exception as e:
-                    raise STException(self.Name, self.ST, e) from e
-
+                await run_exec_env(self.ST, ctx, self.Name, False)
             case RoutineType.FBD:
                 # TODO
                 pass
