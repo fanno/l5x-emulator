@@ -1,0 +1,22 @@
+id: "1101834"
+vendor: "275"
+name: "Interroll multicontroller"
+manufacturer: "Interroll"
+
+constants:
+  GAIN: 1.5
+  OFFSET: 10
+
+outbound:
+  "138D3EAC":
+    "0":
+      "hello" : "get('O.Data[0]')"
+      "world" : "get('O.Data[0]')"
+
+inbound:
+  "AB3D9FDF":
+    "0":
+      - "set('I.ConnectionFaulted', False)"
+      - "set('I.RunMode', True)"
+      - "set('I.Data[0]', hello)"
+      - "set('I.Data[1]', world)"

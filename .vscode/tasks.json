@@ -1,0 +1,83 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Setup Python environment",
+      "type": "process",
+      "command": "python",
+      "args": [
+        "-m",
+        "venv",
+        ".venv"
+      ],
+      "windows": {
+        "command": "python",
+        "args": [
+          "-m",
+          "venv",
+          ".venv"
+        ]
+      },
+      "problemMatcher": [],
+      "runOptions": { "runOn": "folderOpen" }
+    },
+    {
+      "label": "Install requirements",
+      "type": "process",
+      //"command": "${workspaceFolder}/.venv/bin/python",   // macOS/Linux
+      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe", // Windows
+      "args": [
+        "-m",
+        "pip",
+        "install",
+        "-r",
+        "requirements.txt"
+      ],
+      "problemMatcher": [],
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "dependsOn": [
+        "Setup Python environment"
+      ]
+    },
+      {
+        "label": "build-exe",
+        "type": "shell",
+        "command": "${workspaceFolder}/.venv/Scripts/python.exe",
+        "args": [
+          "-m",
+          "PyInstaller",
+          "--onefile",
+          //"--onedir",
+          "--clean",
+          "--additional-hooks-dir=./hooks",
+          //"--hidden-import=core.registry",
+          //"--hidden-import=opcua.helpers",
+          //"--hidden-import=opcua.tag",
+          //"--hidden-import=core.xml.tags",
+          //"--hidden-import=engine.context",
+          //"--hidden-import=engine.program",          
+          //"--collect-all=opcua",
+          //"--collect-all=core",
+          //"--collect-all=engine",
+          //"--collect-all=datatypes",
+          "--add-data", "library;library",
+          "--add-data", "custom;templates",
+          "plc.py"
+        ],
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "problemMatcher": [],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      }
+  ]
+}

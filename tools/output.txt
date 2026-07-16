@@ -1,0 +1,21 @@
+@DataTypeRegistry.register
+@dataclass
+class 11111XXXXXXXXXXXXXXXXXXXXXXXXXX:
+    RunMode: BOOL = field(init=False, default_factory=BOOL, metadata={"ua_type": ua.VariantType.Boolean})
+    ConnectionFaulted: BOOL = field(init=False, default_factory=BOOL, metadata={"ua_type": ua.VariantType.Boolean})
+    DiagnosticActive: BOOL = field(init=False, default_factory=BOOL, metadata={"ua_type": ua.VariantType.Boolean})
+    DiagnosticSequenceCount: SINT = field(init=False, default_factory=SINT, metadata={"ua_type": ua.VariantType.SByte})
+    CurrentSaturated: BOOL = field(init=False, default_factory=BOOL, metadata={"ua_type": ua.VariantType.Boolean})
+    CurrentFixed: BOOL = field(init=False, default_factory=BOOL, metadata={"ua_type": ua.VariantType.Boolean})
+    MoreStatusAvailable: BOOL = field(init=False, default_factory=BOOL, metadata={"ua_type": ua.VariantType.Boolean})
+    CurrentMismatch: BOOL = field(init=False, default_factory=BOOL, metadata={"ua_type": ua.VariantType.Boolean})
+    ConfigurationChanged: BOOL = field(init=False, default_factory=BOOL, metadata={"ua_type": ua.VariantType.Boolean})
+    Malfunction: BOOL = field(init=False, default_factory=BOOL, metadata={"ua_type": ua.VariantType.Boolean})
+    LoopCurrent: CHANNEL_AI_I_0 = field(init=False, default_factory=CHANNEL_AI_I_0, metadata={"ua_type": ua.VariantType.ExtensionObject})
+    PV: CHANNEL_AI_HART_I_0 = field(init=False, default_factory=CHANNEL_AI_HART_I_0, metadata={"ua_type": ua.VariantType.ExtensionObject})
+    SV: CHANNEL_AI_HART_I_0 = field(init=False, default_factory=CHANNEL_AI_HART_I_0, metadata={"ua_type": ua.VariantType.ExtensionObject})
+    TV: CHANNEL_AI_HART_I_0 = field(init=False, default_factory=CHANNEL_AI_HART_I_0, metadata={"ua_type": ua.VariantType.ExtensionObject})
+    QV: CHANNEL_AI_HART_I_0 = field(init=False, default_factory=CHANNEL_AI_HART_I_0, metadata={"ua_type": ua.VariantType.ExtensionObject})
+    Static: AB_5000_HART_STATIC_STRUCT_I_0 = field(init=False, default_factory=AB_5000_HART_STATIC_STRUCT_I_0, metadata={"ua_type": ua.VariantType.ExtensionObject})
+    ChDataAtSignal4: REAL = field(init=False, default_factory=REAL, metadata={"ua_type": ua.VariantType.Float})
+    ChDataAtSignal20: REAL = field(init=False, default_factory=REAL, metadata={"ua_type": ua.VariantType.Float})

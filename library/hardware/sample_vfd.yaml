@@ -1,0 +1,32 @@
+id: "sample_vfd"
+name: "Sample VFD"
+manufacturer: "Generic"
+type: "VFD"
+
+interface:
+  digital_inputs:
+    - name: "Start"
+    - name: "Stop"
+  analog_inputs:
+    - name: "Speed_Ref"
+  digital_outputs:
+    - name: "Running"
+  analog_outputs:
+    - name: "Speed_Actual"
+
+behavior_profile: "standard_vfd_logic"
+profile_params:
+  accel_time: 5.0
+  max_freq: 60.0
+
+constants:
+  GAIN: 1.5
+  OFFSET: 10
+
+logic_map:
+  # OUT_0 is the output
+  OUT_0: "IN_0 * GAIN + OFFSET"
+  
+  # Internal state definition
+  #state:
+  #  counter: 0
