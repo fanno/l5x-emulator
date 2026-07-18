@@ -41,6 +41,10 @@ from opcua.tag import OpcuaTag
 from opcua.mapping import Mapping
 from engine.program import Program
 from engine.task import Task
+
+from engine.errors import MajorException
+
+
 from datatypes.custom.module import MODULE
 from datatypes.custom.string import STRING
 
@@ -101,6 +105,7 @@ class Emulator(EventListener, threading.Thread):
         self.mapping = Mapping()
         self._server = Server()
         self.safetyMap = SafetyMap()
+        self.MajorFault = None
 
         self._loop = None
         self._throttle = 4
@@ -165,38 +170,41 @@ class Emulator(EventListener, threading.Thread):
 
         while self._is_running:
             try:
-                startTime = time.monotonic()
-                await self.mainloop()
-                scanCount += 1
-                endTime = time.monotonic()
-                difTime = endTime - startTime
+                if self.MajorFault is None:
+                    startTime = time.monotonic()
+                    await self.mainloop()
+                    scanCount += 1
+                    endTime = time.monotonic()
+                    difTime = endTime - startTime
 
-                if (difTime > difTimeMax):
-                    difTimeMax = difTime
+                    if (difTime > difTimeMax):
+                        difTimeMax = difTime
 
-                scanDelayTime = difTimeMax * self._throttle
-                if lastDrawUi < startTime:
-                    data = {}
+                    scanDelayTime = difTimeMax * self._throttle
+                    if lastDrawUi < startTime:
+                        data = {}
 
-                    data[PLCSYSTEM.NAME] = copy.deepcopy(PLCSYSTEM.memory.getMemoryAll())
-                    data[self.NAME] = copy.deepcopy(self.memory.getMemoryAll())
-                    for pname, program in self.programs.items():
-                        data[program.Name] = copy.deepcopy(program.memory.getMemoryAll())
+                        data[PLCSYSTEM.NAME] = copy.deepcopy(PLCSYSTEM.memory.getMemoryAll())
+                        data[self.NAME] = copy.deepcopy(self.memory.getMemoryAll())
+                        for pname, program in self.programs.items():
+                            data[program.Name] = copy.deepcopy(program.memory.getMemoryAll())
 
-                    EventBus.get().dispatch(StatusEvent(Runing=True,
-                                            ScanCurrent=difTime,
-                                            ScanDelayed=scanDelayTime,
-                                            ScanMax=difTimeMax,
-                                            ControllerName=self.DeviceName.getPLCValue(),
-                                            ControllerType=self.ProcessorType.getPLCValue(),
-                                            EndPoint=self._endpoint,
-                                            ScanCount=scanCount,
-                                            Data=data))
+                        EventBus.get().dispatch(StatusEvent(Runing=True,
+                                                ScanCurrent=difTime,
+                                                ScanDelayed=scanDelayTime,
+                                                ScanMax=difTimeMax,
+                                                ControllerName=self.DeviceName.getPLCValue(),
+                                                ControllerType=self.ProcessorType.getPLCValue(),
+                                                EndPoint=self._endpoint,
+                                                ScanCount=scanCount,
+                                                Data=data))
 
-                    lastDrawUi = startTime + 1
+                        lastDrawUi = startTime + 1
 
-                if difTime < scanDelayTime:
-                    await asyncio.sleep(scanDelayTime-difTime)
+                    if difTime < scanDelayTime:
+                        await asyncio.sleep(scanDelayTime-difTime)
+            except MajorException as e:
+                self.MajorFault = e
             except Exception as e:
                 logging.exception(e)
                 break

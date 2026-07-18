@@ -3,6 +3,8 @@ from __future__ import annotations
 import engine.context
 from engine.instruction import Instruction
 
+from engine.errors import MinorException
+
 def parse(text:str) -> Series:
     tokens = tokenize(text)
     tree, _ = series(tokens)
@@ -138,7 +140,11 @@ class InstructionNode:
         self.instance = cls(self.name, self.args)
 
     async def eval(self, ctx:"engine.context.ExecutionContext") -> None:
-        await self.instance.execute(ctx)
+        try:
+            await self.instance.execute(ctx)
+        except MinorException as e:
+            # TODO: Log minor erros seperatly
+            pass
 
     def __str__(self):
         return f"{self.name}{self.args}"

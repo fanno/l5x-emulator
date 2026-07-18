@@ -36,14 +36,23 @@ def FOR(line:str, st:ST):
 
     return False
 
-def addFor(st:ST, var, start, end, step) -> bool:
+def addFor(st:ST, var:str, start, end, step) -> bool:
     st.block_stack.append("FOR")
     start = hook_expression(start)
     end = hook_expression(end)
 
+    var_rep = var.replace(".", "_")
+    # TODO: arrays[0,3] would also break here?
+
     st.out.append(
         st.getIndent() +
-        f'for {var} in range({start}, {end} + 1, {step}):'
+        f'for {var_rep} in range({start}, {end} + 1, {step}):'
     )
     st.addIndent()
+    
+    st.out.append(
+        st.getIndent() +
+        f'set_("{var}", {var_rep})'
+    )
+
     return True

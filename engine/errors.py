@@ -22,7 +22,7 @@ class MajorException(EngineException):
         self.type = _type
         self.code = code
 
-class MajorException(EngineException):
+class MinorException(EngineException):
     def __init__(self, _type:int, code:int):
         super().__init__(f"Minor Fault, Type {_type}, Code {code}")
         self.type = _type

@@ -8,6 +8,9 @@ from core.registry.instructionregistry import InstructionRegistry
 from core.memory.helper import OutputType
 
 from datatypes.misc import CONTROL
+from datatypes.custom.array import Array
+from datatypes.custom.datavariant import DataVariant
+
 
 def dint_to_bools(value, count):
     return [(value >> i) & 1 == 1 for i in range(count)]
@@ -24,9 +27,12 @@ class FAL(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
+        
+            '''
             control:CONTROL = self.getMemory(self.args[0])
             mode = self.args[1]
-            '''
+            
             dst = self.getMemory(self.args[2])
             operation = self.getMemory(self.args[3], OutputType.PLC)
             length = self.getMemory(self.args[4], OutputType.PLC)
@@ -48,6 +54,8 @@ class FSC(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
+
+            raise NotImplementedError(f"{__class__} not implemented yet")
             '''
             control:CONTROL = self.getMemory(self.args[0])
             array = self.getMemory(self.args[1], OutputType.PLC)
@@ -132,39 +140,79 @@ class FLL(Instruction):
 class AVE(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
+        control:CONTROL = self.getMemory(self.args[3])
+
+        if ctx.RungStatus:
+            arrayName = self.args[0]
+
+            if arrayName.find("[") > -1 :
+                arrayName , rest = self.args[0].split("[")
+
+                rest = rest.replace("]", "")
+
+                dims = rest.split(",")
+
+                for index in range(len(dims)):
+                    dims[index] = self.getMemory(dims[index], OutputType.PLC)
+            else:
+                dims = [0]
+            
+            if len(dims) > 1:
+                raise NotImplementedError(f"{__class__} 2d/3d array, not implemented yet")
+
+            array:Array = self.getMemory(arrayName)
+            arrayDim = array.getDim()
+
+            dim = self.getMemory(self.args[1])
+            dest:DataVariant = self.getMemory(self.args[2])
+
+            added = 0.0
+            size = 1
+            if dim == 0:
+                size = 0
+                for index in range(dims[0], arrayDim[0]):
+                    added += array[index].getPLCValue()
+                    size += 1
+            elif dim == 1:
+                raise NotImplementedError(f"{__class__} dim 1, not implemented yet")
+            elif dim == 2:
+                raise NotImplementedError(f"{__class__} dim 2, not implemented yet")
+                
+            dest.setValue(added/size)
+        else:
+            if control.DN:
+                if not control.ER:
+                    control.EN.setValue(False)
+                    control.ER.setValue(False)
+                    control.DN.setValue(False)
+                    control.POS.setValue(0)
+
+@InstructionRegistry.register
+class SRT(Instruction):
+
+    async def execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            value = self.getMemory(self.args[0], OutputType.PLC)
+
+            if not isinstance(value, str):
+                raise NotImplementedError(f"{__class__} not implemented yet")
+
+            self.setMemory(self.args[1], value)
+
+@InstructionRegistry.register
+class STD(Instruction):
+
+    async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             values = self.getMemory(self.args[0], OutputType.PLC)
 
             if not isinstance(values, list) or not values:
                 raise NotImplementedError(f"{__class__} not implemented yet")
 
-            result = sum(values) / len(values)
-            self.setMemory(self.args[1], result)
+            mean = sum(values) / len(values)
+            variance = sum((x - mean) ** 2 for x in values) / len(values)
 
-@InstructionRegistry.register
-class SRT(Instruction):
-
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        value = self.getMemory(self.args[0], OutputType.PLC)
-
-        if not isinstance(value, str):
-            raise NotImplementedError(f"{__class__} not implemented yet")
-
-        self.setMemory(self.args[1], value)
-
-@InstructionRegistry.register
-class STD(Instruction):
-
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        values = self.getMemory(self.args[0], OutputType.PLC)
-
-        if not isinstance(values, list) or not values:
-            raise NotImplementedError(f"{__class__} not implemented yet")
-
-        mean = sum(values) / len(values)
-        variance = sum((x - mean) ** 2 for x in values) / len(values)
-
-        self.setMemory(self.args[1], float(math.sqrt(variance)))
+            self.setMemory(self.args[1], float(math.sqrt(variance)))
 
 @InstructionRegistry.register
 class SIZE(Instruction):
@@ -190,14 +238,15 @@ class SIZE(Instruction):
 class CPS(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        src = self.getMemory(self.args[0], OutputType.PLC)
-        dst = self.getMemory(self.args[1], OutputType.PLC)
-        length = self.getMemory(self.args[2], OutputType.PLC)
+        if ctx.RungStatus:
+            src = self.getMemory(self.args[0], OutputType.PLC)
+            dst = self.getMemory(self.args[1], OutputType.PLC)
+            length = self.getMemory(self.args[2], OutputType.PLC)
 
-        if not isinstance(src, list) or not isinstance(dst, list):
-           raise NotImplementedError(f"{__class__} not implemented yet")
+            if not isinstance(src, list) or not isinstance(dst, list):
+                raise NotImplementedError(f"{__class__} not implemented yet")
 
-        for i in range(min(length, len(src))):
-            dst[i] = src[i]
+            for i in range(min(length, len(src))):
+                dst[i] = src[i]
 
-        self.setMemory(self.args[1], dst)
+            self.setMemory(self.args[1], dst)
