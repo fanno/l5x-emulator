@@ -6,17 +6,18 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, REAL, LREAL
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class CAM:
+class CAM(UDT):
     Master: REAL = field(init=False, default_factory=REAL)
     Slave: REAL = field(init=False, default_factory=REAL)
     SegmentType: DINT = field(init=False, default_factory=DINT)
 
 @DataTypeRegistry.register
 @dataclass
-class CAMSHAFT_MONITOR:
+class CAMSHAFT_MONITOR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     MotionRequest: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
@@ -35,19 +36,19 @@ class CAMSHAFT_MONITOR:
 
 @DataTypeRegistry.register
 @dataclass
-class CAMS_EXTENDED:
+class CAMS_EXTENDED(UDT):
     Master: LREAL = field(init=False, default_factory=LREAL)
     Slave: LREAL = field(init=False, default_factory=LREAL)    
     SegmentType: DINT = field(init=False, default_factory=DINT)
 
 @DataTypeRegistry.register
 @dataclass
-class CAMS_PROFILE:
+class CAMS_PROFILE(UDT):
     Status: DINT = field(init=False, default_factory=DINT)
 
 @DataTypeRegistry.register
 @dataclass
-class CAMS_PROFILE_EXTENDED:
+class CAMS_PROFILE_EXTENDED(UDT):
     Status: DINT = field(init=False, default_factory=DINT)
     SegmentType: DINT = field(init=False, default_factory=DINT)
     Master: LREAL = field(init=False, default_factory=LREAL)

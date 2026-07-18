@@ -6,10 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class MAIN_VALVE_CONTROL:
+class MAIN_VALVE_CONTROL(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)    
     Actuate: BOOL = field(init=False, default_factory=BOOL)
     FeedbackType: BOOL = field(init=False, default_factory=BOOL)
@@ -28,7 +29,7 @@ class MAIN_VALVE_CONTROL:
 
 @DataTypeRegistry.register
 @dataclass
-class MANUAL_VALVE_CONTROL:
+class MANUAL_VALVE_CONTROL(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Enable: BOOL = field(init=False, default_factory=BOOL)
     Keyswitch: BOOL = field(init=False, default_factory=BOOL)
@@ -47,7 +48,7 @@ class MANUAL_VALVE_CONTROL:
 
 @DataTypeRegistry.register
 @dataclass
-class AUX_VALVE_CONTROL:
+class AUX_VALVE_CONTROL(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Actuate: BOOL = field(init=False, default_factory=BOOL)
     DelayType: BOOL = field(init=False, default_factory=BOOL)

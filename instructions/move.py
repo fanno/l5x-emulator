@@ -5,7 +5,7 @@ from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
 from core.memory.helper import OutputType
-from instructions.helper import AND, OR, XOR, NOT
+from instructions.helper import _AND, _OR, _XOR, _NOT
 
 @InstructionRegistry.register
 class MOV(Instruction):
@@ -25,15 +25,15 @@ class MVM(Instruction):
             dest = self.args[2]
 
             sourceValue = self.getMemory(source, OutputType.PLC)
-            destValue = self.getMemory(mask, OutputType.PLC)
+            maskValue = self.getMemory(mask, OutputType.PLC)
 
             destValue = self.getMemory(dest, OutputType.PLC)
 
-            bit_width=32 ## set depending on mask length or source or dest length ?
+            bit_width=32 ## TODO:set depending on mask length or source or dest length ?
             
             full_mask = (1 << bit_width) - 1
-            mask &= full_mask
-            destValue = (destValue & ~mask) | (sourceValue & mask)
+            maskValue &= full_mask
+            destValue = (destValue & ~maskValue) | (sourceValue & maskValue)
 
             self.setMemory(dest, destValue)
 
@@ -49,7 +49,7 @@ class AND(Instruction):
             sourceAValue = self.getMemory(sourceA, OutputType.PLC)
             sourceBValue = self.getMemory(sourceB, OutputType.PLC)
 
-            destValue = AND(sourceAValue, sourceBValue, 32) # should be 64 ?
+            destValue = _AND(sourceAValue, sourceBValue, 32) # should be 64 ?
 
             self.setMemory(dest, destValue)
 
@@ -65,7 +65,7 @@ class OR(Instruction):
             sourceAValue = self.getMemory(sourceA, OutputType.PLC)
             sourceBValue = self.getMemory(sourceB, OutputType.PLC)
 
-            destValue = OR(sourceAValue, sourceBValue, 32) # should be 64 ?
+            destValue = _OR(sourceAValue, sourceBValue, 32) # should be 64 ?
 
             self.setMemory(dest, destValue)
 
@@ -81,7 +81,7 @@ class XOR(Instruction):
             sourceAValue = self.getMemory(sourceA, OutputType.PLC)
             sourceBValue = self.getMemory(sourceB, OutputType.PLC)
 
-            destValue = XOR(sourceAValue, sourceBValue, 32) # should be 64 ?
+            destValue = _XOR(sourceAValue, sourceBValue, 32) # should be 64 ?
 
             self.setMemory(dest, destValue)
 
@@ -91,13 +91,12 @@ class NOT(Instruction):
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             sourceA = self.args[0]
-            sourceB = self.args[1]
-            dest = self.args[2]
+            dest = self.args[1]
 
             sourceAValue = self.getMemory(sourceA, OutputType.PLC)
-            sourceBValue = self.getMemory(sourceB, OutputType.PLC)
 
-            destValue = NOT(sourceAValue, sourceBValue, 32) # should be 64 ?
+            destValue = _NOT(sourceAValue, 32) # should be 64?
+            ## TODO length depend on data size in dest ?
 
             self.setMemory(dest, destValue)
 

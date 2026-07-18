@@ -6,12 +6,13 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import REAL, INT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 from datatypes.odometer import ODOMETER, SIGNED_ODOMETER
 
 @DataTypeRegistry.register
 @dataclass
-class ENERGY_BASE:
+class ENERGY_BASE(UDT):
     EnergyResourceType: INT = field(init=False, default_factory=BOOL)
     BaseEnergyObjectCapabilities: INT = field(init=False, default_factory=BOOL)
     EnergyAccuracy: INT = field(init=False, default_factory=BOOL)
@@ -24,7 +25,7 @@ class ENERGY_BASE:
 
 @DataTypeRegistry.register
 @dataclass
-class ENERGY_ELLECTRICAL:
+class ENERGY_ELLECTRICAL(UDT):
     RealEnergyConsumedOdometer: ODOMETER = field(init=False, default_factory=ODOMETER)
     RealEnergyGeneratedOdometer: ODOMETER = field(init=False, default_factory=ODOMETER)
     RealEnergyNetOdometer: SIGNED_ODOMETER = field(init=False, default_factory=SIGNED_ODOMETER)

@@ -10,6 +10,7 @@ from . import boolean
 from . import compare
 from . import drives
 from . import filters
+from . import forbreak
 from . import helper
 from . import hmi
 from . import input

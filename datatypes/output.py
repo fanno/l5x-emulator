@@ -5,10 +5,11 @@ from asyncua import ua
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, REAL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class OUTPUT_CAM:
+class OUTPUT_CAM(UDT):
     OutputBit: DINT = field(init=False, default_factory=DINT)
     LatchType: DINT = field(init=False, default_factory=DINT)
     UnlatchType: DINT = field(init=False, default_factory=DINT)
@@ -20,7 +21,7 @@ class OUTPUT_CAM:
 
 @DataTypeRegistry.register
 @dataclass
-class OUTPUT_COMPENSTATION:
+class OUTPUT_COMPENSTATION(UDT):
     Offset: REAL = field(init=False, default_factory=REAL)
     LatchDelay: REAL = field(init=False, default_factory=REAL)
     UnlatchDelay: REAL = field(init=False, default_factory=REAL)

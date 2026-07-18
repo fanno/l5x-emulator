@@ -44,6 +44,9 @@ class INTIGER(COMPARE, MATH, DataVariant):
     def getUAValue(self) -> int:
         return self._value
     
+    def getBitSize(self) -> int:
+        PLC_TYPE_MAP[self.__class__.__name__].size * 8
+    
     @classmethod
     def toValue(self, value: int, type_name: str):
         value = super().toValue(value)

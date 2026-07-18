@@ -6,10 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, REAL
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class LEAD_LAG:
+class LEAD_LAG(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)
@@ -37,7 +38,7 @@ class LEAD_LAG:
 
 @DataTypeRegistry.register
 @dataclass
-class LEAD_LAG_SEC_ORDER:
+class LEAD_LAG_SEC_ORDER(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)

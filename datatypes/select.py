@@ -6,11 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, REAL
 from datatypes.custom.bool import BOOL
-
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class SELECT:
+class SELECT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In1: REAL = field(init=False, default_factory=REAL)
     In2: REAL = field(init=False, default_factory=REAL)
@@ -20,7 +20,7 @@ class SELECT:
 
 @DataTypeRegistry.register
 @dataclass
-class SELECTABLE_NEGATE:
+class SELECTABLE_NEGATE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     NegateEnable: BOOL = field(init=False, default_factory=BOOL)
@@ -29,7 +29,7 @@ class SELECTABLE_NEGATE:
 
 @DataTypeRegistry.register
 @dataclass
-class SELECTED_SUMMER:
+class SELECTED_SUMMER(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In1: REAL = field(init=False, default_factory=REAL)
     Gain1: REAL = field(init=False, default_factory=REAL)
@@ -61,7 +61,7 @@ class SELECTED_SUMMER:
 
 @DataTypeRegistry.register
 @dataclass
-class SELECT_ENHANCED:
+class SELECT_ENHANCED(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In1: REAL = field(init=False, default_factory=REAL)
     In2: REAL = field(init=False, default_factory=REAL)

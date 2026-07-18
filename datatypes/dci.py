@@ -6,10 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, REAL
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class DCAF_INPUT:
+class DCAF_INPUT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     InputStatus: BOOL = field(init=False, default_factory=BOOL)
     Reset: BOOL = field(init=False, default_factory=BOOL)    
@@ -34,7 +35,7 @@ class DCAF_INPUT:
 
 @DataTypeRegistry.register
 @dataclass
-class DCA_INPUT:
+class DCA_INPUT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     InputStatus: BOOL = field(init=False, default_factory=BOOL)
     Reset: BOOL = field(init=False, default_factory=BOOL)    
@@ -58,7 +59,7 @@ class DCA_INPUT:
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_MONITOR:
+class DCI_MONITOR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     EnablChannelBeIn: BOOL = field(init=False, default_factory=BOOL)
@@ -76,7 +77,7 @@ class DCI_MONITOR:
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_START:
+class DCI_START(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     ChannelB: BOOL = field(init=False, default_factory=BOOL)
@@ -95,7 +96,7 @@ class DCI_START:
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_STOP:
+class DCI_STOP(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     ChannelB: BOOL = field(init=False, default_factory=BOOL)
@@ -115,7 +116,7 @@ class DCI_STOP:
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_STOP_TEST:
+class DCI_STOP_TEST(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     ChannelB: BOOL = field(init=False, default_factory=BOOL)
@@ -136,7 +137,7 @@ class DCI_STOP_TEST:
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_STOP_TEST_LOCK:
+class DCI_STOP_TEST_LOCK(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     ChannelB: BOOL = field(init=False, default_factory=BOOL)
@@ -161,7 +162,7 @@ class DCI_STOP_TEST_LOCK:
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_STOP_TEST_MUTE:
+class DCI_STOP_TEST_MUTE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     ChannelB: BOOL = field(init=False, default_factory=BOOL)

@@ -1,5 +1,7 @@
 from datatypes.custom.datavariant import DataVariant
 
+from datatypes.custom.numbers import INTIGER
+
 def split_to_dint(value: int|DataVariant) -> list[int]:
     if isinstance(value, DataVariant):
         value = value.getPLCValue()
@@ -18,17 +20,24 @@ def split_to_dint(value: int|DataVariant) -> list[int]:
 
     return [low_signed, high_signed]
 
+def _maskSize(width: INTIGER) -> int:
+
+
+    
+    return (1 << width) - 1
+
 def _mask(width: int) -> int:
     return (1 << width) - 1
 
-def AND(a: int, b: int, width: int = 32) -> int:
+def _AND(a: int, b: int, width: int = 32) -> int:
     return (a & b) & _mask(width)
 
-def OR(a: int, b: int, width: int = 32) -> int:
+def _OR(a: int, b: int, width: int = 32) -> int:
     return (a | b) & _mask(width)
 
-def XOR(a: int, b: int, width: int = 32) -> int:
+def _XOR(a: int, b: int, width: int = 32) -> int:
     return (a ^ b) & _mask(width)
 
-def NOT(a: int, width: int = 32) -> int:
+def _NOT(a: int, width: int = 32) -> int:
     return (~a) & _mask(width)
+

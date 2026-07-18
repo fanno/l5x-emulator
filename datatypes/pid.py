@@ -7,10 +7,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 from datatypes.custom.numbers import DINT, REAL
 from datatypes.custom.bool import BOOL
 from datatypes.custom.array import Array
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class PID:
+class PID(UDT):
     CTL: DINT = field(init=False, default_factory=DINT)
     EN: BOOL = field(init=False, default_factory=BOOL)
     CT: BOOL = field(init=False, default_factory=BOOL)
@@ -65,7 +66,7 @@ class PID:
 
 @DataTypeRegistry.register
 @dataclass
-class PID_AUTOTUNE:
+class PID_AUTOTUNE(UDT):
     ProcessType: DINT = field(init=False, default_factory=DINT)
     ResponseSpeed: DINT = field(init=False, default_factory=DINT)
     TestLength: REAL = field(init=False, default_factory=REAL)
@@ -108,7 +109,7 @@ class PID_AUTOTUNE:
 
 @DataTypeRegistry.register
 @dataclass
-class PID_ENHANCED:
+class PID_ENHANCED(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     PV: REAL = field(init=False, default_factory=REAL)
     PVFault: BOOL = field(init=False, default_factory=BOOL)

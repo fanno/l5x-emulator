@@ -5,10 +5,11 @@ from asyncua import ua
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class DOMINANT_RESET:
+class DOMINANT_RESET(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Set: BOOL = field(init=False, default_factory=BOOL)
     Reset: BOOL = field(init=False, default_factory=BOOL)
@@ -18,7 +19,7 @@ class DOMINANT_RESET:
 
 @DataTypeRegistry.register
 @dataclass
-class DOMINANT_SET:
+class DOMINANT_SET(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Set: BOOL = field(init=False, default_factory=BOOL)
     Reset: BOOL = field(init=False, default_factory=BOOL)

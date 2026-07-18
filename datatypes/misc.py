@@ -8,10 +8,11 @@ from datatypes.custom.string import STRING
 from datatypes.custom.numbers import DINT, UDINT, REAL, INT, LINT, SINT
 from datatypes.custom.bool import BOOL
 from datatypes.custom.array import Array
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class BUS_OBJ:
+class BUS_OBJ(UDT):
     Inp_Cmd: DINT = field(init=False, default_factory=DINT)
     Out_Cmd: DINT = field(init=False, default_factory=DINT)
     Inp_CmdLLH: DINT = field(init=False, default_factory=DINT)
@@ -29,7 +30,7 @@ class BUS_OBJ:
 
 @DataTypeRegistry.register
 @dataclass
-class CC:
+class CC(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     PV: REAL = field(init=False, default_factory=REAL)
     PVFault: BOOL = field(init=False, default_factory=BOOL)
@@ -354,7 +355,7 @@ class CC:
 
 @DataTypeRegistry.register
 @dataclass
-class CONFIGURABLE_ROUT:
+class CONFIGURABLE_ROUT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Actuate: BOOL = field(init=False, default_factory=BOOL)
     FeedbackType: BOOL = field(init=False, default_factory=BOOL)
@@ -373,17 +374,18 @@ class CONFIGURABLE_ROUT:
 
 @DataTypeRegistry.register
 @dataclass
-class CONNECTION_STATUS:
+class CONNECTION_STATUS(UDT):
     RunMode: BOOL = field(init=False, default_factory=BOOL)
     ConnectionFaulted: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class CONTROL:
+class CONTROL(UDT):
     LEN: UDINT = field(init=False, default_factory=DINT)
     POS: DINT = field(init=False, default_factory=DINT)
     EN: BOOL = field(init=False, default_factory=BOOL)
     EU: BOOL = field(init=False, default_factory=BOOL)
+    DN: BOOL = field(init=False, default_factory=BOOL)
     EM: BOOL = field(init=False, default_factory=BOOL)
     ER: BOOL = field(init=False, default_factory=BOOL)
     UL: BOOL = field(init=False, default_factory=BOOL)
@@ -392,7 +394,7 @@ class CONTROL:
 
 @DataTypeRegistry.register
 @dataclass
-class COORDINATE_SYSTEM:
+class COORDINATE_SYSTEM(UDT):
     CoordinateSystemStatus: DINT = field(init=False, default_factory=DINT)
     ShutdownStatus: BOOL = field(init=False, default_factory=BOOL)
     ReadyStatus: BOOL = field(init=False, default_factory=BOOL)
@@ -431,7 +433,7 @@ class COORDINATE_SYSTEM:
 
 @DataTypeRegistry.register
 @dataclass
-class TIMER:
+class TIMER(UDT):
     PRE: DINT = field(init=False, default_factory=DINT)
     ACC: DINT = field(init=False, default_factory=DINT) 
     EN: BOOL = field(init=False, default_factory=BOOL)
@@ -440,7 +442,7 @@ class TIMER:
 
 @DataTypeRegistry.register
 @dataclass
-class COUNTER:
+class COUNTER(UDT):
     PRE: DINT = field(init=False, default_factory=DINT)
     ACC: DINT = field(init=False, default_factory=DINT)
     CU: BOOL = field(init=False, default_factory=BOOL)
@@ -451,7 +453,7 @@ class COUNTER:
 
 @DataTypeRegistry.register
 @dataclass
-class DATALOG_INSTRUCTION:
+class DATALOG_INSTRUCTION(UDT):
     FLAGS: DINT = field(init=False, default_factory=DINT)
     EN: BOOL = field(init=False, default_factory=BOOL)
     DN: BOOL = field(init=False, default_factory=BOOL)
@@ -463,7 +465,7 @@ class DATALOG_INSTRUCTION:
 
 @DataTypeRegistry.register
 @dataclass
-class DEADTIME:
+class DEADTIME(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     InFault: BOOL = field(init=False, default_factory=BOOL)
@@ -489,7 +491,7 @@ class DEADTIME:
 
 @DataTypeRegistry.register
 @dataclass
-class DERIVATIVE:
+class DERIVATIVE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Gain: REAL = field(init=False, default_factory=REAL)
@@ -511,7 +513,7 @@ class DERIVATIVE:
 
 @DataTypeRegistry.register
 @dataclass
-class DIVERSE_INPUT:
+class DIVERSE_INPUT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ResetType: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
@@ -527,7 +529,7 @@ class DIVERSE_INPUT:
 
 @DataTypeRegistry.register
 @dataclass
-class DYNAMICS_DATA:
+class DYNAMICS_DATA(UDT):
     UnitsMode: DINT = field(init=False, default_factory=DINT)
     TimeUnits: DINT = field(init=False, default_factory=DINT)
     Profile: DINT = field(init=False, default_factory=DINT)
@@ -542,7 +544,7 @@ class DYNAMICS_DATA:
 
 @DataTypeRegistry.register
 @dataclass
-class EIGHT_POS_MODE_SELECTOR:
+class EIGHT_POS_MODE_SELECTOR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Input1: BOOL = field(init=False, default_factory=BOOL)
     Input2: BOOL = field(init=False, default_factory=BOOL)
@@ -570,7 +572,7 @@ class EIGHT_POS_MODE_SELECTOR:
 
 @DataTypeRegistry.register
 @dataclass
-class EMERGENCY_STOP:
+class EMERGENCY_STOP(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ResetType: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
@@ -586,7 +588,7 @@ class EMERGENCY_STOP:
 
 @DataTypeRegistry.register
 @dataclass
-class ENABLE_PENDANT:
+class ENABLE_PENDANT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ResetType: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
@@ -602,14 +604,14 @@ class ENABLE_PENDANT:
 
 @DataTypeRegistry.register
 @dataclass
-class EXT_ROUTINE_PARAMETERS:
+class EXT_ROUTINE_PARAMETERS(UDT):
     ElementSize: INT = field(init=False, default_factory=BOOL)
     ElementCount: INT = field(init=False, default_factory=BOOL)
     ParamType: INT = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class EXT_ROUTINE_CONTROL:
+class EXT_ROUTINE_CONTROL(UDT):
     ErrorCode: SINT = field(init=False, default_factory=SINT)
     NumParams: SINT = field(init=False, default_factory=SINT)
     ParameterDefs: Array[EXT_ROUTINE_PARAMETERS] = field(init=False, default_factory=lambda: Array.create(EXT_ROUTINE_PARAMETERS, 10))
@@ -628,7 +630,7 @@ class EXT_ROUTINE_CONTROL:
 
 @DataTypeRegistry.register
 @dataclass
-class FUNCTION_GENERATOR:
+class FUNCTION_GENERATOR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     XY1Size: DINT = field(init=False, default_factory=DINT)
@@ -644,7 +646,7 @@ class FUNCTION_GENERATOR:
 
 @DataTypeRegistry.register
 @dataclass
-class HL_LIMIT:
+class HL_LIMIT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     HighLimit: REAL = field(init=False, default_factory=REAL)
@@ -661,7 +663,7 @@ class HL_LIMIT:
 
 @DataTypeRegistry.register
 @dataclass
-class HMIBC:
+class HMIBC(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ProgFB: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
@@ -670,7 +672,7 @@ class HMIBC:
 
 @DataTypeRegistry.register
 @dataclass
-class ICM:
+class ICM(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     PV: REAL = field(init=False, default_factory=REAL)
     PVFault: BOOL = field(init=False, default_factory=BOOL)
@@ -830,7 +832,7 @@ class ICM:
 
 @DataTypeRegistry.register
 @dataclass
-class INTEGRATOR:
+class INTEGRATOR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)
@@ -861,7 +863,7 @@ class INTEGRATOR:
 
 @DataTypeRegistry.register
 @dataclass
-class MESSAGE:
+class MESSAGE(UDT):
     Flags: INT = field(init=False, default_factory=BOOL)
     EW: BOOL = field(init=False, default_factory=BOOL)
     ER: BOOL = field(init=False, default_factory=BOOL)
@@ -896,7 +898,7 @@ class MESSAGE:
 
 @DataTypeRegistry.register
 @dataclass
-class MMC:
+class MMC(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     PV1: REAL = field(init=False, default_factory=REAL)
     PV2: REAL = field(init=False, default_factory=REAL)
@@ -1336,7 +1338,7 @@ class MMC:
 
 @DataTypeRegistry.register
 @dataclass
-class MULTIPLEXER:
+class MULTIPLEXER(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In1: REAL = field(init=False, default_factory=REAL)
     In2: REAL = field(init=False, default_factory=REAL)
@@ -1355,7 +1357,7 @@ class MULTIPLEXER:
 
 @DataTypeRegistry.register
 @dataclass
-class PATH_DATA:
+class PATH_DATA(UDT):
     InterpolationType: DINT = field(init=False, default_factory=DINT)
     Position: Array[REAL] = field(init=False, default_factory=lambda: Array.create(REAL, 9))
     RobotConfiguration: DINT = field(init=False, default_factory=DINT)
@@ -1365,7 +1367,7 @@ class PATH_DATA:
 
 @DataTypeRegistry.register
 @dataclass
-class PROP_INT:
+class PROP_INT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)
@@ -1412,7 +1414,7 @@ class PROP_INT:
 
 @DataTypeRegistry.register
 @dataclass
-class PULSE_MULTIPLIER:
+class PULSE_MULTIPLIER(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)
@@ -1431,7 +1433,7 @@ class PULSE_MULTIPLIER:
 
 @DataTypeRegistry.register
 @dataclass
-class RAMP_SOAK:
+class RAMP_SOAK(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     PV: REAL = field(init=False, default_factory=REAL)
     PVFault: BOOL = field(init=False, default_factory=BOOL)
@@ -1485,7 +1487,7 @@ class RAMP_SOAK:
 
 @DataTypeRegistry.register
 @dataclass
-class RATE_LIMITER:
+class RATE_LIMITER(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     IncRate: REAL = field(init=False, default_factory=REAL)
@@ -1510,7 +1512,7 @@ class RATE_LIMITER:
 
 @DataTypeRegistry.register
 @dataclass
-class SCALE:
+class SCALE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     InRawMax: REAL = field(init=False, default_factory=REAL)
@@ -1528,7 +1530,7 @@ class SCALE:
 
 @DataTypeRegistry.register
 @dataclass
-class SEC_ORDER_CONTROLLER:
+class SEC_ORDER_CONTROLLER(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)
@@ -1565,7 +1567,7 @@ class SEC_ORDER_CONTROLLER:
 
 @DataTypeRegistry.register
 @dataclass
-class SEQEUNCE:
+class SEQEUNCE(UDT):
     State: DINT = field(init=False, default_factory=DINT)
     Running: BOOL = field(init=False, default_factory=BOOL)
     Holding: BOOL = field(init=False, default_factory=BOOL)
@@ -1610,7 +1612,7 @@ class SEQEUNCE:
 
 @DataTypeRegistry.register
 @dataclass
-class SERIAL_PORT_CONTROL:
+class SERIAL_PORT_CONTROL(UDT):
     LEN: DINT = field(init=False, default_factory=DINT)
     POS: DINT = field(init=False, default_factory=DINT)
     ERROR: DINT = field(init=False, default_factory=DINT)
@@ -1625,7 +1627,7 @@ class SERIAL_PORT_CONTROL:
 
 @DataTypeRegistry.register
 @dataclass
-class SPLIT_RANGE:
+class SPLIT_RANGE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     CycleTime: REAL = field(init=False, default_factory=REAL)
@@ -1654,7 +1656,7 @@ class SPLIT_RANGE:
 
 @DataTypeRegistry.register
 @dataclass
-class S_CURVE:
+class S_CURVE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)
@@ -1687,7 +1689,7 @@ class S_CURVE:
 
 @DataTypeRegistry.register
 @dataclass
-class THRS_ENHANCED:
+class THRS_ENHANCED(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Enable: BOOL = field(init=False, default_factory=BOOL)
     Disconnected: BOOL = field(init=False, default_factory=BOOL)
@@ -1708,7 +1710,7 @@ class THRS_ENHANCED:
 
 @DataTypeRegistry.register
 @dataclass
-class TOTALIZER:
+class TOTALIZER(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     InFault: BOOL = field(init=False, default_factory=BOOL)
@@ -1757,7 +1759,7 @@ class TOTALIZER:
 
 @DataTypeRegistry.register
 @dataclass
-class UP_DOWN_ACCUM:
+class UP_DOWN_ACCUM(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)
     InitialValue: REAL = field(init=False, default_factory=REAL)

@@ -7,10 +7,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 from datatypes.custom.numbers import DINT, UDINT, REAL, INT, SINT, LINT, UINT, USINT, ULINT
 from datatypes.custom.bool import BOOL
 from datatypes.custom.string import STRING
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class AXIS_CIP_DRIVE:
+class AXIS_CIP_DRIVE(UDT):
     AxisFault: DINT = field(init=False, default_factory=DINT)
     PhysicalAxisFault: BOOL = field(init=False, default_factory=BOOL)
     ModuleFault: BOOL = field(init=False, default_factory=BOOL)
@@ -971,7 +972,7 @@ class AXIS_CIP_DRIVE:
 
 @DataTypeRegistry.register
 @dataclass
-class AXIS_CONSUMED:
+class AXIS_CONSUMED(UDT):
     AxisFault: DINT = field(init=False, default_factory=DINT)
     PhysicalAxisFault: BOOL = field(init=False, default_factory=BOOL)
     ModuleFault: BOOL = field(init=False, default_factory=BOOL)
@@ -1054,7 +1055,7 @@ class AXIS_CONSUMED:
 
 @DataTypeRegistry.register
 @dataclass
-class AXIS_GENERIC:
+class AXIS_GENERIC(UDT):
     AxisFault: DINT = field(init=False, default_factory=DINT)
     PhysicalAxisFault: BOOL = field(init=False, default_factory=BOOL)
     ModuleFault: BOOL = field(init=False, default_factory=BOOL)
@@ -1130,7 +1131,7 @@ class AXIS_GENERIC:
 
 @DataTypeRegistry.register
 @dataclass
-class AXIS_GENERIC_DRIVE:
+class AXIS_GENERIC_DRIVE(UDT):
     AxisFault: DINT = field(init=False, default_factory=DINT)
     PhysicalAxisFault: BOOL = field(init=False, default_factory=BOOL)
     ModuleFault: BOOL = field(init=False, default_factory=BOOL)
@@ -1242,7 +1243,7 @@ class AXIS_GENERIC_DRIVE:
 
 @DataTypeRegistry.register
 @dataclass
-class AXIS_SERVO:
+class AXIS_SERVO(UDT):
     AxisFault: DINT = field(init=False, default_factory=DINT)
     PhysicalAxisFault: BOOL = field(init=False, default_factory=BOOL)
     ModuleFault: BOOL = field(init=False, default_factory=BOOL)
@@ -1359,7 +1360,7 @@ class AXIS_SERVO:
 
 @DataTypeRegistry.register
 @dataclass
-class AXIS_SERVO_DRIVE:
+class AXIS_SERVO_DRIVE(UDT):
     AxisFault: DINT = field(init=False, default_factory=DINT)
     PhysicalAxisFault: BOOL = field(init=False, default_factory=BOOL)
     ModuleFault: BOOL = field(init=False, default_factory=BOOL)
@@ -1580,7 +1581,7 @@ class AXIS_SERVO_DRIVE:
 
 @DataTypeRegistry.register
 @dataclass
-class AXIS_VIRTUAL:
+class AXIS_VIRTUAL(UDT):
     AxisFault: DINT = field(init=False, default_factory=DINT)
     PhysicalAxisFault: BOOL = field(init=False, default_factory=BOOL)
     ModuleFault: BOOL = field(init=False, default_factory=BOOL)
@@ -1656,7 +1657,7 @@ class AXIS_VIRTUAL:
 
 @DataTypeRegistry.register
 @dataclass
-class POSITION_DATA:
+class POSITION_DATA(UDT):
     ID: DINT = field(init=False, default_factory=DINT)
     X: REAL = field(init=False, default_factory=REAL)
     Y: REAL = field(init=False, default_factory=REAL)
@@ -1667,7 +1668,7 @@ class POSITION_DATA:
 
 @DataTypeRegistry.register
 @dataclass
-class POSITION_PROP:
+class POSITION_PROP(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     SP: REAL = field(init=False, default_factory=REAL)
     Position: REAL = field(init=False, default_factory=REAL)

@@ -6,10 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, INT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class PHASE:
+class PHASE(UDT):
     State: DINT = field(init=False, default_factory=DINT)
     Running: BOOL = field(init=False, default_factory=BOOL)
     Holding: BOOL = field(init=False, default_factory=BOOL)
@@ -59,7 +60,7 @@ class PHASE:
 
 @DataTypeRegistry.register
 @dataclass
-class PHASE_INSTRUCTION:
+class PHASE_INSTRUCTION(UDT):
     Status: DINT = field(init=False, default_factory=DINT)
     EN: BOOL = field(init=False, default_factory=BOOL)
     ER: BOOL = field(init=False, default_factory=BOOL)

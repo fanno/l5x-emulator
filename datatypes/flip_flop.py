@@ -5,10 +5,11 @@ from asyncua import ua
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class FLIP_FLOP_D:
+class FLIP_FLOP_D(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     D: BOOL = field(init=False, default_factory=BOOL)
     Clear: BOOL = field(init=False, default_factory=BOOL)
@@ -19,7 +20,7 @@ class FLIP_FLOP_D:
 
 @DataTypeRegistry.register
 @dataclass
-class FLIP_FLOP_JK:
+class FLIP_FLOP_JK(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Clear: BOOL = field(init=False, default_factory=BOOL)
     Clock: BOOL = field(init=False, default_factory=BOOL)

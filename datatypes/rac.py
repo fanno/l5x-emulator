@@ -9,16 +9,17 @@ from datatypes.custom.bool import BOOL
 from datatypes.custom.array import Array
 
 from datatypes.custom.string import STRING
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_CODE_DESCRIPTION:
+class RAC_CODE_DESCRIPTION(UDT):
     Code: DINT = field(init=False, default_factory=DINT)
     Desc: STRING = field(init=False, default_factory=STRING)
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_EVENT:
+class RAC_EVENT(UDT):
     Type: DINT = field(init=False, default_factory=DINT)
     ID: DINT = field(init=False, default_factory=DINT)
     Category: DINT = field(init=False, default_factory=DINT)
@@ -30,7 +31,7 @@ class RAC_EVENT:
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_ITF_DVC_PWRDISCRETE_CMD:
+class RAC_ITF_DVC_PWRDISCRETE_CMD(UDT):
     bCmd: INT = field(init=False, default_factory=INT)
     Physical: BOOL = field(init=False, default_factory=BOOL)
     Virtual: BOOL = field(init=False, default_factory=BOOL)
@@ -45,13 +46,13 @@ class RAC_ITF_DVC_PWRDISCRETE_CMD:
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_ITF_DVC_PWRDISCRETE_SET:
+class RAC_ITF_DVC_PWRDISCRETE_SET(UDT):
     InhibitCmd: BOOL = field(init=False, default_factory=BOOL)
     InhibitSet: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_ITF_DVC_PWRDISCRETE_STS:
+class RAC_ITF_DVC_PWRDISCRETE_STS(UDT):
     eState: DINT = field(init=False, default_factory=DINT)
     FirstWarning: RAC_EVENT = field(init=False, default_factory=RAC_EVENT)
     FirstFault: RAC_EVENT = field(init=False, default_factory=RAC_EVENT)
@@ -73,7 +74,7 @@ class RAC_ITF_DVC_PWRDISCRETE_STS:
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_ITF_DVC_PWRMOTION_CMD:
+class RAC_ITF_DVC_PWRMOTION_CMD(UDT):
     bCmd: INT = field(init=False, default_factory=INT)
     Physical: BOOL = field(init=False, default_factory=BOOL)
     Virtual: BOOL = field(init=False, default_factory=BOOL)
@@ -84,20 +85,20 @@ class RAC_ITF_DVC_PWRMOTION_CMD:
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_ITF_DVC_PWRMOTION_INF:
+class RAC_ITF_DVC_PWRMOTION_INF(UDT):
     AxisID: DINT = field(init=False, default_factory=DINT)
     Lock: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_ITF_DVC_PWRMOTION_SET:
+class RAC_ITF_DVC_PWRMOTION_SET(UDT):
     InhibitCmd: BOOL = field(init=False, default_factory=BOOL)
     InhibitSet: BOOL = field(init=False, default_factory=BOOL)
     Lock: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_ITF_DVC_PWRMOTION_STS:
+class RAC_ITF_DVC_PWRMOTION_STS(UDT):
     eState: DINT = field(init=False, default_factory=DINT)
     FirstWarning: RAC_EVENT = field(init=False, default_factory=RAC_EVENT)
     FirstFault: RAC_EVENT = field(init=False, default_factory=RAC_EVENT)
@@ -116,7 +117,7 @@ class RAC_ITF_DVC_PWRMOTION_STS:
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_ITF_DVC_PWRVELOCITY_CMD:
+class RAC_ITF_DVC_PWRVELOCITY_CMD(UDT):
     bCmd: INT = field(init=False, default_factory=INT)
     Physical: BOOL = field(init=False, default_factory=BOOL)
     Virtual: BOOL = field(init=False, default_factory=BOOL)
@@ -128,14 +129,14 @@ class RAC_ITF_DVC_PWRVELOCITY_CMD:
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_ITF_DVC_PWRVELOCITY_SET:
+class RAC_ITF_DVC_PWRVELOCITY_SET(UDT):
     Speed: REAL = field(init=False, default_factory=REAL)
     InhibitCmd: BOOL = field(init=False, default_factory=BOOL)
     InhibitSet: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class RAC_ITF_DVC_PWRVELOCITY_STS:
+class RAC_ITF_DVC_PWRVELOCITY_STS(UDT):
     eState: DINT = field(init=False, default_factory=DINT)
     FirstWarning: RAC_EVENT = field(init=False, default_factory=RAC_EVENT)
     FirstFault: RAC_EVENT = field(init=False, default_factory=RAC_EVENT)

@@ -5,55 +5,76 @@ from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
 from core.memory.helper import OutputType
 
+from datatypes.custom.datavariant import DataVariant
+
+
 @InstructionRegistry.register
 class ADD(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            aValue = self.getMemory(self.args[0], OutputType.PLC)
-            bValue = self.getMemory(self.args[1], OutputType.PLC)
+            aValue = self.getMemory(self.args[0])
+            bValue = self.getMemory(self.args[1])
+            dValue = self.getMemory(self.args[2])
 
-            self.setMemory(self.args[2], aValue + bValue)
+            if isinstance(dValue, DataVariant):
+                dValue.setValue(aValue + bValue)
 
 @InstructionRegistry.register
 class SUB(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            aValue = self.getMemory(self.args[0], OutputType.PLC)
-            bValue = self.getMemory(self.args[1], OutputType.PLC)
+            aValue = self.getMemory(self.args[0])
+            bValue = self.getMemory(self.args[1])
+            dValue = self.getMemory(self.args[2])
 
-            self.setMemory(self.args[2], aValue - bValue)
+            if isinstance(dValue, DataVariant):
+                dValue.setValue(aValue - bValue)
 
 @InstructionRegistry.register
 class DIV(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            aValue = self.getMemory(self.args[0], OutputType.PLC)
-            bValue = self.getMemory(self.args[1], OutputType.PLC)
+            aValue = self.getMemory(self.args[0])
+            bValue = self.getMemory(self.args[1])
+            dValue = self.getMemory(self.args[2])
 
-            self.setMemory(self.args[2], aValue / bValue)
+            if isinstance(dValue, DataVariant):
+                if bValue > 0:
+                    dValue.setValue(aValue / bValue)
+                else:
+                    pass
+                    # TODO: minor plc fault
 
 @InstructionRegistry.register
 class MUL(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            aValue = self.getMemory(self.args[0], OutputType.PLC)
-            bValue = self.getMemory(self.args[1], OutputType.PLC)
+            aValue = self.getMemory(self.args[0])
+            bValue = self.getMemory(self.args[1])
+            dValue = self.getMemory(self.args[2])
 
-            self.setMemory(self.args[2], aValue * bValue)
+            if isinstance(dValue, DataVariant):
+                dValue.setValue(aValue * bValue)
 
 @InstructionRegistry.register
 class MOD(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            aValue = self.getMemory(self.args[0], OutputType.PLC)
-            bValue = self.getMemory(self.args[1], OutputType.PLC)
+            aValue = self.getMemory(self.args[0])
+            bValue = self.getMemory(self.args[1])
+            dValue = self.getMemory(self.args[2])
 
-            self.setMemory(self.args[2], aValue % bValue)
+            if isinstance(dValue, DataVariant):
+                if aValue > 0 and bValue > 0:                
+                    dValue.setValue(aValue % bValue)
+                else:
+                    pass
+                    # TODO: minor plc fault
 
 @InstructionRegistry.register
 class SQR(Instruction):

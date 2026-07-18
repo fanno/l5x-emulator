@@ -6,10 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, REAL
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class DISCRETE_2STATE:
+class DISCRETE_2STATE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ProgCommand: BOOL = field(init=False, default_factory=BOOL)
     Oper0Req: BOOL = field(init=False, default_factory=BOOL)
@@ -54,7 +55,7 @@ class DISCRETE_2STATE:
 
 @DataTypeRegistry.register
 @dataclass
-class DISCRETE_3STATE:
+class DISCRETE_3STATE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Prog0Command: BOOL = field(init=False, default_factory=BOOL)
     Prog1Command: BOOL = field(init=False, default_factory=BOOL)

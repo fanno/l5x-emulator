@@ -15,3 +15,15 @@ class STException(EngineException):
         self.name = name
         self.st = st
         self.original_exception = e
+
+class MajorException(EngineException):
+    def __init__(self, _type:int, code:int):
+        super().__init__(f"Major Fault, Type {_type}, Code {code}")
+        self.type = _type
+        self.code = code
+
+class MajorException(EngineException):
+    def __init__(self, _type:int, code:int):
+        super().__init__(f"Minor Fault, Type {_type}, Code {code}")
+        self.type = _type
+        self.code = code

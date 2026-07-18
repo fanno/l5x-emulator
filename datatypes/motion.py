@@ -4,10 +4,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 from datatypes.custom.numbers import DINT, REAL, INT, SINT
 from datatypes.custom.bool import BOOL
 from datatypes.custom.string import STRING
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class MOTION_GROUP:
+class MOTION_GROUP(UDT):
     GroupStatus: DINT = field(init=False, default_factory=DINT)
     InhibStatus: BOOL = field(init=False, default_factory=BOOL)
     GroupSynced: BOOL = field(init=False, default_factory=BOOL)
@@ -52,7 +53,7 @@ class MOTION_GROUP:
 
 @DataTypeRegistry.register
 @dataclass
-class MOTION_INSTRUCTION:
+class MOTION_INSTRUCTION(UDT):
     FLAGS: DINT = field(init=False, default_factory=DINT)
     EN: BOOL = field(init=False, default_factory=BOOL)
     DN: BOOL = field(init=False, default_factory=BOOL)
@@ -72,7 +73,7 @@ class MOTION_INSTRUCTION:
 
 @DataTypeRegistry.register
 @dataclass
-class MOVING_AVERAGE:
+class MOVING_AVERAGE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     InFault: BOOL = field(init=False, default_factory=BOOL)
@@ -90,7 +91,7 @@ class MOVING_AVERAGE:
 
 @DataTypeRegistry.register
 @dataclass
-class MOVING_STD_DEV:
+class MOVING_STD_DEV(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     InFault: BOOL = field(init=False, default_factory=BOOL)

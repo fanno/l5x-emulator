@@ -7,45 +7,46 @@ from datatypes.custom.string import STRING
 
 from datatypes.custom.numbers import DINT, REAL, INT, SINT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class SEQ_BOOL:
+class SEQ_BOOL(UDT):
     Value: BOOL = field(init=False, default_factory=BOOL)
     InitialValue: BOOL = field(init=False, default_factory=BOOL)
     Valid: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class SEQ_DINT:
+class SEQ_DINT(UDT):
     Value: DINT = field(init=False, default_factory=DINT)
     InitialValue: DINT = field(init=False, default_factory=DINT)
     Valid: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class SEQ_INT:
+class SEQ_INT(UDT):
     Value: INT = field(init=False, default_factory=INT)
     InitialValue: INT = field(init=False, default_factory=INT)
     Valid: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class SEQ_REAL:
+class SEQ_REAL(UDT):
     Value: REAL = field(init=False, default_factory=REAL)
     InitialValue: REAL = field(init=False, default_factory=REAL)
     Valid: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class SEQ_SINT:
+class SEQ_SINT(UDT):
     Value: SINT = field(init=False, default_factory=SINT)
     InitialValue: SINT = field(init=False, default_factory=SINT)
     Valid: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class SEQ_STEP:
+class SEQ_STEP(UDT):
     Status: DINT = field(init=False, default_factory=DINT)
     X: BOOL = field(init=False, default_factory=BOOL)
     FS: BOOL = field(init=False, default_factory=BOOL)
@@ -103,14 +104,14 @@ class SEQ_STEP:
 
 @DataTypeRegistry.register
 @dataclass
-class SEQ_STRING:
+class SEQ_STRING(UDT):
     Value: STRING = field(init=False, default_factory=STRING)
     InitialValue: STRING = field(init=False, default_factory=STRING)
     Valid: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class SEQ_TRANSITION:
+class SEQ_TRANSITION(UDT):
     Status: BOOL = field(init=False, default_factory=BOOL)
     State: DINT = field(init=False, default_factory=DINT)
     Idle: BOOL = field(init=False, default_factory=BOOL)

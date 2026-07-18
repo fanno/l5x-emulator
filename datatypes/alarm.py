@@ -6,10 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, REAL, LINT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class ALARM:
+class ALARM(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     HHLimit: REAL = field(init=False, default_factory=REAL)
@@ -36,7 +37,7 @@ class ALARM:
     
 @DataTypeRegistry.register
 @dataclass
-class ALARM_ANALOG:
+class ALARM_ANALOG(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     InFault: BOOL = field(init=False, default_factory=BOOL)
@@ -162,7 +163,7 @@ class ALARM_ANALOG:
 
 @DataTypeRegistry.register
 @dataclass
-class ALARM_DIGITAL:
+class ALARM_DIGITAL(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: BOOL = field(init=False, default_factory=BOOL)
     InFault: BOOL = field(init=False, default_factory=BOOL)
@@ -217,7 +218,7 @@ class ALARM_DIGITAL:
 
 @DataTypeRegistry.register
 @dataclass
-class ALARM_SET_CONTROL:
+class ALARM_SET_CONTROL(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     LastState: BOOL = field(init=False, default_factory=BOOL)

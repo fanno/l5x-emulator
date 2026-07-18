@@ -1,3 +1,5 @@
+import copy
+
 from dataclasses import dataclass, field
 from typing import Any, Self
 from asyncua import ua
@@ -27,10 +29,16 @@ class DataVariant:
     
     @classmethod
     def toValue(self, value:Any) -> Any:
-        if isinstance(value, DataVariant):
-            value = value.getPLCValue()
-        return value
-    
+        if value is None:
+            default_type = getattr(self, '_py_variant', None)
+            if default_type is not None:
+                return default_type()
+            return None
+        else:
+            if isinstance(value, DataVariant):
+                value = value.getPLCValue()
+            return value
+
     def __repr__(self):
         return f"{self.__class__.__name__}({self.getPLCValue()})"
 
@@ -39,3 +47,9 @@ class DataVariant:
     
     def _clone_with(self, new_val: Any) -> Self:
         return self.__class__(new_val)
+
+    def copy(self) -> Self:
+        return copy.deepcopy(self)
+    
+    def __reset(self) -> Self:
+        self.setValue(None)

@@ -6,10 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, INT, REAL, SINT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class LIGHT_CURTAIN:
+class LIGHT_CURTAIN(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ResetType: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
@@ -29,7 +30,7 @@ class LIGHT_CURTAIN:
 
 @DataTypeRegistry.register
 @dataclass
-class MUTING_FOUR_SENSOR_BIDIR:
+class MUTING_FOUR_SENSOR_BIDIR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
     LightCurtain: BOOL = field(init=False, default_factory=BOOL)
@@ -59,7 +60,7 @@ class MUTING_FOUR_SENSOR_BIDIR:
 
 @DataTypeRegistry.register
 @dataclass
-class MUTING_TWO_SENSOR_ASYM:
+class MUTING_TWO_SENSOR_ASYM(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
     LightCurtain: BOOL = field(init=False, default_factory=BOOL)
@@ -90,7 +91,7 @@ class MUTING_TWO_SENSOR_ASYM:
 
 @DataTypeRegistry.register
 @dataclass
-class MUTING_TWO_SENSOR_SYM:
+class MUTING_TWO_SENSOR_SYM(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
     LightCurtain: BOOL = field(init=False, default_factory=BOOL)
@@ -119,7 +120,7 @@ class MUTING_TWO_SENSOR_SYM:
 
 @DataTypeRegistry.register
 @dataclass
-class REDUNDANT_INPUT:
+class REDUNDANT_INPUT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ResetType: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
@@ -135,7 +136,7 @@ class REDUNDANT_INPUT:
 
 @DataTypeRegistry.register
 @dataclass
-class REDUNDANT_OUTPUT:
+class REDUNDANT_OUTPUT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     FeedbackType: BOOL = field(init=False, default_factory=BOOL)
     Enable: BOOL = field(init=False, default_factory=BOOL)
@@ -151,7 +152,7 @@ class REDUNDANT_OUTPUT:
 
 @DataTypeRegistry.register
 @dataclass
-class SAFETY_LIMITED_POSITION:
+class SAFETY_LIMITED_POSITION(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
@@ -170,7 +171,7 @@ class SAFETY_LIMITED_POSITION:
 
 @DataTypeRegistry.register
 @dataclass
-class SAFETY_LIMITED_SPEED:
+class SAFETY_LIMITED_SPEED(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
@@ -188,7 +189,7 @@ class SAFETY_LIMITED_SPEED:
 
 @DataTypeRegistry.register
 @dataclass
-class SAFETY_FEEDBACK_INTERFACE:
+class SAFETY_FEEDBACK_INTERFACE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     TimeUnit: BOOL = field(init=False, default_factory=BOOL)
@@ -215,7 +216,7 @@ class SAFETY_FEEDBACK_INTERFACE:
 
 @DataTypeRegistry.register
 @dataclass
-class SAFETY_MAT:
+class SAFETY_MAT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
@@ -233,7 +234,7 @@ class SAFETY_MAT:
 
 @DataTypeRegistry.register
 @dataclass
-class SAFE_BREAK_CONTROL:
+class SAFE_BREAK_CONTROL(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
@@ -258,7 +259,7 @@ class SAFE_BREAK_CONTROL:
 
 @DataTypeRegistry.register
 @dataclass
-class SAFE_DIRECTION:
+class SAFE_DIRECTION(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
@@ -275,7 +276,7 @@ class SAFE_DIRECTION:
 
 @DataTypeRegistry.register
 @dataclass
-class SAFE_OPERATING_STOP:
+class SAFE_OPERATING_STOP(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
@@ -296,7 +297,7 @@ class SAFE_OPERATING_STOP:
 
 @DataTypeRegistry.register
 @dataclass
-class SAFE_STOP_1:
+class SAFE_STOP_1(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
@@ -319,7 +320,7 @@ class SAFE_STOP_1:
 
 @DataTypeRegistry.register
 @dataclass
-class SAFE_STOP_2:
+class SAFE_STOP_2(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
@@ -349,7 +350,7 @@ class SAFE_STOP_2:
 
 @DataTypeRegistry.register
 @dataclass
-class TWO_HAND_RUN_STATION:
+class TWO_HAND_RUN_STATION(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ActivePinType: BOOL = field(init=False, default_factory=BOOL)
     ActivePin: BOOL = field(init=False, default_factory=BOOL)

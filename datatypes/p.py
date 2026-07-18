@@ -8,10 +8,11 @@ from datatypes.custom.numbers import DINT, REAL, INT, SINT
 from datatypes.custom.bool import BOOL
 
 from datatypes.custom.string import STRING_32
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class P_ANALOG_FANOUT:
+class P_ANALOG_FANOUT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -153,7 +154,7 @@ class P_ANALOG_FANOUT:
 
 @DataTypeRegistry.register
 @dataclass
-class P_ANALOG_HART:
+class P_ANALOG_HART(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -212,7 +213,7 @@ class P_ANALOG_HART:
 
 @DataTypeRegistry.register
 @dataclass
-class P_ANALOG_INPUT:
+class P_ANALOG_INPUT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -443,7 +444,7 @@ class P_ANALOG_INPUT:
 
 @DataTypeRegistry.register
 @dataclass
-class P_ANALOG_INPUT_DUAL:
+class P_ANALOG_INPUT_DUAL(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -556,7 +557,7 @@ class P_ANALOG_INPUT_DUAL:
 
 @DataTypeRegistry.register
 @dataclass
-class P_ANALOG_INPUT_MULTI:
+class P_ANALOG_INPUT_MULTI(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -726,7 +727,7 @@ class P_ANALOG_INPUT_MULTI:
 
 @DataTypeRegistry.register
 @dataclass
-class P_ANALOG_OUTPUT:
+class P_ANALOG_OUTPUT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -938,7 +939,7 @@ class P_ANALOG_OUTPUT:
 
 @DataTypeRegistry.register
 @dataclass
-class P_BOOLEAN_LOGIC:
+class P_BOOLEAN_LOGIC(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -996,7 +997,7 @@ class P_BOOLEAN_LOGIC:
 
 @DataTypeRegistry.register
 @dataclass
-class P_COMMAND_SOURCE:
+class P_COMMAND_SOURCE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_OwnerCmd: DINT = field(init=False, default_factory=DINT)
@@ -1068,7 +1069,7 @@ class P_COMMAND_SOURCE:
 
 @DataTypeRegistry.register
 @dataclass
-class P_DEADBAND:
+class P_DEADBAND(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -1240,7 +1241,7 @@ class P_DEADBAND:
 
 @DataTypeRegistry.register
 @dataclass
-class P_DISCRETE_4STATE:
+class P_DISCRETE_4STATE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -1436,7 +1437,7 @@ class P_DISCRETE_4STATE:
 
 @DataTypeRegistry.register
 @dataclass
-class P_DISCRETE_INPUT:
+class P_DISCRETE_INPUT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -1502,7 +1503,7 @@ class P_DISCRETE_INPUT:
 
 @DataTypeRegistry.register
 @dataclass
-class P_DISCRETE_MIX_PROOF:
+class P_DISCRETE_MIX_PROOF(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -1752,7 +1753,7 @@ class P_DISCRETE_MIX_PROOF:
 
 @DataTypeRegistry.register
 @dataclass
-class P_DISCRETE_N_POSITION:
+class P_DISCRETE_N_POSITION(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -2022,7 +2023,7 @@ class P_DISCRETE_N_POSITION:
 
 @DataTypeRegistry.register
 @dataclass
-class P_DISCRETE_OUTPUT:
+class P_DISCRETE_OUTPUT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -2198,7 +2199,7 @@ class P_DISCRETE_OUTPUT:
 
 @DataTypeRegistry.register
 @dataclass
-class P_DOSING:
+class P_DOSING(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -2417,14 +2418,14 @@ class P_DOSING:
 
 @DataTypeRegistry.register
 @dataclass
-class P_HART_CODE_DESC_STATUS:
+class P_HART_CODE_DESC_STATUS(UDT):
     Code: DINT = field(init=False, default_factory=DINT)
     Desc: STRING_32 = field(init=False, default_factory=STRING_32)
     bSts: SINT = field(init=False, default_factory=SINT)
 
 @DataTypeRegistry.register
 @dataclass
-class P_HIGH_LOW_SELECT:
+class P_HIGH_LOW_SELECT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -2496,7 +2497,7 @@ class P_HIGH_LOW_SELECT:
 
 @DataTypeRegistry.register
 @dataclass
-class P_INTERLOCK:
+class P_INTERLOCK(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -2607,7 +2608,7 @@ class P_INTERLOCK:
 
 @DataTypeRegistry.register
 @dataclass
-class P_INTERLOCK_BANK_STATUS:
+class P_INTERLOCK_BANK_STATUS(UDT):
     Val_FirstUpIndex: INT = field(init=False, default_factory=INT)
     Val_FirstUpBankID: INT = field(init=False, default_factory=INT)
     Val_BankMap: DINT = field(init=False, default_factory=DINT)
@@ -2628,7 +2629,7 @@ class P_INTERLOCK_BANK_STATUS:
 
 @DataTypeRegistry.register
 @dataclass
-class P_LEAD_LAG_STANDBY:
+class P_LEAD_LAG_STANDBY(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -2803,7 +2804,7 @@ class P_LEAD_LAG_STANDBY:
 
 @DataTypeRegistry.register
 @dataclass
-class P_LEAD_LAG_STANDBY_MOTOR:
+class P_LEAD_LAG_STANDBY_MOTOR(UDT):
     Inp_OtherSel: DINT = field(init=False, default_factory=DINT)
     Cfg_Prio: DINT = field(init=False, default_factory=DINT)
     OSet_Pref: DINT = field(init=False, default_factory=DINT)
@@ -2822,7 +2823,7 @@ class P_LEAD_LAG_STANDBY_MOTOR:
 
 @DataTypeRegistry.register
 @dataclass
-class P_MOTOR_DISCRETE:
+class P_MOTOR_DISCRETE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -3025,7 +3026,7 @@ class P_MOTOR_DISCRETE:
 
 @DataTypeRegistry.register
 @dataclass
-class P_PREMISSIVE:
+class P_PREMISSIVE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -3074,7 +3075,7 @@ class P_PREMISSIVE:
 
 @DataTypeRegistry.register
 @dataclass
-class P_PID:
+class P_PID(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -3442,7 +3443,7 @@ class P_PID:
 
 @DataTypeRegistry.register
 @dataclass
-class P_PRESS_TEMP_COMPENSATED:
+class P_PRESS_TEMP_COMPENSATED(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -3468,7 +3469,7 @@ class P_PRESS_TEMP_COMPENSATED:
 
 @DataTypeRegistry.register
 @dataclass
-class P_RESTART_INHIBIT:
+class P_RESTART_INHIBIT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_Stopped: BOOL = field(init=False, default_factory=BOOL)
@@ -3493,7 +3494,7 @@ class P_RESTART_INHIBIT:
 
 @DataTypeRegistry.register
 @dataclass
-class P_RUN_TIME:
+class P_RUN_TIME(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -3510,14 +3511,14 @@ class P_RUN_TIME:
 
 @DataTypeRegistry.register
 @dataclass
-class P_STRAPPINT_TABLE_ROW:
+class P_STRAPPINT_TABLE_ROW(UDT):
     Major: REAL = field(init=False, default_factory=REAL)
     Minor: REAL = field(init=False, default_factory=REAL)
     Volume: REAL = field(init=False, default_factory=REAL)
 
 @DataTypeRegistry.register
 @dataclass
-class P_TANK_STRAPPING_TABLE:
+class P_TANK_STRAPPING_TABLE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -3548,7 +3549,7 @@ class P_TANK_STRAPPING_TABLE:
 
 @DataTypeRegistry.register
 @dataclass
-class P_VALVE_DISCRETE:
+class P_VALVE_DISCRETE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -3772,7 +3773,7 @@ class P_VALVE_DISCRETE:
 
 @DataTypeRegistry.register
 @dataclass
-class P_VALVE_STATISTICS:
+class P_VALVE_STATISTICS(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)
@@ -3825,7 +3826,7 @@ class P_VALVE_STATISTICS:
 
 @DataTypeRegistry.register
 @dataclass
-class P_VARIABLE_SPEED_DRIVE:
+class P_VARIABLE_SPEED_DRIVE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Inp_InitializeReq: BOOL = field(init=False, default_factory=BOOL)

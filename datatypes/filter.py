@@ -6,10 +6,11 @@ from dataclasses import dataclass, field
 
 from datatypes.custom.numbers import DINT, REAL
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class FILTER_HIGH_PASS:
+class FILTER_HIGH_PASS(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)
@@ -34,7 +35,7 @@ class FILTER_HIGH_PASS:
 	
 @DataTypeRegistry.register
 @dataclass
-class FILTER_LOW_PASS:
+class FILTER_LOW_PASS(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)
@@ -59,7 +60,7 @@ class FILTER_LOW_PASS:
 
 @DataTypeRegistry.register
 @dataclass
-class FILTER_NOTCH:
+class FILTER_NOTCH(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)
@@ -86,7 +87,7 @@ class FILTER_NOTCH:
 
 @DataTypeRegistry.register
 @dataclass
-class FIVE_POS_MODE_SELECTOR:
+class FIVE_POS_MODE_SELECTOR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Input1: BOOL = field(init=False, default_factory=BOOL)
     Input2: BOOL = field(init=False, default_factory=BOOL)

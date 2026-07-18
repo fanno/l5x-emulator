@@ -6,10 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, REAL
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_BIT_DIELD_DISTRIBUTE:
+class FBD_BIT_DIELD_DISTRIBUTE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Source: DINT = field(init=False, default_factory=DINT)
     SourceBit: DINT = field(init=False, default_factory=DINT)
@@ -21,7 +22,7 @@ class FBD_BIT_DIELD_DISTRIBUTE:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_BOOLEAN_AND:
+class FBD_BOOLEAN_AND(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In1: BOOL = field(init=False, default_factory=BOOL)
     In2: BOOL = field(init=False, default_factory=BOOL)
@@ -36,7 +37,7 @@ class FBD_BOOLEAN_AND:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_NOT:
+class FBD_NOT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
@@ -44,7 +45,7 @@ class FBD_NOT:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_BOOLEAN_OR:
+class FBD_BOOLEAN_OR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In1: BOOL = field(init=False, default_factory=BOOL)
     In2: BOOL = field(init=False, default_factory=BOOL)
@@ -59,7 +60,7 @@ class FBD_BOOLEAN_OR:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_BOOLEAN_XOR:
+class FBD_BOOLEAN_XOR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In1: BOOL = field(init=False, default_factory=BOOL)
     In2: BOOL = field(init=False, default_factory=BOOL)
@@ -68,7 +69,7 @@ class FBD_BOOLEAN_XOR:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_BOOLEAN_COMPARE:
+class FBD_BOOLEAN_COMPARE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     SourceA: BOOL = field(init=False, default_factory=BOOL)
     SourceB: BOOL = field(init=False, default_factory=BOOL)
@@ -77,7 +78,7 @@ class FBD_BOOLEAN_COMPARE:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_BOOLEAN_CONVERT:
+class FBD_BOOLEAN_CONVERT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Source: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
@@ -85,7 +86,7 @@ class FBD_BOOLEAN_CONVERT:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_COUNTER:
+class FBD_COUNTER(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     CUEnable: BOOL = field(init=False, default_factory=BOOL)
     CDEnable: BOOL = field(init=False, default_factory=BOOL)
@@ -101,7 +102,7 @@ class FBD_COUNTER:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_LIMIT:
+class FBD_LIMIT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     LowLimit: REAL = field(init=False, default_factory=REAL)
     Test: REAL = field(init=False, default_factory=REAL)
@@ -111,7 +112,7 @@ class FBD_LIMIT:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_LOGICAL:
+class FBD_LOGICAL(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     SourceA: DINT = field(init=False, default_factory=DINT)
     SourceB: DINT = field(init=False, default_factory=DINT)
@@ -120,7 +121,7 @@ class FBD_LOGICAL:
     
 @DataTypeRegistry.register
 @dataclass
-class FBD_MASKED_MOVE:
+class FBD_MASKED_MOVE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Source: DINT = field(init=False, default_factory=DINT)
     Mask: DINT = field(init=False, default_factory=DINT)
@@ -130,7 +131,7 @@ class FBD_MASKED_MOVE:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_MASKED_EQUAL:
+class FBD_MASKED_EQUAL(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Source: DINT = field(init=False, default_factory=DINT)
     Mask: DINT = field(init=False, default_factory=DINT)
@@ -140,7 +141,7 @@ class FBD_MASKED_EQUAL:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_MATH:
+class FBD_MATH(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     SourceA: REAL = field(init=False, default_factory=REAL)
     SourceB: REAL = field(init=False, default_factory=REAL)
@@ -149,7 +150,7 @@ class FBD_MATH:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_MATH_ADVANCED:
+class FBD_MATH_ADVANCED(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Source: REAL = field(init=False, default_factory=REAL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
@@ -157,7 +158,7 @@ class FBD_MATH_ADVANCED:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_ONESHOT:
+class FBD_ONESHOT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     InputBit: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
@@ -165,7 +166,7 @@ class FBD_ONESHOT:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_TIMER:
+class FBD_TIMER(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     TimerEnable: BOOL = field(init=False, default_factory=BOOL)
     PRE: DINT = field(init=False, default_factory=DINT)
@@ -181,7 +182,7 @@ class FBD_TIMER:
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_TRUNCATE:
+class FBD_TRUNCATE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Source: REAL = field(init=False, default_factory=REAL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)

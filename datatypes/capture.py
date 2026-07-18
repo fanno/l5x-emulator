@@ -6,10 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import REAL
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class MAXIMUM_CAPTURE:
+class MAXIMUM_CAPTURE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Reset: BOOL = field(init=False, default_factory=BOOL)
@@ -19,7 +20,7 @@ class MAXIMUM_CAPTURE:
 
 @DataTypeRegistry.register
 @dataclass
-class MINIMUM_CAPTURE:
+class MINIMUM_CAPTURE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     Reset: BOOL = field(init=False, default_factory=BOOL)

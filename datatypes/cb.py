@@ -6,10 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class CB_CONTINUOUS_MODE:
+class CB_CONTINUOUS_MODE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     AckType: BOOL = field(init=False, default_factory=BOOL)
     TakeoverMode: BOOL = field(init=False, default_factory=BOOL)
@@ -31,7 +32,7 @@ class CB_CONTINUOUS_MODE:
 
 @DataTypeRegistry.register
 @dataclass
-class CB_CRANKSHAFT_POS_MONITOR:
+class CB_CRANKSHAFT_POS_MONITOR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     CamProfile: BOOL = field(init=False, default_factory=BOOL)
     Enable: BOOL = field(init=False, default_factory=BOOL)
@@ -53,7 +54,7 @@ class CB_CRANKSHAFT_POS_MONITOR:
 
 @DataTypeRegistry.register
 @dataclass
-class CB_INCH_MODE:
+class CB_INCH_MODE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     AckType: BOOL = field(init=False, default_factory=BOOL)
     Enable: BOOL = field(init=False, default_factory=BOOL)
@@ -71,7 +72,7 @@ class CB_INCH_MODE:
 
 @DataTypeRegistry.register
 @dataclass
-class CB_SINGLE_STROKE_MODE:
+class CB_SINGLE_STROKE_MODE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     AckType: BOOL = field(init=False, default_factory=BOOL)
     TakeoverMode: BOOL = field(init=False, default_factory=BOOL)

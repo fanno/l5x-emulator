@@ -6,10 +6,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class SFC_ACTION:
+class SFC_ACTION(UDT):
     LEN: DINT = field(init=False, default_factory=DINT)
     POS: DINT = field(init=False, default_factory=DINT)
     ERROR: DINT = field(init=False, default_factory=DINT)
@@ -24,7 +25,7 @@ class SFC_ACTION:
 
 @DataTypeRegistry.register
 @dataclass
-class SFC_STEP:
+class SFC_STEP(UDT):
     Status: DINT = field(init=False, default_factory=DINT)
     X: BOOL = field(init=False, default_factory=BOOL)
     FS: BOOL = field(init=False, default_factory=BOOL)
@@ -46,7 +47,7 @@ class SFC_STEP:
 
 @DataTypeRegistry.register
 @dataclass
-class SFC_STOP:
+class SFC_STOP(UDT):
     Status: DINT = field(init=False, default_factory=DINT)
     X: BOOL = field(init=False, default_factory=BOOL)
     Reset: BOOL = field(init=False, default_factory=BOOL)

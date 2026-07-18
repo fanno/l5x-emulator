@@ -7,6 +7,8 @@ from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
 from core.memory.helper import OutputType
 
+from datatypes.misc import CONTROL
+
 def dint_to_bools(value, count):
     return [(value >> i) & 1 == 1 for i in range(count)]
 
@@ -21,40 +23,48 @@ def bools_to_dint(bools):
 class FAL(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        src = self.getMemory(self.args[0], OutputType.PLC)
-        dst = self.getMemory(self.args[1], OutputType.PLC)
-        operation = self.getMemory(self.args[2], OutputType.PLC)
-        length = self.getMemory(self.args[3], OutputType.PLC)
+        if ctx.RungStatus:
+            control:CONTROL = self.getMemory(self.args[0])
+            mode = self.args[1]
+            '''
+            dst = self.getMemory(self.args[2])
+            operation = self.getMemory(self.args[3], OutputType.PLC)
+            length = self.getMemory(self.args[4], OutputType.PLC)
 
-        if not isinstance(src, list) or not isinstance(dst, list):
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            if not isinstance(src, list) or not isinstance(dst, list):
+                raise NotImplementedError(f"{__class__} not implemented yet")
 
-        if not callable(operation):
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            if not callable(operation):
+                raise NotImplementedError(f"{__class__} not implemented yet")
 
-        for i in range(min(length, len(src))):
-            dst[i] = operation(src[i])
+            for i in range(min(length, len(src))):
+                dst[i] = operation(src[i])
 
-        self.setMemory(self.args[1], dst)
+            self.setMemory(self.args[1], dst)
+            '''
 
 @InstructionRegistry.register
 class FSC(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        array = self.getMemory(self.args[0], OutputType.PLC)
-        target = self.getMemory(self.args[1], OutputType.PLC)
-        dest = self.args[2]
+        if ctx.RungStatus:
+            '''
+            control:CONTROL = self.getMemory(self.args[0])
+            array = self.getMemory(self.args[1], OutputType.PLC)
+            target = self.getMemory(self.args[2], OutputType.PLC)
+            dest = self.args[3]
 
-        if not isinstance(array, list):
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            if not isinstance(array, list):
+                raise NotImplementedError(f"{__class__} not implemented yet")
 
-        index = -1
-        for i, val in enumerate(array):
-            if val == target:
-                index = i
-                break
+            index = -1
+            for i, val in enumerate(array):
+                if val == target:
+                    index = i
+                    break
 
-        self.setMemory(dest, index)
+            self.setMemory(dest, index)
+            '''
 
 @InstructionRegistry.register
 class COP(Instruction):
@@ -122,13 +132,14 @@ class FLL(Instruction):
 class AVE(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        values = self.getMemory(self.args[0], OutputType.PLC)
+        if ctx.RungStatus:
+            values = self.getMemory(self.args[0], OutputType.PLC)
 
-        if not isinstance(values, list) or not values:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            if not isinstance(values, list) or not values:
+                raise NotImplementedError(f"{__class__} not implemented yet")
 
-        result = sum(values) / len(values)
-        self.setMemory(self.args[1], float(result))
+            result = sum(values) / len(values)
+            self.setMemory(self.args[1], result)
 
 @InstructionRegistry.register
 class SRT(Instruction):
