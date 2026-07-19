@@ -6,7 +6,7 @@ from core.registry.instructionregistry import InstructionRegistry
 from core.memory.helper import OutputType
 
 from datatypes.custom.datavariant import DataVariant
-from engine.errors import MinorException
+from engine.errors import MinorFault
 
 
 @InstructionRegistry.register
@@ -46,7 +46,7 @@ class DIV(Instruction):
                 if bValue > 0:
                     dValue.setValue(aValue / bValue)
                 else:
-                    raise MinorException(4, 4)
+                    raise MinorFault(4, 4)
 
 @InstructionRegistry.register
 class MUL(Instruction):
@@ -73,7 +73,7 @@ class MOD(Instruction):
                 if aValue > 0 and bValue > 0:
                     dValue.setValue(aValue % bValue)
                 else:
-                    raise MinorException(4, 4)
+                    raise MinorFault(4, 4)
 
 @InstructionRegistry.register
 class SQR(Instruction):

@@ -7,6 +7,10 @@ from core.registry.instructionregistry import InstructionRegistry
 from core.memory.helper import OutputType
 from instructions.helper import _AND, _OR, _XOR, _NOT
 
+from datatypes.custom.datavariant import DataVariant
+
+from datatypes.custom.udt import Resettable
+
 @InstructionRegistry.register
 class MOV(Instruction):
 
@@ -20,22 +24,24 @@ class MVM(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            source = self.args[0]
-            mask = self.args[1]
-            dest = self.args[2]
+            source = self.getMemory(self.args[0])
+            mask = self.getMemory(self.args[1])
+            dest = self.getMemory(self.args[2])
 
-            sourceValue = self.getMemory(source)
-            maskValue = self.getMemory(mask)
+            if isinstance(source, DataVariant):
+                source = source.getPLCValue()
+            if isinstance(mask, DataVariant):
+                mask = mask.getPLCValue()
+            if isinstance(dest, DataVariant):
+                destValue = dest.getPLCValue()
 
-            destValue = self.getMemory(dest)
-
-            bit_width=32 ## TODO:set depending on mask length or source or dest length ?
+            bit_width=64 ## TODO:set depending on mask length or source or dest length ?
             
             full_mask = (1 << bit_width) - 1
-            maskValue &= full_mask
-            destValue = (destValue & ~maskValue) | (sourceValue & maskValue)
+            mask &= full_mask
+            destValue = (destValue & ~mask) | (source & mask)
 
-            self.setMemory(dest, destValue)
+            dest.setValue(destValue)
 
 @InstructionRegistry.register
 class AND(Instruction):
@@ -45,6 +51,11 @@ class AND(Instruction):
             sourceA = self.getMemory(self.args[0])
             sourceB = self.getMemory(self.args[1])
             dest = self.getMemory(self.args[2])
+
+            if isinstance(sourceA, DataVariant):
+                sourceA = sourceA.getPLCValue()
+            if isinstance(sourceB, DataVariant):
+                sourceB = sourceB.getPLCValue()
 
             destValue = _AND(sourceA, sourceB, 32) # should be 64 ?
 
@@ -59,6 +70,11 @@ class OR(Instruction):
             sourceB = self.getMemory(self.args[1])
             dest = self.getMemory(self.args[2])
 
+            if isinstance(sourceA, DataVariant):
+                sourceA = sourceA.getPLCValue()
+            if isinstance(sourceB, DataVariant):
+                sourceB = sourceB.getPLCValue()
+
             destValue = _OR(sourceA, sourceB, 32) # should be 64 ?
 
             dest.setValue(destValue)
@@ -72,6 +88,11 @@ class XOR(Instruction):
             sourceB = self.getMemory(self.args[1])
             dest = self.getMemory(self.args[2])
 
+            if isinstance(sourceA, DataVariant):
+                sourceA = sourceA.getPLCValue()
+            if isinstance(sourceB, DataVariant):
+                sourceB = sourceB.getPLCValue()
+
             destValue = _XOR(sourceA, sourceB, 32) # should be 64 ?
 
             dest.setValue(destValue)
@@ -84,7 +105,10 @@ class NOT(Instruction):
             sourceA = self.getMemory(self.args[0])
             dest = self.getMemory(self.args[1])
 
-            destValue = _NOT(sourceA, 32) # should be 64?
+            if isinstance(sourceA, DataVariant):
+                sourceA = sourceA.getPLCValue()
+
+            destValue = _NOT(sourceA, 64) # should be 64?
             ## TODO length depend on data size in dest ?
 
             dest.setValue(destValue)
@@ -103,7 +127,7 @@ class SWPB(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            sourceA = self.getMemory(self.args[0])
+            sourceA = self.getMemory(self.args[0]).getPLCValue()
             orderMode = self.args[1]
             dest = self.getMemory(self.args[2])
 
@@ -113,7 +137,7 @@ class SWPB(Instruction):
                 raise ValueError("SWPB supports only INT (16) or DINT (32)")
 
             byte_count = width // 8
-            bytes_ = _to_bytes(sourceA.getPLCValue(), byte_count)
+            bytes_ = _to_bytes(sourceA, byte_count)
 
             match orderMode:
                 case "REVERSE":
@@ -137,56 +161,43 @@ class CLR(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            dest = self.getMemory(self.args[2])
-            dest.__reset()
+            dest = self.getMemory(self.args[0])
+            if isinstance(dest, Resettable):
+                dest._reset()
 
 @InstructionRegistry.register
 class BTD(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            source = self.args[0]
-            sourceBit = self.args[1]
-            dest = self.args[2]
-            destBit = self.args[3]
-            length = self.args[4]
+            source = self.getMemory(self.args[0])
+            sourceBit = self.getMemory(self.args[1])
+            dest = self.getMemory(self.args[2])
+            destBit = self.getMemory(self.args[3])
+            length = self.getMemory(self.args[4])
 
-            sourceRef:Node = self.getMemory(source, OutputType.Raw)
-            sourceBitValue = self.getMemory(sourceBit)
-            destRef:Node = self.getMemory(dest, OutputType.Raw)
-            destBitValue = self.getMemory(destBit)
-            lengthValue = self.getMemory(length)
+            if isinstance(sourceBit, DataVariant):
+                sourceBit = sourceBit.getPLCValue()
+            if isinstance(destBit, DataVariant):
+                destBit = destBit.getPLCValue()            
+            if isinstance(length, DataVariant):
+                length = length.getPLCValue()
+            if isinstance(source, DataVariant):
+                sourceVal = source.getPLCValue()
+            destVal = dest
+            if isinstance(destVal, DataVariant):
+                destVal = destVal.getPLCValue()
 
-            raise NotImplementedError(f"{__class__} not implemented yet")
-            '''
-            if isinstance(sourceRef, Node) and isinstance(destRef, Node):
-                sourceRefDT:ua.VariantType = await sourceRef.read_data_type_as_variant_type()
-                destRefDT:ua.VariantType = await destRef.read_data_type_as_variant_type()
+            for i in range(length):
+                dest_clear_mask = ~(1 << (destBit + i))
+                destVal = destVal & dest_clear_mask
+                
+                src_bit_val = (sourceVal >> (sourceBit + i)) & 1
+                
+                if src_bit_val:
+                    destVal = destVal | (1 << (destBit + i))
 
-                if sourceRefDT is not None and destRefDT is not None:
-                    destValue = await destRef.read_value()
-                    
-                    width:int = 32 #TODO from datatype
-
-                    if not (0 <= sourceBitValue < width):
-                        raise ValueError("source_bit out of range")
-                    if not (0 <= destBitValue < width):
-                        raise ValueError("dest_bit out of range")
-                    if lengthValue <= 0:
-                        return destValue
-                    if sourceBitValue + length > width:
-                        raise ValueError("source range exceeds width")
-                    if destBitValue + length > width:
-                        raise ValueError("dest range exceeds width")
-
-                    mask = ((1 << length) - 1) << destBitValue
-
-                    bits = ((source >> sourceBitValue) & ((1 << length) - 1)) << destBitValue
-
-                    destValue = (destValue & ~mask) | bits
-
-                    self.setMemory(dest, destValue)
-            '''
+            dest.setValue(destVal)
 
 @InstructionRegistry.register
 class MVMT(Instruction):

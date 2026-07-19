@@ -42,7 +42,7 @@ from opcua.mapping import Mapping
 from engine.program import Program
 from engine.task import Task
 
-from engine.errors import MajorException
+from engine.errors import MajorFault
 from core.emulatorfault import EmulatorFault
 
 from datatypes.custom.module import MODULE
@@ -202,7 +202,7 @@ class Emulator(EventListener, threading.Thread):
 
                     if difTime < scanDelayTime:
                         await asyncio.sleep(scanDelayTime-difTime)
-            except MajorException as e:
+            except MajorFault as e:
                 EmulatorFault.setMajorFault(e)
             except Exception as e:
                 logging.exception(e)

@@ -3,7 +3,7 @@ from __future__ import annotations
 import engine.context
 from engine.instruction import Instruction
 
-from engine.errors import MinorException
+from engine.errors import MinorFault
 from core.emulatorfault import EmulatorFault
 
 def parse(text:str) -> Series:
@@ -111,10 +111,11 @@ def instruction(token):
     if rest.endswith(")"):
         rest = rest[:-1]
 
-
     args = [arg.strip() for arg in rest.split(",") if arg.strip()]
+    args = [arg for arg in args if arg != "?"]
 
     return name.strip(), args
+
 '''
 class Node:
     nodes:list[Node]
@@ -143,7 +144,7 @@ class InstructionNode:
     async def eval(self, ctx:"engine.context.ExecutionContext") -> None:
         try:
             await self.instance.execute(ctx)
-        except MinorException as e:
+        except MinorFault as e:
             EmulatorFault.prepend(e)
 
     def __str__(self):

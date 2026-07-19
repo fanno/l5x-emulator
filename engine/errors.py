@@ -20,13 +20,13 @@ class STException(EngineException):
         self.st = st
         self.original_exception = e
 
-class MajorException(EngineException):
+class MajorFault(EngineException):
     def __init__(self, _type:int, code:int):
         super().__init__(f"Major Fault, Type {_type}, Code {code}")
         self.type = _type
         self.code = code
 
-class MinorException(EngineException):
+class MinorFault(EngineException):
     def __init__(self, _type:int, code:int):
         super().__init__(f"Minor Fault, Type {_type}, Code {code}")
         self.type = _type

@@ -1,28 +1,28 @@
 from collections import deque
 
-from engine.errors import MajorException, MinorException
+from engine.errors import MajorFault, MinorFault
 
 class EmulatorFault:
-    MajorFault:MajorException = None
-    MinorFault = deque(maxlen=100)
+    Major:MajorFault = None
+    Minor = deque(maxlen=100)
 
     @staticmethod
-    def prepend(fault:MinorException) -> None:
-        EmulatorFault.MinorFault.appendleft(fault)
+    def prepend(fault:MinorFault) -> None:
+        EmulatorFault.Minor.appendleft(fault)
 
     @staticmethod
-    def getMinorFault() -> list[MinorException]:
-        return list(EmulatorFault.MinorFault)
+    def getMinorFault() -> list[MinorFault]:
+        return list(EmulatorFault.Minor)
 
     @staticmethod
-    def getMajorFault() -> None|MajorException:
-        return EmulatorFault.MajorFault
+    def getMajorFault() -> None|MajorFault:
+        return EmulatorFault.Major
     
     @staticmethod
-    def setMajorFault(MajorFault:MajorException) -> None:
-        if EmulatorFault.MajorFault is None:
-            EmulatorFault.MajorFault = MajorFault
+    def setMajorFault(MajorFault:MajorFault) -> None:
+        if EmulatorFault.Major is None:
+            EmulatorFault.Major = MajorFault
 
     @staticmethod
     def hasMajorFault() -> bool:
-        return EmulatorFault.MajorFault is not None
+        return EmulatorFault.Major is not None

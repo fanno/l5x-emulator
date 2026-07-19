@@ -1,6 +1,6 @@
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
-from engine.errors import MajorException
+from engine.errors import MajorFault
 
 from core.registry.instructionregistry import InstructionRegistry
 from core.memory.helper import OutputType
@@ -69,7 +69,7 @@ class FFL(Instruction):
                         fifo:Array[DataVariant] = self.getMemory(self.args[1])
 
                         if len(fifo) >= control.POS:
-                            raise MajorException(4, 20)
+                            raise MajorFault(4, 20)
                         else:
                             fifo[control.POS] = source
         else:
@@ -112,7 +112,7 @@ class FFU(Instruction):
 
                     if control.POS < 1:
                         if isinstance(dest, Resettable):
-                            dest.__reset()
+                            dest._reset()
                     else:
                         if control.POS > control.LEN:
                             control.POS.setValue(control.LEN.getPLCValue())
@@ -120,14 +120,14 @@ class FFU(Instruction):
                         control.POS -= 1
 
                         if len(fifo) < control.LEN:
-                            raise MajorException(4, 20)
+                            raise MajorFault(4, 20)
                         else:
                             dest.setValue(fifo[0].copy())
 
                             for i in range(control.POS.getPLCValue(), control.LEN + 1):
                                 fifo[i] = fifo[i+1]
                             if isinstance(fifo[control.LEN - 1], Resettable):
-                                fifo[control.LEN - 1].__reset()
+                                fifo[control.LEN - 1]._reset()
                 else:
                     if control.POS == 0:
                         control.EM.setValue(True)
@@ -178,7 +178,7 @@ class LFL(Instruction):
                         fifo:Array[DataVariant] = self.getMemory(self.args[1])
 
                         if len(fifo) >= control.POS:
-                            raise MajorException(4, 20)
+                            raise MajorFault(4, 20)
                         else:
                             fifo[control.POS] = source
         else:
@@ -221,18 +221,18 @@ class LFU(Instruction):
 
                     if control.POS < 1:
                         if isinstance(dest, Resettable):
-                            dest.__reset()
+                            dest._reset()
                     else:
                         if control.POS > control.LEN:
                             control.POS.setValue(control.LEN.getPLCValue())
 
                         if len(fifo) < control.LEN:
-                            raise MajorException(4, 20)
+                            raise MajorFault(4, 20)
                         else:
                             dest.setValue(fifo[control.POS].copy())
 
                             if isinstance(fifo[control.POS], Resettable):
-                                fifo[control.POS].__reset()
+                                fifo[control.POS]._reset()
 
                         control.POS -= 1
                 else:

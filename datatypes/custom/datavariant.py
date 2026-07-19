@@ -51,5 +51,5 @@ class DataVariant:
     def copy(self) -> Self:
         return copy.deepcopy(self)
     
-    def __reset(self) -> Self:
+    def _reset(self) -> Self:
         self.setValue(None)

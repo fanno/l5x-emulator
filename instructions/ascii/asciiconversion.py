@@ -3,70 +3,96 @@ from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
 from core.memory.helper import OutputType
 
+from datatypes.custom.numbers import INTIGER, REAL
+from datatypes.custom.string import STRING
+from datatypes.custom.datavariant import DataVariant
+
 @InstructionRegistry.register
 class DTOS(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
+            source = self.getMemory(self.args[0])
+            dest = self.getMemory(self.args[1])
+            
+            sourceValue = source
+            if isinstance(sourceValue, DataVariant):
+                sourceValue = sourceValue.getPLCValue()
 
-            if isinstance(value, int):
-                self.setMemory(self.args[1], str(value))
-            elif isinstance(value, float):
-                self.setMemory(self.args[1], format(value, 'f').rstrip('0').rstrip('.'))
-            else:
-                raise NotImplementedError(f"{__class__} not implemented yet")
+            value = ''
+            if isinstance(source, INTIGER):
+                value = str(sourceValue)
+            elif isinstance(source, REAL):
+                value = format(sourceValue, 'f').rstrip('0').rstrip('.')
+
+            dest.setValue(value)
 
 @InstructionRegistry.register
 class STOD(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
-            destValue = self.getMemory(self.args[1], OutputType.PLC)
+            source = self.getMemory(self.args[0])
+            dest = self.getMemory(self.args[1])
+            
+            sourceValue = source
+            if isinstance(sourceValue, DataVariant):
+                sourceValue = sourceValue.getPLCValue()
 
-            if not isinstance(value, str):
-                raise TypeError("STOD source must be a string")
-
-            if isinstance(destValue, int):
-                self.setMemory(self.args[1], int(value))
-            elif isinstance(destValue, float):
-                self.setMemory(self.args[1], float(value))
-            else:
-                raise NotImplementedError(f"{__class__} not implemented yet")
+            dest.setValue(sourceValue)
 
 @InstructionRegistry.register
 class RTOS(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
+            source = self.getMemory(self.args[0])
+            dest = self.getMemory(self.args[1])
+            
+            sourceValue = source
+            if isinstance(sourceValue, DataVariant):
+                sourceValue = sourceValue.getPLCValue()
 
-            if isinstance(value, float):
-                self.setMemory(self.args[1], format(value, 'f').rstrip('0').rstrip('.'))
-            else:
-                raise NotImplementedError(f"{__class__} not implemented yet")
+            dest.setValue(format(sourceValue, 'f').rstrip('0').rstrip('.'))
+            
+@InstructionRegistry.register
+class STOR(Instruction):
+
+    async def execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            source = self.getMemory(self.args[0])
+            dest = self.getMemory(self.args[1])
+            
+            sourceValue = source
+            if isinstance(sourceValue, DataVariant):
+                sourceValue = sourceValue.getPLCValue()
+
+            dest.setValue(sourceValue)
+
 
 @InstructionRegistry.register
 class UPPER(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
+            source = self.getMemory(self.args[0])
+            dest = self.getMemory(self.args[1])
+            
+            sourceValue = source
+            if isinstance(sourceValue, DataVariant):
+                sourceValue = sourceValue.getPLCValue()
 
-            if isinstance(value, str):
-                self.setMemory(self.args[1], value.upper())
-            else:
-                raise NotImplementedError(f"{__class__} not implemented yet")
+            dest.setValue(sourceValue.upper())
 
 @InstructionRegistry.register
 class LOWER(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
+            source = self.getMemory(self.args[0])
+            dest = self.getMemory(self.args[1])
+            
+            sourceValue = source
+            if isinstance(sourceValue, DataVariant):
+                sourceValue = sourceValue.getPLCValue()
 
-            if isinstance(value, str):
-                self.setMemory(self.args[1], value.lower())
-            else:
-                raise NotImplementedError(f"{__class__} not implemented yet")
+            dest.setValue(sourceValue.lower())

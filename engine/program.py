@@ -27,7 +27,7 @@ from datatypes.custom.numbers import SINT, DINT
 from datatypes.custom.array import Array
 
 from engine.errors import STException
-from engine.errors import MajorException
+from engine.errors import MajorFault
 
 @dataclass
 class Program():
@@ -81,7 +81,7 @@ class Program():
         #except STException as e:
         #    logging.exception(e)
         #    logging.exception(e.with_traceback(e.original_exception.__traceback__))
-        except MajorException as e:
+        except MajorFault as e:
             raise
         except Exception as e:
             logging.exception(e)
