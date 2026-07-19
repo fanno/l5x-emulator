@@ -43,7 +43,7 @@ from engine.program import Program
 from engine.task import Task
 
 from engine.errors import MajorException
-
+from core.emulatorfault import EmulatorFault
 
 from datatypes.custom.module import MODULE
 from datatypes.custom.string import STRING
@@ -105,7 +105,6 @@ class Emulator(EventListener, threading.Thread):
         self.mapping = Mapping()
         self._server = Server()
         self.safetyMap = SafetyMap()
-        self.MajorFault = None
 
         self._loop = None
         self._throttle = 4
@@ -170,7 +169,7 @@ class Emulator(EventListener, threading.Thread):
 
         while self._is_running:
             try:
-                if self.MajorFault is None:
+                if not EmulatorFault.hasMajorFault():
                     startTime = time.monotonic()
                     await self.mainloop()
                     scanCount += 1
@@ -204,7 +203,7 @@ class Emulator(EventListener, threading.Thread):
                     if difTime < scanDelayTime:
                         await asyncio.sleep(scanDelayTime-difTime)
             except MajorException as e:
-                self.MajorFault = e
+                EmulatorFault.setMajorFault(e)
             except Exception as e:
                 logging.exception(e)
                 break

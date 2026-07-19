@@ -11,3 +11,6 @@ class UDT:
             current = getattr(self, f.name, None)
             if isinstance(current, Resettable):
                 current.__reset()
+
+    def setValue(self):
+        raise NotImplementedError("UDT setValue")

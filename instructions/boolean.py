@@ -3,19 +3,21 @@ from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
 from core.memory.helper import OutputType
 
+from datatypes.custom.datavariant import DataVariant
+
 @InstructionRegistry.register
 class XIC(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            ctx.RungStatus &= bool(self.getMemory(self.args[0], OutputType.PLC))
+            ctx.RungStatus &= bool(self.getMemory(self.args[0]))
 
 @InstructionRegistry.register
 class XIO(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            ctx.RungStatus &= not bool(self.getMemory(self.args[0], OutputType.PLC))
+            ctx.RungStatus &= not bool(self.getMemory(self.args[0]))
 
 @InstructionRegistry.register
 class OTE(Instruction):
@@ -41,8 +43,9 @@ class OTU(Instruction):
 class ONS(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        ons = self.getMemory(self.args[0], OutputType.PLC)
-        self.setMemory(self.args[0], ctx.RungStatus)
+        ons = self.getMemory(self.args[0])
+
+        ons.setValue(ctx.RungStatus)
         if ons and ctx.RungStatus:
             ctx.RungStatus = False
 
@@ -50,31 +53,24 @@ class ONS(Instruction):
 class OSR(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
-            Sbit = self.args[0]
-            Obit = self.args[1]
+        ons = self.getMemory(self.args[0])
+        out = self.getMemory(self.args[1])
 
-            ons = self.getMemory(Sbit, OutputType.PLC)
-            if ons:
-                self.setMemory(Obit, False)
-            else:
-                self.setMemory(Obit, True)
-            self.setMemory(Sbit, True)
+        out.setValue(False)
+        if ctx.RungStatus:
+            if not ons:
+                out.setValue(True)
+        ons.setValue(ctx.RungStatus)
         
 @InstructionRegistry.register
 class OSF(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        Sbit = self.args[0]
-        Obit = self.args[1]
+        ons = self.getMemory(self.args[0])
+        out = self.getMemory(self.args[1])
 
-        if ctx.RungStatus:
-            self.setMemory(Sbit, True)
-            self.setMemory(Obit, False)
-        else:
-            ons = self.getMemory(Sbit, OutputType.PLC)
+        out.setValue(False)
+        if not ctx.RungStatus:
             if ons:
-                self.setMemory(Obit, True)
-            else:
-                self.setMemory(Obit, False)
-            self.setMemory(Sbit, False)
+                out.setValue(True)
+        ons.setValue(ctx.RungStatus)

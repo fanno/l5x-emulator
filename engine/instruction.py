@@ -3,6 +3,10 @@ from typing import Any
 from core.memory.helper import OutputType
 from core.memory.memory import Memory
 
+from datatypes.custom.datavariant import DataVariant
+from datatypes.custom.array import Array
+from datatypes.custom.udt import UDT
+
 class Instruction:
     args:list[str]
     name:str
@@ -19,7 +23,7 @@ class Instruction:
             self.args = args
         self._memory = memory
 
-    def getMemory(self, path:list[str] | str, dataVariant:OutputType=OutputType.Raw) -> Any:
+    def getMemory(self, path:list[str] | str, dataVariant:OutputType=OutputType.Raw) -> DataVariant|Array|UDT:
         if self._memory is None:
             from core.memory.helper import getMemory
             return getMemory(path, dataVariant)

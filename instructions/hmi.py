@@ -7,8 +7,8 @@ from core.memory.helper import OutputType
 class HMIBC(Instruction):
     
     async def execute(self, ctx:"ExecutionContext") -> None:
-        value = self.getMemory(self.args[0], OutputType.PLC)
-        bit = self.getMemory(self.args[1], OutputType.PLC)
+        value = self.getMemory(self.args[0])
+        bit = self.getMemory(self.args[1])
 
         if not isinstance(value, int) or not isinstance(bit, int):
             raise NotImplementedError("Unsupported HMIBC combination")

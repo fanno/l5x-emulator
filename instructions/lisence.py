@@ -6,4 +6,5 @@ from core.registry.instructionregistry import InstructionRegistry
 class LV(Instruction):
     
     async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError("Unsupported LV combination")
+        pass
+        # not neded for simulation ?

@@ -1,5 +1,9 @@
+import time
+
 class EngineException(Exception):
-    pass
+    def __init__(self, message):
+        super().__init__(message)
+        self.time = time.monotonic()
 
 class AOIException(EngineException):
     def __init__(self, name:str, instance:str):

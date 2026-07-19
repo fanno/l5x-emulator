@@ -4,6 +4,7 @@ import engine.context
 from engine.instruction import Instruction
 
 from engine.errors import MinorException
+from core.emulatorfault import EmulatorFault
 
 def parse(text:str) -> Series:
     tokens = tokenize(text)
@@ -143,8 +144,7 @@ class InstructionNode:
         try:
             await self.instance.execute(ctx)
         except MinorException as e:
-            # TODO: Log minor erros seperatly
-            pass
+            EmulatorFault.prepend(e)
 
     def __str__(self):
         return f"{self.name}{self.args}"
