@@ -2,6 +2,7 @@ import logging
 
 from tkinter.ttk import Treeview, Scrollbar
 from tkinter import Event, PhotoImage, Entry, END
+import tkinter as tk
 
 from typing import Any, Optional
 
@@ -90,8 +91,8 @@ class Grid(Treeview):
         self.column('type', anchor='center', width=80)
         self.column('value', anchor='w', width=120)
 
-        v_scroll = Scrollbar(self, orient='vertical', command=self._on_scroll)
-        v_scroll.grid(row=0, column=1, sticky='ns')
+        v_scroll = Scrollbar(self, orient=tk.VERTICAL, command=self._on_scroll)
+        v_scroll.grid(row=0, column=1, sticky=tk.NS)
         self.configure(yscrollcommand=v_scroll.set, takefocus=0)
 
         self.tag_configure('even', background='#FFFFFF', foreground='black')
@@ -166,7 +167,7 @@ class Grid(Treeview):
         else:
             delta = -5 if event.delta > 0 else 5
 
-        self.yview_scroll(delta, 'units')
+        self.yview_scroll(delta, tk.UNITS)
         return 'break'
 
     def _populate(self, parent, data, path):
@@ -191,7 +192,7 @@ class Grid(Treeview):
         isObject = self.isObjectLike(value)
 
         if self.createUI:
-            iid = self.insert(parent, 'end', text=key, values=self.getRowValue(value), open=False)
+            iid = self.insert(parent, tk.END, text=key, values=self.getRowValue(value), open=tk.FALSE)
 
             display = self._populateTypeRow(parent=iid, data=value, path=cur_path)
             if display and isObject:
@@ -306,14 +307,14 @@ class Grid(Treeview):
 
         edit = Entry(self)
         edit.place(x=x, y=y, width=width, height=height)
-        
+
         values = self.item(iid, "values")
         current_text = values[1]
 
         if not current_text: current_text = ""
 
         edit.insert(0, current_text)
-        edit.select_range(0, END)
+        edit.select_range(0, tk.END)
         edit.focus()
         return edit
 

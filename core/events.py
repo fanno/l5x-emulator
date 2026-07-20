@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 @dataclass
 class LogEvent():
     message: str
+    level: str
 
 @dataclass
 class UpdateVariableEvent():
@@ -23,4 +24,4 @@ class StatusEvent():
     ControllerName:str = field(init=True, default="")
     ControllerType:bool = field(init=True, default="")
     ScanCount:int = field(init=True, default=0)
-    Data:Optional[Dict[str, Type]] = field(init=True, default_factory=dict)
+    Tags:Optional[Dict[str, Type]] = field(init=True, default_factory=dict)

@@ -24,7 +24,7 @@ from core.memory.safetymap import SafetyMap
 from core.events import LogEvent, StatusEvent, UpdateVariableEvent
 T = Union[StatusEvent, UpdateVariableEvent]
 
-from eventbus.eventbus import EventListener, subscribe_event
+from eventbus.eventbus import EventBus, EventListener, subscribe_event
 
 from core.system import PLCSYSTEM
 from core.constants import CONTROLLERTAGS
@@ -36,23 +36,19 @@ from core.xml.programs import loadPrograms
 from core.xml.aoi import loadAoiDefinition
 from core.xml.task import loadTasks
 from core.servicelocator import ServiceLocator
+from core.emulatorfault import EmulatorFault
+from core.library.libeary import initialize_custom_folder, load_all_hardware, get_paths
+from core.library.hwlogic import HWLogic
+from core.log import IndentedFormatter
 from opcua.structure import Structure, StructureField
 from opcua.tag import OpcuaTag
 from opcua.mapping import Mapping
 from engine.program import Program
 from engine.task import Task
-
 from engine.errors import MajorFault
-from core.emulatorfault import EmulatorFault
 
 from datatypes.custom.module import MODULE
 from datatypes.custom.string import STRING
-
-from core.library.libeary import initialize_custom_folder, load_all_hardware, get_paths
-
-from core.library.hwlogic import HWLogic
-
-from eventbus.eventbus import EventBus
 
 class EmulatorLogHandler(logging.Handler):
     def __init__(self, level = 0):
@@ -60,7 +56,7 @@ class EmulatorLogHandler(logging.Handler):
 
     def emit(self, record):
         try:
-            EventBus.get().dispatch(LogEvent(self.format(record)))
+            EventBus.get().dispatch(LogEvent(self.format(record), record.levelname))
         except Exception:
             pass
 
@@ -91,6 +87,7 @@ class Emulator(EventListener, threading.Thread):
     ServiceName:STRING = 'Emulator'
     safetyMap:SafetyMap
     
+    
     def __init__(self, path:str, port:int=4840):
         super().__init__()
 
@@ -110,9 +107,11 @@ class Emulator(EventListener, threading.Thread):
         self._throttle = 4
 
         gui_handler = EmulatorLogHandler(logging.ERROR)
-        gui_handler.setFormatter(logging.Formatter(
-            "[%(asctime)s, %(filename)s:%(lineno)s - %(funcName)s() ] "
-            "%(levelname)s : %(message)s"
+
+        gui_handler.setFormatter(IndentedFormatter(
+            "[%(asctime)s, %(filename)s:%(lineno)s - %(funcName)s()] %(levelname)s \n"
+            "%(message)s",
+            datefmt='%Y-%m-%d %H:%M:%S'
         ))
 
         logging.getLogger().addHandler(gui_handler)
@@ -196,7 +195,7 @@ class Emulator(EventListener, threading.Thread):
                                                 ControllerType=self.ProcessorType.getPLCValue(),
                                                 EndPoint=self._endpoint,
                                                 ScanCount=scanCount,
-                                                Data=data))
+                                                Tags=data))
 
                         lastDrawUi = startTime + 1
 

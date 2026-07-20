@@ -4,6 +4,8 @@ import logging
 from eventbus.eventbus import EventBus
 EventBus.get()
 
+from core.log import IndentedFormatter
+
 if __name__ == "__main__":
     defaultFile = "Alarm_Test.L5X"
     defaultFile = "Plc_emulator.L5X"
@@ -69,10 +71,11 @@ if __name__ == "__main__":
 
     file_handler = logging.FileHandler(args.log, encoding="utf-8")
     file_handler.setLevel(log_level_file)
-    file_formatter = logging.Formatter(
-        "[%(asctime)s, %(filename)s:%(lineno)s - %(funcName)20s() ] "
-        "%(levelname)s : %(message)s"
-    )
+    file_formatter = IndentedFormatter(
+            "[%(asctime)s, %(filename)s:%(lineno)s - %(funcName)s()] %(levelname)s \n"
+            "%(message)s",
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
     file_handler.setFormatter(file_formatter)
     logger.addHandler(file_handler)
     

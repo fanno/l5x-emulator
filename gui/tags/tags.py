@@ -1,4 +1,5 @@
 from tkinter.ttk import Notebook
+import tkinter as tk
 
 from core.memory.memory import Memory
 
@@ -11,10 +12,11 @@ class TagsTabs(Notebook):
         super().__init__(master, *args, **kwargs)
 
         self.tabs = {}
-
-    def updateData(self, data:dict[str, Memory]):
-        tab = None
+        self.pack(fill=tk.BOTH, expand=True)
         
+    def updateTags(self, data:dict[str, Memory]):
+        tab = None
+
         cur = self.select()
         for k,v in data.items():
             if isinstance(v, dict):
@@ -25,15 +27,12 @@ class TagsTabs(Notebook):
                         self,
                         columns=('type', 'value'),
                         show='tree headings',
-                        selectmode='none',
+                        selectmode=tk.NONE,
                         )
-
+ 
                     self.add(tab, text=k)
 
                     self.tabs[k] = tab
 
                 if str(self.tabs[k]) == cur or force:
                     self.tabs[k].updateData(k, v)
-
-        if tab is not None:
-            self.pack(expand=True, fill="both")

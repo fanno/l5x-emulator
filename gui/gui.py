@@ -1,12 +1,9 @@
 from queue import Empty
 
-import psutil
-
-import os
-
 import threading
 
 from tkinter import Tk
+
 from tkinter.scrolledtext import ScrolledText
 
 from typing import Dict, Union
@@ -19,17 +16,16 @@ from eventbus.eventbus import EventListener, subscribe_event
 
 from core.emulator import Emulator
 
-from gui.log import Logger
+from core.log import Logger
 
 from gui.tags.tags import TagsTabs
+from gui.content import ContentTabs
 
 class Gui(EventListener):
     _root:Tk
     _status:ScrolledText
     _log:ScrolledText
     stopEvent: threading.Event
-    _process:psutil.Process
-    _peak:float
     _path:str
     _port:int
     _logger:Logger
@@ -48,10 +44,8 @@ class Gui(EventListener):
         self._logger = Logger()
         self._after_id = {}
 
-        self._process:psutil.Process = psutil.Process(os.getpid())
         self._path = path
         self._port = port
-        self._peak = 0.0
         self.after_id = {}
         self.running = True
         self.stopEvent = threading.Event()
@@ -89,74 +83,16 @@ class Gui(EventListener):
         self._root.title(f"{appName}: {title}")
 
     def _createUI(self):
-        self._status = ScrolledText(
-            self._root,
-            wrap="word",
-            state="disabled",
-            font=("Consolas", 10),
-            height=2
-        )
-        self._status.pack(fill="both", expand=False)
-
-        self._status.pack(
-            fill="x",
-            expand=False
-        )
-
-        self._status.configure(state="normal")
-        self._status.insert("1.0", "")
-        self._status.configure(state="disabled")
-
-        self._log = ScrolledText(
-            self._root,
-            wrap="word",
-            state="disabled",
-            font=("Consolas", 9),
-            height=10
-        )
-        self._log.pack(fill="both", expand=False)
-
-        self.tagsTabs = TagsTabs(self._root)
+        self._content = ContentTabs(self._root)
 
     def updateGUI(self, tags = {}):
-        if self._status.focus_get() == self._status:
-            return
         if self.threadStatus:
-
-            if self.threadStatus.Data:
-                self.tagsTabs.updateData(self.threadStatus.Data)
-
-            current:float = self._process.memory_info().rss / 1024 / 1024
-            if current > self._peak:
-                self._peak = current
+            self._content.updateContent(self.threadStatus, self._logger)
 
             if self.threadStatus.Runing:
                 self.updateTitle(f"{self.threadStatus.ControllerName} ({self.threadStatus.ControllerType}) {self.threadStatus.EndPoint}")
-
-                text = f"Scan time Current / max (Sec): {self.threadStatus.ScanCurrent:.3f} ({self.threadStatus.ScanDelayed:.3f}) / {self.threadStatus.ScanMax:.3f}, Scan count: {self.threadStatus.ScanCount}"
-                text += f"\nMemory Current / max (MB): {current:.2f} / {self._peak:.2f}"
             else:
                 self.updateTitle(f"Application starting on {self.threadStatus.EndPoint}")
-
-                text = f"Initializing OPC UA server..."
-
-            def _update():
-                if self._status.focus_get() != self._status:
-                    self._status.configure(state="normal")
-                    self._status.delete("1.0", "end")
-                    self._status.insert("1.0", text)
-                    self._status.configure(state="disabled")
-
-                if self._log.focus_get() != self._log:
-                    if self._logger.hasChanged():
-                        self._log.configure(state="normal")
-                        self._log.delete("1.0", "end")
-                        self._log.insert("end", "\n".join(self._logger.getLogs()) + "\n")
-                        self._log.see("end")
-                        self._log.configure(state="disabled")
-
-            if self._root.winfo_exists() and self.running:
-                self._after_id["_update"] = self._root.after(0, _update)
 
     @subscribe_event(LogEvent, StatusEvent)
     def on_eventbus(self, event):
@@ -175,7 +111,7 @@ class Gui(EventListener):
                 if self.opc_thread:
                     event = self.queue.get_nowait()
                     if isinstance(event, LogEvent):
-                        self._logger.addEntry(event.message)
+                        self._logger.addEntry(event)
                     elif isinstance(event, StatusEvent):
                         self.threadStatus = event
 

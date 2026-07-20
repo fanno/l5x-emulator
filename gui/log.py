@@ -1,24 +1,43 @@
-from dataclasses import dataclass, field
+import tkinter as tk
 
-@dataclass
-class Logger:
-    max_size: int = field(init=False, default=1000)
-    _logs:list[str] = field(init=False, repr=False, default_factory=list)
-    _changed:bool = field(init=False, repr=False, default=False)
+from gui.updatingscrolledtext import UpdatingScrolledText
 
-    def addEntry(self, entry:str):
-        self._logs.append(entry)
-        self._changed = True
-        if self.getSize() > self.max_size:
-            self._logs.pop(0)
+from core.log import Logger
 
-    def hasChanged(self) -> bool:
-        changed = self._changed
-        self._changed = False
-        return changed
-    
-    def getLogs(self) -> list[str]:
-        return self._logs
-    
-    def getSize(self) -> int:
-        return len(self._logs)
+class LogText(UpdatingScrolledText):
+    LEVEL_COLORS = {
+        'DEBUG':    '#6c757d',
+        'INFO':     '#28a745',
+        'WARNING':  '#ffc107',
+        'ERROR':    '#dc3545',
+        'CRITICAL': '#ffffff',
+    }
+
+    def __init__(self, master, name, *args, **kwargs):
+        super().__init__(master,
+            name=name,
+            wrap=tk.WORD,
+            state=tk.DISABLED)
+        
+        self._configure_tags()
+        self.configure(state=tk.DISABLED)
+
+    def _configure_tags(self):
+        for level, fg in self.LEVEL_COLORS.items():
+            bg = '#ffe6e6' if level == 'ERROR' else None
+            if level == 'CRITICAL':
+                bg = '#dc3545'
+            self.tag_configure(level.upper(), foreground=fg, background=bg)
+            self.tag_raise("sel")
+
+    def updateContent(self, logger:Logger):
+        update = super().updateContent()
+        if update:        
+            if logger.hasChanged():
+                entries = logger.getLogs()
+                self.configure(state=tk.NORMAL)
+                self.delete("1.0", tk.END)
+                for entry in entries:
+                    self.insert(tk.END, f"\n\n{entry.message}" , entry.level.upper())
+                self.see(tk.END)
+                self.configure(state=tk.DISABLED)
