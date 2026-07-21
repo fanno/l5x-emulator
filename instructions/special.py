@@ -9,6 +9,20 @@ from datatypes.misc import CONTROL
 @InstructionRegistry.register
 class FBC(Instruction):
 
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        cmp_control:CONTROL = self.getMemory(self.args[3])
+        result_control:CONTROL = self.getMemory(self.args[4])
+
+        cmp_control.EN._reset()
+        cmp_control.FD._reset()
+
+        if cmp_control.DN:
+            cmp_control.DN._reset()
+            cmp_control.POS._reset()
+            result_control.DN._reset()
+            result_control.POS._reset()
+
     async def execute(self, ctx:"ExecutionContext") -> None:
         source = self.getMemory(self.args[0])
         referance = self.getMemory(self.args[1])
@@ -39,6 +53,20 @@ class FBC(Instruction):
     
 @InstructionRegistry.register
 class DDT(Instruction):
+
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        cmp_control:CONTROL = self.getMemory(self.args[3])
+        result_control:CONTROL = self.getMemory(self.args[4])
+
+        cmp_control.EN._reset()
+        cmp_control.FD._reset()
+
+        if cmp_control.DN:
+            cmp_control.DN._reset()
+            cmp_control.POS._reset()
+            result_control.DN._reset()
+            result_control.POS._reset()
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         source = self.getMemory(self.args[0])
@@ -71,6 +99,23 @@ class DDT(Instruction):
 @InstructionRegistry.register
 class DTR(Instruction):
 
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        source = self.getMemory(self.args[0])
+        mask = self.getMemory(self.args[1])
+        reference = self.getMemory(self.args[2])
+
+        sourceValue = source
+        if isinstance(sourceValue, DataVariant):
+            sourceValue = sourceValue.getPLCValue()
+            
+        if isinstance(mask, DataVariant):
+            mask = mask.getPLCValue()
+
+        maskedSource = sourceValue & mask
+
+        reference.setValue(maskedSource)
+
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
@@ -94,7 +139,7 @@ class DTR(Instruction):
             if maskedSource == maskedRef:
                 ctx.RungStatus = False
             else:
-                reference.setValue(source)
+                reference.setValue(maskedSource)
 
 @InstructionRegistry.register
 class PID(Instruction):

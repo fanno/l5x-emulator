@@ -40,6 +40,7 @@ from core.emulatorfault import EmulatorFault
 from core.library.libeary import initialize_custom_folder, load_all_hardware, get_paths
 from core.library.hwlogic import HWLogic
 from core.log import IndentedFormatter
+from core.emulatorcontext import EmulatorContext
 from opcua.structure import Structure, StructureField
 from opcua.tag import OpcuaTag
 from opcua.mapping import Mapping
@@ -86,10 +87,12 @@ class Emulator(EventListener, threading.Thread):
 
     ServiceName:STRING = 'Emulator'
     safetyMap:SafetyMap
-    
+
+    context:EmulatorContext
     
     def __init__(self, path:str, port:int=4840):
         super().__init__()
+        self.context = EmulatorContext(True)
 
         initialize_custom_folder()
 
@@ -102,6 +105,7 @@ class Emulator(EventListener, threading.Thread):
         self.mapping = Mapping()
         self._server = Server()
         self.safetyMap = SafetyMap()
+        self.preScan = True
 
         self._loop = None
         self._throttle = 4
@@ -314,9 +318,15 @@ class Emulator(EventListener, threading.Thread):
             setMemory(safety, getMemory(standart, OutputType.PLC))
 
         for tname, task in self.tasks.items():
-            await task.execute(self.programs)
+            await task.execute(programs=self.programs, context=self.context)
 
-        setMemory("S:FS", False)
+        if self.context.preScan:
+            self.context.preScan = False
+            setMemory("S:FS", True)
+        elif self.context.postScan:
+            self.context.postScan = False      
+        else:
+            setMemory("S:FS", False)
 
         for name, modulesLogic in self.modulesLogic.items():
             modulesLogic.update(name, self.memory)

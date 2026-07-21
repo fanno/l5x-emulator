@@ -143,7 +143,12 @@ class InstructionNode:
 
     async def eval(self, ctx:"engine.context.ExecutionContext") -> None:
         try:
-            await self.instance.execute(ctx)
+            if ctx.Context.preScan:
+                await self.instance.preScan(ctx)
+            elif ctx.Context.postScan:
+                await self.instance.postScan(ctx)
+            else:
+                await self.instance.execute(ctx)
         except MinorFault as e:
             EmulatorFault.prepend(e)
 

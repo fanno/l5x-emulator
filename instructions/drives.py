@@ -13,6 +13,13 @@ from datatypes.custom.numbers import DINT, REAL
 
 @InstructionRegistry.register
 class PMUL(Instruction):
+        
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        pm:PULSE_MULTIPLIER = self.getMemory(self.args[0])
+
+        pm.EnableOut._reset()
+        pm.EnableIn._reset()
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         pm:PULSE_MULTIPLIER = self.getMemory(self.args[0])
@@ -76,6 +83,13 @@ class SCRVMemory(Identity):
 
 @InstructionRegistry.register
 class SCRV(Instruction):
+
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        pm:S_CURVE = self.getMemory(self.args[0])
+
+        pm.EnableOut._reset()
+        pm.EnableIn._reset()
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         sc:S_CURVE = self.getMemory(self.args[0])
@@ -221,6 +235,13 @@ class SCRV(Instruction):
 
 @InstructionRegistry.register
 class PI(Instruction):
+
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        pm:PROP_INT = self.getMemory(self.args[0])
+
+        pm.EnableOut._reset()
+        pm.EnableIn._reset()    
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         pi:PROP_INT = self.getMemory(self.args[0])

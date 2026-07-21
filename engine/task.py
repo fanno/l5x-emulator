@@ -15,6 +15,7 @@ from asyncua import ua
 from engine.program import Program
 from engine.helper import CurrentTaskName
 
+from core.emulatorcontext import EmulatorContext
 from core.timebase import getTimeMonotonic
 
 from datatypes.custom.numbers import DINT, INT
@@ -109,24 +110,26 @@ class Task():
             if self.MaxScanTime < diff:
                 self.MaxScanTime.setValue(diff)
 
-    async def execute(self, programs:Dict[str, Program], instruction:bool = False):
+    async def execute(self, programs:Dict[str, Program], context:EmulatorContext = None, instruction:bool = False):
         if self.InhibitTask == 0:
             self.StartTime = DT()
 
             run = False
-            if self.Type == "CONTINUOUS":
+            if context is not None and (context.preScan or context.postScan):
                 run = True
-            elif self.Type == "PERIODIC":
-                if self._lastRun == 0 or self.RateDT < self.StartTime - self._lastRun:
+            else:
+                if self.Type == "CONTINUOUS":
                     run = True
-            elif self.Type == "EVENT":
-                if self.EventInfo.EventTrigger == 'EVENT Instruction Only':
-                    if instruction:
+                elif self.Type == "PERIODIC":
+                    if self._lastRun == 0 or self.RateDT < self.StartTime - self._lastRun:
                         run = True
-
+                elif self.Type == "EVENT":
+                    if self.EventInfo.EventTrigger == 'EVENT Instruction Only':
+                        if instruction:
+                            run = True
+                if run:
+                    self._lastRun = self.StartTime
             if run:
-                self._lastRun = self.StartTime
-
                 async with self.task_context(), self.task_time():
                     for program in self._programs:
-                        await programs[program].execute()
+                        await programs[program].execute(context=context)

@@ -87,9 +87,11 @@ class JSR(Instruction):
 class RET(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        ctx.ReturnArgs = []
-        for i, key in enumerate(self.args):
-            ctx.ReturnArgs.append(self.getMemory(key))
+        if ctx.RungStatus:
+            if not ctx.Context.preScan and not ctx.Context.preScan :
+                ctx.ReturnArgs = []
+                for i, key in enumerate(self.args):
+                    ctx.ReturnArgs.append(self.getMemory(key))
     
 @InstructionRegistry.register
 class SBR(Instruction):

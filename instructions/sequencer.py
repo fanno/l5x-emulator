@@ -42,6 +42,12 @@ class SQI(Instruction):
 @InstructionRegistry.register
 class SQO(Instruction):
 
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        control:CONTROL = self.getMemory(self.args[3])
+
+        control.EN.setValue(True)
+
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             array:Array[DataVariant] = self.getMemory(self.args[0])
@@ -96,6 +102,12 @@ class SQO(Instruction):
     
 @InstructionRegistry.register
 class SQL(Instruction):
+
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        control:CONTROL = self.getMemory(self.args[2])
+
+        control.EN.setValue(True)
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         source = self.getMemory(self.args[0])

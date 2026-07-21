@@ -17,6 +17,17 @@ class ONSMemory(Identity):
 
 @InstructionRegistry.register
 class OSRI(Instruction):
+        
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        ons:FBD_ONESHOT = self.getMemory(self.args[0])
+
+        memory = ObjectRegistry.get(ons, ONSMemory)
+
+        memory.ONS.setValue(ons.InputBit)
+
+        ons.EnableIn._reset()
+        ons.EnableOut._reset()
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         ons:FBD_ONESHOT = self.getMemory(self.args[0])
@@ -27,15 +38,25 @@ class OSRI(Instruction):
             ons.OutputBit.setValue(False)
             if ons.InputBit:
                 if not memory.ONS:
-                    memory.ONS.setValue(True)
                     ons.OutputBit.setValue(True)
-            else:
-                memory.ONS.setValue(False)
+            
+            memory.ONS.setValue(ons.InputBit)
         
         ons.EnableOut.setValue(ons.EnableIn)
     
 @InstructionRegistry.register
 class OSFI(Instruction):
+
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        ons:FBD_ONESHOT = self.getMemory(self.args[0])
+
+        memory = ObjectRegistry.get(ons, ONSMemory)
+
+        memory.ONS.setValue(ons.InputBit)
+
+        ons.EnableIn._reset()
+        ons.EnableOut._reset()
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         ons:FBD_ONESHOT = self.getMemory(self.args[0])
@@ -46,9 +67,8 @@ class OSFI(Instruction):
             ons.OutputBit.setValue(False)
             if not ons.InputBit:
                 if memory.ONS:
-                    memory.ONS.setValue(False)
                     ons.OutputBit.setValue(True)
-            else:
-                memory.ONS.setValue(True)
+
+            memory.ONS.setValue(ons.InputBit)
 
         ons.EnableOut.setValue(ons.EnableIn)

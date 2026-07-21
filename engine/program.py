@@ -19,6 +19,7 @@ from engine.routine import Routine
 
 from core.xml.tags import loadTags
 from core.timebase import getTimeMonotonic
+from core.emulatorcontext import EmulatorContext
 
 from opcua.tag import OpcuaTag
 from opcua.mapping import Mapping
@@ -101,13 +102,15 @@ class Program():
             if self.MAXSCANTIME < diff:
                 self.MAXSCANTIME.setValue(diff)
 
-    async def execute(self):
+    async def execute(self, context:EmulatorContext = None):
+        if context is None:
+            context = EmulatorContext()
         if self.MainRoutineName in self.Routines:
             if self.DisableFlag == 0:
                 async with self.program_context(), self.program_time():
                     from engine.context import ExecutionContext
-                    context = ExecutionContext(ProgramRef=self)
-                    await self.Routines[self.MainRoutineName].execute(context)
+                    ctx = ExecutionContext(ProgramRef=self, Context=context)
+                    await self.Routines[self.MainRoutineName].execute(ctx=ctx)
             else:
                 self.LASTSCANTIME.setValue(0)
                 self.MAXSCANTIME.setValue(0)

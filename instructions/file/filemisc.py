@@ -139,6 +139,13 @@ class FLL(Instruction):
 @InstructionRegistry.register
 class AVE(Instruction):
 
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        control:CONTROL = self.getMemory(self.args[3])
+
+        control.EnableIn._reset()
+        control.EnableOut._reset()
+
     async def execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[3])
 
@@ -192,27 +199,24 @@ class SRT(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
-
-            if not isinstance(value, str):
-                raise NotImplementedError(f"{__class__} not implemented yet")
-
-            self.setMemory(self.args[1], value)
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class STD(Instruction):
 
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        control:CONTROL = self.getMemory(self.args[3])
+
+        control.EN._reset()
+        control.DN._reset()
+        control.ER._reset()
+
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            values = self.getMemory(self.args[0], OutputType.PLC)
+            control:CONTROL = self.getMemory(self.args[3])
 
-            if not isinstance(values, list) or not values:
-                raise NotImplementedError(f"{__class__} not implemented yet")
-
-            mean = sum(values) / len(values)
-            variance = sum((x - mean) ** 2 for x in values) / len(values)
-
-            self.setMemory(self.args[1], float(math.sqrt(variance)))
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class SIZE(Instruction):

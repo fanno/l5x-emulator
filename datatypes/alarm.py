@@ -7,6 +7,7 @@ from core.registry.datatyperegistry import DataTypeRegistry
 from datatypes.custom.numbers import DINT, REAL, LINT
 from datatypes.custom.bool import BOOL
 from datatypes.custom.udt import UDT
+from datatypes.custom.string import STRING
 
 @DataTypeRegistry.register
 @dataclass
@@ -222,3 +223,16 @@ class ALARM_SET_CONTROL(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     LastState: BOOL = field(init=False, default_factory=BOOL)
+
+@DataTypeRegistry.register
+@dataclass
+class ALARM_SET(UDT):
+    InAlarmUnackedCount: DINT = field(init=False, default_factory=DINT)
+    InAlarmAckedCount: DINT = field(init=False, default_factory=DINT)
+    SuppressedCount: DINT = field(init=False, default_factory=DINT)
+    ShelvedCount: DINT = field(init=False, default_factory=DINT)
+    DisabledCount: DINT = field(init=False, default_factory=DINT)
+    HasUnackedAlarm: BOOL = field(init=False, default_factory=BOOL)
+    HighestSeverity: DINT = field(init=False, default_factory=DINT)
+    HighestSeverityAlarmName: STRING = field(init=False, default_factory=STRING)
+    HighestSeverityAlarmType: STRING = field(init=False, default_factory=STRING)

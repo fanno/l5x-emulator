@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.00" TargetName="Pxxxx_AlarmTest" TargetType="Controller" ContainsContext="false" ExportDate="Sun Jul 19 16:54:27 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
-<Controller Use="Target" Name="Pxxxx_AlarmTest" ProcessorType="5069-L330ERMS2" MajorRev="35" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Sun Jul 19 16:54:09 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.00" TargetName="Pxxxx_AlarmTest" TargetType="Controller" ContainsContext="false" ExportDate="Tue Jul 21 19:19:08 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Target" Name="Pxxxx_AlarmTest" ProcessorType="5069-L330ERMS2" MajorRev="35" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Tue Jul 21 19:18:54 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
  MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false" EtherNetIPMode="A1/A2: Linear/DLR" AutoDiagsEnabled="true" WebServerEnabled="true">
 <RedundancyInfo Enabled="false" KeepTestEditsOnSwitchOver="false"/>
 <Security Code="0" ChangesToDetect="16#ffff_ffff_ffff_ffff"/>
@@ -10,6 +10,24 @@
 <Members>
 <Member Name="LEN" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
 <Member Name="DATA" DataType="SINT" Dimension="50" Radix="ASCII" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="TAlarms" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZTAlarms0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="ALMD_ProgAck" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTAlarms0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="ALMD_ProgReset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTAlarms0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="ALMD_ProgDisable" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTAlarms0" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="ALMD_ProgEnable" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTAlarms0" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="ALMA_in" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTAlarms6" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="ALMA_ProgAck" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTAlarms6" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="ALMA_ProgDisable" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTAlarms6" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="ALMA_ProgEnable" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTAlarms6" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="ASO_Set" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ASO_Control" DataType="ALARM_SET_CONTROL" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTAlarms12" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Alarmactive" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTAlarms12" BitNumber="0" ExternalAccess="Read/Write"/>
 </Members>
 </DataType>
 <DataType Name="TASCIIConversions" Family="NoFamily" Class="User">
@@ -779,6 +797,22 @@
 </AddOnInstructionDefinition>
 </AddOnInstructionDefinitions>
 <Tags>
+<Tag Name="AlarmActive" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<AlarmConditions>
+<AlarmCondition Name="test" Input="." ConditionType="TRIP" Limit="0.0" Severity="500" OnDelay="0" OffDelay="0" ShelveDuration="0" MaxShelveDuration="0" Deadband="0.0" Used="true"
+ AlarmSetOperIncluded="true" AlarmSetRollupIncluded="true" InFault="false" AckRequired="true" Latched="false" ProgAck="false" OperAck="false" ProgReset="false" OperReset="false" ProgSuppress="false" OperSuppress="false"
+ ProgUnsuppress="false" OperUnsuppress="false" OperShelve="false" ProgUnshelve="false" OperUnshelve="false" ProgDisable="false" OperDisable="false" ProgEnable="false" OperEnable="false" AlarmCountReset="false" EvaluationPeriod="500 millisecond"
+ Expression="= 1" AssocTag1=".">
+<AlarmConfig/>
+</AlarmCondition>
+</AlarmConditions>
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
 <Tag Name="LadderLogicAnd1" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -916,6 +950,49 @@
 </Program>
 <Program Name="LadderTest" TestEdits="false" MainRoutineName="main" Disabled="false" Class="Standard" UseAsFolder="false">
 <Tags>
+<Tag Name="Alarms" TagType="Base" DataType="TAlarms" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[0,0,0,0,[0],0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="TAlarms">
+<DataValueMember Name="ALMD_ProgAck" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ALMD_ProgReset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ALMD_ProgDisable" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ALMD_ProgEnable" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ALMA_in" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ALMA_ProgAck" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ALMA_ProgDisable" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ALMA_ProgEnable" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ASO_Set" DataType="DINT" Radix="Decimal" Value="0"/>
+<StructureMember Name="ASO_Control" DataType="ALARM_SET_CONTROL">
+<DataValueMember Name="EnableIn" DataType="BOOL" Value="0"/>
+<DataValueMember Name="EnableOut" DataType="BOOL" Value="0"/>
+<DataValueMember Name="LastState" DataType="BOOL" Value="0"/>
+</StructureMember>
+<DataValueMember Name="Alarmactive" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="ALMA" TagType="Base" DataType="ALARM_ANALOG" ExternalAccess="Read/Write">
+<Data Format="Alarm">
+<AlarmAnalogParameters EnableIn="false" InFault="false" HHEnabled="false" HEnabled="false" LEnabled="false" LLEnabled="false" AckRequired="true" ProgAckAll="false" OperAckAll="false" HHProgAck="false" HHOperAck="false"
+ HProgAck="false" HOperAck="false" LProgAck="false" LOperAck="false" LLProgAck="false" LLOperAck="false" ROCPosProgAck="false" ROCPosOperAck="false" ROCNegProgAck="false" ROCNegOperAck="false" ProgSuppress="false"
+ OperSuppress="false" ProgUnsuppress="false" OperUnsuppress="false" HHOperShelve="false" HOperShelve="false" LOperShelve="false" LLOperShelve="false" ROCPosOperShelve="false" ROCNegOperShelve="false" ProgUnshelveAll="false" HHOperUnshelve="false"
+ HOperUnshelve="false" LOperUnshelve="false" LLOperUnshelve="false" ROCPosOperUnshelve="false" ROCNegOperUnshelve="false" ProgDisable="false" OperDisable="false" ProgEnable="false" OperEnable="false" AlarmCountReset="false" HHMinDurationEnable="true"
+ HMinDurationEnable="true" LMinDurationEnable="true" LLMinDurationEnable="true" In="0.0" HHLimit="0.0" HHSeverity="500" HLimit="0.0" HSeverity="500" LLimit="0.0" LSeverity="500" LLLimit="0.0"
+ LLSeverity="500" MinDurationPRE="0" ShelveDuration="0" MaxShelveDuration="0" Deadband="0.0" ROCPosLimit="0.0" ROCPosSeverity="500" ROCNegLimit="0.0" ROCNegSeverity="500" ROCPeriod="0.0"/>
+<AlarmConfig/>
+</Data>
+</Tag>
+<Tag Name="ALMD" TagType="Base" DataType="ALARM_DIGITAL" ExternalAccess="Read/Write">
+<Data Format="Alarm">
+<AlarmDigitalParameters Severity="500" MinDurationPRE="0" ShelveDuration="0" MaxShelveDuration="0" ProgTime="DT#1970-01-01-00:00:00.000_000Z" EnableIn="false" In="false" InFault="false" Condition="true" AckRequired="true" Latched="false"
+ ProgAck="false" OperAck="false" ProgReset="false" OperReset="false" ProgSuppress="false" OperSuppress="false" ProgUnsuppress="false" OperUnsuppress="false" OperShelve="false" ProgUnshelve="false" OperUnshelve="false"
+ ProgDisable="false" OperDisable="false" ProgEnable="false" OperEnable="false" AlarmCountReset="false" UseProgTime="false"/>
+<AlarmConfig/>
+</Data>
+</Tag>
 <Tag Name="ASCIIConversions" TagType="Base" DataType="TASCIIConversions" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
 <![CDATA[[0,[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00'
@@ -1768,6 +1845,14 @@
 </Structure>
 </Data>
 </Tag>
+<Tag Name="rwar" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
 <Tag Name="Sequencer" TagType="Base" DataType="TSequencer" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
 <![CDATA[[0,[0,10,0],0,0,[0,0,0,0,0,0,0,0,0,0],0,0,0,[0,0,0],[0,0,0],0]]]>
@@ -2284,8 +2369,39 @@
 </Structure>
 </Data>
 </Tag>
+<Tag Name="werwerwerwer" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
 </Tags>
 <Routines>
+<Routine Name="Alarms" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[ALMD(ALMD,Alarms.ALMD_ProgAck,Alarms.ALMD_ProgReset,Alarms.ALMD_ProgDisable,Alarms.ALMD_ProgEnable);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[ALMA(ALMA,Alarms.ALMA_in,Alarms.ALMA_ProgAck,Alarms.ALMA_ProgDisable,Alarms.ALMA_ProgEnable);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Comment>
+<![CDATA[ASO MISSING
+ ALARM_SET]]>
+</Comment>
+<Text>
+<![CDATA[XIC(NOT_IMPLEMENTED)NOP();]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
 <Routine Name="ASCII_Conversions" Type="RLL">
 <RLLContent>
 <Rung Number="0" Type="N">
@@ -2563,95 +2679,100 @@
 <RLLContent>
 <Rung Number="0" Type="N">
 <Text>
-<![CDATA[JSR(Bit,0);]]>
+<![CDATA[JSR(Alarms,0);]]>
 </Text>
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[JSR(Timer_Counter,0);]]>
+<![CDATA[JSR(Bit,0);]]>
 </Text>
 </Rung>
 <Rung Number="2" Type="N">
 <Text>
-<![CDATA[JSR(Compare,0);]]>
+<![CDATA[JSR(Timer_Counter,0);]]>
 </Text>
 </Rung>
 <Rung Number="3" Type="N">
 <Text>
-<![CDATA[JSR(File_Misc,0);]]>
+<![CDATA[JSR(Compare,0);]]>
 </Text>
 </Rung>
 <Rung Number="4" Type="N">
 <Text>
-<![CDATA[JSR(File_Shift,0);]]>
+<![CDATA[JSR(File_Misc,0);]]>
 </Text>
 </Rung>
 <Rung Number="5" Type="N">
 <Text>
-<![CDATA[JSR(For_Break,0);]]>
+<![CDATA[JSR(File_Shift,0);]]>
 </Text>
 </Rung>
 <Rung Number="6" Type="N">
 <Text>
-<![CDATA[JSR(Logic,0);]]>
+<![CDATA[JSR(For_Break,0);]]>
 </Text>
 </Rung>
 <Rung Number="7" Type="N">
 <Text>
-<![CDATA[JSR(Math,0);]]>
+<![CDATA[JSR(Logic,0);]]>
 </Text>
 </Rung>
 <Rung Number="8" Type="N">
 <Text>
-<![CDATA[JSR(Move_Logic,0);]]>
+<![CDATA[JSR(Math,0);]]>
 </Text>
 </Rung>
 <Rung Number="9" Type="N">
 <Text>
-<![CDATA[JSR(Program_Control,0);]]>
+<![CDATA[JSR(Move_Logic,0);]]>
 </Text>
 </Rung>
 <Rung Number="10" Type="N">
 <Text>
-<![CDATA[JSR(Sequencer,0);]]>
+<![CDATA[JSR(Program_Control,0);]]>
 </Text>
 </Rung>
 <Rung Number="11" Type="N">
 <Text>
-<![CDATA[JSR(Special,0);]]>
+<![CDATA[JSR(Sequencer,0);]]>
 </Text>
 </Rung>
 <Rung Number="12" Type="N">
 <Text>
-<![CDATA[JSR(HMIBC,0);]]>
+<![CDATA[JSR(Special,0);]]>
 </Text>
 </Rung>
 <Rung Number="13" Type="N">
 <Text>
-<![CDATA[JSR(Trigonometry,0);]]>
+<![CDATA[JSR(HMIBC,0);]]>
 </Text>
 </Rung>
 <Rung Number="14" Type="N">
 <Text>
-<![CDATA[JSR(Math_Conversions,0);]]>
+<![CDATA[JSR(Trigonometry,0);]]>
 </Text>
 </Rung>
 <Rung Number="15" Type="N">
 <Text>
-<![CDATA[JSR(Motion,0);]]>
+<![CDATA[JSR(Math_Conversions,0);]]>
 </Text>
 </Rung>
 <Rung Number="16" Type="N">
 <Text>
-<![CDATA[JSR(ASCII_String,0);]]>
+<![CDATA[JSR(Motion,0);]]>
 </Text>
 </Rung>
 <Rung Number="17" Type="N">
 <Text>
-<![CDATA[JSR(ASCII_Conversions,0);]]>
+<![CDATA[JSR(ASCII_String,0);]]>
 </Text>
 </Rung>
 <Rung Number="18" Type="N">
+<Text>
+<![CDATA[JSR(ASCII_Conversions,0);]]>
+</Text>
+</Rung>
+<Rung Number="19" Type="N">
 <Text>
 <![CDATA[JSR(Licence,0);]]>
 </Text>
@@ -2957,7 +3078,7 @@
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[XIC(TimerCounter.TOF_Run)MOV(20000,TimerCounter.TOF.PRE)TON(TimerCounter.TOF,?,?);]]>
+<![CDATA[XIC(TimerCounter.TOF_Run)MOV(20000,TimerCounter.TOF.PRE)TOF(TimerCounter.TOF,?,?);]]>
 </Text>
 </Rung>
 <Rung Number="2" Type="N">

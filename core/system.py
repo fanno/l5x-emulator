@@ -51,7 +51,7 @@ class System():
         await createTagsMemory(self.opcua, self.memory, self.mapping)
 
     async def loadSystemTags(self):
-        await self._createSystemTag("S:FS", initialValue="1")
+        await self._createSystemTag("S:FS")
         await self._createSystemTag("S:N")
         await self._createSystemTag("S:Z")
         await self._createSystemTag("S:V")

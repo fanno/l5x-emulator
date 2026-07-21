@@ -40,3 +40,8 @@ class Instruction:
     async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
         raise NotImplementedError(f"{__class__} not implemented yet")
     
+    async def preScan(self, ctx:"engine.context.ExecutionContext") -> None:
+        pass
+    
+    async def postScan(self, ctx:"engine.context.ExecutionContext") -> None:
+        pass    

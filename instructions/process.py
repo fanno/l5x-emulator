@@ -11,7 +11,7 @@ from datatypes.pid import PID_ENHANCED
 class ALM(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        timer:ALARM = self.getMemory(self.args[0], OutputType.PLC)
+        timer:ALARM = self.getMemory(self.args[0])
 
         raise NotImplementedError(f"{__class__} not implemented yet")
     
@@ -26,10 +26,24 @@ class SCL(Instruction):
 @InstructionRegistry.register
 class PIDE(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        pid:PID_ENHANCED = self.getMemory(self.args[0], OutputType.PLC)
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        pide:PID_ENHANCED = self.getMemory(self.args[0])
+        
+        pide.EnableIn._reset()
+        pide.EnableOut._reset()
 
-        raise NotImplementedError(f"{__class__} not implemented yet")
+
+    async def execute(self, ctx:"ExecutionContext") -> None:
+        pide:PID_ENHANCED = self.getMemory(self.args[0])
+
+        if pide.EnableIn:
+            raise NotImplementedError(f"{__class__} not implemented yet")
+
+        pide.EnableOut.setValue(pide.EnableIn)
+
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
     
 @InstructionRegistry.register
 class IMC(Instruction):

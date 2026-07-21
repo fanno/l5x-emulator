@@ -16,6 +16,15 @@ from datatypes.custom.udt import Resettable
 @InstructionRegistry.register
 class BSL(Instruction):
 
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        control:CONTROL = self.getMemory(self.args[1])
+
+        control.EN._reset()
+        control.DN._reset()
+        control.ER._reset()
+        control.POS._reset()
+
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value:Array[DataVariant] = self.getMemory(self.args[0])
@@ -30,6 +39,15 @@ class BSL(Instruction):
 @InstructionRegistry.register
 class BSR(Instruction):
 
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        control:CONTROL = self.getMemory(self.args[1])
+
+        control.EN._reset()
+        control.DN._reset()
+        control.ER._reset()
+        control.POS._reset()
+
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value:Array[DataVariant] = self.getMemory(self.args[0])
@@ -43,6 +61,24 @@ class BSR(Instruction):
 
 @InstructionRegistry.register
 class FFL(Instruction):
+
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        control:CONTROL = self.getMemory(self.args[2])
+
+        control.EN.setValue(True)
+
+        if control.LEN <= 0 or control.POS < 0:
+            control.EM.setValue(True)
+            control.DN.setValue(True)
+        else:
+            control.EM.setValue(False)
+            control.DN.setValue(False)
+
+            if control.POS == 0:
+                control.EM.setValue(True)
+            if control.POS >= control.LEN:
+                control.DN.setValue(True)
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])
@@ -90,6 +126,24 @@ class FFL(Instruction):
 
 @InstructionRegistry.register
 class FFU(Instruction):
+
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        control:CONTROL = self.getMemory(self.args[2])
+
+        control.EU.setValue(True)
+
+        if control.LEN <= 0 or control.POS < 0:
+            control.EM.setValue(True)
+            control.DN.setValue(True)
+        else:
+            control.EM.setValue(False)
+            control.DN.setValue(False)
+
+            if control.POS == 0:
+                control.EM.setValue(True)
+            if control.POS >= control.LEN:
+                control.DN.setValue(True)
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])
@@ -153,6 +207,24 @@ class FFU(Instruction):
 @InstructionRegistry.register
 class LFL(Instruction):
 
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        control:CONTROL = self.getMemory(self.args[2])
+
+        control.EN.setValue(True)
+
+        if control.LEN <= 0 or control.POS < 0:
+            control.EM.setValue(True)
+            control.DN.setValue(True)
+        else:
+            control.EM.setValue(False)
+            control.DN.setValue(False)
+
+            if control.POS == 0:
+                control.EM.setValue(True)
+            if control.POS >= control.LEN:
+                control.DN.setValue(True)    
+
     async def execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])
         if ctx.RungStatus:
@@ -199,6 +271,24 @@ class LFL(Instruction):
     
 @InstructionRegistry.register
 class LFU(Instruction):
+
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        control:CONTROL = self.getMemory(self.args[2])
+
+        control.EU.setValue(True)
+
+        if control.LEN <= 0 or control.POS < 0:
+            control.EM.setValue(True)
+            control.DN.setValue(True)
+        else:
+            control.EM.setValue(False)
+            control.DN.setValue(False)
+
+            if control.POS == 0:
+                control.EM.setValue(True)
+            if control.POS >= control.LEN:
+                control.DN.setValue(True)        
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])

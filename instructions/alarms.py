@@ -9,7 +9,7 @@ from core.memory.memory import Memory
 from core.memory.identity import Identity
 from core.objectregistry import ObjectRegistry
 
-from datatypes.alarm import ALARM_DIGITAL, ALARM_ANALOG, ALARM_SET_CONTROL
+from datatypes.alarm import ALARM_DIGITAL, ALARM_ANALOG, ALARM_SET_CONTROL, ALARM_SET
 from datatypes.custom.numbers import DINT, REAL, INTIGER
 from datatypes.custom.bool import BOOL
 from datatypes.misc import TIMER
@@ -38,6 +38,14 @@ class ALMDMemory(AlarmMemory):
 
 @InstructionRegistry.register
 class ALMD(Instruction):
+
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
+        ObjectRegistry.remove(alarm)
+        
+        alarm._reset()
+        alarm.Acked.setValue(True)
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
@@ -144,6 +152,13 @@ class ALMAMemory(AlarmMemory):
 
 @InstructionRegistry.register
 class ALMA(Instruction):
+
+    async def preScan(self, ctx):
+        await super().preScan(ctx)
+        alarm:ALARM_ANALOG = self.getMemory(self.args[0])
+        ObjectRegistry.remove(alarm)
+        
+        alarm.reset()
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         alarm:ALARM_ANALOG = self.getMemory(self.args[0])
@@ -267,19 +282,31 @@ class ALMA(Instruction):
 class ASO(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        AlarmSet:ALARM_SET = self.getMemory(self.args[0]) #TODO what is ALARM_SET
+        AlarmSet:ALARM_SET = self.getMemory(self.args[0])
         Control:ALARM_SET_CONTROL = self.getMemory(self.args[1])
 
-        Operation = self.args[2]
-        '''
-        0 - Acknowledge
-        1 - Reset
-        2 - Enable
-        3 - Disable
-        4- Unshelve
-        5 - Suppress
-        6 - Unsuppress
-        7 - ResetAlarmCount
-        '''
+        if ctx.RungStatus:
+            if not Control.LastState:
+                Operation = self.args[2]
 
-        raise NotImplementedError(f"{__class__} not implemented yet")
+                match Operation:
+                    case "Acknowledge":
+                        AlarmSet.InAlarmAckedCount.setValue(AlarmSet.InAlarmAckedCount.getPLCValue() + 1)
+                    case "Reset":
+                        raise NotImplementedError(f"{__class__} {Operation} not implemented yet")
+                    case "Enable":
+                        raise NotImplementedError(f"{__class__} {Operation} not implemented yet")
+                    case "Disable":
+                        AlarmSet.DisabledCount.setValue(AlarmSet.DisabledCount.getPLCValue() + 1)
+                    case "Unshelve":
+                        raise NotImplementedError(f"{__class__} {Operation} not implemented yet")
+                    case "Suppress":
+                        AlarmSet.SuppressedCount.setValue(AlarmSet.SuppressedCount.getPLCValue() + 1)
+                    case "Unsuppress":
+                        raise NotImplementedError(f"{__class__} {Operation} not implemented yet")
+                    case "ResetAlarmCount":
+                        AlarmSet._reset()
+                    case _:
+                        raise NotImplementedError(f"{__class__} {Operation} not implemented yet")
+        
+        Control.LastState.setValue(Control.LastState)

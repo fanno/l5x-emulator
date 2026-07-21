@@ -6,6 +6,7 @@ from engine.routine import Routine, RoutineType
 from core.timebase import TimeBase
 
 from datatypes.custom.bool import BOOL
+from core.emulatorcontext import EmulatorContext
 
 @dataclass
 class ExecutionContext:
@@ -19,6 +20,7 @@ class ExecutionContext:
     InputArgs:list = field(init=True, default_factory=list)
     ReturnArgs:list = field(init=True, default_factory=list)
     SFCStatus:BOOL = field(init=True, default_factory=BOOL)
+    Context:EmulatorContext = field(init=True, default_factory=EmulatorContext)
     EOT:bool = field(init=True, default=False)
     TND:bool = field(init=True, default=False)
     SFCTransition:bool = field(init=True, default=False)
