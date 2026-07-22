@@ -1,6 +1,4 @@
 import engine.context
-from typing import Any
-from core.memory.helper import OutputType
 from core.memory.memory import Memory
 
 from datatypes.custom.datavariant import DataVariant
@@ -37,11 +35,62 @@ class Instruction:
         else:
             self._memory.set(path)
 
-    async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"engine.context.ExecutionContext") -> None:
         raise NotImplementedError(f"{__class__} not implemented yet")
-    
-    async def preScan(self, ctx:"engine.context.ExecutionContext") -> None:
+
+    async def ladder_preScan(self, ctx:"engine.context.ExecutionContext") -> None:
         pass
     
+    async def ladder_postScan(self, ctx:"engine.context.ExecutionContext") -> None:
+        pass
+
+    async def fbd_execute(self, ctx:"engine.context.ExecutionContext") -> None:
+        await self.ladder_execute(ctx)
+
+    async def fbd_preScan(self, ctx:"engine.context.ExecutionContext") -> None:
+        await self.ladder_preScan(ctx)
+    
+    async def fbd_postScan(self, ctx:"engine.context.ExecutionContext") -> None:
+        await self.ladder_postScan(ctx)
+
+    async def sfc_execute(self, ctx:"engine.context.ExecutionContext") -> None:
+        self.ladder_execute(ctx)
+    
+    async def sfc_preScan(self, ctx:"engine.context.ExecutionContext") -> None:
+        await self.ladder_preScan(ctx)
+    
+    async def sfc_postScan(self, ctx:"engine.context.ExecutionContext") -> None:
+        await self.ladder_postScan(ctx)
+
+    async def st_execute(self, ctx:"engine.context.ExecutionContext") -> None:
+        await self.ladder_execute(ctx)
+
+
+    '''
+    async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
+        match ctx.Type:
+            case RoutineType.RLL:
+                await self.ladder_execute(ctx)
+            case RoutineType.FBD:
+                await self.fbd_execute(ctx)
+            case RoutineType.SFC:
+                await self.sfc_execute(ctx)
+    
+    async def preScan(self, ctx:"engine.context.ExecutionContext") -> None:
+        match ctx.Type:
+            case RoutineType.RLL:
+                await self.ladder_preScan(ctx)
+            case RoutineType.FBD:
+                await self.fbd_preScan(ctx)
+            case RoutineType.SFC:
+                await self.sfc_preScan(ctx)
+    
     async def postScan(self, ctx:"engine.context.ExecutionContext") -> None:
-        pass    
+        match ctx.Type:
+            case RoutineType.RLL:
+                await self.ladder_postScan(ctx)
+            case RoutineType.FBD:
+                await self.fbd_postScan(ctx)
+            case RoutineType.SFC:
+                await self.sfc_postScan(ctx)
+    '''

@@ -56,12 +56,12 @@ class OpcuaTag:
 
     def getFolder(self) -> Node:
         if self.__folder is None:
-            raise NotImplementedError(f"call createFolder first")
+            raise RuntimeError(f"call createFolder first")
         return self.__folder
 
     def getIDX(self) -> int:
         if self.__idx is None:
-            raise NotImplementedError(f"call registerNamespace first")
+            raise RuntimeError(f"call registerNamespace first")
         return self.__idx
 
     async def createTag(self, tag: Tag, parent:Node = None) -> Node:

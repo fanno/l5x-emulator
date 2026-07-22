@@ -39,7 +39,7 @@ class ALMDMemory(AlarmMemory):
 @InstructionRegistry.register
 class ALMD(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
         ObjectRegistry.remove(alarm)
@@ -47,7 +47,7 @@ class ALMD(Instruction):
         alarm._reset()
         alarm.Acked.setValue(True)
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(alarm, ALMDMemory)
 
@@ -73,7 +73,7 @@ class ALMD(Instruction):
             if not alarm.ProgDisable or alarm.ProgEnable:
                 isInAlarm = alarm.In == alarm.Condition
 
-        timer = await memory.timer.execute(ExecutionContext(RungStatus=isInAlarm))
+        timer = await memory.timer.ladder_execute(ExecutionContext(RungStatus=isInAlarm))
 
         if isInAlarm:
             if timer.DN:
@@ -153,14 +153,14 @@ class ALMAMemory(AlarmMemory):
 @InstructionRegistry.register
 class ALMA(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         alarm:ALARM_ANALOG = self.getMemory(self.args[0])
         ObjectRegistry.remove(alarm)
         
         alarm.reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         alarm:ALARM_ANALOG = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(alarm, ALMAMemory)
 
@@ -185,10 +185,10 @@ class ALMA(Instruction):
                 isInLAlarm = alarm.LEnabled and In < alarm.LLimit
                 isInLLAlarm = alarm.LLEnabled and In < alarm.LLLimit
 
-        HHTimer = await memory.HHTimer.execute(ExecutionContext(RungStatus=isInHHAlarm))
-        HTimer = await memory.HTimer.execute(ExecutionContext(RungStatus=isInHAlarm))
-        LTimer = await memory.LTimer.execute(ExecutionContext(RungStatus=isInLAlarm))
-        LLTimer = await memory.LLTimer.execute(ExecutionContext(RungStatus=isInLLAlarm))
+        HHTimer = await memory.HHTimer.ladder_execute(ExecutionContext(RungStatus=isInHHAlarm))
+        HTimer = await memory.HTimer.ladder_execute(ExecutionContext(RungStatus=isInHAlarm))
+        LTimer = await memory.LTimer.ladder_execute(ExecutionContext(RungStatus=isInLAlarm))
+        LLTimer = await memory.LLTimer.ladder_execute(ExecutionContext(RungStatus=isInLLAlarm))
 
         if HHTimer.DN:
             if not alarm.HHInAlarm:
@@ -281,7 +281,7 @@ class ALMA(Instruction):
 @InstructionRegistry.register
 class ASO(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         AlarmSet:ALARM_SET = self.getMemory(self.args[0])
         Control:ALARM_SET_CONTROL = self.getMemory(self.args[1])
 
@@ -307,6 +307,6 @@ class ASO(Instruction):
                     case "ResetAlarmCount":
                         AlarmSet._reset()
                     case _:
-                        raise NotImplementedError(f"{__class__} {Operation} not implemented yet")
+                        raise ValueError(f"{__class__} {Operation} not implemented yet")
         
         Control.LastState.setValue(Control.LastState)

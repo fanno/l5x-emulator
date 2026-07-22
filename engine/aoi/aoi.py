@@ -114,14 +114,14 @@ class AOIRegistry:
     @staticmethod
     def register(cls: AOI) -> None:
         if cls.Name in AOIRegistry._registry:
-            raise RuntimeError(f"Instruction {cls.Name} already registered")
+            raise ValueError(f"AOI {cls.Name} already registered")
         AOIRegistry._registry[cls.Name] = cls
 
     @staticmethod
     async def execute(name:str, args:list[str], ctx:"ExecutionContext") -> None:
         from engine.context import ExecutionContext
         if name not in AOIRegistry._registry:
-            raise NotImplementedError(f"Instruction {name} not supported")
+            raise KeyError(f"AOI {name} not supported")
         
         from engine.helper import _pushAOIMemory, _popAOIMemory
         from core.memory.helper import getMemory, setMemory
@@ -244,3 +244,33 @@ class AOI_CLASS(Instruction):
                     if p.Usage == 'Output':
                         value = aoi.memory.get(p.Name)
                         setattr(aoiData, p.Name, value)
+
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        await self.execute(ctx)
+
+    async def ladder_preScan(self, ctx:"ExecutionContext") -> None:
+        await self.execute(ctx)
+    
+    async def ladder_postScan(self, ctx:"ExecutionContext") -> None:
+        await self.execute(ctx)
+
+    async def fbd_execute(self, ctx:"ExecutionContext") -> None:
+        await self.execute(ctx)
+
+    async def fbd_preScan(self, ctx:"ExecutionContext") -> None:
+        await self.execute(ctx)
+    
+    async def fbd_postScan(self, ctx:"ExecutionContext") -> None:
+        await self.execute(ctx)
+
+    async def sfc_execute(self, ctx:"ExecutionContext") -> None:
+        await self.execute(ctx)
+    
+    async def sfc_preScan(self, ctx:"ExecutionContext") -> None:
+        await self.execute(ctx)
+    
+    async def sfc_postScan(self, ctx:"ExecutionContext") -> None:
+        await self.execute(ctx)
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        await self.execute(ctx)

@@ -17,7 +17,7 @@ class ONSMemory(Identity):
 @InstructionRegistry.register
 class OSRI(Instruction):
         
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         ons:FBD_ONESHOT = self.getMemory(self.args[0])
 
@@ -28,7 +28,7 @@ class OSRI(Instruction):
         ons.EnableIn._reset()
         ons.EnableOut._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         ons:FBD_ONESHOT = self.getMemory(self.args[0])
 
         if ons.EnableIn:
@@ -46,7 +46,7 @@ class OSRI(Instruction):
 @InstructionRegistry.register
 class OSFI(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         ons:FBD_ONESHOT = self.getMemory(self.args[0])
 
@@ -57,7 +57,7 @@ class OSFI(Instruction):
         ons.EnableIn._reset()
         ons.EnableOut._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         ons:FBD_ONESHOT = self.getMemory(self.args[0])
 
         if ons.EnableIn:

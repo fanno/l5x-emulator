@@ -5,6 +5,6 @@ from core.registry.instructionregistry import InstructionRegistry
 @InstructionRegistry.register
 class LV(Instruction):
     
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         pass
         # not neded for simulation ?

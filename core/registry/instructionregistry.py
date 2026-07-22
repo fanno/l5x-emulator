@@ -21,7 +21,7 @@ class InstructionRegistry:
 
         name = name.upper()
         if name in InstructionRegistry._registry:
-            raise RuntimeError(f"Instruction {name} already registered")
+            raise ValueError(f"Instruction {name} already registered")
         InstructionRegistry._registry[name] = cls
         return cls
 
@@ -29,13 +29,22 @@ class InstructionRegistry:
     async def execute(name:str, args:list[str], ctx:"engine.context.ExecutionContext") -> None:
         name = name.upper()
         if name not in InstructionRegistry._registry:
-            raise NotImplementedError(f"Instruction {name} not supported")
+            raise KeyError(f"Instruction {name} not supported")
         
         from engine.instruction import Instruction
         cls = InstructionRegistry._registry[name]
         if isinstance(cls, Instruction):
+            from engine.routine import RoutineType
             logging.debug(f"InstructionRegistry: {name}> {args}, {ctx}")
-            await cls.execute(args, ctx)
+            match ctx.Type:
+                case RoutineType.RLL:
+                    await cls.ladder_execute(args, ctx)
+                case RoutineType.ST:
+                    await cls.st_execute(args, ctx)
+                case RoutineType.FBD:
+                    await cls.fbd_execute(args, ctx)
+                case RoutineType.SFC:
+                    await cls.sfc_execute(args, ctx)
         else:
             logging.error(f"InstructionRegistry: {name}> {args}, {ctx}")
 
@@ -43,7 +52,7 @@ class InstructionRegistry:
     def get(name:str) -> "Instruction":
         name = name.upper()
         if name not in InstructionRegistry._registry:
-            raise NotImplementedError(f"Instruction {name} not supported")
+            raise KeyError(f"Instruction {name} not supported")
         
         return InstructionRegistry._registry[name]
 

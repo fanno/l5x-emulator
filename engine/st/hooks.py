@@ -33,7 +33,7 @@ def build_exec_env(ctx: "ExecutionContext") -> dict:
 
     async def callHook(name, args):
         instance: Instruction = InstructionRegistry.get(name)(name=name, args=args)
-        await instance.execute(ctx)
+        await instance.st_execute(ctx)
 
     return {
         "get": getHook,

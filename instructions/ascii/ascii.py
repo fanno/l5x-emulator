@@ -7,7 +7,7 @@ from  instructions.helper import getPLCValue
 @InstructionRegistry.register
 class FIND(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             sourceA:str = getPLCValue(self.getMemory(self.args[0]))
             sourceB:str = getPLCValue(self.getMemory(self.args[1]))
@@ -19,7 +19,7 @@ class FIND(Instruction):
 @InstructionRegistry.register
 class INSERT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             sourceA:str = getPLCValue(self.getMemory(self.args[0]))
             sourceB:str = getPLCValue(self.getMemory(self.args[1]))
@@ -32,7 +32,7 @@ class INSERT(Instruction):
 @InstructionRegistry.register
 class CONCAT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             sourceA:str = getPLCValue(self.getMemory(self.args[0]))
             sourceB:str = getPLCValue(self.getMemory(self.args[1]))
@@ -43,7 +43,7 @@ class CONCAT(Instruction):
 @InstructionRegistry.register
 class MID(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source:str = getPLCValue(self.getMemory(self.args[0]))
             qty:int = getPLCValue(self.getMemory(self.args[1]))
@@ -55,7 +55,7 @@ class MID(Instruction):
 @InstructionRegistry.register
 class DELETE(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source:str = getPLCValue(self.getMemory(self.args[0]))
             qty:int = getPLCValue(self.getMemory(self.args[1]))

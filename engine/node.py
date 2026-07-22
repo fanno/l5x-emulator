@@ -116,17 +116,6 @@ def instruction(token):
 
     return name.strip(), args
 
-'''
-class Node:
-    nodes:list[Node]
-
-    def eval(self, ctx) -> None:
-        raise NotImplementedError(f"Unsupported operator: {self}")
-
-    def __str__(self):
-        return f"{self.__class__.__name__}({', '.join(map(str, self.nodes))})"
-'''
-
 class InstructionNode:
     nodes:list[InstructionNode]
     name = ""
@@ -144,11 +133,11 @@ class InstructionNode:
     async def eval(self, ctx:"engine.context.ExecutionContext") -> None:
         try:
             if ctx.Context.preScan:
-                await self.instance.preScan(ctx)
+                await self.instance.ladder_preScan(ctx)
             elif ctx.Context.postScan:
-                await self.instance.postScan(ctx)
+                await self.instance.ladder_postScan(ctx)
             else:
-                await self.instance.execute(ctx)
+                await self.instance.ladder_execute(ctx)
         except MinorFault as e:
             EmulatorFault.prepend(e)
 

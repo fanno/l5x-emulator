@@ -9,7 +9,7 @@ from  instructions.helper import getPLCValue
 @InstructionRegistry.register
 class LN(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -24,7 +24,7 @@ class LN(Instruction):
 @InstructionRegistry.register
 class LOG(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -39,7 +39,7 @@ class LOG(Instruction):
 @InstructionRegistry.register
 class XPY(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             x = getPLCValue(self.getMemory(self.args[0]))
             y = getPLCValue(self.getMemory(self.args[1]))

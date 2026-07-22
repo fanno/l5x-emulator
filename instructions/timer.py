@@ -15,7 +15,7 @@ class TimerMemory(Identity):
 @InstructionRegistry.register
 class TON(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         timer:TIMER = self.getMemory(self.args[0])
         ObjectRegistry.remove(timer)
@@ -25,7 +25,7 @@ class TON(Instruction):
         timer.DN._reset()
         timer.ACC._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> TIMER:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> TIMER:
         timer:TIMER = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(timer, TimerMemory)
 
@@ -48,7 +48,7 @@ class TON(Instruction):
 @InstructionRegistry.register
 class TOF(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         timer:TIMER = self.getMemory(self.args[0])
         ObjectRegistry.remove(timer)
@@ -58,7 +58,7 @@ class TOF(Instruction):
         timer.DN._reset()
         timer.ACC.setValue(timer.PRE)
 
-    async def execute(self, ctx:"ExecutionContext") -> TIMER:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> TIMER:
         timer:TIMER = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(timer, TimerMemory)
 
@@ -83,7 +83,7 @@ class TOF(Instruction):
 @InstructionRegistry.register
 class RTO(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         timer:TIMER = self.getMemory(self.args[0])
         ObjectRegistry.remove(timer)
@@ -91,7 +91,7 @@ class RTO(Instruction):
         timer.EN._reset()
         timer.TT._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> TIMER:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> TIMER:
         timer:TIMER = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(timer, TimerMemory)
 
@@ -117,14 +117,14 @@ class RTO(Instruction):
 @InstructionRegistry.register
 class TONR(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         timer:FBD_TIMER = self.getMemory(self.args[0])
 
         timer.EnableIn._reset()
         timer.EnableOut._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> TIMER:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> TIMER:
         
         timer:FBD_TIMER = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(timer, TimerMemory)
@@ -156,14 +156,14 @@ class TONR(Instruction):
 @InstructionRegistry.register
 class TOFR(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         timer:FBD_TIMER = self.getMemory(self.args[0])
 
         timer.EnableIn._reset()
         timer.EnableOut._reset()    
 
-    async def execute(self, ctx:"ExecutionContext") -> TIMER:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> TIMER:
         timer:FBD_TIMER = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(timer, TimerMemory)
 
@@ -195,14 +195,14 @@ class TOFR(Instruction):
 @InstructionRegistry.register
 class RTOR(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         timer:FBD_TIMER = self.getMemory(self.args[0])
 
         timer.EnableIn._reset()
         timer.EnableOut._reset()    
 
-    async def execute(self, ctx:"ExecutionContext") -> TIMER:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> TIMER:
         timer:FBD_TIMER = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(timer, TimerMemory)
 
@@ -238,7 +238,7 @@ class RTOR(Instruction):
 @InstructionRegistry.register
 class RES(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> TIMER|COUNTER|None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> TIMER|COUNTER|None:
         ref = self.getMemory(self.args[0])
 
         if ref.__class__.__name__ == "TIMER":
@@ -265,13 +265,13 @@ class RES(Instruction):
 @InstructionRegistry.register
 class CTU(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         counter:COUNTER = self.getMemory(self.args[0])
 
         counter.CU.setValue(True)  
 
-    async def execute(self, ctx:"ExecutionContext") -> COUNTER:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> COUNTER:
         counter:COUNTER = self.getMemory(self.args[0])
 
         counter.CU.setValue(ctx.RungStatus)
@@ -288,13 +288,13 @@ class CTU(Instruction):
 @InstructionRegistry.register
 class CTD(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         counter:COUNTER = self.getMemory(self.args[0])
 
         counter.CD.setValue(True)      
 
-    async def execute(self, ctx:"ExecutionContext") -> COUNTER:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> COUNTER:
         counter:COUNTER = self.getMemory(self.args[0])
 
         counter.CU.setValue(ctx.RungStatus)
@@ -311,14 +311,14 @@ class CTD(Instruction):
 @InstructionRegistry.register
 class CTUD(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         counter:FBD_COUNTER = self.getMemory(self.args[0])
 
         counter.EnableIn._reset()
         counter.EnableOut._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> FBD_COUNTER:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> FBD_COUNTER:
         counter:FBD_COUNTER = self.getMemory(self.args[0])
 
         if counter.CUEnable and not counter.CU:

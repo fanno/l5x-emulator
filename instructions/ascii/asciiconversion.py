@@ -9,7 +9,7 @@ from  instructions.helper import getPLCValue
 @InstructionRegistry.register
 class DTOS(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
             sourceValue = getPLCValue(source)
@@ -26,7 +26,7 @@ class DTOS(Instruction):
 @InstructionRegistry.register
 class STOD(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
             sourceValue = getPLCValue(source)
@@ -37,7 +37,7 @@ class STOD(Instruction):
 @InstructionRegistry.register
 class RTOS(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
             source = self.getMemory(self.args[0])
             sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])
@@ -47,7 +47,7 @@ class RTOS(Instruction):
 @InstructionRegistry.register
 class STOR(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
             sourceValue = getPLCValue(source)
@@ -59,7 +59,7 @@ class STOR(Instruction):
 @InstructionRegistry.register
 class UPPER(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
             sourceValue = getPLCValue(source)
@@ -70,7 +70,7 @@ class UPPER(Instruction):
 @InstructionRegistry.register
 class LOWER(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
             sourceValue = getPLCValue(source)

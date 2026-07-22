@@ -19,7 +19,7 @@ class SAMPELMemory(Identity):
 @InstructionRegistry.register
 class MAVE(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         average:MOVING_AVERAGE = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(average, SAMPELMemory)
 
@@ -64,7 +64,7 @@ class MAVE(Instruction):
 @InstructionRegistry.register
 class MSTD(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         average:MOVING_STD_DEV = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(average, SAMPELMemory)
 
@@ -114,7 +114,7 @@ class MMemory(Identity):
 @InstructionRegistry.register
 class MINC(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         average:MINIMUM_CAPTURE = self.getMemory(self.args[0])
 
         memory = ObjectRegistry.get(average, MMemory)
@@ -132,7 +132,7 @@ class MINC(Instruction):
 @InstructionRegistry.register
 class MAXC(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         average:MAXIMUM_CAPTURE = self.getMemory(self.args[0])
 
         memory = ObjectRegistry.get(average, MMemory)

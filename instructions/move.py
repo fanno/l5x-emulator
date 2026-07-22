@@ -14,7 +14,7 @@ from  instructions.helper import getPLCValue
 @InstructionRegistry.register
 class MOV(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             result = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -28,7 +28,7 @@ class MOVE(MOV):
 @InstructionRegistry.register
 class MVM(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = getPLCValue(self.getMemory(self.args[0]))
             mask = getPLCValue(self.getMemory(self.args[1]))
@@ -46,7 +46,7 @@ class MVM(Instruction):
 @InstructionRegistry.register
 class AND(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             sourceA = getPLCValue(self.getMemory(self.args[0]))
             sourceB = getPLCValue(self.getMemory(self.args[1]))
@@ -59,7 +59,7 @@ class AND(Instruction):
 @InstructionRegistry.register
 class OR(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             sourceA = getPLCValue(self.getMemory(self.args[0]))
             sourceB = getPLCValue(self.getMemory(self.args[1]))
@@ -72,7 +72,7 @@ class OR(Instruction):
 @InstructionRegistry.register
 class XOR(Instruction):
     
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             sourceA = getPLCValue(self.getMemory(self.args[0]))
             sourceB = getPLCValue(self.getMemory(self.args[1]))
@@ -85,7 +85,7 @@ class XOR(Instruction):
 @InstructionRegistry.register
 class NOT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             sourceA = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -107,7 +107,7 @@ def _from_bytes(bytes_):
 @InstructionRegistry.register
 class SWPB(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             sourceA = getPLCValue(self.getMemory(self.args[0]))
             orderMode = self.args[1]
@@ -141,7 +141,7 @@ class SWPB(Instruction):
 @InstructionRegistry.register
 class CLR(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             dest = self.getMemory(self.args[0])
             if isinstance(dest, Resettable):
@@ -150,7 +150,7 @@ class CLR(Instruction):
 @InstructionRegistry.register
 class BTD(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = getPLCValue(self.getMemory(self.args[0]))
             sourceBit = getPLCValue(self.getMemory(self.args[1]))
@@ -173,35 +173,41 @@ class BTD(Instruction):
 @InstructionRegistry.register
 class MVMT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class BTDT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class DFF(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class JKFF(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class SETD(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class RESD(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")

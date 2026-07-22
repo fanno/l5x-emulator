@@ -16,7 +16,7 @@ from datatypes.custom.udt import Resettable
 @InstructionRegistry.register
 class BSL(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[1])
 
@@ -25,7 +25,7 @@ class BSL(Instruction):
         control.ER._reset()
         control.POS._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value:Array[DataVariant] = self.getMemory(self.args[0])
             control:CONTROL = self.getMemory(self.args[1])
@@ -39,7 +39,7 @@ class BSL(Instruction):
 @InstructionRegistry.register
 class BSR(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[1])
 
@@ -48,7 +48,7 @@ class BSR(Instruction):
         control.ER._reset()
         control.POS._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value:Array[DataVariant] = self.getMemory(self.args[0])
             control:CONTROL = self.getMemory(self.args[1])
@@ -62,7 +62,7 @@ class BSR(Instruction):
 @InstructionRegistry.register
 class FFL(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[2])
 
@@ -80,7 +80,7 @@ class FFL(Instruction):
             if control.POS >= control.LEN:
                 control.DN.setValue(True)
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])
         if ctx.RungStatus:
             if control.LEN <= 0 or control.POS < 0:
@@ -127,7 +127,7 @@ class FFL(Instruction):
 @InstructionRegistry.register
 class FFU(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[2])
 
@@ -145,7 +145,7 @@ class FFU(Instruction):
             if control.POS >= control.LEN:
                 control.DN.setValue(True)
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])
         if ctx.RungStatus:
             if control.LEN <= 0 or control.POS < 0:
@@ -207,7 +207,7 @@ class FFU(Instruction):
 @InstructionRegistry.register
 class LFL(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[2])
 
@@ -225,7 +225,7 @@ class LFL(Instruction):
             if control.POS >= control.LEN:
                 control.DN.setValue(True)    
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])
         if ctx.RungStatus:
             if control.LEN <= 0 or control.POS < 0:
@@ -272,7 +272,7 @@ class LFL(Instruction):
 @InstructionRegistry.register
 class LFU(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[2])
 
@@ -290,7 +290,7 @@ class LFU(Instruction):
             if control.POS >= control.LEN:
                 control.DN.setValue(True)        
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])
         if ctx.RungStatus:
             if control.LEN <= 0 or control.POS < 0:

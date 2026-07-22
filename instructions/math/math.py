@@ -11,7 +11,7 @@ from  instructions.helper import getPLCValue
 @InstructionRegistry.register
 class ADD(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = getPLCValue(self.getMemory(self.args[0]))
             bValue = getPLCValue(self.getMemory(self.args[1]))
@@ -22,7 +22,7 @@ class ADD(Instruction):
 @InstructionRegistry.register
 class SUB(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = getPLCValue(self.getMemory(self.args[0]))
             bValue = getPLCValue(self.getMemory(self.args[1]))
@@ -33,7 +33,7 @@ class SUB(Instruction):
 @InstructionRegistry.register
 class DIV(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = getPLCValue(self.getMemory(self.args[0]))
             bValue = getPLCValue(self.getMemory(self.args[1]))
@@ -47,7 +47,7 @@ class DIV(Instruction):
 @InstructionRegistry.register
 class MUL(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = getPLCValue(self.getMemory(self.args[0]))
             bValue = getPLCValue(self.getMemory(self.args[1]))
@@ -58,7 +58,7 @@ class MUL(Instruction):
 @InstructionRegistry.register
 class MOD(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = getPLCValue(self.getMemory(self.args[0]))
             bValue = getPLCValue(self.getMemory(self.args[1]))
@@ -72,7 +72,7 @@ class MOD(Instruction):
 @InstructionRegistry.register
 class SQR(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])            
@@ -86,7 +86,7 @@ class SQRT(SQR):
 @InstructionRegistry.register
 class ABS(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -96,7 +96,7 @@ class ABS(Instruction):
 @InstructionRegistry.register
 class NEG(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -106,7 +106,7 @@ class NEG(Instruction):
 @InstructionRegistry.register
 class CPT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             dest = self.getMemory(self.args[0])
             result = getPLCValue(self.getMemory(self.args[1]))

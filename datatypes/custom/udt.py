@@ -13,4 +13,4 @@ class UDT:
                 current._reset()
 
     def setValue(self):
-        raise NotImplementedError("UDT setValue")
+        raise NotImplementedError(f"{__class__} setValue")

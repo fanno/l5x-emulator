@@ -7,26 +7,26 @@ from core.registry.instructionregistry import InstructionRegistry
 @InstructionRegistry.register
 class JMP(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             ctx.Jump = self.args[0]
 
 @InstructionRegistry.register
 class LBL(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         pass
 
 @InstructionRegistry.register
 class TND(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         ctx.TND = ctx.RungStatus
 
 @InstructionRegistry.register
 class MCR(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         ctx.inMCR = not ctx.inMCR
 
         if ctx.inMCR:
@@ -38,32 +38,32 @@ class MCR(Instruction):
 @InstructionRegistry.register
 class UID(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         pass #TODO curently not needed
     
 @InstructionRegistry.register
 class UIE(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         pass #TODO curently not needed
 
 @InstructionRegistry.register
 class AFI(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         ctx.RungStatus = False
 
 @InstructionRegistry.register
 class NOP(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         ctx.RungStatus = False
         ctx.RungEnabled = True
 
 @InstructionRegistry.register
 class JSR(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             inputSize = int(self.args[1])
             inputArgs = self.args[2:2 + inputSize]
@@ -86,7 +86,7 @@ class JSR(Instruction):
 @InstructionRegistry.register
 class RET(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             if not ctx.Context.preScan and not ctx.Context.preScan :
                 ctx.ReturnArgs = []
@@ -96,7 +96,7 @@ class RET(Instruction):
 @InstructionRegistry.register
 class SBR(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         for i, key in enumerate(self.args):
             if i < len(ctx.InputArgs):
                 self.setMemory(key, ctx.InputArgs[i])
@@ -104,7 +104,7 @@ class SBR(Instruction):
 @InstructionRegistry.register
 class SFR(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             name = self.args[0]
             ctx.ProgramRef.Routines[name].SFCStep = self.getMemory(self.args[1])
@@ -112,7 +112,7 @@ class SFR(Instruction):
 @InstructionRegistry.register
 class SFP(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             name = self.args[0]
             state = self.args[1]
@@ -124,7 +124,7 @@ class SFP(Instruction):
 @InstructionRegistry.register
 class EOT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.SFCTransition:
             if ctx.RungStatus:
                 ctx.SFCStatus.setValue(self.getMemory(self.args[0]))
@@ -135,7 +135,7 @@ class EOT(Instruction):
 @InstructionRegistry.register
 class EVENT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         name = self.args[0]
 
         from core.emulator import Emulator

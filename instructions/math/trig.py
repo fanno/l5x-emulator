@@ -9,7 +9,7 @@ from  instructions.helper import getPLCValue
 @InstructionRegistry.register
 class SIN(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -19,7 +19,7 @@ class SIN(Instruction):
 @InstructionRegistry.register
 class COS(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -29,7 +29,7 @@ class COS(Instruction):
 @InstructionRegistry.register
 class TAN(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -39,7 +39,7 @@ class TAN(Instruction):
 @InstructionRegistry.register
 class ASN(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -53,7 +53,7 @@ class ASIN(ASN):
 @InstructionRegistry.register
 class ACS(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -67,7 +67,7 @@ class ACOS(ACS):
 @InstructionRegistry.register
 class ATN(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             value = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
@@ -81,7 +81,7 @@ class ATAN(ATN):
 @InstructionRegistry.register
 class ATAN2(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             y = getPLCValue(self.getMemory(self.args[0]))
             x = getPLCValue(self.getMemory(self.args[1]))

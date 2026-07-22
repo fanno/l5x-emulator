@@ -9,7 +9,7 @@ from  instructions.helper import getPLCValue
 @InstructionRegistry.register
 class FBC(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         cmp_control:CONTROL = self.getMemory(self.args[3])
         result_control:CONTROL = self.getMemory(self.args[4])
@@ -23,7 +23,7 @@ class FBC(Instruction):
             result_control.DN._reset()
             result_control.POS._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         source = self.getMemory(self.args[0])
         referance = self.getMemory(self.args[1])
         result = self.getMemory(self.args[2])
@@ -54,7 +54,7 @@ class FBC(Instruction):
 @InstructionRegistry.register
 class DDT(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         cmp_control:CONTROL = self.getMemory(self.args[3])
         result_control:CONTROL = self.getMemory(self.args[4])
@@ -68,7 +68,7 @@ class DDT(Instruction):
             result_control.DN._reset()
             result_control.POS._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         source = self.getMemory(self.args[0])
         referance = self.getMemory(self.args[1])
         result = self.getMemory(self.args[2])
@@ -99,7 +99,7 @@ class DDT(Instruction):
 @InstructionRegistry.register
 class DTR(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         source = getPLCValue(self.getMemory(self.args[0]))
         mask = getPLCValue(self.getMemory(self.args[1]))
@@ -109,7 +109,7 @@ class DTR(Instruction):
 
         reference.setValue(maskedSource)
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = getPLCValue(self.getMemory(self.args[0]))
             mask = getPLCValue(self.getMemory(self.args[1]))
@@ -127,7 +127,7 @@ class DTR(Instruction):
 @InstructionRegistry.register
 class PID(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         pv:dtPID = self.getMemory(self.args[0])
         process = self.getMemory(self.args[1])
         tieback = self.getMemory(self.args[2])

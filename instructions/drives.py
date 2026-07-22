@@ -14,14 +14,14 @@ from datatypes.custom.numbers import DINT, REAL
 @InstructionRegistry.register
 class PMUL(Instruction):
         
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         pm:PULSE_MULTIPLIER = self.getMemory(self.args[0])
 
         pm.EnableOut._reset()
         pm.EnableIn._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         pm:PULSE_MULTIPLIER = self.getMemory(self.args[0])
 
         if pm.EnableIn:
@@ -84,14 +84,14 @@ class SCRVMemory(Identity):
 @InstructionRegistry.register
 class SCRV(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         pm:S_CURVE = self.getMemory(self.args[0])
 
         pm.EnableOut._reset()
         pm.EnableIn._reset()
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         sc:S_CURVE = self.getMemory(self.args[0])
 
         memory = ObjectRegistry.get(sc, SCRVMemory)
@@ -236,32 +236,36 @@ class SCRV(Instruction):
 @InstructionRegistry.register
 class PI(Instruction):
 
-    async def preScan(self, ctx):
+    async def ladder_preScan(self, ctx):
         await super().preScan(ctx)
         pm:PROP_INT = self.getMemory(self.args[0])
 
         pm.EnableOut._reset()
         pm.EnableIn._reset()    
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         pi:PROP_INT = self.getMemory(self.args[0])
 
-        raise NotImplementedError(f"{__class__} not implemented yet")
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class INTG(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class SOC(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class UPDN(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")

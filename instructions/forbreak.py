@@ -7,7 +7,7 @@ from  instructions.helper import getPLCValue
 @InstructionRegistry.register
 class FOR(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         rutine = self.args[0]
         index = self.getMemory(self.args[1])
 
@@ -24,6 +24,6 @@ class FOR(Instruction):
 @InstructionRegistry.register
 class BRK(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             ctx.TND = True

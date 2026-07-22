@@ -25,9 +25,6 @@ def split_to_dint(value: int|DataVariant) -> list[int]:
     return [low_signed, high_signed]
 
 def _maskSize(width: INTIGER) -> int:
-
-
-    
     return (1 << width) - 1
 
 def _mask(width: int) -> int:

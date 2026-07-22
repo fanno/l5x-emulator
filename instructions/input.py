@@ -24,7 +24,7 @@ from engine.helper import CurrentProgramName, CurrentTaskName
 @InstructionRegistry.register
 class MSG(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.args[0]
             ## TODO NEED TO be fixed
@@ -33,7 +33,7 @@ class MSG(Instruction):
 @InstructionRegistry.register
 class GSV(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             Class = self.args[0]
             instance = self.args[1]
@@ -632,7 +632,7 @@ class GSV(Instruction):
 @InstructionRegistry.register
 class SSV(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             Class = self.args[0]
             instance = self.args[1]
@@ -928,6 +928,6 @@ class SSV(Instruction):
 @InstructionRegistry.register
 class IOT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         # ignore this as it is not relevant to simulation
         pass

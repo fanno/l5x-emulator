@@ -5,23 +5,27 @@ from core.registry.instructionregistry import InstructionRegistry
 @InstructionRegistry.register
 class MAAT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class MRAT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class MAHD(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")
 
 @InstructionRegistry.register
 class MRHD(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            raise NotImplementedError(f"{__class__} not implemented yet")

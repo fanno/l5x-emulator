@@ -11,9 +11,7 @@ from enum import Enum
 import engine.context
 from engine.rung import Rung
 from engine.st.parser import normalizeST, createPython
-from engine.errors import STException
 
-from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.numbers import INT
 
 from datatypes.sfc import SFC_STEP

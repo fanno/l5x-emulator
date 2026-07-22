@@ -5,27 +5,27 @@ from core.registry.instructionregistry import InstructionRegistry
 @InstructionRegistry.register
 class XIC(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             ctx.RungStatus &= bool(self.getMemory(self.args[0]))
 
 @InstructionRegistry.register
 class XIO(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             ctx.RungStatus &= not bool(self.getMemory(self.args[0]))
 
 @InstructionRegistry.register
 class OTE(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         self.setMemory(self.args[0], ctx.RungStatus)
 
 @InstructionRegistry.register
 class OTL(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             dest = self.getMemory(self.args[0])
             dest.setValue(True)
@@ -33,7 +33,7 @@ class OTL(Instruction):
 @InstructionRegistry.register
 class OTU(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             dest = self.getMemory(self.args[0])
             dest.setValue(False)
@@ -41,7 +41,7 @@ class OTU(Instruction):
 @InstructionRegistry.register
 class ONS(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         ons = self.getMemory(self.args[0])
 
         ons.setValue(ctx.RungStatus)
@@ -51,7 +51,7 @@ class ONS(Instruction):
 @InstructionRegistry.register
 class OSR(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         ons = self.getMemory(self.args[0])
         out = self.getMemory(self.args[1])
 
@@ -64,7 +64,7 @@ class OSR(Instruction):
 @InstructionRegistry.register
 class OSF(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         ons = self.getMemory(self.args[0])
         out = self.getMemory(self.args[1])
 

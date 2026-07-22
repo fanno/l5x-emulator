@@ -11,7 +11,7 @@ from engine.st.helper import hook_expression
 @InstructionRegistry.register
 class CMP(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             expression = "return " + hook_expression(self.args[0])
 
@@ -21,7 +21,7 @@ class CMP(Instruction):
 @InstructionRegistry.register
 class LIM(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = self.getMemory(self.args[0])
             Value = self.getMemory(self.args[1])
@@ -41,7 +41,7 @@ class LIMIT(LIM):
 @InstructionRegistry.register
 class MEQ(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             sourceValue = self.getMemory(self.args[0])
             maskValue = self.getMemory(self.args[1])
@@ -52,7 +52,7 @@ class MEQ(Instruction):
 @InstructionRegistry.register
 class EQU(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = self.getMemory(self.args[0])
             bValue = self.getMemory(self.args[1])
@@ -67,7 +67,7 @@ class EQ(EQU):
 @InstructionRegistry.register
 class NEQ(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = self.getMemory(self.args[0])
             bValue = self.getMemory(self.args[1])
@@ -82,7 +82,7 @@ class NQ(NEQ):
 @InstructionRegistry.register
 class LES(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = self.getMemory(self.args[0])
             bValue = self.getMemory(self.args[1])
@@ -97,7 +97,7 @@ class LT(LES):
 @InstructionRegistry.register
 class GRT(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = self.getMemory(self.args[0])
             bValue = self.getMemory(self.args[1])
@@ -112,7 +112,7 @@ class GT(GRT):
 @InstructionRegistry.register
 class LEQ(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = self.getMemory(self.args[0])
             bValue = self.getMemory(self.args[1])
@@ -127,7 +127,7 @@ class LE(LEQ):
 @InstructionRegistry.register
 class GEQ(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             aValue = self.getMemory(self.args[0])
             bValue = self.getMemory(self.args[1])
@@ -142,7 +142,7 @@ class GE(GEQ):
 @InstructionRegistry.register
 class IsINF(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
             ctx.RungStatus = math.isinf(source)
@@ -150,7 +150,7 @@ class IsINF(Instruction):
 @InstructionRegistry.register
 class IsNAN(Instruction):
 
-    async def execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
             ctx.RungStatus = math.isnan(source)
