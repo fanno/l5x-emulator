@@ -9,6 +9,7 @@ from core.registry.instructionregistry import InstructionRegistry
 from datatypes.misc import CONTROL
 from datatypes.custom.array import Array
 from datatypes.custom.datavariant import DataVariant
+from datatypes.custom.string import STRING
 from datatypes.custom.udt import UDT
 
 from  instructions.helper import getPLCValue, getRootPath
@@ -237,20 +238,21 @@ class SIZE(Instruction):
             dim = getPLCValue(self.getMemory(self.args[1]))
             dest:DataVariant = self.getMemory(self.args[2])
 
-            if not isinstance(source, Array):
+            if not isinstance(source, (Array|STRING)):
                 raise NotImplementedError(f"{__class__} not implemented yet")
 
-            size = 0
-
-            match dim:
-                case 0:
-                    size = len(source)
-                case 1:
-                    size = len(source[0])
-                case 2:
-                    size = len(source[0][0])
-                case _:
-                    raise NotImplementedError(f"{__class__} not implemented yet")
+            if isinstance(source, STRING):
+                size = source._maxlength
+            else:
+                match dim:
+                    case 0:
+                        size = len(source)
+                    case 1:
+                        size = len(source[0])
+                    case 2:
+                        size = len(source[0][0])
+                    case _:
+                        raise NotImplementedError(f"{__class__} not implemented yet")
 
             dest.setValue(size)
 
