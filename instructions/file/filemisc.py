@@ -117,6 +117,11 @@ class COP(Instruction):
                         d.setValue(source)
 
 @InstructionRegistry.register
+class CPS(COP):
+    #TODO: cop and CPS is "identical", not sure how to implement memory lock while doing the copy
+    pass                        
+
+@InstructionRegistry.register
 class FLL(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
@@ -255,8 +260,3 @@ class SIZE(Instruction):
                         raise NotImplementedError(f"{__class__} not implemented yet")
 
             dest.setValue(size)
-
-@InstructionRegistry.register
-class CPS(COP):
-    #TODO: cop and CPS is "identical", not sure how to implement memory lock while doing the copy
-    pass
