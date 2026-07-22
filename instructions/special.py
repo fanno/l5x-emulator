@@ -1,10 +1,10 @@
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
-from core.memory.helper import OutputType
 from datatypes.pid import PID as dtPID
-from datatypes.custom.datavariant import DataVariant
 from datatypes.misc import CONTROL
+
+from  instructions.helper import getPLCValue
 
 @InstructionRegistry.register
 class FBC(Instruction):
@@ -101,39 +101,22 @@ class DTR(Instruction):
 
     async def preScan(self, ctx):
         await super().preScan(ctx)
-        source = self.getMemory(self.args[0])
-        mask = self.getMemory(self.args[1])
+        source = getPLCValue(self.getMemory(self.args[0]))
+        mask = getPLCValue(self.getMemory(self.args[1]))
         reference = self.getMemory(self.args[2])
 
-        sourceValue = source
-        if isinstance(sourceValue, DataVariant):
-            sourceValue = sourceValue.getPLCValue()
-            
-        if isinstance(mask, DataVariant):
-            mask = mask.getPLCValue()
-
-        maskedSource = sourceValue & mask
+        maskedSource = source & mask
 
         reference.setValue(maskedSource)
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            source = self.getMemory(self.args[0])
-            mask = self.getMemory(self.args[1])
+            source = getPLCValue(self.getMemory(self.args[0]))
+            mask = getPLCValue(self.getMemory(self.args[1]))
             reference = self.getMemory(self.args[2])
+            referenceValue = getPLCValue(reference)
 
-            sourceValue = source
-            if isinstance(sourceValue, DataVariant):
-                sourceValue = sourceValue.getPLCValue()
-                
-            if isinstance(mask, DataVariant):
-                mask = mask.getPLCValue()
-            
-            referenceValue = reference
-            if isinstance(referenceValue, DataVariant):
-                referenceValue = referenceValue.getPLCValue()
-
-            maskedSource = sourceValue & mask
+            maskedSource = source & mask
             maskedRef = referenceValue & mask
 
             if maskedSource == maskedRef:

@@ -3,68 +3,88 @@ import math
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
-from core.memory.helper import OutputType
+
+from  instructions.helper import getPLCValue
 
 @InstructionRegistry.register
 class SIN(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
+            value = getPLCValue(self.getMemory(self.args[0]))
+            dest = self.getMemory(self.args[1])
 
-            self.setMemory(self.args[1], math.sin(value))
+            dest.setValue(math.sin(value))
     
 @InstructionRegistry.register
 class COS(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
+            value = getPLCValue(self.getMemory(self.args[0]))
+            dest = self.getMemory(self.args[1])
 
-            self.setMemory(self.args[1], math.cos(value))
+            dest.setValue(math.cos(value))
     
 @InstructionRegistry.register
 class TAN(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
+            value = getPLCValue(self.getMemory(self.args[0]))
+            dest = self.getMemory(self.args[1])
 
-            self.setMemory(self.args[1], math.tan(value))
+            dest.setValue(math.tan(value))
     
 @InstructionRegistry.register
 class ASN(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
+            value = getPLCValue(self.getMemory(self.args[0]))
+            dest = self.getMemory(self.args[1])
 
-            self.setMemory(self.args[1], math.asin(value))
+            dest.setValue(math.asin(value))
     
+@InstructionRegistry.register
+class ASIN(ASN):
+    pass
+
 @InstructionRegistry.register
 class ACS(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
+            value = getPLCValue(self.getMemory(self.args[0]))
+            dest = self.getMemory(self.args[1])
 
-            self.setMemory(self.args[1], math.acos(value))
+            dest.setValue(math.acos(value))
     
+@InstructionRegistry.register
+class ACOS(ACS):
+    pass
+
 @InstructionRegistry.register
 class ATN(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            value = self.getMemory(self.args[0], OutputType.PLC)
+            value = getPLCValue(self.getMemory(self.args[0]))
+            dest = self.getMemory(self.args[1])
 
-            self.setMemory(self.args[1], math.atan(value))
+            dest.setValue(math.atan(value))
     
+@InstructionRegistry.register
+class ATAN(ATN):
+    pass
+
 @InstructionRegistry.register
 class ATAN2(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            y_val = self.getMemory(self.args[0], OutputType.PLC)
-            x_val = self.getMemory(self.args[1], OutputType.PLC)
+            y = getPLCValue(self.getMemory(self.args[0]))
+            x = getPLCValue(self.getMemory(self.args[1]))
+            dest = self.getMemory(self.args[2])
 
-            self.setMemory(self.args[2], math.atan2(y_val, x_val))
+            dest.setValue(math.atan2(y, x))

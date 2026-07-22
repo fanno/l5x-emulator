@@ -1,9 +1,6 @@
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
-from core.memory.helper import OutputType
-
-from datatypes.custom.datavariant import DataVariant
 
 @InstructionRegistry.register
 class XIC(Instruction):
@@ -30,14 +27,16 @@ class OTL(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            self.setMemory(self.args[0], True)
+            dest = self.getMemory(self.args[0])
+            dest.setValue(True)
 
 @InstructionRegistry.register
 class OTU(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            self.setMemory(self.args[0], False)
+            dest = self.getMemory(self.args[0])
+            dest.setValue(False)
 
 @InstructionRegistry.register
 class ONS(Instruction):

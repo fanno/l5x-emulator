@@ -8,23 +8,20 @@ from datatypes.misc import CONTROL
 
 from engine.errors import MajorFault
 
+from  instructions.helper import getPLCValue
+
 @InstructionRegistry.register
 class SQI(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             array = self.getMemory(self.args[0])
-            mask = self.getMemory(self.args[1])
-            source = self.getMemory(self.args[2])
+            mask = getPLCValue(self.getMemory(self.args[1]))
+            source = getPLCValue(self.getMemory(self.args[2]))
             control:CONTROL = self.getMemory(self.args[3])
 
-            if isinstance(mask, DataVariant):
-                mask = mask.getPLCValue()
-            if isinstance(source):
-                source = source.getPLCValue()
-
-            length = control.LEN.getPLCValue()
-            position = control.POS.getPLCValue()
+            length = getPLCValue(control.LEN)
+            position = getPLCValue(control.POS)
 
             control.ER.setValue(False)
 
@@ -51,18 +48,13 @@ class SQO(Instruction):
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             array:Array[DataVariant] = self.getMemory(self.args[0])
-            mask = self.getMemory(self.args[1])
+            mask = getPLCValue(self.getMemory(self.args[1]))
             dest = self.getMemory(self.args[2])
+            destValue = getPLCValue(dest)
             control:CONTROL = self.getMemory(self.args[3])
 
-            if isinstance(mask, DataVariant):
-                mask = mask.getPLCValue()
-            destValue = dest
-            if isinstance(destValue):
-                destValue = destValue.getPLCValue()
-
-            length = control.LEN.getPLCValue()
-            position = control.POS.getPLCValue()
+            length = getPLCValue(control.LEN)
+            position = getPLCValue(control.POS)
 
             if length > 0 and position >= 0:
                 control.EN.setValue(False)
@@ -81,14 +73,13 @@ class SQO(Instruction):
                     elif position > length:
                         control.ER.setValue(True)
 
-
                     if position > len(array) and False:
                         # TODO: this check is only ControllLogix 5580 implement Controller type check
                         control.ER.setValue(True)
                     else:
-                        sequencer_value = array[position].getPLCValue()
+                        sequencer_value = getPLCValue(array[position])
                         destValue = (destValue & ~mask) | (sequencer_value & mask)
-                        dest.setPLCValue(destValue)
+                        dest.setValue(destValue)
                 else:
                     control.DN.setValue(False)
             else:
@@ -114,12 +105,11 @@ class SQL(Instruction):
         array:Array[DataVariant] = self.getMemory(self.args[1])
         control:CONTROL = self.getMemory(self.args[2])
 
-        length = control.LEN.getPLCValue()
-        position = control.POS.getPLCValue()
+        length = getPLCValue(control.LEN)
+        position = getPLCValue(control.POS)
+
         if ctx.RungStatus:
-            sourceValue = source
-            if isinstance(sourceValue, DataVariant):
-                sourceValue = sourceValue.getPLCValue()
+            sourceValue = getPLCValue(source)
 
             if length > 0 and position >= 0:
                 if not control.EN:
@@ -134,7 +124,6 @@ class SQL(Instruction):
                 else:
                     control.DN.setValue(False)
 
-
                 if position == length:
                     control.DN.setValue(True)
                 else:
@@ -145,7 +134,7 @@ class SQL(Instruction):
                     if position > len(array):
                         raise MajorFault(4,20)
                     else:
-                        array[position].setPLCValue(sourceValue)
+                        array[position].setValue(sourceValue)
             else:
                 control.DN.setValue(False)
                 control.EN.setValue(True)

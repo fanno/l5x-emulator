@@ -1,11 +1,10 @@
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
-from core.memory.helper import OutputType
 
 from datatypes.custom.numbers import INTIGER, REAL
-from datatypes.custom.string import STRING
-from datatypes.custom.datavariant import DataVariant
+
+from  instructions.helper import getPLCValue
 
 @InstructionRegistry.register
 class DTOS(Instruction):
@@ -13,11 +12,8 @@ class DTOS(Instruction):
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
+            sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])
-            
-            sourceValue = source
-            if isinstance(sourceValue, DataVariant):
-                sourceValue = sourceValue.getPLCValue()
 
             value = ''
             if isinstance(source, INTIGER):
@@ -33,11 +29,8 @@ class STOD(Instruction):
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
+            sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])
-            
-            sourceValue = source
-            if isinstance(sourceValue, DataVariant):
-                sourceValue = sourceValue.getPLCValue()
 
             dest.setValue(sourceValue)
 
@@ -46,11 +39,8 @@ class RTOS(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
             source = self.getMemory(self.args[0])
+            sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])
-            
-            sourceValue = source
-            if isinstance(sourceValue, DataVariant):
-                sourceValue = sourceValue.getPLCValue()
 
             dest.setValue(format(sourceValue, 'f').rstrip('0').rstrip('.'))
             
@@ -60,11 +50,8 @@ class STOR(Instruction):
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
+            sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])
-            
-            sourceValue = source
-            if isinstance(sourceValue, DataVariant):
-                sourceValue = sourceValue.getPLCValue()
 
             dest.setValue(sourceValue)
 
@@ -75,11 +62,8 @@ class UPPER(Instruction):
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
+            sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])
-            
-            sourceValue = source
-            if isinstance(sourceValue, DataVariant):
-                sourceValue = sourceValue.getPLCValue()
 
             dest.setValue(sourceValue.upper())
 
@@ -89,10 +73,7 @@ class LOWER(Instruction):
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             source = self.getMemory(self.args[0])
+            sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])
-            
-            sourceValue = source
-            if isinstance(sourceValue, DataVariant):
-                sourceValue = sourceValue.getPLCValue()
 
             dest.setValue(sourceValue.lower())

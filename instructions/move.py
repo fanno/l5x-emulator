@@ -7,33 +7,33 @@ from core.registry.instructionregistry import InstructionRegistry
 from core.memory.helper import OutputType
 from instructions.helper import _AND, _OR, _XOR, _NOT
 
-from datatypes.custom.datavariant import DataVariant
-
 from datatypes.custom.udt import Resettable
+
+from  instructions.helper import getPLCValue
 
 @InstructionRegistry.register
 class MOV(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            result = self.getMemory(self.args[0])
-            self.setMemory(self.args[1], result)
+            result = getPLCValue(self.getMemory(self.args[0]))
+            dest = self.getMemory(self.args[1])
+
+            dest.setValue(result)
+
+@InstructionRegistry.register
+class MOVE(MOV):
+    pass
             
 @InstructionRegistry.register
 class MVM(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            source = self.getMemory(self.args[0])
-            mask = self.getMemory(self.args[1])
+            source = getPLCValue(self.getMemory(self.args[0]))
+            mask = getPLCValue(self.getMemory(self.args[1]))
             dest = self.getMemory(self.args[2])
-
-            if isinstance(source, DataVariant):
-                source = source.getPLCValue()
-            if isinstance(mask, DataVariant):
-                mask = mask.getPLCValue()
-            if isinstance(dest, DataVariant):
-                destValue = dest.getPLCValue()
+            destValue = getPLCValue(dest)
 
             bit_width=64 ## TODO:set depending on mask length or source or dest length ?
             
@@ -48,14 +48,9 @@ class AND(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            sourceA = self.getMemory(self.args[0])
-            sourceB = self.getMemory(self.args[1])
+            sourceA = getPLCValue(self.getMemory(self.args[0]))
+            sourceB = getPLCValue(self.getMemory(self.args[1]))
             dest = self.getMemory(self.args[2])
-
-            if isinstance(sourceA, DataVariant):
-                sourceA = sourceA.getPLCValue()
-            if isinstance(sourceB, DataVariant):
-                sourceB = sourceB.getPLCValue()
 
             destValue = _AND(sourceA, sourceB, 32) # should be 64 ?
 
@@ -66,14 +61,9 @@ class OR(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            sourceA = self.getMemory(self.args[0])
-            sourceB = self.getMemory(self.args[1])
+            sourceA = getPLCValue(self.getMemory(self.args[0]))
+            sourceB = getPLCValue(self.getMemory(self.args[1]))
             dest = self.getMemory(self.args[2])
-
-            if isinstance(sourceA, DataVariant):
-                sourceA = sourceA.getPLCValue()
-            if isinstance(sourceB, DataVariant):
-                sourceB = sourceB.getPLCValue()
 
             destValue = _OR(sourceA, sourceB, 32) # should be 64 ?
 
@@ -84,14 +74,9 @@ class XOR(Instruction):
     
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            sourceA = self.getMemory(self.args[0])
-            sourceB = self.getMemory(self.args[1])
+            sourceA = getPLCValue(self.getMemory(self.args[0]))
+            sourceB = getPLCValue(self.getMemory(self.args[1]))
             dest = self.getMemory(self.args[2])
-
-            if isinstance(sourceA, DataVariant):
-                sourceA = sourceA.getPLCValue()
-            if isinstance(sourceB, DataVariant):
-                sourceB = sourceB.getPLCValue()
 
             destValue = _XOR(sourceA, sourceB, 32) # should be 64 ?
 
@@ -102,11 +87,8 @@ class NOT(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            sourceA = self.getMemory(self.args[0])
+            sourceA = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
-
-            if isinstance(sourceA, DataVariant):
-                sourceA = sourceA.getPLCValue()
 
             destValue = _NOT(sourceA, 64) # should be 64?
             ## TODO length depend on data size in dest ?
@@ -127,7 +109,7 @@ class SWPB(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            sourceA = self.getMemory(self.args[0]).getPLCValue()
+            sourceA = getPLCValue(self.getMemory(self.args[0]))
             orderMode = self.args[1]
             dest = self.getMemory(self.args[2])
 
@@ -170,29 +152,18 @@ class BTD(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            source = self.getMemory(self.args[0])
-            sourceBit = self.getMemory(self.args[1])
+            source = getPLCValue(self.getMemory(self.args[0]))
+            sourceBit = getPLCValue(self.getMemory(self.args[1]))
             dest = self.getMemory(self.args[2])
-            destBit = self.getMemory(self.args[3])
-            length = self.getMemory(self.args[4])
-
-            if isinstance(sourceBit, DataVariant):
-                sourceBit = sourceBit.getPLCValue()
-            if isinstance(destBit, DataVariant):
-                destBit = destBit.getPLCValue()            
-            if isinstance(length, DataVariant):
-                length = length.getPLCValue()
-            if isinstance(source, DataVariant):
-                sourceVal = source.getPLCValue()
-            destVal = dest
-            if isinstance(destVal, DataVariant):
-                destVal = destVal.getPLCValue()
+            destVal = getPLCValue(dest)
+            destBit = getPLCValue(self.getMemory(self.args[3]))
+            length = getPLCValue(self.getMemory(self.args[4]))
 
             for i in range(length):
                 dest_clear_mask = ~(1 << (destBit + i))
                 destVal = destVal & dest_clear_mask
                 
-                src_bit_val = (sourceVal >> (sourceBit + i)) & 1
+                src_bit_val = (source >> (sourceBit + i)) & 1
                 
                 if src_bit_val:
                     destVal = destVal | (1 << (destBit + i))

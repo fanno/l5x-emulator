@@ -23,10 +23,10 @@ class Instruction:
             self.args = args
         self._memory = memory
 
-    def getMemory(self, path:list[str] | str, dataVariant:OutputType=OutputType.Raw) -> DataVariant|Array|UDT:
+    def getMemory(self, path:list[str] | str) -> DataVariant|Array|UDT:
         if self._memory is None:
             from core.memory.helper import getMemory
-            return getMemory(path, dataVariant)
+            return getMemory(path)
         else:
             return self._memory.get(path)
     

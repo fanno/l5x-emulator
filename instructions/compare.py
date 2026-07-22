@@ -35,6 +35,10 @@ class LIM(Instruction):
                     ctx.RungStatus = False
 
 @InstructionRegistry.register
+class LIMIT(LIM):
+    pass
+
+@InstructionRegistry.register
 class MEQ(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
@@ -57,6 +61,10 @@ class EQU(Instruction):
                 ctx.RungStatus = False
 
 @InstructionRegistry.register
+class EQ(EQU):
+    pass
+
+@InstructionRegistry.register
 class NEQ(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
@@ -65,7 +73,11 @@ class NEQ(Instruction):
             bValue = self.getMemory(self.args[1])
             
             if aValue == bValue:
-                ctx.RungStatus = False                
+                ctx.RungStatus = False
+                
+@InstructionRegistry.register
+class NQ(NEQ):
+    pass
 
 @InstructionRegistry.register
 class LES(Instruction):
@@ -79,6 +91,10 @@ class LES(Instruction):
                 ctx.RungStatus = False
 
 @InstructionRegistry.register
+class LT(LES):
+    pass
+
+@InstructionRegistry.register
 class GRT(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
@@ -88,6 +104,10 @@ class GRT(Instruction):
 
             if aValue <= bValue:
                 ctx.RungStatus = False
+
+@InstructionRegistry.register
+class GT(GRT):
+    pass
 
 @InstructionRegistry.register
 class LEQ(Instruction):
@@ -101,6 +121,10 @@ class LEQ(Instruction):
                 ctx.RungStatus = False
 
 @InstructionRegistry.register
+class LE(LEQ):
+    pass
+
+@InstructionRegistry.register
 class GEQ(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
@@ -110,6 +134,10 @@ class GEQ(Instruction):
             
             if aValue < bValue:
                 ctx.RungStatus = False
+
+@InstructionRegistry.register
+class GE(GEQ):
+    pass
 
 @InstructionRegistry.register
 class IsINF(Instruction):

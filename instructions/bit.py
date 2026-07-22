@@ -10,7 +10,6 @@ from core.objectregistry import ObjectRegistry
 from core.registry.instructionregistry import InstructionRegistry
 from core.memory.identity import Identity
 
-
 @dataclass
 class ONSMemory(Identity):
     ONS:BOOL = field(init=False, default_factory=BOOL)

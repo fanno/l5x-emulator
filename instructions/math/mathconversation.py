@@ -3,57 +3,71 @@ import math
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
-from core.memory.helper import OutputType
+
+from  instructions.helper import getPLCValue
 
 @InstructionRegistry.register
 class DEG(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        value = self.getMemory(self.args[0], OutputType.PLC)
+        value = getPLCValue(self.getMemory(self.args[0]))
+        dest = self.getMemory(self.args[1])
 
         if not isinstance(value, (int, float)):
             raise NotImplementedError("Unsupported DEG combination")
 
-        self.setMemory(self.args[1], float(math.degrees(value)))
+        dest.setValue(float(math.degrees(value)))
 
 @InstructionRegistry.register
 class RAD(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        value = self.getMemory(self.args[0], OutputType.PLC)
+        value = getPLCValue(self.getMemory(self.args[0]))
+        dest = self.getMemory(self.args[1])
 
         if not isinstance(value, (int, float)):
             raise NotImplementedError("Unsupported RAD combination")
 
-        self.setMemory(self.args[1], float(math.radians(value)))
+        dest.setValue(float(math.radians(value)))
 
 @InstructionRegistry.register
 class TOD(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        value = self.getMemory(self.args[0], OutputType.PLC)
+        value = getPLCValue(self.getMemory(self.args[0]))
+        dest = self.getMemory(self.args[1])
 
         if not isinstance(value, (int, float)):
             raise NotImplementedError("Unsupported TOD combination")
 
-        self.setMemory(self.args[1], int(value))
+        dest.setValue(int(value))
+
+@InstructionRegistry.register
+class TO_BCD(TOD):
+    pass
 
 @InstructionRegistry.register
 class FRD(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        value = self.getMemory(self.args[0], OutputType.PLC)
+        value = getPLCValue(self.getMemory(self.args[0]))
+        dest = self.getMemory(self.args[1])
 
         if not isinstance(value, (int, float)):
             raise NotImplementedError("Unsupported FRD combination")
 
-        self.setMemory(self.args[1], float(value - int(value)))
+        dest.setValue(float(value - int(value)))
+
+@InstructionRegistry.register
+class BCD_TO(FRD):
+    pass
 
 @InstructionRegistry.register
 class TRN(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        value = self.getMemory(self.args[0], OutputType.PLC)
+        value = getPLCValue(self.getMemory(self.args[0]))
+        dest = self.getMemory(self.args[1])
 
         if not isinstance(value, (int, float)):
             raise NotImplementedError("Unsupported TRN combination")
@@ -63,10 +77,8 @@ class TRN(Instruction):
         else:
             result = int(value - 0.5)
 
-        self.setMemory(self.args[1], result)
+        dest.setValue(result)
     
 @InstructionRegistry.register
-class TRUNC(Instruction):
-
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+class TRUNC(TRN):
+    pass

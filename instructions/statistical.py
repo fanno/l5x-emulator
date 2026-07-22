@@ -8,8 +8,9 @@ from core.memory.identity import Identity
 from core.memory.helper import OutputType
 from datatypes.motion import MOVING_AVERAGE, MOVING_STD_DEV
 from datatypes.capture import MINIMUM_CAPTURE, MAXIMUM_CAPTURE
-from datatypes.custom.array import Array
-from datatypes.custom.numbers import REAL, DINT
+from datatypes.custom.numbers import REAL
+
+from  instructions.helper import getPLCValue
 
 @dataclass
 class SAMPELMemory(Identity):
@@ -24,13 +25,15 @@ class MAVE(Instruction):
 
         number_of_samples = average.NumberOfSamples.getPLCValue()
 
+        raise NotImplementedError(f"{__class__} not implemented yet")
+
         if not ctx.RungStatus or number_of_samples < 1:
             samples = 0
         else:
             samples = memory.SAMPELS.getPLCValue()
 
-            storages:list[float] = self.getMemory(self.args[1], OutputType.PLC)
-            weights:list[float] = self.getMemory(self.args[2], OutputType.PLC)
+            storages:list[float] = self.getMemory(self.args[1])
+            weights:list[float] = self.getMemory(self.args[2])
         
             storages.insert(0, average.In.getPLCValue())
             storages.pop(number_of_samples)
@@ -65,16 +68,18 @@ class MSTD(Instruction):
         average:MOVING_STD_DEV = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(average, SAMPELMemory)
 
-        number_of_samples = average.NumberOfSamples.getPLCValue()
+        number_of_samples = getPLCValue(average.NumberOfSamples)
+
+        raise NotImplementedError(f"{__class__} not implemented yet")
 
         if not ctx.RungStatus or number_of_samples < 1:
             samples = 0
         else:
-            samples = memory.SAMPELS.getPLCValue()
+            samples = getPLCValue(average.SAMPELS)
 
-            storages:list[float] = self.getMemory(self.args[1], OutputType.PLC)
-        
-            storages.insert(0, average.In.getPLCValue())
+            storages:list[float] = self.getMemory(self.args[1])
+
+            storages.insert(0, getPLCValue(average.In))
             storages.pop(number_of_samples)
 
             if samples < number_of_samples:

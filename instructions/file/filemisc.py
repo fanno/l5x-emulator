@@ -5,22 +5,13 @@ from asyncua import ua
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
-from core.memory.helper import OutputType
 
 from datatypes.misc import CONTROL
 from datatypes.custom.array import Array
 from datatypes.custom.datavariant import DataVariant
+from datatypes.custom.udt import UDT
 
-
-def dint_to_bools(value, count):
-    return [(value >> i) & 1 == 1 for i in range(count)]
-
-def bools_to_dint(bools):
-    value = 0
-    for i, b in enumerate(bools):
-        if b:
-            value |= (1 << i)
-    return value
+from  instructions.helper import getPLCValue, getRootPath
 
 @InstructionRegistry.register
 class FAL(Instruction):
@@ -34,16 +25,11 @@ class FAL(Instruction):
             mode = self.args[1]
             
             dst = self.getMemory(self.args[2])
-            operation = self.getMemory(self.args[3], OutputType.PLC)
-            length = self.getMemory(self.args[4], OutputType.PLC)
-
-            if not isinstance(src, list) or not isinstance(dst, list):
-                raise NotImplementedError(f"{__class__} not implemented yet")
-
-            if not callable(operation):
-                raise NotImplementedError(f"{__class__} not implemented yet")
+            operation = self.getMemory(self.args[3])
+            length = getPLCValue(self.getMemory(self.args[4]))
 
             for i in range(min(length, len(src))):
+            
                 dst[i] = operation(src[i])
 
             self.setMemory(self.args[1], dst)
@@ -58,12 +44,9 @@ class FSC(Instruction):
             raise NotImplementedError(f"{__class__} not implemented yet")
             '''
             control:CONTROL = self.getMemory(self.args[0])
-            array = self.getMemory(self.args[1], OutputType.PLC)
-            target = self.getMemory(self.args[2], OutputType.PLC)
+            array = self.getMemory(self.args[1])
+            target = self.getMemory(self.args[2])
             dest = self.args[3]
-
-            if not isinstance(array, list):
-                raise NotImplementedError(f"{__class__} not implemented yet")
 
             index = -1
             for i, val in enumerate(array):
@@ -79,62 +62,97 @@ class COP(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            source:Node = self.getMemory(self.args[0], OutputType.Raw)
-            dest:Node = self.getMemory(self.args[1], OutputType.Raw)
-            length = self.getMemory(self.args[2], OutputType.PLC)
+            src_path, src_dims = getRootPath(self.args[0])
+            dest_path, dest_dims = getRootPath(self.args[1])
+            length = getPLCValue(self.getMemory(self.args[2]))
 
-            if isinstance(source, Node) and isinstance(source, Node):
-                sourceDT = await source.read_data_type_as_variant_type()
-                destDT = await dest.read_data_type_as_variant_type()
+            if length > 0:
+                source:Array[DataVariant]|DataVariant|UDT = self.getMemory(src_path)
+                dest:Array[DataVariant]|DataVariant|UDT = self.getMemory(dest_path)
 
-                if sourceDT is not None and destDT is not None:
-                    sourceValue = await source.read_value()
-                    destValue = await source.read_value()
+                if len(src_dims)  > 1 or len(dest_dims) > 1:
+                    raise NotImplementedError(f"{__class__} Multi-dimensional arrays not yet implemented")
+            
+                if not src_dims and not dest_dims:
+                    dest.setValue(source)
+                else:
+                    if src_dims and dest_dims:
+                        src_start = src_dims[0]
+                        dest_start = dest_dims[0]
 
-                    # BOOL[] → DINT
-                    if sourceDT == "BOOL_ARRAY" and destDT == "DINT":
-                        pass
-                        #return bools_to_dint(sourceValue[:32])
+                        if src_start + length > len(source):
+                            raise IndexError(f"{__class__} Source array overflow: {src_start} + {length}")
+                        if dest_start + length > len(dest):
+                            raise IndexError(f"{__class__} Destination array overflow: {dest_start} + {length}")
 
-                    # DINT → BOOL[]
-                    if sourceDT == "DINT" and destDT == "BOOL_ARRAY":
-                        pass
-                        #return dint_to_bools(sourceValue, length)
+                        for i in range(length):
+                            s = source[src_start + i]
+                            d = dest[dest_start + i]
+                            if type(s) != type(d):
+                                raise TypeError(f"{__class__} Source and dest not the same")
 
-                    # Same-type array copy
-                    if sourceDT == destDT:
-                        pass
-                        #return sourceValue[:length].copy()
+                            d.setValue(s)
+                    elif src_dims and not dest_dims:
+                        if length != 1:
+                            raise ValueError(f"{__class__} Array→scalar requires length=1, got {length}")
+                        
+                        src_start = src_dims[0]
 
-                    # INT[] → DINT[] (combine pairs)
-                    if sourceDT == "INT_ARRAY" and destDT == "DINT_ARRAY":
-                        result = []
-                        for i in range(0, length * 2, 2):
-                            lo = sourceValue[i] & 0xFFFF
-                            hi = sourceValue[i+1] & 0xFFFF
-                            result.append((hi << 16) | lo)
-                        #return result
+                        s = source[src_start + i]
 
-                    raise NotImplementedError(f"{__class__} not implemented yet")
+                        if type(s) != type(dest):
+                            raise TypeError(f"{__class__} Source and dest not the same")
+                        
+                        dest.setValue(s)
+                    elif not src_dims and dest_dims:
+                        if length != 1:
+                            raise ValueError(f"{__class__} Scalar→array requires length=1, got {length}")
+                        dest_start = dest_dims[0]
+
+                        d = dest[dest_start]
+                        if type(source) != type(d):
+                            raise TypeError(f"{__class__} Source and dest not the same")
+
+                        d.setValue(source)
 
 @InstructionRegistry.register
 class FLL(Instruction):
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            sourceValue = self.getMemory(self.args[0], OutputType.PLC)
-            destRef:Node = self.getMemory(self.args[1], OutputType.Raw)
-            lengthValue = self.getMemory(self.args[2], OutputType.PLC)
+            dest_path, dest_dims = getRootPath(self.args[1])
+            length = getPLCValue(self.getMemory(self.args[2]))
 
-            if isinstance(destRef, Node):
-                # TODO
-                destRefDT:ua.VariantType = await destRef.read_data_type_as_variant_type()
+            if length > 0:
+                source:Array[DataVariant]|DataVariant|UDT = self.getMemory(self.args[0])
+                dest:Array[DataVariant]|DataVariant|UDT = self.getMemory(dest_path)
 
-                if destRefDT is not None:
-                    destValue = await destRef.read_value()
-                    #TODO need to fixe this
-                    raise NotImplementedError(f"{__class__} not implemented yet")
-                    self.setMemory(self.args[3], sourceValue)
+                if len(dest_dims) > 1:
+                    raise NotImplementedError(f"{__class__} Multi-dimensional arrays not yet implemented")
+            
+                if not dest_dims:
+                    dest.setValue(source)
+                else:
+                    if dest_dims:
+                        dest_start = dest_dims[0]
+
+                        if dest_start + length > len(dest):
+                            raise IndexError(f"{__class__} Destination array overflow: {dest_start} + {length}")
+
+                        for i in range(length):
+                            d = dest[dest_start + i]
+                            if type(source) != type(d):
+                                raise TypeError(f"{__class__} Source and dest not the same")
+
+                            d.setValue(source)
+                    else:
+                        if length != 1:
+                            raise ValueError(f"{__class__} Array→scalar requires length=1, got {length}")
+
+                        if type(source) != type(dest):
+                            raise TypeError(f"{__class__} Source and dest not the same")
+                        
+                        dest.setValue(source)
 
 @InstructionRegistry.register
 class AVE(Instruction):
@@ -150,24 +168,13 @@ class AVE(Instruction):
         control:CONTROL = self.getMemory(self.args[3])
 
         if ctx.RungStatus:
-            arrayName = self.args[0]
 
-            if arrayName.find("[") > -1 :
-                arrayName , rest = self.args[0].split("[")
+            arrayName, dims = getRootPath(self.args[0])
+            array:Array = self.getMemory(arrayName)
 
-                rest = rest.replace("]", "")
-
-                dims = rest.split(",")
-
-                for index in range(len(dims)):
-                    dims[index] = self.getMemory(dims[index], OutputType.PLC)
-            else:
-                dims = [0]
-            
             if len(dims) > 1:
                 raise NotImplementedError(f"{__class__} 2d/3d array, not implemented yet")
-
-            array:Array = self.getMemory(arrayName)
+            
             arrayDim = array.getDim()
 
             dim = self.getMemory(self.args[1])
@@ -225,32 +232,29 @@ class SIZE(Instruction):
         if ctx.RungStatus:
             dim = self.args[1]
 
-            sourceRef:Node = self.getMemory(self.args[0], OutputType.Raw)
-            
-            if isinstance(sourceRef, Node):
-                # TODO
-                sourceDT:ua.VariantType = await sourceRef.read_data_type_as_variant_type()
+            source, dims = getRootPath(self.args[0])
+            source = self.getMemory(source)
+            dim = getPLCValue(self.getMemory(self.args[1]))
+            dest:DataVariant = self.getMemory(self.args[2])
 
-                destValue = await sourceRef.read_value()
-
-                self.setMemory(self.args[2], len(destValue))
-                #TODO need to fixe this ??? not sure this is working
-                #TODO need to also figure out dim to vary
+            if not isinstance(source, Array):
                 raise NotImplementedError(f"{__class__} not implemented yet")
+
+            size = 0
+
+            match dim:
+                case 0:
+                    size = len(source)
+                case 1:
+                    size = len(source[0])
+                case 2:
+                    size = len(source[0][0])
+                case _:
+                    raise NotImplementedError(f"{__class__} not implemented yet")
+
+            dest.setValue(size)
 
 @InstructionRegistry.register
-class CPS(Instruction):
-
-    async def execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
-            src = self.getMemory(self.args[0], OutputType.PLC)
-            dst = self.getMemory(self.args[1], OutputType.PLC)
-            length = self.getMemory(self.args[2], OutputType.PLC)
-
-            if not isinstance(src, list) or not isinstance(dst, list):
-                raise NotImplementedError(f"{__class__} not implemented yet")
-
-            for i in range(min(length, len(src))):
-                dst[i] = src[i]
-
-            self.setMemory(self.args[1], dst)
+class CPS(COP):
+    #TODO: cop and CPS is "identical", not sure how to implement memory lock while doing the copy
+    pass

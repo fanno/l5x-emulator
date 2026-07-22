@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.00" TargetName="Pxxxx_AlarmTest" TargetType="Controller" ContainsContext="false" ExportDate="Tue Jul 21 19:19:08 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
-<Controller Use="Target" Name="Pxxxx_AlarmTest" ProcessorType="5069-L330ERMS2" MajorRev="35" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Tue Jul 21 19:18:54 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.00" TargetName="Pxxxx_AlarmTest" TargetType="Controller" ContainsContext="false" ExportDate="Wed Jul 22 20:02:52 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Target" Name="Pxxxx_AlarmTest" ProcessorType="5069-L330ERMS2" MajorRev="35" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Wed Jul 22 20:02:41 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
  MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false" EtherNetIPMode="A1/A2: Linear/DLR" AutoDiagsEnabled="true" WebServerEnabled="true">
 <RedundancyInfo Enabled="false" KeepTestEditsOnSwitchOver="false"/>
 <Security Code="0" ChangesToDetect="16#ffff_ffff_ffff_ffff"/>
@@ -2561,7 +2561,7 @@
 </Rung>
 <Rung Number="2" Type="N">
 <Text>
-<![CDATA[XIC(NOT_IMPLEMENTED)COP(FileMisc.COP_Source[0],FileMisc.COP_Dest[0],2);]]>
+<![CDATA[COP(FileMisc.COP_Source[0],FileMisc.COP_Dest[0],2);]]>
 </Text>
 </Rung>
 <Rung Number="3" Type="N">
@@ -2586,12 +2586,12 @@
 </Rung>
 <Rung Number="7" Type="N">
 <Text>
-<![CDATA[SIZE(FileMisc.SIZE_Array,0,FileMisc.SIZE);]]>
+<![CDATA[SIZE(FileMisc.SIZE_Array[0],0,FileMisc.SIZE);]]>
 </Text>
 </Rung>
 <Rung Number="8" Type="N">
 <Text>
-<![CDATA[XIC(NOT_IMPLEMENTED)CPS(FileMisc.CPS_Source[0],FileMisc.CPS_Dest[0],2);]]>
+<![CDATA[CPS(FileMisc.CPS_Source[0],FileMisc.CPS_Dest[0],2);]]>
 </Text>
 </Rung>
 </RLLContent>
