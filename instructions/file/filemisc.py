@@ -68,8 +68,8 @@ class COP(Instruction):
             length = getPLCValue(self.getMemory(self.args[2]))
 
             if length > 0:
-                source:Array[DataVariant]|DataVariant|UDT = self.getMemory(src_path)
-                dest:Array[DataVariant]|DataVariant|UDT = self.getMemory(dest_path)
+                source = self.getMemory(src_path)
+                dest = self.getMemory(dest_path)
 
                 if len(src_dims)  > 1 or len(dest_dims) > 1:
                     raise NotImplementedError(f"{__class__} Multi-dimensional arrays not yet implemented")
@@ -130,8 +130,8 @@ class FLL(Instruction):
             length = getPLCValue(self.getMemory(self.args[2]))
 
             if length > 0:
-                source:Array[DataVariant]|DataVariant|UDT = self.getMemory(self.args[0])
-                dest:Array[DataVariant]|DataVariant|UDT = self.getMemory(dest_path)
+                source = self.getMemory(self.args[0])
+                dest = self.getMemory(dest_path)
 
                 if len(dest_dims) > 1:
                     raise NotImplementedError(f"{__class__} Multi-dimensional arrays not yet implemented")
@@ -176,7 +176,7 @@ class AVE(Instruction):
         if ctx.RungStatus:
 
             arrayName, dims = getRootPath(self.args[0])
-            array:Array = self.getMemory(arrayName)
+            array = self.getMemory(arrayName)
 
             if len(dims) > 1:
                 raise NotImplementedError(f"{__class__} 2d/3d array, not implemented yet")
@@ -243,7 +243,7 @@ class SIZE(Instruction):
             dim = getPLCValue(self.getMemory(self.args[1]))
             dest:DataVariant = self.getMemory(self.args[2])
 
-            if not isinstance(source, (Array|STRING)):
+            if not isinstance(source, (Array | STRING)):
                 raise NotImplementedError(f"{__class__} not implemented yet")
 
             if isinstance(source, STRING):
@@ -257,6 +257,6 @@ class SIZE(Instruction):
                     case 2:
                         size = len(source[0][0])
                     case _:
-                        raise NotImplementedError(f"{__class__} not implemented yet")
+                        raise ValueError(f"{__class__} dim value out of range {dim}")
 
             dest.setValue(size)
