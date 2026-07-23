@@ -1,7 +1,7 @@
 import logging
 
 from tkinter.ttk import Treeview, Scrollbar
-from tkinter import Event, PhotoImage, Entry, END
+from tkinter import Event, PhotoImage
 import tkinter as tk
 
 from typing import Any, Optional
@@ -22,7 +22,6 @@ from datatypes.custom.array import Array
 from datatypes.custom.dt import DT
 
 from collections.abc import Mapping, Sequence, Set
-
 
 from eventbus.eventbus import EventBus
 from core.events import UpdateVariableEvent
@@ -64,7 +63,7 @@ class Grid(Treeview):
 
     container:str = None
 
-    _edit_entry: Entry = None
+    _edit_entry: tk.Entry = None
 
     rawData = None
 
@@ -105,12 +104,17 @@ class Grid(Treeview):
 
         self.bind("<Button-1>", self._on_click)
         self.bind('<MouseWheel>', self._on_mousewheel)
-        self.bind("<<TreeviewOpen>>", lambda e: self.after(1, self._update_stripes))
-        self.bind("<<TreeviewClose>>", lambda e: self.after(1, self._update_stripes))
+        self.bind("<<TreeviewOpen>>", lambda e: self.after(1, self._on_view_changed))
+        self.bind("<<TreeviewClose>>", lambda e: self.after(1, self._on_view_changed))
+
+        self.bind("<Configure>", self._on_view_changed)
 
         self.updateTask()
 
     def _update_stripes(self, event:Event=None):
+        self._on_view_changed()
+
+
         index = 0
         def walk(parent_id):
             nonlocal index
@@ -135,8 +139,10 @@ class Grid(Treeview):
     def _on_scroll(self, *args):
         self.hideEdit()
         self.yview(*args)
+        self._on_view_changed()
 
     def updateData(self, container:str, data):
+        self.visible_iids = self.get_visible_items()
         self.container = container
 
         self.rawData = data
@@ -168,6 +174,7 @@ class Grid(Treeview):
             delta = -5 if event.delta > 0 else 5
 
         self.yview_scroll(delta, tk.UNITS)
+        self._on_view_changed()
         return 'break'
 
     def _populate(self, parent, data, path):
@@ -210,27 +217,47 @@ class Grid(Treeview):
             if data:
                 self.setItem(data.IID, value)
 
+    def _on_view_changed(self, event:Event=None):
+        self.visible_iids = self.get_visible_items()
+
+        for index, iid in enumerate(self.visible_iids):
+            tag = "odd" if index % 2 else "even"
+            self.item(iid, tags=(tag,))        
+
+    def get_visible_items(self):
+        visible = []
+        viewport_height = self.winfo_height()
+
+        y = 0
+        first = None
+
+        while y < viewport_height:
+            first = self.identify_row(y)
+            if first and self.bbox(first):
+                break
+            y += 5
+
+        if not first:
+            return visible
+
+        bbox = self.bbox(first)
+        if not bbox:
+            print("first:", repr(first))
+            print("bbox :", repr(self.bbox(first)))
+            print("open :", self.exists(first))
+            return visible
+
+        row_height = bbox[3]
+
+        for y in range(0, viewport_height + row_height, row_height):
+            iid = self.identify_row(y)
+
+            if iid:
+                visible.append(iid)
+        return visible
+
     def isVisible(self, iid):
-
-        self.i
-        idx = self.index(iid)
-
-        total = len(self.get_children(""))
-
-        if total == 0:
-            return False
-
-        top_frac, bottom_frac = self.yview()
-        
-        if top_frac == 0.0 and (bottom_frac == 1.0 or bottom_frac == 0.0):
-            return True
-        
-        row_frac = idx / total
-
-        margin = 0.01
-
-        return (top_frac - margin) <= row_frac <= (bottom_frac + margin)
-        return bool(self.bbox(iid))
+        return iid in self.visible_iids
 
     def _populateTypeRow(self, parent, data, path) -> bool:
         if isinstance(data, STRING):
@@ -258,7 +285,6 @@ class Grid(Treeview):
             self.data.add(DataPair(PATH=path,
                                    IID=iid,
                                    DATA=rawValue))
-
         if self.isVisible(iid) or send or path:
             variable = self.data.getById(iid)
 
@@ -307,7 +333,7 @@ class Grid(Treeview):
     def init_edit_cell(self, iid, column):
         x, y, width, height = self.bbox(iid, column)
 
-        edit = Entry(self)
+        edit = tk.Entry(self)
         edit.place(x=x, y=y, width=width, height=height)
 
         values = self.item(iid, "values")
@@ -354,8 +380,8 @@ class Grid(Treeview):
             data = self.data.getById(iid)
             if data:
                 EventBus.get().dispatch(UpdateVariableEvent(self.container,
-                                                        data.PATH,
-                                                        data.DATA))
+                                                            data.PATH,
+                                                            data.DATA))
 
     def isObjectLike(self, value):
         if isinstance(value, (bool, int, float, complex)):
