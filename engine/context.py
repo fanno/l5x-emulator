@@ -23,6 +23,8 @@ class ExecutionContext:
     Context:EmulatorContext = field(init=True, default_factory=EmulatorContext)
     EOT:bool = field(init=True, default=False)
     TND:bool = field(init=True, default=False)
+    PSC:bool = field(init=True, default='')
+    PSR:str = field(init=True, default='False')
     SFCTransition:bool = field(init=True, default=False)
     inMCR:bool = field(init=False, default=False)
     MCRActive:bool = field(init=False, default=False)

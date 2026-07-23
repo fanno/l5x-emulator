@@ -76,7 +76,7 @@ class NEQ(Instruction):
                 ctx.RungStatus = False
                 
 @InstructionRegistry.register
-class NQ(NEQ):
+class NE(NEQ):
     pass
 
 @InstructionRegistry.register

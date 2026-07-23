@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.00" TargetName="Pxxxx_AlarmTest" TargetType="Controller" ContainsContext="false" ExportDate="Wed Jul 22 20:02:52 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
-<Controller Use="Target" Name="Pxxxx_AlarmTest" ProcessorType="5069-L330ERMS2" MajorRev="35" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Wed Jul 22 20:02:41 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
- MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false" EtherNetIPMode="A1/A2: Linear/DLR" AutoDiagsEnabled="true" WebServerEnabled="true">
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="37.00" TargetName="Pxxxx_AlarmTest" TargetType="Controller" ContainsContext="false" ExportDate="Thu Jul 23 15:57:13 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Target" Name="Pxxxx_AlarmTest" ProcessorType="5069-L330ERMS2" MajorRev="37" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Thu Jul 23 15:57:02 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
+ MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false" EtherNetIPMode="A1/A2: Linear/DLR" AutoDiagsEnabled="true" WebServerEnabled="true" DataExchangeId="{F1F5254F-1BE4-45A7-9417-99212A9FD63C}"
+>
 <RedundancyInfo Enabled="false" KeepTestEditsOnSwitchOver="false"/>
 <Security Code="0" ChangesToDetect="16#ffff_ffff_ffff_ffff"/>
 <SafetyInfo SafetyLocked="false" SignatureRunModeProtect="false" ConfigureSafetyIOAlways="false" SafetyLevel="SIL2/PLd"/>
@@ -107,6 +108,26 @@
 <Member Name="IsNAN_Status" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTCompareTe22" BitNumber="1" ExternalAccess="Read/Write"/>
 <Member Name="isINF" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
 <Member Name="IsNAN" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="TEquipmentPhase" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZTEquipment0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Done" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="PFL_FaultCode" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTEquipment3" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="PFL" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment3" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="PCLF" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment3" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="PCMD" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="PCMD_Result" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="POVR" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="POVR_Result" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTEquipment10" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Pause" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment10" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="PATT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment10" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="PATT_Result" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTEquipment14" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="PDET" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment14" BitNumber="0" ExternalAccess="Read/Write"/>
 </Members>
 </DataType>
 <DataType Name="TestSubUDT" Family="NoFamily" Class="User">
@@ -350,7 +371,7 @@
 </DataType>
 </DataTypes>
 <Modules>
-<Module Name="Local" CatalogNumber="5069-L330ERMS2" Vendor="1" ProductType="14" ProductCode="223" Major="35" Minor="11" ParentModule="Local" ParentModPortId="1" Inhibited="false" MajorFault="true"
+<Module Name="Local" CatalogNumber="5069-L330ERMS2" Vendor="1" ProductType="14" ProductCode="223" Major="37" Minor="11" ParentModule="Local" ParentModPortId="1" Inhibited="false" MajorFault="true"
 >
 <EKey State="Disabled"/>
 <Ports>
@@ -363,7 +384,7 @@
 </Ports>
 </Module>
 <Module Name="ioModule" CatalogNumber="1734-AENT/B" Vendor="1" ProductType="12" ProductCode="108" Major="4" Minor="1" ParentModule="Local" ParentModPortId="2" Inhibited="false" MajorFault="false"
->
+ DataExchangeId="{BD284274-F63F-46F9-8264-D5A7D95A39CA}">
 <EKey State="CompatibleModule"/>
 <Ports>
 <Port Id="1" Address="0" Type="PointIO" Upstream="false">
@@ -374,7 +395,7 @@
 <Communications CommMethod="805306369">
 <Connections>
 <Connection Name="Output" RPI="20000" Type="Output" EventID="0" ProgrammaticallySendEventTrigger="false" Unicast="true">
-<InputTag ExternalAccess="Read/Write">
+<InputTag ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="Decorated">
 <Structure DataType="AB:1734_4SLOT:I:0">
 <DataValueMember Name="SlotStatusBits0_31" DataType="DINT" Radix="Binary" Value="2#0000_0000_0000_0000_0000_0000_0000_0000"/>
@@ -388,7 +409,7 @@
 </Structure>
 </Data>
 </InputTag>
-<OutputTag ExternalAccess="Read/Write">
+<OutputTag ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,0,[0,0,0,0]]]]>
 </Data>
@@ -411,13 +432,13 @@
 </ExtendedProperties>
 </Module>
 <Module Name="ioModuleInput" CatalogNumber="1734-IB8/C" Vendor="1" ProductType="7" ProductCode="216" Major="3" Minor="1" ParentModule="ioModule" ParentModPortId="1" Inhibited="false" MajorFault="false"
->
+ DataExchangeId="{EA1DBBAD-F7A2-4730-A720-6ED9DFD95096}">
 <EKey State="CompatibleModule"/>
 <Ports>
 <Port Id="1" Address="1" Type="PointIO" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
-<ConfigTag ConfigSize="36" ExternalAccess="Read/Write">
+<ConfigTag ConfigSize="36" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[40,103,1,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000,1000]]]>
 </Data>
@@ -453,13 +474,13 @@
 </ExtendedProperties>
 </Module>
 <Module Name="ioModuleOutput" CatalogNumber="1734-OB8/C" Vendor="1" ProductType="7" ProductCode="232" Major="3" Minor="1" ParentModule="ioModule" ParentModPortId="1" Inhibited="false" MajorFault="false"
->
+ DataExchangeId="{C29B6105-CCEF-430D-8340-D005D77DE2B1}">
 <EKey State="CompatibleModule"/>
 <Ports>
 <Port Id="1" Address="2" Type="PointIO" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
-<ConfigTag ConfigSize="12" ExternalAccess="Read/Write">
+<ConfigTag ConfigSize="12" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[16,123,1,0,0,0,0,0,0,0,0]]]>
 </Data>
@@ -516,13 +537,13 @@
 </ExtendedProperties>
 </Module>
 <Module Name="ioModuleIOL" CatalogNumber="1734-4IOL/B" Vendor="1" ProductType="155" ProductCode="1" Major="3" Minor="1" ParentModule="ioModule" ParentModPortId="1" Inhibited="false" MajorFault="false"
- SafetyEnabled="false">
+ SafetyEnabled="false" DataExchangeId="{D90AB7A0-AEDC-4926-A3E3-A0373CEF3620}">
 <EKey State="CompatibleModule"/>
 <Ports>
 <Port Id="1" Address="3" Type="PointIO" Upstream="true"/>
 </Ports>
 <Communications>
-<ConfigTag ConfigSize="56" ExternalAccess="Read/Write">
+<ConfigTag ConfigSize="56" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[60,100,1,3,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,103,103,103,103,103,103,103,103,0,0,0,0,0,0,0,0]]]>
 </Data>
@@ -556,7 +577,7 @@
 <Connections>
 <Connection Name="OutputData" RPI="20000" Type="StandardDataDriven" OutputSize="4" InputSize="28" EventID="0" ProgrammaticallySendEventTrigger="false" Priority="Scheduled" InputConnectionType="Unicast" InputProductionTrigger="Cyclic" ConnectionPath="20 04 24 64 2c 65 2c 66"
  InputTagSuffix="I">
-<InputTag ExternalAccess="Read/Write">
+<InputTag ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="Decorated">
 <Structure DataType="AB:1734_4IOL:I:0">
 <DataValueMember Name="Fault" DataType="DINT" Radix="Binary" Value="2#0000_0000_0000_0000_0000_0000_0000_0000"/>
@@ -661,7 +682,7 @@
 </ExtendedProperties>
 </Module>
 <Module Name="interroll" CatalogNumber="1101834" Vendor="629" ProductType="43" ProductCode="2" Major="2" Minor="4" ParentModule="Local" ParentModPortId="2" Inhibited="false" MajorFault="false"
- SafetyEnabled="false">
+ SafetyEnabled="false" DataExchangeId="{926CEB76-B9E2-4962-A71F-351D7BB50F77}">
 <EKey State="CompatibleModule"/>
 <Ports>
 <Port Id="2" Address="192.168.1.150" Type="Ethernet" Upstream="true"/>
@@ -670,7 +691,7 @@
 <Connections>
 <Connection Name="_200424012C642C65" RPI="20000" Type="StandardDataDriven" OutputSize="10" InputSize="44" EventID="0" ProgrammaticallySendEventTrigger="false" Priority="Scheduled" InputConnectionType="Unicast" InputProductionTrigger="Cyclic" ConnectionPath="20 04 24 01 2c 64 2c 65"
  InputTagSuffix="I" OutputTagSuffix="O">
-<InputTag ExternalAccess="Read/Write">
+<InputTag ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="Decorated">
 <Structure DataType="_0275:1101834_AB3D9FDF:I:0">
 <DataValueMember Name="ConnectionFaulted" DataType="BOOL" Value="0"/>
@@ -716,7 +737,7 @@
 </Structure>
 </Data>
 </InputTag>
-<OutputTag ExternalAccess="Read/Write">
+<OutputTag ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[[0,0,0,0,0,0,0,0,0,0]]]]>
 </Data>
@@ -797,7 +818,7 @@
 </AddOnInstructionDefinition>
 </AddOnInstructionDefinitions>
 <Tags>
-<Tag Name="AlarmActive" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="AlarmActive" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <AlarmConditions>
 <AlarmCondition Name="test" Input="." ConditionType="TRIP" Limit="0.0" Severity="500" OnDelay="0" OffDelay="0" ShelveDuration="0" MaxShelveDuration="0" Deadband="0.0" Used="true"
  AlarmSetOperIncluded="true" AlarmSetRollupIncluded="true" InFault="false" AckRequired="true" Latched="false" ProgAck="false" OperAck="false" ProgReset="false" OperReset="false" ProgSuppress="false" OperSuppress="false"
@@ -813,7 +834,84 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="LadderLogicAnd1" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="EquipmentPhase" Class="Standard" TagType="Base" DataType="PHASE" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[0,0,0,0,0,0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="PHASE">
+<DataValueMember Name="State" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Running" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Holding" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Restarting" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Stopping" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Aborting" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Resetting" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Idle" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Held" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Complete" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Stopped" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Aborted" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PauseControl" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="PauseEnabled" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Paused" DataType="BOOL" Value="0"/>
+<DataValueMember Name="AutoPauseEnabled" DataType="BOOL" Value="0"/>
+<DataValueMember Name="StepIndex" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Failure" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="UnitID" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Owner" DataType="DINT" Radix="Hex" Value="16#0000_0000"/>
+<DataValueMember Name="PendingRequest" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="DownloadInputParameters" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DownloadInputParametersSubset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UploadOutputParameters" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UploadOutputParametersSubset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DownloadOutputParameterLimits" DataType="BOOL" Value="0"/>
+<DataValueMember Name="AcquireResources" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ReleaseResources" DataType="BOOL" Value="0"/>
+<DataValueMember Name="SendMessageToLinkedPhase" DataType="BOOL" Value="0"/>
+<DataValueMember Name="SendMessageToLinkedPhaseAndWait" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ReceiveMessageFromLinkedPhase" DataType="BOOL" Value="0"/>
+<DataValueMember Name="CancelMessageToLinkedPhase" DataType="BOOL" Value="0"/>
+<DataValueMember Name="SendMessageToOperator" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ClearMessageToOperator" DataType="BOOL" Value="0"/>
+<DataValueMember Name="GenerateESignature" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DownloadBatchData" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DownloadMaterialTrackDataContainerInUse" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DownloadContainerBindingPriority" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DownloadSufficientMaterial" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DownloadMaterialTrackDatabaseData" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UploadMaterialTrackDataContainerInUse" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UploadContainerBindingPriority" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UploadMaterialTrackDatabaseData" DataType="BOOL" Value="0"/>
+<DataValueMember Name="AbortingRequest" DataType="BOOL" Value="0"/>
+<DataValueMember Name="NewInputParameters" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Producing" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Standby" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="EquipmentPhaseTest" Class="Standard" TagType="Base" DataType="TEquipmentPhase" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[0,0,0,0,0,0,0,0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="TEquipmentPhase">
+<DataValueMember Name="Done" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PFL_FaultCode" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="PFL" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PCLF" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PCMD" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="PCMD_Result" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="POVR" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="POVR_Result" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Pause" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PATT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PATT_Result" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="PDET" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="LadderLogicAnd1" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -821,7 +919,7 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="LadderLogicAnd2" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="LadderLogicAnd2" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -829,7 +927,7 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="LadderLogicOr1" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="LadderLogicOr1" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -837,7 +935,7 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="LadderLogicStatus" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="LadderLogicStatus" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -845,7 +943,7 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="NOT_IMPLEMENTED" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="NOT_IMPLEMENTED" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -853,7 +951,7 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="sttimer" Class="Standard" TagType="Base" DataType="FBD_TIMER" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="sttimer" Class="Standard" TagType="Base" DataType="FBD_TIMER" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[1,0,0,0,0,0,0,0,0,4,0,0]]]>
 </Data>
@@ -874,7 +972,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="testaoi_dint" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="testaoi_dint" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -882,7 +980,7 @@
 <DataValue DataType="DINT" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="test_aoi" Class="Standard" TagType="Base" DataType="testAOI" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="test_aoi" Class="Standard" TagType="Base" DataType="testAOI" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[1]]]>
 </Data>
@@ -925,9 +1023,233 @@
 </Routine>
 </Routines>
 </Program>
+<Program Name="EquipmentPhase" Type="EquipmentPhase" TestEdits="false" PreStateRoutineName="Logic" FaultRoutineName="Fault" Disabled="false" InitialStepIndex="0" InitialState="Idle" CompleteStateIfNotImpl="StateComplete" LossOfCommCmd="Hold" ExternalRequestAction="Clear"
+ UseAsFolder="false" AutoValueAssignStepToPhase="false" AutoValueAssignPhaseToStepOnComplete="true" AutoValueAssignPhaseToStepOnStopped="true" AutoValueAssignPhaseToStepOnAborted="true">
+<Tags>
+<Tag Name="DataValue" TagType="Base" DataType="DINT" Dimensions="5" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[0,0,0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Array DataType="DINT" Dimensions="5" Radix="Decimal">
+<Element Index="[0]" Value="0"/>
+<Element Index="[1]" Value="0"/>
+<Element Index="[2]" Value="0"/>
+<Element Index="[3]" Value="0"/>
+<Element Index="[4]" Value="0"/>
+</Array>
+</Data>
+</Tag>
+<Tag Name="EquipmentPhaseInstruction" TagType="Base" DataType="PHASE_INSTRUCTION" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="PHASE_INSTRUCTION">
+<DataValueMember Name="Status" DataType="DINT" Radix="Hex" Value="16#0000_0000"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ER" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PC" DataType="BOOL" Value="0"/>
+<DataValueMember Name="IP" DataType="BOOL" Value="0"/>
+<DataValueMember Name="WA" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ABORT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ERR" DataType="INT" Radix="Hex" Value="16#0000"/>
+<DataValueMember Name="EXERR" DataType="INT" Radix="Hex" Value="16#0000"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="IsPaused" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="Result" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+</Tags>
+<Routines>
+<Routine Name="Aborting" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,0)MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,10)MOVE(20,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,20)MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(EquipmentPhaseTest.Done)OTU(EquipmentPhaseTest.Done)PSC();]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Fault" Type="RLL"/>
+<Routine Name="Holding" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,0)MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,10)MOVE(20,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,20)PPD()MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(EquipmentPhaseTest.Done)OTU(EquipmentPhaseTest.Done)PSC();]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Logic" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[[XIC(EquipmentPhaseTest.PFL) OTU(EquipmentPhaseTest.PFL) PFL(EquipmentPhaseTest.PFL_FaultCode) ,XIC(EquipmentPhaseTest.PCLF) OTU(EquipmentPhaseTest.PCLF) PCLF(EquipmentPhase) ];]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[NE(EquipmentPhaseTest.PCMD,0)[EQ(EquipmentPhaseTest.PCMD,1) PCMD(EquipmentPhase,Resume,Result) ,EQ(EquipmentPhaseTest.PCMD,2) PCMD(EquipmentPhase,Hold,Result) ,EQ(EquipmentPhaseTest.PCMD,3) PCMD(EquipmentPhase,Restart,Result) ,EQ(EquipmentPhaseTest.PCMD,4) PCMD(EquipmentPhase,Stop,Result) ,EQ(EquipmentPhaseTest.PCMD,5) PCMD(EquipmentPhase,Abort,Result) ,EQ(EquipmentPhaseTest.PCMD,6) PCMD(EquipmentPhase,Reset,Result) ,EQ(EquipmentPhaseTest.PCMD,7) PCMD(EquipmentPhase,AutoPause,Result) ,EQ(EquipmentPhaseTest.PCMD,0) PCMD(EquipmentPhase,Pause,Result) ,EQ(EquipmentPhaseTest.PCMD,0) PCMD(EquipmentPhase,Resume,Result) ,MOVE(0,EquipmentPhaseTest.PCMD) ];]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[NE(EquipmentPhaseTest.POVR,0)[EQ(EquipmentPhaseTest.POVR,1) POVR(EquipmentPhase,Abort,Result) ,EQ(EquipmentPhaseTest.POVR,2) POVR(EquipmentPhase,Stop,Result) ,EQ(EquipmentPhaseTest.POVR,3) POVR(EquipmentPhase,Hold,Result) ,MOVE(0,EquipmentPhaseTest.POVR) ];]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Resetting" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[XIC(NOT_IMPLEMENTED)PXRQ(EquipmentPhaseInstruction,Download Input Parameters,DataValue);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,0)MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,10)MOVE(20,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,20)PPD()MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[XIC(EquipmentPhaseTest.Done)OTU(EquipmentPhaseTest.Done)PSC();]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Restarting" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,0)MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,10)MOVE(20,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,20)PPD()MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(EquipmentPhaseTest.Done)OTU(EquipmentPhaseTest.Done)PSC();]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Running" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,0)MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,10)MOVE(20,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,20)PPD()MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(EquipmentPhaseTest.Done)OTU(EquipmentPhaseTest.Done)PSC();]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Stopping" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,0)MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,10)MOVE(20,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[EQ(EquipmentPhase.StepIndex,20)PPD()MOVE(10,EquipmentPhase.StepIndex);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(EquipmentPhaseTest.Done)OTU(EquipmentPhaseTest.Done)PSC();]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+</Routines>
+</Program>
 <Program Name="EventProgram" TestEdits="false" MainRoutineName="Event" Disabled="false" Class="Standard" UseAsFolder="false">
 <Tags>
-<Tag Name="Event_Status" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Event_Status" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -950,7 +1272,7 @@
 </Program>
 <Program Name="LadderTest" TestEdits="false" MainRoutineName="main" Disabled="false" Class="Standard" UseAsFolder="false">
 <Tags>
-<Tag Name="Alarms" TagType="Base" DataType="TAlarms" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Alarms" TagType="Base" DataType="TAlarms" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,0,0,0,[0],0]]]>
 </Data>
@@ -974,7 +1296,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="ALMA" TagType="Base" DataType="ALARM_ANALOG" ExternalAccess="Read/Write">
+<Tag Name="ALMA" TagType="Base" DataType="ALARM_ANALOG" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="Alarm">
 <AlarmAnalogParameters EnableIn="false" InFault="false" HHEnabled="false" HEnabled="false" LEnabled="false" LLEnabled="false" AckRequired="true" ProgAckAll="false" OperAckAll="false" HHProgAck="false" HHOperAck="false"
  HProgAck="false" HOperAck="false" LProgAck="false" LOperAck="false" LLProgAck="false" LLOperAck="false" ROCPosProgAck="false" ROCPosOperAck="false" ROCNegProgAck="false" ROCNegOperAck="false" ProgSuppress="false"
@@ -985,7 +1307,7 @@
 <AlarmConfig/>
 </Data>
 </Tag>
-<Tag Name="ALMD" TagType="Base" DataType="ALARM_DIGITAL" ExternalAccess="Read/Write">
+<Tag Name="ALMD" TagType="Base" DataType="ALARM_DIGITAL" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="Alarm">
 <AlarmDigitalParameters Severity="500" MinDurationPRE="0" ShelveDuration="0" MaxShelveDuration="0" ProgTime="DT#1970-01-01-00:00:00.000_000Z" EnableIn="false" In="false" InFault="false" Condition="true" AckRequired="true" Latched="false"
  ProgAck="false" OperAck="false" ProgReset="false" OperReset="false" ProgSuppress="false" OperSuppress="false" ProgUnsuppress="false" OperUnsuppress="false" OperShelve="false" ProgUnshelve="false" OperUnshelve="false"
@@ -993,7 +1315,7 @@
 <AlarmConfig/>
 </Data>
 </Tag>
-<Tag Name="ASCIIConversions" TagType="Base" DataType="TASCIIConversions" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="ASCIIConversions" TagType="Base" DataType="TASCIIConversions" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00'
 		],[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00'
@@ -1055,7 +1377,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="ASCIIString" TagType="Base" DataType="TASCIIString" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="ASCIIString" TagType="Base" DataType="TASCIIString" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00'
 		],[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00'
@@ -1128,7 +1450,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="Bit" TagType="Base" DataType="TBitTest" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Bit" TagType="Base" DataType="TBitTest" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,0]]]>
 </Data>
@@ -1150,7 +1472,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="Compare" TagType="Base" DataType="TCompareTest" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Compare" TagType="Base" DataType="TCompareTest" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.00000000e+000,0.00000000e+000]]]>
 </Data>
@@ -1182,7 +1504,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="EquipmentPhase" TagType="Base" DataType="TSpecial" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="EquipmentPhase" TagType="Base" DataType="TSpecial" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[[0,0,0,0,0,0,0,0,0,0],[0,0,0],[0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0],[0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],0,0,0,0,[0,0.00000000e+000
 		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
@@ -1477,7 +1799,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="FileMisc" TagType="Base" DataType="TFileMisc" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="FileMisc" TagType="Base" DataType="TFileMisc" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,[0,5,0],[0,0,0,0,0],0,[0,0,0],[0,0],[0,0],[0,0],[0,0],[0,0,0,0,0],0,[0,0,0],[0,0,0,0,0],[0,0,0],[0,0,0,0,0],0.00000000e+000,[0,0,0],[0,0,0,0,0],0,[0,0],[0,0]]]]>
 </Data>
@@ -1610,7 +1932,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="FileShift" TagType="Base" DataType="TFileShift" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="FileShift" TagType="Base" DataType="TFileShift" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,[0,0,0],[0,0],0,[0,5,0],[0,0],0,0,[0,0,0],[0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],0,0,0]]]>
 </Data>
@@ -1711,7 +2033,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="ForBreak" TagType="Base" DataType="TForBreak" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="ForBreak" TagType="Base" DataType="TForBreak" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,0,0]]]>
 </Data>
@@ -1723,12 +2045,12 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="HMIBC" TagType="Base" DataType="HMIBC" ExternalAccess="Read/Write">
+<Tag Name="HMIBC" TagType="Base" DataType="HMIBC" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="HMIBC">
 <HMIBCParameters EnableIn="false" ProgFB="false" BitIndex="0" TerminalCount="0"/>
 </Data>
 </Tag>
-<Tag Name="HMIBC_Out" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="HMIBC_Out" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -1736,7 +2058,7 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="JSR_Input" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="JSR_Input" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -1744,7 +2066,7 @@
 <DataValue DataType="DINT" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="JSR_SBR" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="JSR_SBR" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -1752,7 +2074,7 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="LV" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="LV" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -1760,7 +2082,7 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="Math" TagType="Base" DataType="TMath" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Math" TagType="Base" DataType="TMath" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,0,0,0,0,0,0,0,0,0,0]]]>
 </Data>
@@ -1780,7 +2102,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="MathConversions" TagType="Base" DataType="TMathConversions" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="MathConversions" TagType="Base" DataType="TMathConversions" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0.00000000e+000,0.00000000e+000,0.00000000e+000,0,0,0.00000000e+000,0]]]>
 </Data>
@@ -1796,7 +2118,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="Move" TagType="Base" DataType="TMove" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Move" TagType="Base" DataType="TMove" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]]>
 </Data>
@@ -1820,7 +2142,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="ProgramControl" TagType="Base" DataType="TProgramControl" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="ProgramControl" TagType="Base" DataType="TProgramControl" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,0,0,0,0]]]>
 </Data>
@@ -1845,7 +2167,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="rwar" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Result" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -1853,7 +2175,15 @@
 <DataValue DataType="DINT" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="Sequencer" TagType="Base" DataType="TSequencer" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="rwar" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="Sequencer" TagType="Base" DataType="TSequencer" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,[0,10,0],0,0,[0,0,0,0,0,0,0,0,0,0],0,0,0,[0,0,0],[0,0,0],0]]]>
 </Data>
@@ -1918,7 +2248,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="sfc_test" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="sfc_test" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -1926,7 +2256,7 @@
 <DataValue DataType="DINT" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="Special" TagType="Base" DataType="TSpecial" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Special" TagType="Base" DataType="TSpecial" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[[0,0,0,0,0,0,0,0,0,0],[0,10,0],[0,10,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,10,0],[0,10,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],0,0,0,0,[0
 		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
@@ -2222,7 +2552,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="Step_000" TagType="Base" DataType="SFC_STEP" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Step_000" TagType="Base" DataType="SFC_STEP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[2097152,0,0,0,0,0,0]]]>
 </Data>
@@ -2249,7 +2579,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="Step_001" TagType="Base" DataType="SFC_STEP" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Step_001" TagType="Base" DataType="SFC_STEP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[2097152,0,0,0,0,0,0]]]>
 </Data>
@@ -2276,7 +2606,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="Stop_000" TagType="Base" DataType="SFC_STOP" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Stop_000" TagType="Base" DataType="SFC_STOP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,0,0,0,0]]]>
 </Data>
@@ -2289,7 +2619,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="TimerCounter" TagType="Base" DataType="TTimerCounter" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="TimerCounter" TagType="Base" DataType="TTimerCounter" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,[0,0,0],0,[0,0,0],[0,0,0],0,[0,0,0],0]]]>
 </Data>
@@ -2334,7 +2664,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="Tran_000" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Tran_000" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -2342,7 +2672,7 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="Tran_001" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Tran_001" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -2350,7 +2680,7 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="Trigonometry" TagType="Base" DataType="TTrigonometry" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Trigonometry" TagType="Base" DataType="TTrigonometry" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
 		,0.00000000e+000,0.00000000e+000,0.00000000e+000]]]>
@@ -2369,7 +2699,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="werwerwerwer" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="werwerwerwer" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -2411,7 +2741,7 @@
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[MOV('500',ASCIIConversions.STOD_Source)STOD(ASCIIConversions.STOD_Source,ASCIIConversions.STOD);]]>
+<![CDATA[MOVE('500',ASCIIConversions.STOD_Source)STOD(ASCIIConversions.STOD_Source,ASCIIConversions.STOD);]]>
 </Text>
 </Rung>
 <Rung Number="2" Type="N">
@@ -2421,12 +2751,12 @@
 </Rung>
 <Rung Number="3" Type="N">
 <Text>
-<![CDATA[MOV('500.346',ASCIIConversions.STOR_Source)STOR(ASCIIConversions.STOR_Source,ASCIIConversions.STOR);]]>
+<![CDATA[MOVE('500.346',ASCIIConversions.STOR_Source)STOR(ASCIIConversions.STOR_Source,ASCIIConversions.STOR);]]>
 </Text>
 </Rung>
 <Rung Number="4" Type="N">
 <Text>
-<![CDATA[MOV('AbCdEfGh',ASCIIConversions.UL);]]>
+<![CDATA[MOVE('AbCdEfGh',ASCIIConversions.UL);]]>
 </Text>
 </Rung>
 <Rung Number="5" Type="N">
@@ -2445,17 +2775,17 @@
 <RLLContent>
 <Rung Number="0" Type="N">
 <Text>
-<![CDATA[MOV('hello world',ASCIIString.Source);]]>
+<![CDATA[MOVE('hello world',ASCIIString.Source);]]>
 </Text>
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[MOV('world',ASCIIString.FIND_Search)FIND(ASCIIString.Source,ASCIIString.FIND_Search,1,ASCIIString.FIND_RESULT);]]>
+<![CDATA[MOVE('world',ASCIIString.FIND_Search)FIND(ASCIIString.Source,ASCIIString.FIND_Search,1,ASCIIString.FIND_RESULT);]]>
 </Text>
 </Rung>
 <Rung Number="2" Type="N">
 <Text>
-<![CDATA[MOV('AD',ASCIIString.INSERT_A)MOV('BC',ASCIIString.INSERT_B)INSERT(ASCIIString.INSERT_A,ASCIIString.INSERT_B,2,ASCIIString.INSERT_DEST);]]>
+<![CDATA[MOVE('AD',ASCIIString.INSERT_A)MOVE('BC',ASCIIString.INSERT_B)INSERT(ASCIIString.INSERT_A,ASCIIString.INSERT_B,2,ASCIIString.INSERT_DEST);]]>
 </Text>
 </Rung>
 <Rung Number="3" Type="N">
@@ -2513,7 +2843,7 @@
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[LIM(Compare.LIM_Low,Compare.LIM_Test,Compare.LIM_Hige)OTE(Compare.LIM_Status);]]>
+<![CDATA[LIMIT(Compare.LIM_Low,Compare.LIM_Test,Compare.LIM_Hige)OTE(Compare.LIM_Status);]]>
 </Text>
 </Rung>
 <Rung Number="2" Type="N">
@@ -2523,7 +2853,7 @@
 </Rung>
 <Rung Number="3" Type="N">
 <Text>
-<![CDATA[[EQU(Compare.A,Compare.B) OTE(Compare.EQU_Status) ,NEQ(Compare.A,Compare.B) OTE(Compare.NEQ_Status) ,LES(Compare.A,Compare.B) OTE(Compare.LES_Status) ,GRT(Compare.A,Compare.B) OTE(Compare.GRT_Status) ,LEQ(Compare.A,Compare.B) OTE(Compare.LEQ_Status) ,GEQ(Compare.A,Compare.B) OTE(Compare.GEQ_Status) ];]]>
+<![CDATA[[EQ(Compare.A,Compare.B) OTE(Compare.EQU_Status) ,NE(Compare.A,Compare.B) OTE(Compare.NEQ_Status) ,LT(Compare.A,Compare.B) OTE(Compare.LES_Status) ,GT(Compare.A,Compare.B) OTE(Compare.GRT_Status) ,LE(Compare.A,Compare.B) OTE(Compare.LEQ_Status) ,GE(Compare.A,Compare.B) OTE(Compare.GEQ_Status) ];]]>
 </Text>
 </Rung>
 <Rung Number="4" Type="N">
@@ -2538,11 +2868,16 @@
 </Rung>
 </RLLContent>
 </Routine>
-<Routine Name="Equipment_Phase" Type="RLL">
+<Routine Name="EquipmentPhase" Type="RLL">
 <RLLContent>
 <Rung Number="0" Type="N">
 <Text>
-<![CDATA[NOP();]]>
+<![CDATA[XIC(EquipmentPhaseTest.PATT)OTU(EquipmentPhaseTest.PATT)PATT(EquipmentPhase,EquipmentPhaseTest.PATT_Result);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIC(EquipmentPhaseTest.PDET)OTU(EquipmentPhaseTest.PDET)PDET(EquipmentPhase);]]>
 </Text>
 </Rung>
 </RLLContent>
@@ -2670,7 +3005,7 @@
 <RLLContent>
 <Rung Number="0" Type="N">
 <Text>
-<![CDATA[GRT(ForBreak.Index,5)BRK();]]>
+<![CDATA[GT(ForBreak.Index,5)BRK();]]>
 </Text>
 </Rung>
 </RLLContent>
@@ -2729,50 +3064,55 @@
 </Rung>
 <Rung Number="10" Type="N">
 <Text>
-<![CDATA[JSR(Program_Control,0);]]>
+<![CDATA[JSR(EquipmentPhase,0);]]>
 </Text>
 </Rung>
 <Rung Number="11" Type="N">
 <Text>
-<![CDATA[JSR(Sequencer,0);]]>
+<![CDATA[JSR(Program_Control,0);]]>
 </Text>
 </Rung>
 <Rung Number="12" Type="N">
 <Text>
-<![CDATA[JSR(Special,0);]]>
+<![CDATA[JSR(Sequencer,0);]]>
 </Text>
 </Rung>
 <Rung Number="13" Type="N">
 <Text>
-<![CDATA[JSR(HMIBC,0);]]>
+<![CDATA[JSR(Special,0);]]>
 </Text>
 </Rung>
 <Rung Number="14" Type="N">
 <Text>
-<![CDATA[JSR(Trigonometry,0);]]>
+<![CDATA[JSR(HMIBC,0);]]>
 </Text>
 </Rung>
 <Rung Number="15" Type="N">
 <Text>
-<![CDATA[JSR(Math_Conversions,0);]]>
+<![CDATA[JSR(Trigonometry,0);]]>
 </Text>
 </Rung>
 <Rung Number="16" Type="N">
 <Text>
-<![CDATA[JSR(Motion,0);]]>
+<![CDATA[JSR(Math_Conversions,0);]]>
 </Text>
 </Rung>
 <Rung Number="17" Type="N">
 <Text>
-<![CDATA[JSR(ASCII_String,0);]]>
+<![CDATA[JSR(Motion,0);]]>
 </Text>
 </Rung>
 <Rung Number="18" Type="N">
 <Text>
-<![CDATA[JSR(ASCII_Conversions,0);]]>
+<![CDATA[JSR(ASCII_String,0);]]>
 </Text>
 </Rung>
 <Rung Number="19" Type="N">
+<Text>
+<![CDATA[JSR(ASCII_Conversions,0);]]>
+</Text>
+</Rung>
+<Rung Number="20" Type="N">
 <Text>
 <![CDATA[JSR(Licence,0);]]>
 </Text>
@@ -2813,7 +3153,7 @@
 </Rung>
 <Rung Number="6" Type="N">
 <Text>
-<![CDATA[SQR(Math.A,Math.SQR);]]>
+<![CDATA[SQRT(Math.A,Math.SQR);]]>
 </Text>
 </Rung>
 <Rung Number="7" Type="N">
@@ -2842,17 +3182,17 @@
 </Rung>
 <Rung Number="2" Type="N">
 <Text>
-<![CDATA[TOD(MathConversions.Source2,MathConversions.TOD);]]>
+<![CDATA[TO_BCD(MathConversions.Source2,MathConversions.TOD);]]>
 </Text>
 </Rung>
 <Rung Number="3" Type="N">
 <Text>
-<![CDATA[FRD(MathConversions.Source2,MathConversions.FRD);]]>
+<![CDATA[BCD_TO(MathConversions.Source2,MathConversions.FRD);]]>
 </Text>
 </Rung>
 <Rung Number="4" Type="N">
 <Text>
-<![CDATA[TRN(MathConversions.Source,MathConversions.TRN)TRN(MathConversions.Source,MathConversions.TRN);]]>
+<![CDATA[TRUNC(MathConversions.Source,MathConversions.TRN)TRUNC(MathConversions.Source,MathConversions.TRN);]]>
 </Text>
 </Rung>
 </RLLContent>
@@ -2870,7 +3210,7 @@
 <RLLContent>
 <Rung Number="0" Type="N">
 <Text>
-<![CDATA[MOV(Move.A,Move.MOVE);]]>
+<![CDATA[MOVE(Move.A,Move.MOVE);]]>
 </Text>
 </Rung>
 <Rung Number="1" Type="N">
@@ -2934,7 +3274,7 @@
 </Rung>
 <Rung Number="3" Type="N">
 <Text>
-<![CDATA[MOV(5,ProgramControl.JSR_Input);]]>
+<![CDATA[MOVE(5,ProgramControl.JSR_Input);]]>
 </Text>
 </Rung>
 <Rung Number="4" Type="N">
@@ -3012,7 +3352,7 @@
 <RLLContent>
 <Rung Number="0" Type="N">
 <Text>
-<![CDATA[[XIC(Sequencer.SQI_Do) OTU(Sequencer.SQI_Do) SQI(Sequencer.Array,Sequencer.SQI_Mask,Sequencer.SQI_Source,Sequencer.SQI,?,?) ADD(Sequencer.SQI.POS,1,Sequencer.SQI.POS) ,GRT(Sequencer.SQI.POS,Sequencer.SQI.LEN) MOV(1,Sequencer.SQI.POS) ];]]>
+<![CDATA[[XIC(Sequencer.SQI_Do) OTU(Sequencer.SQI_Do) SQI(Sequencer.Array,Sequencer.SQI_Mask,Sequencer.SQI_Source,Sequencer.SQI,?,?) ADD(Sequencer.SQI.POS,1,Sequencer.SQI.POS) ,GT(Sequencer.SQI.POS,Sequencer.SQI.LEN) MOVE(1,Sequencer.SQI.POS) ];]]>
 </Text>
 </Rung>
 <Rung Number="1" Type="N">
@@ -3040,7 +3380,7 @@
 </STContent>
 </Condition>
 </Transition>
-<Stop ID="2" X="200" Y="240" Operand="Stop_000" HideDesc="false" DescX="280" DescY="220" DescWidth="0"/>
+<Stop ID="2" X="200" Y="340" Operand="Stop_000" HideDesc="false" DescX="280" DescY="320" DescWidth="0"/>
 <DirectedLink FromID="0" ToID="1" Show="true"/>
 <DirectedLink FromID="1" ToID="2" Show="true"/>
 </SFCContent>
@@ -3073,17 +3413,17 @@
 <RLLContent>
 <Rung Number="0" Type="N">
 <Text>
-<![CDATA[XIC(TimerCounter.TON_Run)MOV(20000,TimerCounter.TON.PRE)TON(TimerCounter.TON,?,?);]]>
+<![CDATA[XIC(TimerCounter.TON_Run)MOVE(20000,TimerCounter.TON.PRE)TON(TimerCounter.TON,?,?);]]>
 </Text>
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[XIC(TimerCounter.TOF_Run)MOV(20000,TimerCounter.TOF.PRE)TOF(TimerCounter.TOF,?,?);]]>
+<![CDATA[XIC(TimerCounter.TOF_Run)MOVE(20000,TimerCounter.TOF.PRE)TOF(TimerCounter.TOF,?,?);]]>
 </Text>
 </Rung>
 <Rung Number="2" Type="N">
 <Text>
-<![CDATA[XIC(TimerCounter.RTO_Run)MOV(20000,TimerCounter.RTO.PRE)RTO(TimerCounter.RTO,?,?);]]>
+<![CDATA[XIC(TimerCounter.RTO_Run)MOVE(20000,TimerCounter.RTO.PRE)RTO(TimerCounter.RTO,?,?);]]>
 </Text>
 </Rung>
 <Rung Number="3" Type="N">
@@ -3122,17 +3462,17 @@
 </Rung>
 <Rung Number="3" Type="N">
 <Text>
-<![CDATA[ASN(Trigonometry.Source,Trigonometry.ASN);]]>
+<![CDATA[ASIN(Trigonometry.Source,Trigonometry.ASN);]]>
 </Text>
 </Rung>
 <Rung Number="4" Type="N">
 <Text>
-<![CDATA[ACS(Trigonometry.Source,Trigonometry.ACS);]]>
+<![CDATA[ACOS(Trigonometry.Source,Trigonometry.ACS);]]>
 </Text>
 </Rung>
 <Rung Number="5" Type="N">
 <Text>
-<![CDATA[ATN(Trigonometry.Source,Trigonometry.ATN);]]>
+<![CDATA[ATAN(Trigonometry.Source,Trigonometry.ATN);]]>
 </Text>
 </Rung>
 <Rung Number="6" Type="N">
@@ -3146,7 +3486,7 @@
 </Program>
 <Program Name="periodic" TestEdits="false" MainRoutineName="main" Disabled="false" Class="Standard" UseAsFolder="false">
 <Tags>
-<Tag Name="Toggle" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="Toggle" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -3181,7 +3521,7 @@
 </Program>
 <Program Name="STTest" TestEdits="false" MainRoutineName="main" Disabled="false" Class="Standard" UseAsFolder="false">
 <Tags>
-<Tag Name="ST" TagType="Base" DataType="TSTTest" Constant="false" ExternalAccess="Read/Write">
+<Tag Name="ST" TagType="Base" DataType="TSTTest" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00'
 		],[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00'
@@ -3372,6 +3712,7 @@
 <ScheduledProgram Name="AOI"/>
 <ScheduledProgram Name="LadderTest"/>
 <ScheduledProgram Name="STTest"/>
+<ScheduledProgram Name="EquipmentPhase"/>
 </ScheduledPrograms>
 </Task>
 <Task Name="SafetyTask" Type="PERIODIC" Rate="20" Priority="10" Watchdog="20" DisableUpdateOutputs="false" InhibitTask="false" Class="Safety">
@@ -3390,5 +3731,6 @@
 <EthernetPort Port="2" Label="A2" PortEnabled="true"/>
 </EthernetPorts>
 <EthernetNetwork SupervisorModeEnabled="false" SupervisorPrecedence="0" BeaconInterval="400" BeaconTimeout="1960" VLANID="0"/>
+<OpcUaInfo EnabledPorts=""/>
 </Controller>
 </RSLogix5000Content>

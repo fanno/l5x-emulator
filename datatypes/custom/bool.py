@@ -37,7 +37,7 @@ class BOOL(COMPARE, DataVariant):
 
         if not isinstance(value, bool):
             value = bool(value)
-
+            
         return value
     
 @DataTypeRegistry.register

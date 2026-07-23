@@ -211,6 +211,8 @@ class Grid(Treeview):
                 self.setItem(data.IID, value)
 
     def isVisible(self, iid):
+
+        self.i
         idx = self.index(iid)
 
         total = len(self.get_children(""))

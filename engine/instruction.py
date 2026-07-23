@@ -85,7 +85,7 @@ class Instruction:
             case RoutineType.SFC:
                 await self.sfc_preScan(ctx)
     
-    async def postScan(self, ctx:"engine.context.ExecutionContext") -> None:
+    async def postScan(self, ctx:"") -> None:
         match ctx.Type:
             case RoutineType.RLL:
                 await self.ladder_postScan(ctx)
