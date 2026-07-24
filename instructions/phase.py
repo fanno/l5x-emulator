@@ -105,7 +105,6 @@ class PPD(Instruction):
             
         if ctx.RungStatus:
             phase:PHASE = self.getMemory(ctx.ProgramRef.Name)
-            print("PPD: ladder_execute")
             if phase.PauseEnabled:
                 phase.Paused.setValue(True)
     
