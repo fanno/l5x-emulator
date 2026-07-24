@@ -105,7 +105,7 @@ class PPD(Instruction):
             
         if ctx.RungStatus:
             phase:PHASE = self.getMemory(ctx.ProgramRef.Name)
-
+            print("PPD: ladder_execute")
             if phase.PauseEnabled:
                 phase.Paused.setValue(True)
     
@@ -144,12 +144,12 @@ class PCMD(Instruction):
                         else:
                             resultCode = invalidCode
                     case 'Stop':
-                        if phase.Restarting or phase.Idle or phase.Running or phase.Holding or phase.Restarting or phase.Held:
+                        if phase.Resetting or phase.Idle or phase.Running or phase.Holding or phase.Restarting or phase.Held:
                             changeState(phase, ctx.ProgramRef.InitialStepIndex, PhaseStates.Stopping)
                         else:
                             resultCode = invalidCode
                     case 'Abort':
-                        if phase.Restarting or phase.Idle or phase.Running or phase.Holding or phase.Restarting or phase.Held or phase.Stopping:
+                        if phase.Resetting or phase.Idle or phase.Running or phase.Holding or phase.Restarting or phase.Held or phase.Stopping:
                             changeState(phase, ctx.ProgramRef.InitialStepIndex, PhaseStates.Aborting)
                         else:
                             resultCode = invalidCode
@@ -187,12 +187,12 @@ class POVR(Instruction):
 
             match command:
                 case 'Abort':
-                    if phase.Restarting or phase.Idle or phase.Running or phase.Holding or phase.Restarting or phase.Held or phase.Stopping:
+                    if phase.Resetting or phase.Idle or phase.Running or phase.Holding or phase.Restarting or phase.Held or phase.Stopping:
                         changeState(phase, ctx.ProgramRef.InitialStepIndex, PhaseStates.Aborting)
                     else:
                         resultCode = invalidCode
                 case 'Stop':
-                    if phase.Restarting or phase.Idle or phase.Running or phase.Holding or phase.Restarting or phase.Held:
+                    if phase.Resetting or phase.Idle or phase.Running or phase.Holding or phase.Restarting or phase.Held:
                         changeState(phase, ctx.ProgramRef.InitialStepIndex, PhaseStates.Stopping)
                     else:
                         resultCode = invalidCode

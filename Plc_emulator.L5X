@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="37.00" TargetName="Pxxxx_AlarmTest" TargetType="Controller" ContainsContext="false" ExportDate="Thu Jul 23 15:57:13 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
-<Controller Use="Target" Name="Pxxxx_AlarmTest" ProcessorType="5069-L330ERMS2" MajorRev="37" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Thu Jul 23 15:57:02 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="37.00" TargetName="Pxxxx_AlarmTest" TargetType="Controller" ContainsContext="false" ExportDate="Fri Jul 24 13:06:59 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Target" Name="Pxxxx_AlarmTest" ProcessorType="5069-L330ERMS2" MajorRev="37" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Fri Jul 24 13:06:51 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
  MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false" EtherNetIPMode="A1/A2: Linear/DLR" AutoDiagsEnabled="true" WebServerEnabled="true" DataExchangeId="{F1F5254F-1BE4-45A7-9417-99212A9FD63C}"
 >
 <RedundancyInfo Enabled="false" KeepTestEditsOnSwitchOver="false"/>
@@ -118,16 +118,26 @@
 <Member Name="ZZZZZZZZZZTEquipment3" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
 <Member Name="PFL" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment3" BitNumber="0" ExternalAccess="Read/Write"/>
 <Member Name="PCLF" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment3" BitNumber="1" ExternalAccess="Read/Write"/>
-<Member Name="PCMD" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="BCMD_Start" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment3" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="BCMD_Hold" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment3" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="BCMD_Restart" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment3" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="BCMD_Stop" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment3" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="BCMD_Abort" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment3" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="BCMD_Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment3" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTEquipment12" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="BCMD_AutoPause" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment12" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="BCMD_Pause" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment12" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="BCMD_Resume" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment12" BitNumber="2" ExternalAccess="Read/Write"/>
 <Member Name="PCMD_Result" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
-<Member Name="POVR" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
-<Member Name="POVR_Result" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
-<Member Name="ZZZZZZZZZZTEquipment10" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
-<Member Name="Pause" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment10" BitNumber="0" ExternalAccess="Read/Write"/>
-<Member Name="PATT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment10" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTEquipment17" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="POVR_Abort" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment17" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="POVR_Stop" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment17" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="POVR_Hold" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment17" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="Pause" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment17" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="PATT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment17" BitNumber="4" ExternalAccess="Read/Write"/>
 <Member Name="PATT_Result" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
-<Member Name="ZZZZZZZZZZTEquipment14" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
-<Member Name="PDET" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment14" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTEquipment24" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="PDET" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTEquipment24" BitNumber="0" ExternalAccess="Read/Write"/>
 </Members>
 </DataType>
 <DataType Name="TestSubUDT" Family="NoFamily" Class="User">
@@ -892,7 +902,7 @@
 </Tag>
 <Tag Name="EquipmentPhaseTest" Class="Standard" TagType="Base" DataType="TEquipmentPhase" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
-<![CDATA[[0,0,0,0,0,0,0,0,0,0]]]>
+<![CDATA[[0,0,0,0,0,0,0,0]]]>
 </Data>
 <Data Format="Decorated">
 <Structure DataType="TEquipmentPhase">
@@ -900,10 +910,19 @@
 <DataValueMember Name="PFL_FaultCode" DataType="DINT" Radix="Decimal" Value="0"/>
 <DataValueMember Name="PFL" DataType="BOOL" Value="0"/>
 <DataValueMember Name="PCLF" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PCMD" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="BCMD_Start" DataType="BOOL" Value="0"/>
+<DataValueMember Name="BCMD_Hold" DataType="BOOL" Value="0"/>
+<DataValueMember Name="BCMD_Restart" DataType="BOOL" Value="0"/>
+<DataValueMember Name="BCMD_Stop" DataType="BOOL" Value="0"/>
+<DataValueMember Name="BCMD_Abort" DataType="BOOL" Value="0"/>
+<DataValueMember Name="BCMD_Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="BCMD_AutoPause" DataType="BOOL" Value="0"/>
+<DataValueMember Name="BCMD_Pause" DataType="BOOL" Value="0"/>
+<DataValueMember Name="BCMD_Resume" DataType="BOOL" Value="0"/>
 <DataValueMember Name="PCMD_Result" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="POVR" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="POVR_Result" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="POVR_Abort" DataType="BOOL" Value="0"/>
+<DataValueMember Name="POVR_Stop" DataType="BOOL" Value="0"/>
+<DataValueMember Name="POVR_Hold" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Pause" DataType="BOOL" Value="0"/>
 <DataValueMember Name="PATT" DataType="BOOL" Value="0"/>
 <DataValueMember Name="PATT_Result" DataType="DINT" Radix="Decimal" Value="0"/>
@@ -1134,12 +1153,12 @@
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[NE(EquipmentPhaseTest.PCMD,0)[EQ(EquipmentPhaseTest.PCMD,1) PCMD(EquipmentPhase,Resume,Result) ,EQ(EquipmentPhaseTest.PCMD,2) PCMD(EquipmentPhase,Hold,Result) ,EQ(EquipmentPhaseTest.PCMD,3) PCMD(EquipmentPhase,Restart,Result) ,EQ(EquipmentPhaseTest.PCMD,4) PCMD(EquipmentPhase,Stop,Result) ,EQ(EquipmentPhaseTest.PCMD,5) PCMD(EquipmentPhase,Abort,Result) ,EQ(EquipmentPhaseTest.PCMD,6) PCMD(EquipmentPhase,Reset,Result) ,EQ(EquipmentPhaseTest.PCMD,7) PCMD(EquipmentPhase,AutoPause,Result) ,EQ(EquipmentPhaseTest.PCMD,0) PCMD(EquipmentPhase,Pause,Result) ,EQ(EquipmentPhaseTest.PCMD,0) PCMD(EquipmentPhase,Resume,Result) ,MOVE(0,EquipmentPhaseTest.PCMD) ];]]>
+<![CDATA[[XIC(EquipmentPhaseTest.BCMD_Start) OTU(EquipmentPhaseTest.BCMD_Start) PCMD(EquipmentPhase,Start,Result) ,XIC(EquipmentPhaseTest.BCMD_Hold) OTU(EquipmentPhaseTest.BCMD_Hold) PCMD(EquipmentPhase,Hold,Result) ,XIC(EquipmentPhaseTest.BCMD_Restart) OTU(EquipmentPhaseTest.BCMD_Restart) PCMD(EquipmentPhase,Restart,Result) ,XIC(EquipmentPhaseTest.BCMD_Stop) OTU(EquipmentPhaseTest.BCMD_Stop) PCMD(EquipmentPhase,Stop,Result) ,XIC(EquipmentPhaseTest.BCMD_Abort) OTU(EquipmentPhaseTest.BCMD_Abort) PCMD(EquipmentPhase,Abort,Result) ,XIC(EquipmentPhaseTest.BCMD_Reset) OTU(EquipmentPhaseTest.BCMD_Reset) PCMD(EquipmentPhase,Reset,Result) ,XIC(EquipmentPhaseTest.BCMD_AutoPause) OTU(EquipmentPhaseTest.BCMD_AutoPause) PCMD(EquipmentPhase,AutoPause,Result) ,XIC(EquipmentPhaseTest.BCMD_Pause) OTU(EquipmentPhaseTest.BCMD_Pause) PCMD(EquipmentPhase,Pause,Result) ,XIC(EquipmentPhaseTest.BCMD_Resume) OTU(EquipmentPhaseTest.BCMD_Resume) PCMD(EquipmentPhase,Resume,Result) ];]]>
 </Text>
 </Rung>
 <Rung Number="2" Type="N">
 <Text>
-<![CDATA[NE(EquipmentPhaseTest.POVR,0)[EQ(EquipmentPhaseTest.POVR,1) POVR(EquipmentPhase,Abort,Result) ,EQ(EquipmentPhaseTest.POVR,2) POVR(EquipmentPhase,Stop,Result) ,EQ(EquipmentPhaseTest.POVR,3) POVR(EquipmentPhase,Hold,Result) ,MOVE(0,EquipmentPhaseTest.POVR) ];]]>
+<![CDATA[[XIC(EquipmentPhaseTest.POVR_Abort) OTU(EquipmentPhaseTest.POVR_Abort) POVR(EquipmentPhase,Abort,Result) ,XIC(EquipmentPhaseTest.POVR_Stop) OTU(EquipmentPhaseTest.POVR_Stop) POVR(EquipmentPhase,Stop,Result) ,XIC(EquipmentPhaseTest.POVR_Hold) OTU(EquipmentPhaseTest.POVR_Hold) POVR(EquipmentPhase,Hold,Result) ];]]>
 </Text>
 </Rung>
 </RLLContent>

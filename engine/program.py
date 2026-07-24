@@ -173,7 +173,7 @@ class Program():
                     elif self.phase.Stopping:
                         ctx = await self.run('Stopping', context)
                         if self.pcs('Resetting', ctx):
-                            PSC = PhaseStates.Stoppedz
+                            PSC = PhaseStates.Stopped
                     elif self.phase.Aborting:
                         ctx = await self.run('Aborting', context)
                         if self.pcs('Resetting', ctx):
