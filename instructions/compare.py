@@ -6,7 +6,9 @@ from core.memory.helper import OutputType
 
 from engine.st.helper import hook_expression
 
+from instructions.helper import getPLCValue
 
+from engine.errors import PLCFaultHandler
 
 @InstructionRegistry.register
 class CMP(Instruction):
@@ -144,7 +146,7 @@ class IsINF(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            source = self.getMemory(self.args[0])
+            source = getPLCValue(self.getMemory(self.args[0]))
             ctx.RungStatus = math.isinf(source)
 
 @InstructionRegistry.register
@@ -152,5 +154,5 @@ class IsNAN(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            source = self.getMemory(self.args[0])
+            source = getPLCValue(self.getMemory(self.args[0]))
             ctx.RungStatus = math.isnan(source)

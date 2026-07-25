@@ -52,5 +52,6 @@ async def run_exec_env(expression:str, ctx: "ExecutionContext", error_tag:str, m
         expression = make_async_st(expression)
 
     with PLCFaultHandler.st(error_tag, expression):
-        exec(expression, exec_env)
-        return await exec_env["__st_main__"]()
+        with PLCFaultHandler.minor():
+            exec(expression, exec_env)
+            return await exec_env["__st_main__"]()
