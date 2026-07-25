@@ -2,7 +2,6 @@ from engine.context import ExecutionContext
 
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
-from core.memory.helper import OutputType
 from datatypes.alarm import ALARM
 from datatypes.pid import PID_ENHANCED
 

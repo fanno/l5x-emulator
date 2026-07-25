@@ -3,7 +3,6 @@ from engine.instruction import Instruction
 from engine.errors import MajorFault
 
 from core.registry.instructionregistry import InstructionRegistry
-from core.memory.helper import OutputType
 
 from datatypes.misc import CONTROL
 from datatypes.custom.array import Array

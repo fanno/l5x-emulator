@@ -2,13 +2,10 @@ import math
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
-from core.memory.helper import OutputType
 
 from engine.st.helper import hook_expression
 
 from instructions.helper import getPLCValue
-
-from engine.errors import PLCFaultHandler
 
 @InstructionRegistry.register
 class CMP(Instruction):

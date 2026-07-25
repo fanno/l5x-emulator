@@ -1,7 +1,6 @@
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
-from core.memory.helper import OutputType
 
 from  datatypes.misc import HMIBC
 

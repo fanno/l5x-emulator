@@ -4,7 +4,6 @@ from asyncua import ua
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
-from core.memory.helper import OutputType
 from instructions.helper import _AND, _OR, _XOR, _NOT
 
 from datatypes.custom.udt import Resettable
