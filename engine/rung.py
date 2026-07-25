@@ -5,7 +5,8 @@ from dataclasses import dataclass, field
 import engine.context
 from engine.node import parse, InstructionNode
 from engine.hierarchy import Hierarchy
-    
+from engine.errors import PLCFaultHandler
+
 @dataclass
 class Rung:
     Text:str = field(init=True)
@@ -24,8 +25,9 @@ class Rung:
 
     async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
         with Hierarchy.scope(f"Rung: {str(self.Line)}"):
-            if ctx.inMCR:
-                ctx.RungStatus = ctx.MCRActive
-            else:
-                ctx.RungStatus = True
-            await self.Tree.eval(ctx)
+            with PLCFaultHandler.minor():
+                if ctx.inMCR:
+                    ctx.RungStatus = ctx.MCRActive
+                else:
+                    ctx.RungStatus = True
+                await self.Tree.eval(ctx)
