@@ -21,7 +21,7 @@ from core.log import Logger
 from gui.tags.tags import TagsTabs
 from gui.content import ContentTabs
 
-class Gui(EventListener):
+class Gui():
     _root:Tk
     _status:ScrolledText
     _log:ScrolledText
@@ -35,6 +35,7 @@ class Gui(EventListener):
     tagsTabs:TagsTabs = None
     threadStatus:StatusEvent = None
     queue:Queue[T]
+    eventlistenet: EventListener
 
     def __init__(self, root:Tk, path:str, port:int):
         super().__init__()
@@ -42,6 +43,9 @@ class Gui(EventListener):
         self.queue = Queue()
 
         self._logger = Logger()
+
+        self.eventlistenet = EventListener(self)
+
         self._after_id = {}
 
         self._path = path
@@ -87,14 +91,14 @@ class Gui(EventListener):
 
     def updateGUI(self, tags = {}):
         if self.threadStatus:
-            self._content.updateContent(self.threadStatus, self._logger)
+            self._content.updateContent(self.threadStatus)
 
             if self.threadStatus.Runing:
                 self.updateTitle(f"{self.threadStatus.ControllerName} ({self.threadStatus.ControllerType}) {self.threadStatus.EndPoint}")
             else:
                 self.updateTitle(f"Application starting on {self.threadStatus.EndPoint}")
 
-    @subscribe_event(LogEvent, StatusEvent)
+    @subscribe_event(StatusEvent)
     def on_eventbus(self, event):
         self.queue.put_nowait(event)
 

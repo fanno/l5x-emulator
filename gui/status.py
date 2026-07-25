@@ -31,7 +31,7 @@ class StatusText(UpdatingScrolledText):
             self._peak = current
 
         update = super().updateContent()
-        if update:
+        if update and self.winfo_viewable():
             if status.Runing:
                 text = f"Scan time current (Sec): {status.ScanCurrent:.3f} ({status.ScanDelayed:.3f})"
                 text += f"\nScan time longest (Sec): {status.ScanMax:.3f}"

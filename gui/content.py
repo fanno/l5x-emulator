@@ -3,9 +3,11 @@ from tkinter.ttk import Notebook, Frame
 
 from gui.tags.grid import Grid
 from gui.tags.tags import TagsTabs
+from gui.fault.faults import FaultTabs
+
 from gui.status import StatusText
 from core.events import StatusEvent
-from gui.log import LogText, Logger
+from gui.fault.log import Logger
 
 class ContentTabs(Notebook):
     tabs:dict[str, Grid]
@@ -15,23 +17,25 @@ class ContentTabs(Notebook):
 
         titel = "PLC Tags"
         frame = Frame(self)
+        frame.pack(fill=tk.BOTH, expand=tk.TRUE)
         self.add(frame, text=titel)
         self.tagsTabs = TagsTabs(frame)
 
         titel = "PLC Status"
         frame = Frame(self)
+        frame.pack(fill=tk.BOTH, expand=tk.TRUE)
         self.add(frame, text=titel)
         self.status = StatusText(frame, name=titel)
-        
-        titel = "Error Log"
+
+        titel = "Fault Logs"
         frame = Frame(self)
+        frame.pack(fill=tk.BOTH, expand=tk.TRUE)
         self.add(frame, text=titel)
-        self.log = LogText(frame, titel)
+        self.fault = FaultTabs(frame, titel)
 
         self.pack(fill=tk.BOTH, expand=tk.TRUE)
 
-    def updateContent(self, status:StatusEvent, logger:Logger):
+    def updateContent(self, status:StatusEvent):
         if status.Tags:
             self.tagsTabs.updateTags(status.Tags)
         self.status.updateContent(status)
-        self.log.updateContent(logger)

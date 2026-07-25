@@ -118,30 +118,25 @@ class EventBus:
             ]
 
 class EventListener:
-    def __init__(self):
-        super().__init__()
+    def __init__(self, owner=None):
+        self._owner = self if owner is None else owner
 
         self._event_bus = EventBus.get()
-        self._subscriptions: List[str] = []
+        self._subscriptions = []
+
         self._register_listeners()
 
     def _register_listeners(self):
-        for attr_name in dir(self):
-            attr = getattr(self, attr_name)
+        for attr_name in dir(self._owner):
+            attr = getattr(self._owner, attr_name)
+
             if callable(attr) and hasattr(attr, '_event_listener'):
                 event_classes = attr._event_classes
 
                 if event_classes is None:
                     sub_id = self._event_bus.subscribe_wildcard(attr)
+                    self._subscriptions.append(sub_id)
                 else:
                     for ec in event_classes:
                         sub_id = self._event_bus.subscribe(ec, attr)
-                self._subscriptions.append(sub_id)
-
-    def unregister_all(self):
-        for sub_id in self._subscriptions:
-            self._event_bus.unsubscribe(sub_id)
-        self._subscriptions.clear()
-
-    def __del__(self):
-        self.unregister_all()
+                        self._subscriptions.append(sub_id)

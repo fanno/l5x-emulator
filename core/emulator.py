@@ -36,7 +36,6 @@ from core.xml.programs import loadPrograms
 from core.xml.aoi import loadAoiDefinition
 from core.xml.task import loadTasks
 from core.servicelocator import ServiceLocator
-from core.emulatorfault import EmulatorFault
 from core.library.libeary import initialize_custom_folder, load_all_hardware, get_paths
 from core.library.hwlogic import HWLogic
 from core.log import IndentedFormatter
@@ -46,7 +45,7 @@ from opcua.tag import OpcuaTag
 from opcua.mapping import Mapping
 from engine.program import Program
 from engine.task import Task
-from engine.errors import MajorFault
+from engine.errors import PLCFaultHandler
 
 from datatypes.custom.module import MODULE
 from datatypes.custom.string import STRING
@@ -61,7 +60,7 @@ class EmulatorLogHandler(logging.Handler):
         except Exception:
             pass
 
-class Emulator(EventListener, threading.Thread):
+class Emulator(threading.Thread):
     PATH:str
     NAME:str
 
@@ -89,6 +88,9 @@ class Emulator(EventListener, threading.Thread):
     safetyMap:SafetyMap
 
     context:EmulatorContext
+    eventlistenet: EventListener
+
+    useOPCUA:bool = False
     
     def __init__(self, path:str, port:int=4840):
         super().__init__()
@@ -107,10 +109,12 @@ class Emulator(EventListener, threading.Thread):
         self.safetyMap = SafetyMap()
         self.preScan = True
 
+        self.eventlistenet = EventListener(self)
+
         self._loop = None
         self._throttle = 4
 
-        gui_handler = EmulatorLogHandler(logging.ERROR)
+        gui_handler = EmulatorLogHandler(logging.WARNING)
 
         gui_handler.setFormatter(IndentedFormatter(
             "[%(asctime)s, %(filename)s:%(lineno)s - %(funcName)s()] %(levelname)s \n"
@@ -172,7 +176,7 @@ class Emulator(EventListener, threading.Thread):
 
         while self._is_running:
             try:
-                if not EmulatorFault.hasMajorFault():
+                with PLCFaultHandler.major():
                     startTime = time.monotonic()
                     await self.mainloop()
                     scanCount += 1
@@ -205,8 +209,6 @@ class Emulator(EventListener, threading.Thread):
 
                     if difTime < scanDelayTime:
                         await asyncio.sleep(scanDelayTime-difTime)
-            except MajorFault as e:
-                EmulatorFault.setMajorFault(e)
             except Exception as e:
                 logging.exception(e)
                 break
@@ -324,7 +326,7 @@ class Emulator(EventListener, threading.Thread):
             self.context.preScan = False
             setMemory("S:FS", True)
         elif self.context.postScan:
-            self.context.postScan = False      
+            self.context.postScan = False
         else:
             setMemory("S:FS", False)
 

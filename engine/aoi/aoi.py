@@ -13,6 +13,8 @@ if TYPE_CHECKING:
     
 from engine.instruction import Instruction
 from engine.errors import AOIException
+from engine.hierarchy import Hierarchy
+from engine.errors import PLCFaultHandler
 
 from datatypes.custom.bool import BOOL
 from datatypes.custom.dt import DT
@@ -104,9 +106,11 @@ class AOI():
             self.Routines[r.Name] = r
 
     async def execute(self, args:list[str], ctx:"ExecutionContext"):
-        from engine.context import ExecutionContext
-        context = ExecutionContext(ProgramRef=self)
-        await self.Routines[self.MainRoutineName].execute(context)
+        with Hierarchy.scope(self.Name):
+            with PLCFaultHandler.minor():
+                from engine.context import ExecutionContext
+                context = ExecutionContext(ProgramRef=self)
+                await self.Routines[self.MainRoutineName].execute(context)
 
 class AOIRegistry:
     _registry: ClassVar[Dict[str, AOI]] = {}
@@ -119,62 +123,63 @@ class AOIRegistry:
 
     @staticmethod
     async def execute(name:str, args:list[str], ctx:"ExecutionContext") -> None:
-        from engine.context import ExecutionContext
-        if name not in AOIRegistry._registry:
-            raise KeyError(f"AOI {name} not supported")
-        
-        from engine.helper import _pushAOIMemory, _popAOIMemory
-        from core.memory.helper import getMemory, setMemory
-        token = None
-        try:
-            instance = args[0]
-            rest = args[1:]
+        with Hierarchy.scope(name):
+            with PLCFaultHandler.minor():
+                if name not in AOIRegistry._registry:
+                    raise KeyError(f"AOI {name} not supported")
+                
+                from engine.helper import _pushAOIMemory, _popAOIMemory
+                from core.memory.helper import getMemory, setMemory
+                token = None
+                try:
+                    instance = args[0]
+                    rest = args[1:]
 
-            aoiObject = AOIRegistry._registry[name]
+                    aoiObject = AOIRegistry._registry[name]
 
-            aoiData = getMemory(instance)
+                    aoiData = getMemory(instance)
 
-            if isinstance(aoiData, HasEnable):
-                aoiData.EnableIn.setValue(ctx.RungEnabled)
-            else:
-                raise TypeError("Returned AOI does not implement EnableIn/EnableOut")
+                    if isinstance(aoiData, HasEnable):
+                        aoiData.EnableIn.setValue(ctx.RungEnabled)
+                    else:
+                        raise TypeError("Returned AOI does not implement EnableIn/EnableOut")
 
-            from engine.aoi.memory import AOIMemory
-            aoi = ObjectRegistry.get(aoiData, AOIMemory)
+                    from engine.aoi.memory import AOIMemory
+                    aoi = ObjectRegistry.get(aoiData, AOIMemory)
 
-            if aoi.memory.size() == 0:
-                for local in aoiObject.Locals:
-                    aoi.memory.set(local.Name, local.getVariable())
+                    if aoi.memory.size() == 0:
+                        for local in aoiObject.Locals:
+                            aoi.memory.set(local.Name, local.getVariable())
 
-            for attr, value in aoiData.__dict__.items():
-                aoi.memory.set(attr, value)
+                    for attr, value in aoiData.__dict__.items():
+                        aoi.memory.set(attr, value)
 
-            i = 0
-            for p in aoiObject.Parameters:
-                if p.Required or p.Usage == 'InOut':
-                    value = getMemory(rest[i])
-                    
-                    aoi.memory.set(p.Name, value)
-                    i += 1
+                    i = 0
+                    for p in aoiObject.Parameters:
+                        if p.Required or p.Usage == 'InOut':
+                            value = getMemory(rest[i])
+                            
+                            aoi.memory.set(p.Name, value)
+                            i += 1
 
-            token = _pushAOIMemory(aoi)
-            await aoiObject.execute(args, ctx)
-        except Exception as e:
-            raise AOIException(name, instance).with_traceback(e.__traceback__)
-        finally:
-            if token:
-                _popAOIMemory(token)
+                    token = _pushAOIMemory(aoi)
+                    await aoiObject.execute(args, ctx)
+                except Exception as e:
+                    raise AOIException(name, instance).with_traceback(e.__traceback__)
+                finally:
+                    if token:
+                        _popAOIMemory(token)
 
-                i = 0
-                for p in aoiObject.Parameters:
-                    if p.Required or p.Usage == 'InOut':
-                        if p.Usage != 'Input':
-                            value = aoi.memory.get(p.Name)
-                            setMemory(rest[i], value)
-                        i += 1
-                    if p.Usage == 'Output':
-                        value = aoi.memory.get(p.Name)
-                        setattr(aoiData, p.Name, value)
+                        i = 0
+                        for p in aoiObject.Parameters:
+                            if p.Required or p.Usage == 'InOut':
+                                if p.Usage != 'Input':
+                                    value = aoi.memory.get(p.Name)
+                                    setMemory(rest[i], value)
+                                i += 1
+                            if p.Usage == 'Output':
+                                value = aoi.memory.get(p.Name)
+                                setattr(aoiData, p.Name, value)
 
     @staticmethod
     def has(name:str) -> bool:
@@ -197,53 +202,54 @@ class AOI_CLASS(Instruction):
         self.aoiObject = AOIRegistry._registry[self.name]
 
     async def execute(self, ctx:"ExecutionContext") -> None:
-        from engine.context import ExecutionContext
-        from engine.helper import _pushAOIMemory, _popAOIMemory
-        from core.memory.helper import getMemory, setMemory
-        token = None
-        try:
-            aoiData = getMemory(self.aoiName)
+        with Hierarchy.scope(self.aoiName):
+            with PLCFaultHandler.minor():
+                from engine.helper import _pushAOIMemory, _popAOIMemory
+                from core.memory.helper import getMemory, setMemory
+                token = None
+                try:
+                    aoiData = getMemory(self.aoiName)
 
-            if isinstance(aoiData, HasEnable):
-                aoiData.EnableIn.setValue(ctx.RungEnabled)
-            else:
-                raise TypeError("Returned AOI does not implement EnableIn/EnableOut")
+                    if isinstance(aoiData, HasEnable):
+                        aoiData.EnableIn.setValue(ctx.RungEnabled)
+                    else:
+                        raise TypeError("Returned AOI does not implement EnableIn/EnableOut")
 
-            from engine.aoi.memory import AOIMemory
-            aoi = ObjectRegistry.get(aoiData, AOIMemory)
+                    from engine.aoi.memory import AOIMemory
+                    aoi = ObjectRegistry.get(aoiData, AOIMemory)
 
-            if aoi.memory.size() == 0:
-                for local in self.aoiObject.Locals:
-                    aoi.memory.set(local.Name, local.getVariable())
+                    if aoi.memory.size() == 0:
+                        for local in self.aoiObject.Locals:
+                            aoi.memory.set(local.Name, local.getVariable())
 
-            for attr, value in aoiData.__dict__.items():
-                aoi.memory.set(attr, value)
+                    for attr, value in aoiData.__dict__.items():
+                        aoi.memory.set(attr, value)
 
-            i = 0
-            for p in self.aoiObject.Parameters:
-                if p.Required or p.Usage == 'InOut':
-                    value = getMemory(self.args[i])
-                    
-                    aoi.memory.set(p.Name, value)
-                    i += 1
+                    i = 0
+                    for p in self.aoiObject.Parameters:
+                        if p.Required or p.Usage == 'InOut':
+                            value = getMemory(self.args[i])
+                            
+                            aoi.memory.set(p.Name, value)
+                            i += 1
 
-            token = _pushAOIMemory(aoi)
-            await self.aoiObject.execute(self.args, ctx)
-        except Exception as e:
-            raise e
-        finally:
-            if token:
-                _popAOIMemory(token)
-                i = 0
-                for p in self.aoiObject.Parameters:
-                    if p.Required or p.Usage == 'InOut':
-                        if p.Usage != 'Input':
-                            value = aoi.memory.get(p.Name)
-                            setMemory(self.args[i], value)
-                        i += 1
-                    if p.Usage == 'Output':
-                        value = aoi.memory.get(p.Name)
-                        setattr(aoiData, p.Name, value)
+                    token = _pushAOIMemory(aoi)
+                    await self.aoiObject.execute(self.args, ctx)
+                except Exception as e:
+                    raise e
+                finally:
+                    if token:
+                        _popAOIMemory(token)
+                        i = 0
+                        for p in self.aoiObject.Parameters:
+                            if p.Required or p.Usage == 'InOut':
+                                if p.Usage != 'Input':
+                                    value = aoi.memory.get(p.Name)
+                                    setMemory(self.args[i], value)
+                                i += 1
+                            if p.Usage == 'Output':
+                                value = aoi.memory.get(p.Name)
+                                setattr(aoiData, p.Name, value)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         await self.execute(ctx)

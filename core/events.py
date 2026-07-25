@@ -2,6 +2,8 @@ from typing import Any, Dict, Optional, Type
 
 from dataclasses import dataclass, field
 
+from engine.errors import MajorFault, MinorFault
+
 @dataclass
 class LogEvent():
     message: str
@@ -25,3 +27,11 @@ class StatusEvent():
     ControllerType:bool = field(init=True, default="")
     ScanCount:int = field(init=True, default=0)
     Tags:Optional[Dict[str, Type]] = field(init=True, default_factory=dict)
+
+@dataclass
+class MinorFaultEvent():
+    fault: MinorFault
+
+@dataclass
+class MajorFaultEvent():
+    fault: MajorFault    

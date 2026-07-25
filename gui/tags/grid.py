@@ -102,6 +102,8 @@ class Grid(Treeview):
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
 
+        self.pack(fill=tk.BOTH, expand=tk.TRUE)
+
         self.bind("<Button-1>", self._on_click)
         self.bind('<MouseWheel>', self._on_mousewheel)
         self.bind("<<TreeviewOpen>>", lambda e: self.after(1, self._on_view_changed))
@@ -113,7 +115,6 @@ class Grid(Treeview):
 
     def _update_stripes(self, event:Event=None):
         self._on_view_changed()
-
 
         index = 0
         def walk(parent_id):
@@ -242,9 +243,6 @@ class Grid(Treeview):
 
         bbox = self.bbox(first)
         if not bbox:
-            print("first:", repr(first))
-            print("bbox :", repr(self.bbox(first)))
-            print("open :", self.exists(first))
             return visible
 
         row_height = bbox[3]

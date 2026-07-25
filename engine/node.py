@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import engine.context
 from engine.instruction import Instruction
-
-from engine.errors import MinorFault
-from core.emulatorfault import EmulatorFault
+from engine.hierarchy import Hierarchy
+from engine.errors import PLCFaultHandler
 
 def parse(text:str) -> Series:
     tokens = tokenize(text)
@@ -131,15 +130,14 @@ class InstructionNode:
         self.instance = cls(self.name, self.args)
 
     async def eval(self, ctx:"engine.context.ExecutionContext") -> None:
-        try:
-            if ctx.Context.preScan:
-                await self.instance.ladder_preScan(ctx)
-            elif ctx.Context.postScan:
-                await self.instance.ladder_postScan(ctx)
-            else:
-                await self.instance.ladder_execute(ctx)
-        except MinorFault as e:
-            EmulatorFault.prepend(e)
+        with Hierarchy.scope(self.name):
+            with PLCFaultHandler.minor():
+                if ctx.Context.preScan:
+                    await self.instance.ladder_preScan(ctx)
+                elif ctx.Context.postScan:
+                    await self.instance.ladder_postScan(ctx)
+                else:
+                    await self.instance.ladder_execute(ctx)
 
     def __str__(self):
         return f"{self.name}{self.args}"

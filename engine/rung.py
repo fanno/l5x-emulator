@@ -4,10 +4,12 @@ from dataclasses import dataclass, field
 
 import engine.context
 from engine.node import parse, InstructionNode
+from engine.hierarchy import Hierarchy
     
 @dataclass
 class Rung:
     Text:str = field(init=True)
+    Line:int = field(init=True)
     Tree:Optional[InstructionNode] = field(init=False, default=None)
     Label: Optional[str] = field(init=False, default=None)
 
@@ -21,8 +23,9 @@ class Rung:
         return self.Tree.getLabel()
 
     async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
-        if ctx.inMCR:
-            ctx.RungStatus = ctx.MCRActive
-        else:
-            ctx.RungStatus = True
-        await self.Tree.eval(ctx)
+        with Hierarchy.scope(f"Rung: {str(self.Line)}"):
+            if ctx.inMCR:
+                ctx.RungStatus = ctx.MCRActive
+            else:
+                ctx.RungStatus = True
+            await self.Tree.eval(ctx)

@@ -1,5 +1,7 @@
 from datatypes.custom.datavariant import DataVariant
 from engine.context import ExecutionContext
+from engine.hierarchy import Hierarchy
+from engine.errors import PLCFaultHandler
 
 from typing import Any
 
@@ -32,8 +34,10 @@ def build_exec_env(ctx: "ExecutionContext") -> dict:
     from engine.instruction import Instruction
 
     async def callHook(name, args):
-        instance: Instruction = InstructionRegistry.get(name)(name=name, args=args)
-        await instance.st_execute(ctx)
+        with Hierarchy.scope(name):
+            with PLCFaultHandler.minor():
+                instance: Instruction = InstructionRegistry.get(name)(name=name, args=args)
+                await instance.st_execute(ctx)
 
     return {
         "get": getHook,
@@ -42,7 +46,6 @@ def build_exec_env(ctx: "ExecutionContext") -> dict:
     }
 
 async def run_exec_env(expression:str, ctx: "ExecutionContext", error_tag:str, make_st:bool=True) -> Any:
-    from engine.errors import STException
     try:
         original = expression
         exec_env = build_exec_env(ctx)   
@@ -52,4 +55,5 @@ async def run_exec_env(expression:str, ctx: "ExecutionContext", error_tag:str, m
         exec(expression, exec_env)
         return await exec_env["__st_main__"]()
     except Exception as e:
+        from engine.errors import STException
         raise STException(error_tag, original, e) from e

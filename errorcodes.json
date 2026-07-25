@@ -1,0 +1,907 @@
+[
+  {
+    "Type": 1,
+    "Code": 1,
+    "Text": "The controller that is powered on is in Run mode."
+  },
+  {
+    "Type": 1,
+    "Code": 2,
+    "Text": "AC power loss detected. Chassis active until DC power cannot be maintained."
+  },
+  {
+    "Type": 1,
+    "Code": 15,
+    "Text": "A 1769 power supply is connected directly to the controllerÕs 1768 CompactBus with an invalid configuration.\nThe 1768 power supply that provides power to the controller has failed."
+  },
+  {
+    "Type": 1,
+    "Code": 16,
+    "Text": "I/O communication configuration fault detected."
+  },
+  {
+    "Type": 1,
+    "Code": 29,
+    "Text": "Voltage has exceeded operating limits."
+  },
+  {
+    "Type": 1,
+    "Code": 40,
+    "Text": "If the controller uses a battery, the battery does not contain enough charge to save the user program on power-down.\n\nIf the controller uses an ESM (Energy Storage Module), the ESM does not contain enough charge to save the user program on power-down."
+  },
+  {
+    "Type": 1,
+    "Code": 60,
+    "Text": "The controller detected a nonrecoverable major fault. Diagnostic information can be recovered."
+  },
+  {
+    "Type": 1,
+    "Code": 61,
+    "Text": "The controller detected a nonrecoverable major fault. Diagnostic information can be recovered."
+  },
+  {
+    "Type": 1,
+    "Code": 62,
+    "Text": "The controller detected a nonrecoverable major fault. Diagnostic information can be recovered."
+  },
+  {
+    "Type": 3,
+    "Code": 0,
+    "Text": "Compact I/O end cap missing."
+  },
+  {
+    "Type": 3,
+    "Code": 1,
+    "Text": "POINTBus backplane bus off condition. The connections between the controller and the I/O modules are broken."
+  },
+  {
+    "Type": 3,
+    "Code": 16,
+    "Text": "A required I/O module connection failed."
+  },
+  {
+    "Type": 3,
+    "Code": 20,
+    "Text": "Possible fault with the chassis."
+  },
+  {
+    "Type": 3,
+    "Code": 21,
+    "Text": "Possible fault with the chassis."
+  },
+  {
+    "Type": 3,
+    "Code": 23,
+    "Text": "At least one I/O module configured for Major fault On Controller If Connection Fails While in Run Mode was not established before going to Run mode within the time defined below:\n\n5380/5580 controllers:\n ¥ Non-redundant controller: 30 seconds\n ¥ Redundant controllers: 90 seconds\n\n5590 controllers:\n ¥ Non-redundant controller: 60 seconds\n ¥ Redundant controllers: 120 seconds"
+  },
+  {
+    "Type": 3,
+    "Code": 32,
+    "Text": "The controller failed to open an I/O connection to a fault-tolerant I/O module because its partner controller is in a Primary state."
+  },
+  {
+    "Type": 3,
+    "Code": 94,
+    "Text": "The current RPI update of an I/O module overlaps with its previous RPI update."
+  },
+  {
+    "Type": 3,
+    "Code": 100,
+    "Text": "The I/O module does not support data integrity."
+  },
+  {
+    "Type": 4,
+    "Code": 4,
+    "Text": "The result of an arithmetic operation is out of range."
+  },
+  {
+    "Type": 4,
+    "Code": 5,
+    "Text": "In a GSV/SSV instruction, the specified instance was not found."
+  },
+  {
+    "Type": 4,
+    "Code": 6,
+    "Text": "In a GSV/SSV instruction, either the:\n¥ Specified Class name is not supported.\n¥ Specified Attribute name is not valid."
+  },
+  {
+    "Type": 4,
+    "Code": 7,
+    "Text": "The GSV/SSV destination tag was too small to hold the data."
+  },
+  {
+    "Type": 4,
+    "Code": 16,
+    "Text": "Unknown instruction encountered."
+  },
+  {
+    "Type": 4,
+    "Code": 20,
+    "Text": "The array subscript is too large or the control data type .POS or .LEN value is invalid."
+  },
+  {
+    "Type": 4,
+    "Code": 21,
+    "Text": "Control structure .LEN or .POS < 0."
+  },
+  {
+    "Type": 4,
+    "Code": 24,
+    "Text": "Unknown data type passed to subroutine."
+  },
+  {
+    "Type": 4,
+    "Code": 30,
+    "Text": "An ASCII instruction failed. Bad parameters passed through to the ASCII port."
+  },
+  {
+    "Type": 4,
+    "Code": 31,
+    "Text": "The parameters of the JSR instruction do not match those of the associated SBR or RET instruction."
+  },
+  {
+    "Type": 4,
+    "Code": 32,
+    "Text": "Routine type not supported."
+  },
+  {
+    "Type": 4,
+    "Code": 34,
+    "Text": "A timer instruction has a negative preset or accumulated value."
+  },
+  {
+    "Type": 4,
+    "Code": 35,
+    "Text": "PID delta time less than zero."
+  },
+  {
+    "Type": 4,
+    "Code": 36,
+    "Text": "PID setpoint out of range."
+  },
+  {
+    "Type": 4,
+    "Code": 42,
+    "Text": "JMP to a label that did not exist or was deleted."
+  },
+  {
+    "Type": 4,
+    "Code": 51,
+    "Text": "The .LEN value of the string tag is greater than the DATA size of the string tag."
+  },
+  {
+    "Type": 4,
+    "Code": 52,
+    "Text": "The output string is larger than the destination."
+  },
+  {
+    "Type": 4,
+    "Code": 53,
+    "Text": "The output number is beyond the limits of the destination data type."
+  },
+  {
+    "Type": 4,
+    "Code": 54,
+    "Text": "BufferSize value reduced amount of data."
+  },
+  {
+    "Type": 4,
+    "Code": 55,
+    "Text": "SerialPort Control .LEN value was incorrect."
+  },
+  {
+    "Type": 4,
+    "Code": 56,
+    "Text": "The Start or Quantity value is invalid."
+  },
+  {
+    "Type": 4,
+    "Code": 57,
+    "Text": "The AHL instruction failed to execute because the serial port is set to no handshaking."
+  },
+  {
+    "Type": 4,
+    "Code": 82,
+    "Text": "A sequential function chart (SFC) called a subroutine and the subroutine tried to jump back to the calling SFC. This occurs when the SFC uses either a JSR or FOR instruction to call the subroutine."
+  },
+  {
+    "Type": 4,
+    "Code": 83,
+    "Text": "The data tested was not inside the required limits. This occurs with array subscripts used with Boolean arrays and bit level addressing."
+  },
+  {
+    "Type": 4,
+    "Code": 84,
+    "Text": "Stack overflow."
+  },
+  {
+    "Type": 4,
+    "Code": 85,
+    "Text": "Invalid routine type."
+  },
+  {
+    "Type": 4,
+    "Code": 86,
+    "Text": "Access violation in user program."
+  },
+  {
+    "Type": 4,
+    "Code": 87,
+    "Text": "External routine DLL load failed."
+  },
+  {
+    "Type": 4,
+    "Code": 88,
+    "Text": "Exception in external routine DLL."
+  },
+  {
+    "Type": 4,
+    "Code": 89,
+    "Text": "In an SFR instruction, the target routine does not contain the target step."
+  },
+  {
+    "Type": 4,
+    "Code": 90,
+    "Text": "A safety instruction occurred outside a safety task."
+  },
+  {
+    "Type": 4,
+    "Code": 91,
+    "Text": "Equipment Phase instruction is being called from outside an Equipment Phase program."
+  },
+  {
+    "Type": 4,
+    "Code": 94,
+    "Text": "Nesting limits exceeded."
+  },
+  {
+    "Type": 4,
+    "Code": 990,
+    "Text": "User-defined major fault."
+  },
+  {
+    "Type": 4,
+    "Code": 991,
+    "Text": "User-defined major fault."
+  },
+  {
+    "Type": 4,
+    "Code": 992,
+    "Text": "User-defined major fault."
+  },
+  {
+    "Type": 4,
+    "Code": 993,
+    "Text": "User-defined major fault."
+  },
+  {
+    "Type": 4,
+    "Code": 994,
+    "Text": "User-defined major fault."
+  },
+  {
+    "Type": 4,
+    "Code": 995,
+    "Text": "User-defined major fault."
+  },
+  {
+    "Type": 4,
+    "Code": 996,
+    "Text": "User-defined major fault."
+  },
+  {
+    "Type": 4,
+    "Code": 997,
+    "Text": "User-defined major fault."
+  },
+  {
+    "Type": 4,
+    "Code": 998,
+    "Text": "User-defined major fault."
+  },
+  {
+    "Type": 4,
+    "Code": 999,
+    "Text": "User-defined major fault."
+  },
+  {
+    "Type": 6,
+    "Code": 1,
+    "Text": "User task has not completed in the specified period. A program error caused an infinite loop, or the program is too complex to run as quickly as specified, or a higher priority task is keeping this task from finishing."
+  },
+  {
+    "Type": 6,
+    "Code": 2,
+    "Text": "Periodic task overlap.\nThe task was scheduled again before it finished executing."
+  },
+  {
+    "Type": 6,
+    "Code": 3,
+    "Text": "Event task overlap.\nThe task triggered again before it finished executing."
+  },
+  {
+    "Type": 7,
+    "Code": 39,
+    "Text": "Controller nonvolatile memory is approaching the end of its useful life."
+  },
+  {
+    "Type": 7,
+    "Code": 40,
+    "Text": "Store to nonvolatile memory failed."
+  },
+  {
+    "Type": 7,
+    "Code": 41,
+    "Text": "Load from nonvolatile memory failed due to controller type mismatch."
+  },
+  {
+    "Type": 7,
+    "Code": 42,
+    "Text": "Load from nonvolatile memory failed because the firmware revision of the project in nonvolatile memory does not match the firmware revision of the controller."
+  },
+  {
+    "Type": 7,
+    "Code": 43,
+    "Text": "Load from nonvolatile memory failed due to bad checksum."
+  },
+  {
+    "Type": 7,
+    "Code": 44,
+    "Text": "Failed to restore controller memory."
+  },
+  {
+    "Type": 7,
+    "Code": 49,
+    "Text": "When the controller loads a project from nonvolatile memory, it logs this minor fault and sets the FaultLog object, MinorFaultBits attribute, bit 7."
+  },
+  {
+    "Type": 7,
+    "Code": 50,
+    "Text": "The log file certificate cannot be verified. When the controller starts up, it attempts to verify the log file key/certificate combination. Depending on the verification, the controller takes one of the following actions:\n¥ If the controller verifies the existing log file certificate, the controller continues with the existing log directory.\n¥ If the existing certificate cannot be verified, the controller logs a major fault and attempts to create a certificate.\n¥ If the controller successfully creates a certificate, it creates a backup log subdirectory, moves the existing files to that directory, and continues logging and signing with the new verification key and log file certificate.\n¥  If the controller cannot create a certificate, the controller writes log entries to the existing log directory, but does not update signature files in that directory."
+  },
+  {
+    "Type": 8,
+    "Code": 1,
+    "Text": "Attempted to place controller in Run mode with keyswitch during download."
+  },
+  {
+    "Type": 9,
+    "Code": 0,
+    "Text": "Unknown error while servicing the serial port."
+  },
+  {
+    "Type": 9,
+    "Code": 1,
+    "Text": "The CTS line is not correct for the current configuration."
+  },
+  {
+    "Type": 9,
+    "Code": 2,
+    "Text": "Poll list error.\nA fault was detected with the DF1 masterÕs poll list, such as specifying more stations than the size of the file, specifying more than 255 stations, trying to index past the end of the list, or polling the broadcast address (STN #255)."
+  },
+  {
+    "Type": 9,
+    "Code": 3,
+    "Text": "The RS-232 DFI Master Active Station tag is unspecified."
+  },
+  {
+    "Type": 9,
+    "Code": 5,
+    "Text": "DF1 slave poll timeout.\nThe poll watchdog has timed out for slave. The master has not polled this controller in the specified amount of time."
+  },
+  {
+    "Type": 9,
+    "Code": 9,
+    "Text": "Modem contact lost.\nDCD or DSR control lines are not being received in proper sequence or state."
+  },
+  {
+    "Type": 9,
+    "Code": 10,
+    "Text": "Data has been dropped or lost from the serial port."
+  },
+  {
+    "Type": 9,
+    "Code": 11,
+    "Text": "A channel operand in an ACL instruction channel is not a valid port."
+  },
+  {
+    "Type": 10,
+    "Code": 10,
+    "Text": "The battery is missing or must be replaced."
+  },
+  {
+    "Type": 10,
+    "Code": 11,
+    "Text": "The battery for the safety partner is missing or must be replaced."
+  },
+  {
+    "Type": 10,
+    "Code": 12,
+    "Text": "The energy storage module is not installed.\nIf the controller is powered-down, the WallClockTime attribute and program are not maintained."
+  },
+  {
+    "Type": 10,
+    "Code": 13,
+    "Text": "The installed energy storage module is not compatible with the controller."
+  },
+  {
+    "Type": 10,
+    "Code": 14,
+    "Text": "The energy storage module must be replaced due to a hardware fault.\nIt is not capable of maintaining the WallClockTime attribute or controller program at power down."
+  },
+  {
+    "Type": 10,
+    "Code": 15,
+    "Text": "The energy storage module cannot store enough energy to maintain the WallClockTime attribute or the controller program at power-down."
+  },
+  {
+    "Type": 10,
+    "Code": 16,
+    "Text": "The uninterruptible power supply is missing or not ready."
+  },
+  {
+    "Type": 10,
+    "Code": 17,
+    "Text": "The uninterruptible power supply battery has failed and must be replaced."
+  },
+  {
+    "Type": 11,
+    "Code": 1,
+    "Text": "The actual position of the axis has exceeded the positive overtravel limit."
+  },
+  {
+    "Type": 11,
+    "Code": 2,
+    "Text": "The actual position of the axis has exceeded the negative overtravel limit."
+  },
+  {
+    "Type": 11,
+    "Code": 3,
+    "Text": "The actual position the axis has exceeded the position error tolerance."
+  },
+  {
+    "Type": 11,
+    "Code": 4,
+    "Text": "Encoder channel A, B, or Z connection is broken."
+  },
+  {
+    "Type": 11,
+    "Code": 5,
+    "Text": "Encoder noise event detected or the encoder signals are not in the quadrature."
+  },
+  {
+    "Type": 11,
+    "Code": 6,
+    "Text": "Drive fault detected."
+  },
+  {
+    "Type": 11,
+    "Code": 7,
+    "Text": "Synchronous connection to the servo module failed."
+  },
+  {
+    "Type": 11,
+    "Code": 8,
+    "Text": "Hardware failure detected in the servo module."
+  },
+  {
+    "Type": 11,
+    "Code": 9,
+    "Text": "Asynchronous connection to the servo module failed."
+  },
+  {
+    "Type": 11,
+    "Code": 10,
+    "Text": "Motor fault detected."
+  },
+  {
+    "Type": 11,
+    "Code": 11,
+    "Text": "Motor thermal fault detected."
+  },
+  {
+    "Type": 11,
+    "Code": 12,
+    "Text": "Drive thermal fault detected."
+  },
+  {
+    "Type": 11,
+    "Code": 13,
+    "Text": "SERCOS communication fault detected."
+  },
+  {
+    "Type": 11,
+    "Code": 14,
+    "Text": "Drive enable input was inactive during an attempt to enable the drive or transitioned to inactive while the drive was enabled."
+  },
+  {
+    "Type": 11,
+    "Code": 15,
+    "Text": "Drive phase loss fault detected."
+  },
+  {
+    "Type": 11,
+    "Code": 16,
+    "Text": "DriveGuard fault detected."
+  },
+  {
+    "Type": 11,
+    "Code": 32,
+    "Text": "The motion task experienced an overlap. The coarse update rate is too high."
+  },
+  {
+    "Type": 11,
+    "Code": 33,
+    "Text": "Coordinated System Time reference has been lost."
+  },
+  {
+    "Type": 12,
+    "Code": 32,
+    "Text": "A disqualified secondary controller cycled power and no partner chassis or controller was found upon power-up."
+  },
+  {
+    "Type": 12,
+    "Code": 33,
+    "Text": "An unpartnered controller has been identified in the new primary chassis after a switchover."
+  },
+  {
+    "Type": 12,
+    "Code": 34,
+    "Text": "Before switchover, a keyswitch mismatch was present. The old primary controller was in Program mode and the keyswitch of the secondary partner was in the Run position. \nInstead of the switchover transitioning the new primary controller to go to Run mode, the new primary controller transitions to a faulted state after the switchover."
+  },
+  {
+    "Type": 13,
+    "Code": 21,
+    "Text": "The WallClockTime is out of range."
+  },
+  {
+    "Type": 14,
+    "Code": 1,
+    "Text": "The task watchdog expired because of these reasons:\n¥ The user task did not complete in a specified period of time.\n¥ A program error caused an infinite loop.\n¥ The program is too complex to execute as quickly as specified.\n¥ A higher priority task is keeping this task from finishing.\n¥ The safety partner has been removed."
+  },
+  {
+    "Type": 14,
+    "Code": 2,
+    "Text": "An error exists in a routine of the safety task."
+  },
+  {
+    "Type": 14,
+    "Code": 3,
+    "Text": "The safety partner is missing."
+  },
+  {
+    "Type": 14,
+    "Code": 4,
+    "Text": "The safety partner is unavailable."
+  },
+  {
+    "Type": 14,
+    "Code": 5,
+    "Text": "The safety partner hardware is incompatible."
+  },
+  {
+    "Type": 14,
+    "Code": 6,
+    "Text": "The safety partner firmware is incompatible."
+  },
+  {
+    "Type": 14,
+    "Code": 7,
+    "Text": "The safety task is inoperable. This fault occurs when the safety logic is invalid, such as for these reasons:\n¥ A mismatch in logic exists between the primary controller and safety partners.\n¥ A watchdog timeout occurs.\n¥ Memory is corrupt."
+  },
+  {
+    "Type": 14,
+    "Code": 8,
+    "Text": "Coordinated system time (CST) not found. The safety partner's time is not synchronized with the primary."
+  },
+  {
+    "Type": 14,
+    "Code": 9,
+    "Text": "The safety partner detected a nonrecoverable major fault. Diagnostic information can be recovered."
+  },
+  {
+    "Type": 14,
+    "Code": 10,
+    "Text": "A cross-compare fault was detected between the two controllers."
+  },
+  {
+    "Type": 14,
+    "Code": 11,
+    "Text": "The safety task failed to recover during a loss of redundancy. The maximum safety mute time was exceeded."
+  },
+  {
+    "Type": 14,
+    "Code": 12,
+    "Text": "The safety partner was detected when the project safety level is SIL2/PLd."
+  },
+  {
+    "Type": 14,
+    "Code": 13,
+    "Text": "A data integrity error occurred between the primary and secondary chassis."
+  },
+  {
+    "Type": 16,
+    "Code": 1,
+    "Text": "The controller log is full and data is being overwritten."
+  },
+  {
+    "Type": 17,
+    "Code": 0,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 1,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 2,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 3,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 4,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 5,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 6,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 7,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 8,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 9,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 10,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 11,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 12,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 13,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 14,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 15,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 16,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 17,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 18,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 19,
+    "Text": "An internal controller diagnostic failed. Upload and save the program before the controller is powered down."
+  },
+  {
+    "Type": 17,
+    "Code": 20,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 21,
+    "Text": "An internal controller diagnostic failed. Upload and save program before the controller is powered down."
+  },
+  {
+    "Type": 17,
+    "Code": 22,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 23,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 24,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 25,
+    "Text": "An internal controller diagnostic failed."
+  },
+  {
+    "Type": 17,
+    "Code": 26,
+    "Text": "An internal controller diagnostic failed. Upload and save the program before the controller is powered down."
+  },
+  {
+    "Type": 17,
+    "Code": 27,
+    "Text": "An internal controller diagnostic failed. Upload and save the program before the controller is powered down."
+  },
+  {
+    "Type": 17,
+    "Code": 28,
+    "Text": "An internal controller diagnostic failed. Upload and save the program before the controller is powered down."
+  },
+  {
+    "Type": 17,
+    "Code": 29,
+    "Text": "An internal controller diagnostic failed. Upload and save the program before the controller is powered down."
+  },
+  {
+    "Type": 17,
+    "Code": 30,
+    "Text": "An internal controller diagnostic failed. Upload and save the program before the controller is powered down."
+  },
+  {
+    "Type": 17,
+    "Code": 31,
+    "Text": "An internal controller diagnostic failed. Upload and save the program before the controller is powered down."
+  },
+  {
+    "Type": 17,
+    "Code": 32,
+    "Text": "An internal controller diagnostic failed. Upload and save the program before the controller is powered down."
+  },
+  {
+    "Type": 17,
+    "Code": 33,
+    "Text": "An internal controller diagnostic failed. Upload and save the program before the controller is powered down."
+  },
+  {
+    "Type": 17,
+    "Code": 34,
+    "Text": "Controller internal temperature has exceeded the operating limit."
+  },
+  {
+    "Type": 17,
+    "Code": 35,
+    "Text": "Controller internal temperature is approaching the operating limit."
+  },
+  {
+    "Type": 17,
+    "Code": 36,
+    "Text": "A fan has been removed, or is not maintaining the desired speed."
+  },
+  {
+    "Type": 17,
+    "Code": 37,
+    "Text": "The controller has recovered from an internal temperature fault."
+  },
+  {
+    "Type": 18,
+    "Code": 1,
+    "Text": "The drive did not initialize correctly."
+  },
+  {
+    "Type": 18,
+    "Code": 2,
+    "Text": "The drive did not initialized correctly. This fault indicates a manufacturer-specific initialization fault."
+  },
+  {
+    "Type": 18,
+    "Code": 3,
+    "Text": "There is a fault on the physical axis."
+  },
+  {
+    "Type": 18,
+    "Code": 4,
+    "Text": "There is a fault on the physical axis. This fault indicates a manufacturer-specific axis fault"
+  },
+  {
+    "Type": 18,
+    "Code": 5,
+    "Text": "A motion fault detected."
+  },
+  {
+    "Type": 18,
+    "Code": 6,
+    "Text": "A motion drive fault detected.\nUsually the fault affects all axes that are associated with the module and all associated axes are shut down."
+  },
+  {
+    "Type": 18,
+    "Code": 7,
+    "Text": "A motion group fault detected.\nUsually the fault affects all axes that are associated with a motion group."
+  },
+  {
+    "Type": 18,
+    "Code": 8,
+    "Text": "A fault occurred during the configuration of a motion drive.\nTypically, this fault occurs when an attempt to update an axis configuration attribute of a drive was unsuccessful."
+  },
+  {
+    "Type": 18,
+    "Code": 9,
+    "Text": "An Absolute Position Recovery (APR) fault occurred and the absolute position of the axis cannot be recovered."
+  },
+  {
+    "Type": 18,
+    "Code": 10,
+    "Text": "An Absolute Position Recovery (APR) Fault occurred and the absolute position of the axis cannot be recovered. This fault indicates a manufacturer-specific APR fault."
+  },
+  {
+    "Type": 19,
+    "Code": 1,
+    "Text": "The controller detected that another device on the network already has the IP address of the controller."
+  },
+  {
+    "Type": 19,
+    "Code": 2,
+    "Text": "The DHCP server replied with an invalid IP address."
+  },
+  {
+    "Type": 19,
+    "Code": 3,
+    "Text": "The DHCP lease was lost or its renewal failed."
+  },
+  {
+    "Type": 19,
+    "Code": 4,
+    "Text": "An EtherNet/IP data storm is detected."
+  },
+  {
+    "Type": 20,
+    "Code": 1,
+    "Text": "A required license is missing or expired during the transition to Run or Test mode."
+  },
+  {
+    "Type": 20,
+    "Code": 2,
+    "Text": "The License Based Execution Protection license that is stored on the CmCard has the correct license, but it has expired."
+  },
+  {
+    "Type": 21,
+    "Code": 1,
+    "Text": "Evaluating alarms exceeded the evaluation period."
+  },
+  {
+    "Type": 21,
+    "Code": 2,
+    "Text": "Alarm set highest severity alarm data may be inaccurate."
+  }
+]
