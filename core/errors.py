@@ -3,7 +3,11 @@ from xml.etree import ElementTree
 from typing import Any
 
 class CoreException(Exception):
-    pass
+    hierarchy = ''
+    def __init__(self, message):
+        from engine.hierarchy import Hierarchy
+        self.hierarchy = Hierarchy.path()
+        super().__init__(f"{message}, ({self.hierarchy})")
 
 class UnhandeledTag(CoreException):
     def __init__(self, key:str, value:str, element:ElementTree):
@@ -20,6 +24,7 @@ class ParseTagException(CoreException):
 
 class MemoryException(CoreException):
     def __init__(self, text:str , path:str, value:Any=None):
-        super().__init__(f"{text}: {path}, {value}")
         self.path = path
         self.value = value
+
+        super().__init__(f"{text}: {self.path}, {self.value}")

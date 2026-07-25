@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from engine.routine import Routine
     
 from engine.instruction import Instruction
-from engine.errors import AOIException
 from engine.hierarchy import Hierarchy
 from engine.errors import PLCFaultHandler
 
@@ -164,8 +163,6 @@ class AOIRegistry:
 
                     token = _pushAOIMemory(aoi)
                     await aoiObject.execute(args, ctx)
-                except Exception as e:
-                    raise AOIException(name, instance).with_traceback(e.__traceback__)
                 finally:
                     if token:
                         _popAOIMemory(token)

@@ -104,10 +104,9 @@ class Routine:
                                         break
                                 self.RungLine += 1
                     case RoutineType.ST:
-                        with PLCFaultHandler.st():
-                            from engine.st.hooks import run_exec_env
+                        from engine.st.hooks import run_exec_env
 
-                            await run_exec_env(self.ST, ctx, self.Name, False)
+                        await run_exec_env(self.ST, ctx, self.Name, False)
                     case RoutineType.FBD:
                         # TODO
                         pass

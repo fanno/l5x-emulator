@@ -1,7 +1,8 @@
 from datatypes.custom.datavariant import DataVariant
 from engine.context import ExecutionContext
 from engine.hierarchy import Hierarchy
-from engine.errors import PLCFaultHandler
+from engine.errors import PLCFaultHandler, STException
+from engine.errors import STException
 
 from typing import Any
 
@@ -46,14 +47,11 @@ def build_exec_env(ctx: "ExecutionContext") -> dict:
     }
 
 async def run_exec_env(expression:str, ctx: "ExecutionContext", error_tag:str, make_st:bool=True) -> Any:
-    try:
-        original = expression
-        exec_env = build_exec_env(ctx)   
-        if make_st:           
-            expression = make_async_st(expression)
+    original = expression
+    exec_env = build_exec_env(ctx)   
+    if make_st:           
+        expression = make_async_st(expression)
 
+    with PLCFaultHandler.st(error_tag, expression):
         exec(expression, exec_env)
         return await exec_env["__st_main__"]()
-    except Exception as e:
-        from engine.errors import STException
-        raise STException(error_tag, original, e) from e

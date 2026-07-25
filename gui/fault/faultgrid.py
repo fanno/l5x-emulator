@@ -81,7 +81,7 @@ class FaultGrid(Treeview):
             self.delete(*self.get_children())
 
             for k, v in enumerate(data):
-                value = (str(v.time), str(v.type), str(v.code), v.path, FaultGrid.getText(v.type, v.code))
+                value = (str(v.time), str(v.type), str(v.code), v.hierarchy, FaultGrid.getText(v.type, v.code))
                 tag = 'odd' if k % 2 else 'even'
                 tags=(tag,)
                 iid = self.insert('', tk.END, text=str(k), values=value, open=tk.FALSE,tags=tags)
