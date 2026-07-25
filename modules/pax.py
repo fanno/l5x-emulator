@@ -1,5 +1,3 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
@@ -9,10 +7,11 @@ from datatypes.custom.bool import BOOL
 
 from modules.channel.ai import CHANNEL_AI_HART_I_0, CHANNEL_AI_I_0
 from modules.ab._5000.hart import AB_5000_HART_STATIC_STRUCT_I_0
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class PAX_HART_DEVICE_I_0:
+class PAX_HART_DEVICE_I_0(UDT):
     RunMode: BOOL = field(init=False, default_factory=BOOL)
     ConnectionFaulted: BOOL = field(init=False, default_factory=BOOL)
     DiagnosticActive: BOOL = field(init=False, default_factory=BOOL)

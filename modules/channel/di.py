@@ -1,22 +1,21 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, INT, LINT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_DI_I_0:
+class CHANNEL_DI_I_0(UDT):
     Data: BOOL = field(init=False, default_factory=BOOL)
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_DI_COUNTER_I_0:
+class CHANNEL_DI_COUNTER_I_0(UDT):
     Data: BOOL = field(init=False, default_factory=BOOL)
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
@@ -26,7 +25,7 @@ class CHANNEL_DI_COUNTER_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_DI_COUNTER_O_0:
+class CHANNEL_DI_COUNTER_O_0(UDT):
     Reset: BOOL = field(init=False, default_factory=BOOL)
     RolloverAck: BOOL = field(init=False, default_factory=BOOL)
     Preset: DINT = field(init=False, default_factory=DINT)
@@ -34,7 +33,7 @@ class CHANNEL_DI_COUNTER_O_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_DI_COUNTER_FT_O_0:
+class CHANNEL_DI_COUNTER_FT_O_0(UDT):
     Reset: BOOL = field(init=False, default_factory=BOOL)
     ResetFault: BOOL = field(init=False, default_factory=BOOL)
     RolloverAck: BOOL = field(init=False, default_factory=BOOL)
@@ -42,7 +41,7 @@ class CHANNEL_DI_COUNTER_FT_O_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_DI_FT_I_0:
+class CHANNEL_DI_FT_I_0(UDT):
     Data: BOOL = field(init=False, default_factory=BOOL)
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
@@ -53,12 +52,12 @@ class CHANNEL_DI_FT_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_DI_FT_O_0:
+class CHANNEL_DI_FT_O_0(UDT):
     ResetFault: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_DI_TIMESTAMP_I_0:
+class CHANNEL_DI_TIMESTAMP_I_0(UDT):
     Data: BOOL = field(init=False, default_factory=BOOL)
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
@@ -74,14 +73,14 @@ class CHANNEL_DI_TIMESTAMP_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_DI_TIMESTAMP_O_0:
+class CHANNEL_DI_TIMESTAMP_O_0(UDT):
     ResetTimestamps: BOOL = field(init=False, default_factory=BOOL)
     TimestampOffOnNumberAck: INT = field(init=False, default_factory=INT)
     TimestampOnOffNumberAck: INT = field(init=False, default_factory=INT)
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_DI_TIMESTAMP_FT_I_0:
+class CHANNEL_DI_TIMESTAMP_FT_I_0(UDT):
     Data: BOOL = field(init=False, default_factory=BOOL)
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
@@ -101,7 +100,7 @@ class CHANNEL_DI_TIMESTAMP_FT_I_0:
     
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_DI_TIMESTAMP_FT_O_0:
+class CHANNEL_DI_TIMESTAMP_FT_O_0(UDT):
     ResetFault: BOOL = field(init=False, default_factory=BOOL)
     ResetTimestamps: BOOL = field(init=False, default_factory=BOOL)
     TimestampOffOnNumberAck: INT = field(init=False, default_factory=INT)

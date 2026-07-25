@@ -112,8 +112,7 @@ class PLCFaultHandler:
     def st(cls, error_tag, expression):
         try:
             yield
-        except Exception as e:
-            from engine.errors import STException
+        except SyntaxError as e:
             ste = STException(error_tag, expression, e)
             logging.error(f"STException:", exc_info=ste)
             #raise ste from e

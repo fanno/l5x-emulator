@@ -1,15 +1,14 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import INT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class AB_PowerFlex525V_EENET_Drive_I_0:
+class AB_PowerFlex525V_EENET_Drive_I_0(UDT):
     DriveStatus: INT = field(init=False, default_factory=INT)
     Ready: BOOL = field(init=False, default_factory=BOOL)
     Active: BOOL = field(init=False, default_factory=BOOL)
@@ -30,7 +29,7 @@ class AB_PowerFlex525V_EENET_Drive_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class AB_PowerFlex525V_EENET_Drive_O_0:
+class AB_PowerFlex525V_EENET_Drive_O_0(UDT):
     LogicCommand: INT = field(init=False, default_factory=INT)
     Stop: BOOL = field(init=False, default_factory=BOOL)
     Start: BOOL = field(init=False, default_factory=BOOL)

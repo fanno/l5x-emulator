@@ -1,15 +1,14 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import SINT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_DO8_NODIAG_C_0:
+class AB_1734_DO8_NODIAG_C_0(UDT):
     FaultMode: SINT = field(init=False, default_factory=SINT)
     Pt0FaultMode: BOOL = field(init=False, default_factory=BOOL)
     Pt1FaultMode: BOOL = field(init=False, default_factory=BOOL)
@@ -49,7 +48,7 @@ class AB_1734_DO8_NODIAG_C_0:
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_OB8S_O_0:
+class AB_1734_OB8S_O_0(UDT):
     Pt00Data: BOOL = field(init=False, default_factory=BOOL)
     Pt01Data: BOOL = field(init=False, default_factory=BOOL)
     Pt02Data: BOOL = field(init=False, default_factory=BOOL)
@@ -61,7 +60,7 @@ class AB_1734_OB8S_O_0:
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_OB8S_SAFETY1_I_0:
+class AB_1734_OB8S_SAFETY1_I_0(UDT):
     RunMode: BOOL = field(init=False, default_factory=BOOL)
     ConnectionFaulted: BOOL = field(init=False, default_factory=BOOL)
     Pt00OutputStatus: BOOL = field(init=False, default_factory=BOOL)

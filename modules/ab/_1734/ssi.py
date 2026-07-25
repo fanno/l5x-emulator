@@ -1,15 +1,14 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, INT, SINT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_SSI_C_1:
+class AB_1734_SSI_C_1(UDT):
     Run: SINT = field(init=False, default_factory=SINT)
     GrayBinary: SINT = field(init=False, default_factory=SINT)
     WordLength: SINT = field(init=False, default_factory=SINT)
@@ -35,7 +34,7 @@ class AB_1734_SSI_C_1:
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_SSI_I_0:
+class AB_1734_SSI_I_0(UDT):
     Fault: DINT = field(init=False, default_factory=DINT)
     PresentData: DINT = field(init=False, default_factory=DINT)
     LatchedData: DINT = field(init=False, default_factory=DINT)
@@ -56,7 +55,7 @@ class AB_1734_SSI_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_SSI_O_0:
+class AB_1734_SSI_O_0(UDT):
     Control: SINT = field(init=False, default_factory=SINT)
     LatchAck: BOOL = field(init=False, default_factory=BOOL)
     Compare0Ack: BOOL = field(init=False, default_factory=BOOL)

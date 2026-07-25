@@ -1,15 +1,14 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import INT, REAL
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AO_O_0:
+class CHANNEL_AO_O_0(UDT):
     LLimitAlarmUnlatch: BOOL = field(init=False, default_factory=BOOL)
     HLimitAlarmUnlatch: BOOL = field(init=False, default_factory=BOOL)
     RampAlarmUnlatch: BOOL = field(init=False, default_factory=BOOL)
@@ -17,7 +16,7 @@ class CHANNEL_AO_O_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AO_CAL_O_0:
+class CHANNEL_AO_CAL_O_0(UDT):
     LLimitAlarmUnlatch: BOOL = field(init=False, default_factory=BOOL)
     HLimitAlarmUnlatch: BOOL = field(init=False, default_factory=BOOL)
     RampAlarmUnlatch: BOOL = field(init=False, default_factory=BOOL)
@@ -32,7 +31,7 @@ class CHANNEL_AO_CAL_O_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AO_DIAG_I_0:
+class CHANNEL_AO_DIAG_I_0(UDT):
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
     NoLoad: BOOL = field(init=False, default_factory=BOOL)
@@ -53,7 +52,7 @@ class CHANNEL_AO_DIAG_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AO_DIAG_CAL_I_0:
+class CHANNEL_AO_DIAG_CAL_I_0(UDT):
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
     NoLoad: BOOL = field(init=False, default_factory=BOOL)
@@ -79,7 +78,7 @@ class CHANNEL_AO_DIAG_CAL_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AO_FT_I_0:
+class CHANNEL_AO_FT_I_0(UDT):
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
     NoLoad: BOOL = field(init=False, default_factory=BOOL)
@@ -94,7 +93,7 @@ class CHANNEL_AO_FT_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AO_FT_O_0:
+class CHANNEL_AO_FT_O_0(UDT):
     ResetFault: BOOL = field(init=False, default_factory=BOOL)
     Data: REAL = field(init=False, default_factory=REAL)
 

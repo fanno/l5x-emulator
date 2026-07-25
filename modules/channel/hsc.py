@@ -1,15 +1,14 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, INT, SINT, REAL
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_HSC_I_0:
+class CHANNEL_HSC_I_0(UDT):
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
     RolloverLeqRollunder: BOOL = field(init=False, default_factory=BOOL)
@@ -64,7 +63,7 @@ class CHANNEL_HSC_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_HSC_O_0:
+class CHANNEL_HSC_O_0(UDT):
     Reset: BOOL = field(init=False, default_factory=BOOL)
     Hold: BOOL = field(init=False, default_factory=BOOL)
     Load: BOOL = field(init=False, default_factory=BOOL)

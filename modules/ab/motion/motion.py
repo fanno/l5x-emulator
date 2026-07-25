@@ -1,14 +1,13 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, INT, SINT
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class AB_MOTION_DIAGNOSTICS_S_1:
+class AB_MOTION_DIAGNOSTICS_S_1(UDT):
     LostControllerToDriveTransmissions: INT = field(init=False, default_factory=INT)
     LateControllerToDriveTransmissions: INT = field(init=False, default_factory=INT)
     LostDriveToControllerTransmissions: INT = field(init=False, default_factory=INT)

@@ -1,15 +1,14 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import INT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_DI8_C_0:
+class AB_1734_DI8_C_0(UDT):
     Pt0FilterOffOn: INT = field(init=False, default_factory=INT)
     Pt0FilterOnOff: INT = field(init=False, default_factory=INT)
     Pt1FilterOffOn: INT = field(init=False, default_factory=INT)
@@ -29,7 +28,7 @@ class AB_1734_DI8_C_0:
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_IB8S_O_0:
+class AB_1734_IB8S_O_0(UDT):
     Test00Data: BOOL = field(init=False, default_factory=BOOL)
     Test01Data: BOOL = field(init=False, default_factory=BOOL)
     Test02Data: BOOL = field(init=False, default_factory=BOOL)
@@ -37,7 +36,7 @@ class AB_1734_IB8S_O_0:
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_IB8S_SAFETY2_O_0:
+class AB_1734_IB8S_SAFETY2_O_0(UDT):
     RunMode: BOOL = field(init=False, default_factory=BOOL)
     ConnectionFaulted: BOOL = field(init=False, default_factory=BOOL)
     Pt00Data: BOOL = field(init=False, default_factory=BOOL)

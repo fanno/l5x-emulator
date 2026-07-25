@@ -1,15 +1,14 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, INT, SINT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_4IOL_STRUCT_STATUS_I_0:
+class AB_1734_4IOL_STRUCT_STATUS_I_0(UDT):
     Ch0Fault: BOOL = field(init=False, default_factory=BOOL)
     Ch0ConnectionFaulted: BOOL = field(init=False, default_factory=BOOL)
     Ch0ConfigurationInProgress: BOOL = field(init=False, default_factory=BOOL)
@@ -50,7 +49,7 @@ class AB_1734_4IOL_STRUCT_STATUS_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_4IOL_STRUCT_EVENT_I_0:
+class AB_1734_4IOL_STRUCT_EVENT_I_0(UDT):
     SequenceCount: SINT = field(init=False, default_factory=SINT)
     Qualifier: SINT = field(init=False, default_factory=SINT)
     Source_0: BOOL = field(init=False, default_factory=BOOL)
@@ -65,7 +64,7 @@ class AB_1734_4IOL_STRUCT_EVENT_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_4IOL1_C_0:
+class AB_1734_4IOL1_C_0(UDT):
     Ch0FaultMode: SINT = field(init=False, default_factory=SINT)
     Ch0ProgMode: SINT = field(init=False, default_factory=SINT)
     Ch1FaultMode: SINT = field(init=False, default_factory=SINT)
@@ -85,7 +84,7 @@ class AB_1734_4IOL1_C_0:
 
 @DataTypeRegistry.register
 @dataclass
-class AB_1734_4IOL_I_0:
+class AB_1734_4IOL_I_0(UDT):
     Fault: DINT = field(init=False, default_factory=DINT)
     Status: AB_1734_4IOL_STRUCT_STATUS_I_0 = field(init=False, default_factory=AB_1734_4IOL_STRUCT_STATUS_I_0)
     Ch0DiagEvent: AB_1734_4IOL_STRUCT_EVENT_I_0 = field(init=False, default_factory=AB_1734_4IOL_STRUCT_EVENT_I_0)

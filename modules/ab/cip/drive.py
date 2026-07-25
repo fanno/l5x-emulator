@@ -1,17 +1,14 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, SINT
 from datatypes.custom.bool import BOOL
-
-
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class AB_CIP_DRIVE_SAFETY_SI_0:
+class AB_CIP_DRIVE_SAFETY_SI_0(UDT):
     ConnectionStatus: DINT = field(init=False, default_factory=DINT)
     RunMode: BOOL = field(init=False, default_factory=BOOL)
     ConnectionFaulted: BOOL = field(init=False, default_factory=BOOL)
@@ -22,7 +19,7 @@ class AB_CIP_DRIVE_SAFETY_SI_0:
 
 @DataTypeRegistry.register
 @dataclass
-class AB_CIP_DRIVE_SAFETY_SOL_0:
+class AB_CIP_DRIVE_SAFETY_SOL_0(UDT):
     Command: SINT = field(init=False, default_factory=SINT)
     SafeTorqueOff: BOOL = field(init=False, default_factory=BOOL)
     Reset: BOOL = field(init=False, default_factory=BOOL)

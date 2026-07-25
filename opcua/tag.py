@@ -116,9 +116,10 @@ class OpcuaTag:
         
         if is_dataclass(value):
             dt_name = value.__class__.__name__
-            
-            if hasattr(ua, dt_name):
+
+            if hasattr(ua, dt_name) or hasattr(ua, dt_name.upper()):
                 variant_value = getVariantValue(value)
+
                 variant_type = ua.VariantType.ExtensionObject
                 return await parent.add_variable(
                     self.getIDX(), 

@@ -1,8 +1,7 @@
 from datatypes.custom.datavariant import DataVariant
 from engine.context import ExecutionContext
 from engine.hierarchy import Hierarchy
-from engine.errors import PLCFaultHandler, STException
-from engine.errors import STException
+from engine.errors import PLCFaultHandler
 
 from typing import Any
 

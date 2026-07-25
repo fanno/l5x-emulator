@@ -1,15 +1,14 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import INT, REAL, USINT
 from datatypes.custom.bool import BOOL
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AI_I_0:
+class CHANNEL_AI_I_0(UDT):
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
     Underrange: BOOL = field(init=False, default_factory=BOOL)
@@ -19,7 +18,7 @@ class CHANNEL_AI_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AI_O_0:
+class CHANNEL_AI_O_0(UDT):
     LLAlarmEn: BOOL = field(init=False, default_factory=BOOL)
     LAlarmEn: BOOL = field(init=False, default_factory=BOOL)
     HAlarmEn: BOOL = field(init=False, default_factory=BOOL)
@@ -34,7 +33,7 @@ class CHANNEL_AI_O_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AI_CAL_O_0:
+class CHANNEL_AI_CAL_O_0(UDT):
     LLAlarmEn: BOOL = field(init=False, default_factory=BOOL)
     LAlarmEn: BOOL = field(init=False, default_factory=BOOL)
     HAlarmEn: BOOL = field(init=False, default_factory=BOOL)
@@ -52,7 +51,7 @@ class CHANNEL_AI_CAL_O_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AI_CAL_DIAG_I_0:
+class CHANNEL_AI_CAL_DIAG_I_0(UDT):
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
     OpenWire: BOOL = field(init=False, default_factory=BOOL)
@@ -63,7 +62,7 @@ class CHANNEL_AI_CAL_DIAG_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AI_DIAG_I_0:
+class CHANNEL_AI_DIAG_I_0(UDT):
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
     OpenWire: BOOL = field(init=False, default_factory=BOOL)
@@ -84,7 +83,7 @@ class CHANNEL_AI_DIAG_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AI_DIAG_CAL_I_0:
+class CHANNEL_AI_DIAG_CAL_I_0(UDT):
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
     OpenWire: BOOL = field(init=False, default_factory=BOOL)
@@ -110,7 +109,7 @@ class CHANNEL_AI_DIAG_CAL_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AI_FT_I_0:
+class CHANNEL_AI_FT_I_0(UDT):
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
     OpenWire: BOOL = field(init=False, default_factory=BOOL)
@@ -125,12 +124,12 @@ class CHANNEL_AI_FT_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AI_FT_O_0:
+class CHANNEL_AI_FT_O_0(UDT):
     ResetFault: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AI_HART_I_0:
+class CHANNEL_AI_HART_I_0(UDT):
     Ch: CHANNEL_AI_I_0 = field(init=False, default_factory=CHANNEL_AI_I_0)
     Class: USINT = field(init=False, default_factory=USINT)
     Unit: USINT = field(init=False, default_factory=USINT)
@@ -139,7 +138,7 @@ class CHANNEL_AI_HART_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AI_NAMMUR_I_0:
+class CHANNEL_AI_NAMMUR_I_0(UDT):
     Fault: BOOL = field(init=False, default_factory=BOOL)
     Uncertain: BOOL = field(init=False, default_factory=BOOL)
     Underrange: BOOL = field(init=False, default_factory=BOOL)
@@ -149,5 +148,5 @@ class CHANNEL_AI_NAMMUR_I_0:
 
 @DataTypeRegistry.register
 @dataclass
-class CHANNEL_AI_NAMMUR__FT_I_0:
+class CHANNEL_AI_NAMMUR__FT_I_0(UDT):
     Ch:CHANNEL_AI_FT_I_0 = field(init=False, default_factory=CHANNEL_AI_FT_I_0)
