@@ -231,9 +231,9 @@ class Emulator(threading.Thread):
         for name, module in self.modules.items():
             for dev_id, info in devices.items():
                 if module.CatalogNumber == dev_id:
-                    if module.Vendor == info['data']['vendor']:
-                        logging.debug(f"{dev_id}, {info}")
-
+                    vendor = int(info['data']['vendor'], 16)
+                    if module.Vendor == vendor:
+                        logging.debug(f"Loaded HW module: {dev_id}, {info}")
                         self.modulesLogic[name] = HWLogic(info['data'])
 
         await loadAoiDefinition(self.controller, self.opcua)

@@ -132,7 +132,10 @@ class Array(Generic[T], DataVariant):
         return f"Array[{self._cls.__name__}]({self._data!r})"
 
     def __str__(self) -> str:
-        return f"Array[{self._cls.__name__}]({self._data!r})"    
+        return f"Array[{self._cls.__name__}]({self._data!r})"
+
+    def __contains__(self, key:int):
+        return 0 <= key < len(self._data)
 
 class HasSetValue(Protocol):
     def setValue(self, value: Any) -> None: ...

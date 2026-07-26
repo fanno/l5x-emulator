@@ -2,21 +2,77 @@ id: "1101834"
 vendor: "275"
 name: "Interroll multicontroller"
 manufacturer: "Interroll"
+update_ms: 1000
 
 constants:
-  GAIN: 1.5
-  OFFSET: 10
+  "TRUE": True
+  "FALSE": False
+  "RUNNINGCURENT": 2000
+  "ZERO": 0
 
 outbound:
   "138D3EAC":
     "0":
-      "hello" : "get('O.Data[0]')"
-      "world" : "get('O.Data[0]')"
+      "IO1" : "get('O.Data[0].0')"
+      "IO2" : "get('O.Data[0].1')"
+      "IO3" : "get('O.Data[0].2')"
+      "IO4" : "get('O.Data[0].3')"
+      "M1Speed" : "get('O.Data[1]')"
+      "M2Speed" : "get('O.Data[2]')"
+      "M3Speed" : "get('O.Data[3]')"
+      "M4Speed" : "get('O.Data[4]')"
 
 inbound:
   "AB3D9FDF":
     "0":
       - "set('I.ConnectionFaulted', False)"
       - "set('I.RunMode', True)"
-      - "set('I.Data[0]', hello)"
-      - "set('I.Data[1]', world)"
+      - "set('I.Data[1].0', IO1)"
+      - "set('I.Data[1].1', IO2)"
+      - "set('I.Data[1].2', IO3)"
+      - "set('I.Data[1].3', IO4)"
+      - "set('I.Data[1].4', FALSE)"
+      - "set('I.Data[1].5', FALSE)"
+      - "set('I.Data[1].6', FALSE)"
+      - "set('I.Data[1].7', FALSE)"
+      - "set('I.Data[2].0', FALSE)"
+      - "set('I.Data[2].1', FALSE)"
+      - "set('I.Data[2].2', FALSE)"
+      - "set('I.Data[2].3', FALSE)"
+      - "set('I.Data[2].4', FALSE)"
+      - "set('I.Data[2].5', FALSE)"
+      - "set('I.Data[2].6', FALSE)"
+      - "set('I.Data[2].7', FALSE)"
+      - "set('I.Data[3]', M1Speed)"
+      - "set('I.Data[4]', M2Speed)"
+      - "set('I.Data[5]', M3Speed)"
+      - "set('I.Data[6]', M4Speed)"
+      - "set('I.Data[7]', ZERO)"
+      - if: "M1Speed != ZERO"
+        then:
+          - "set('I.Data[8]', get_bits(RUNNINGCURENT, 0, 8))"
+          - "set('I.Data[9]', get_bits(RUNNINGCURENT, 8, 8))"
+        else:
+          - "set('I.Data[8]', get_bits(ZERO, 0, 8))"
+          - "set('I.Data[9]', get_bits(ZERO, 8, 8))"
+      - if: "M2Speed != ZERO"
+        then:
+          - "set('I.Data[10]', get_bits(RUNNINGCURENT, 0, 8))"
+          - "set('I.Data[11]', get_bits(RUNNINGCURENT, 8, 8))"
+        else:
+          - "set('I.Data[10]', get_bits(ZERO, 0, 8))"
+          - "set('I.Data[11]', get_bits(ZERO, 8, 8))"
+      - if: "M3Speed != ZERO"
+        then:
+          - "set('I.Data[12]', get_bits(RUNNINGCURENT, 0, 8))"
+          - "set('I.Data[13]', get_bits(RUNNINGCURENT, 8, 8))"
+        else:
+          - "set('I.Data[12]', get_bits(ZERO, 0, 8))"
+          - "set('I.Data[13]', get_bits(ZERO, 8, 8))"
+      - if: "M4Speed != ZERO"
+        then:
+          - "set('I.Data[14]', get_bits(RUNNINGCURENT, 0, 8))"
+          - "set('I.Data[15]', get_bits(RUNNINGCURENT, 8, 8))"
+        else:
+          - "set('I.Data[14]', get_bits(ZERO, 0, 8))"
+          - "set('I.Data[15]', get_bits(ZERO, 8, 8))"
