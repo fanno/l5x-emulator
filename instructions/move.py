@@ -10,6 +10,10 @@ from datatypes.custom.udt import Resettable
 
 from  instructions.helper import getPLCValue
 
+from datatypes.custom.numbers import DINT
+
+import logging
+
 @InstructionRegistry.register
 class MOV(Instruction):
 

@@ -89,7 +89,6 @@ class UDINT(INTIGER):
 class DINT(INTIGER):
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Int32)
 
-
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class UINT(INTIGER):

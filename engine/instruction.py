@@ -5,6 +5,8 @@ from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.array import Array
 from datatypes.custom.udt import UDT
 
+import logging
+
 class Instruction:
     args:list[str]
     name:str

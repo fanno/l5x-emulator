@@ -25,6 +25,7 @@ datatypes = [
     'datatypes.custom.numbers',
     'datatypes.custom.string',
     'datatypes.custom.time',
+    'datatypes.custom.udt',
 
     'datatypes.safety.safety',
 
@@ -45,7 +46,7 @@ datatypes = [
     'datatypes.motion',
     'datatypes.odometer',
     'datatypes.output',
-    'datatypes.alaprm',
+    'datatypes.p',
     'datatypes.phase',
     'datatypes.pid',
     'datatypes.rac',
@@ -85,6 +86,7 @@ instructions = [
     'instructions.compare',
     'instructions.drives',
     'instructions.filters',
+    'instructions.forbreak',
     'instructions.helper',
     'instructions.hmi',
     'instructions.input',
@@ -117,7 +119,7 @@ modules = [
 
     'modules.ab.motion.motion',
 
-    'modules.ab.powerflex._425',
+    'modules.ab.powerflex._525',
 
     'modules.channel.ai',
     'modules.channel.ao',
@@ -125,7 +127,7 @@ modules = [
     'modules.channel.do',
     'modules.channel.hsc',
 
-    'modules.pas',
+    'modules.pax',
 ]
 hiddenimports.extend(modules)
 

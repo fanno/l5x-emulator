@@ -36,7 +36,7 @@ from core.xml.programs import loadPrograms
 from core.xml.aoi import loadAoiDefinition
 from core.xml.task import loadTasks
 from core.servicelocator import ServiceLocator
-from core.library.libeary import initialize_custom_folder, load_all_hardware, get_paths
+from core.library.libeary import initPyInstaller, load_all_hardware, get_paths
 from core.library.hwlogic import HWLogic
 from core.log import IndentedFormatter
 from core.emulatorcontext import EmulatorContext
@@ -96,7 +96,7 @@ class Emulator(threading.Thread):
         super().__init__()
         self.context = EmulatorContext(True)
 
-        initialize_custom_folder()
+        initPyInstaller()
 
         self.queue = Queue()
 

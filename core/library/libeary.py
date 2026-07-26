@@ -28,8 +28,8 @@ def get_paths():
         exe_dir = os.path.dirname(sys.executable)
         
         return {
-            'base': root,          # Points to _internal
-            'exe': exe_dir,        # Points to dist/plc
+            'base': root,
+            'exe': exe_dir,
             'library': os.path.join(root, 'library', 'hardware'),
             'templates': os.path.join(root, 'templates', 'hardware'),
             'custom': os.path.join(exe_dir, 'custom', 'hardware')
@@ -37,49 +37,55 @@ def get_paths():
     else:
         return {
             'base': root,
-            'exe': root,           # In dev, we write to the project root
+            'exe': root,
             'library': os.path.join(root, 'library', 'hardware'),
-            'templates': os.path.join(root, 'templates', 'hardware'), # Note: 'custom' source is here
+            'templates': os.path.join(root, 'templates', 'hardware'),
             'custom': os.path.join(root, 'custom', 'hardware')
         }
+    
+def isPyInstaller():
+    return getattr(sys, 'frozen', False)
 
-def initialize_custom_folder():
-    if getattr(sys, 'frozen', False):
+def initPyInstaller():
+    if isPyInstaller():
         path = get_paths()        
+
+        files:list[list[str]] = []
 
         base_dir = path['base']
         exe_dir = path['exe']
 
-        template_src_dir = os.path.join(base_dir, 'templates', 'hardware')
-        
-        user_dest_dir = os.path.join(exe_dir, 'custom', 'hardware')
+        files.append([os.path.join(base_dir, 'templates', 'hardware'), os.path.join(exe_dir, 'custom', 'hardware')])
 
-        if not os.path.exists(user_dest_dir):
-            os.makedirs(user_dest_dir, exist_ok=True)
-            logging.debug(f"Created: {user_dest_dir}")
+        files.append([os.path.join(base_dir, 'Plc_emulator.L5X'), os.path.join(exe_dir)])
+        files.append([os.path.join(base_dir, 'errorcodes.json'), os.path.join(exe_dir)])
 
-        if not os.path.exists(template_src_dir):
-            logging.debug(f"ERROR: Source not found at {template_src_dir}")
+        for file in files:
+            s, d  = file
+            copy(s, d)
+
+def copy(src, dest):
+    if isPyInstaller():
+        if not os.path.exists(dest):
+            os.makedirs(dest, exist_ok=True)
+            logging.debug(f"Created: {dest}")
+
+        if not os.path.exists(src):
+            logging.debug(f"ERROR: Source not found at {src}")
             input("Press Enter to exit...")
             #TODO THORW EXCEPTION
             return
 
         try:
-            files = os.listdir(template_src_dir)
-            
-            for filename in files:
-                src_file = os.path.join(template_src_dir, filename)
-                dst_file = os.path.join(user_dest_dir, filename)
-
-                if os.path.isdir(src_file):
-                    continue
-
-                if not os.path.exists(dst_file):
-                    shutil.copy2(src_file, dst_file)
+            if os.path.isfile(src):
+                shutil.copy2(src, dest)
+            else:
+                shutil.copytree(src, dest, dirs_exist_ok=True)
         except Exception as e:
             logging.exception(e)
             #TODO THORW EXCEPTION
             input("Press Enter to exit...")
+
 
 def load_all_hardware(paths):
     registry = {}

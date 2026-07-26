@@ -68,6 +68,8 @@
           //"--collect-all=datatypes",
           "--add-data", "library;library",
           "--add-data", "custom;templates",
+          "--add-data", "errorcodes.json;errorcodes.json",
+          "--add-data", "Plc_emulator.L5X;Plc_emulator.L5X",
           "plc.py"
         ],
         "options": {
