@@ -14,6 +14,8 @@ from opcua.helpers import getUAVariantType, getPythonVariantType
 from datatypes.custom.array import Array
 from datatypes.custom.datavariant import DataVariant
 
+from datatypes.custom.udt import UDT
+
 class UDTBase:
     def __repr__(self):
         values = ", ".join(f"{k}={v!r}" for k, v in self.__dict__.items())
@@ -85,7 +87,7 @@ def createClassFromStructure(struct:Structure) -> Type:
     if struct.base:
         bases = struct.base
     else:
-        bases = ()
+        bases = (UDT,)
 
     cls = create_ua_class(struct.name, schema, bases)
     logging.debug(f"createClassFromStructure: {struct.name} {cls}")
