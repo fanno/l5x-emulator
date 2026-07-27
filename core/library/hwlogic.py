@@ -3,7 +3,9 @@ import time
 
 from typing import Dict
 
-from simpleeval import simple_eval
+from ast import Expr
+
+from simpleeval import SimpleEval
 
 from core.memory.memory import Memory
 from core.memory.helper import getMemory, setMemory
@@ -28,7 +30,9 @@ class HWLogic:
         self.updateInbound = False
 
         self.runOutbound = {}
+        self.compinedOutbound = {}
         self.runInbound = {}
+        self.compinedInbound = {}
 
     def update(self, _name:str, memory:Memory):
         now = time.monotonic()
@@ -53,27 +57,53 @@ class HWLogic:
 
             eval_context = {**self.constants}
 
-            eval_func = create_evaluator(_name, eval_context)
+            eval__compined_func = create_evaluator(_name, eval_context)
 
-            for out_name, expression in self.runOutbound[self.outAddress].items():
-                result = eval_func(expression)
-                eval_context[out_name] = result
+            if self.outAddress not in self.compinedOutbound:
+                self.compinedOutbound[self.outAddress] = {}
+                for out_name, expression in self.runOutbound[self.outAddress].items():
+                    self.compinedOutbound[self.outAddress][out_name] = compile_item(expression)
+
+            for out_name, expression in self.compinedOutbound[self.outAddress].items():
+                result = eval__compined_func(expression)
+                if result is not None:
+                    eval_context[out_name] = result
 
             if self.updateInbound:
-                for item in self.runInbound[self.inAddress]:
-                    if isinstance(item, str):
-                        eval_func(item)
+                if self.inAddress not in self.compinedInbound:
+                    self.compinedInbound[self.inAddress] = []
+                    for item in self.runInbound[self.inAddress]:
+                        self.compinedInbound[self.inAddress].append(compile_item(item))
+                    print(self.compinedInbound[self.inAddress])
 
+                for item in self.compinedInbound[self.inAddress]:
+                    if isinstance(item, Expr):
+                        eval__compined_func(item)
                     elif isinstance(item, dict):
-                        condition = eval_func(item["if"])
+                        condition = eval__compined_func(item["if"])
 
                         branch = item["then"] if condition else item.get("else", [])
 
                         for expr in branch:
-                            eval_func(expr)
+                            eval__compined_func(expr)
+                         
             self.updateInbound = not self.updateInbound
 
             return outputs
+
+def compile_item(item):
+    try:
+        if isinstance(item, str):
+            return SimpleEval.parse(item)
+        
+        return {
+            "if": SimpleEval.parse(item["if"]),
+            "then": [compile_item(x) for x in item.get("then", [])],
+            "else": [compile_item(x) for x in item.get("else", [])]
+        }
+    except Exception as e:
+        logging.exception(e)
+    return None
 
 def create_evaluator(name, namespace):
 
@@ -81,6 +111,7 @@ def create_evaluator(name, namespace):
         return getMemory(f"{name}:{path_str}")
     
     def set_value(path_str, value):
+        print(f"{name}:{path_str}", value)
         setMemory(f"{name}:{path_str}", value)
 
     def get_bits(path_str, start, length):
@@ -96,15 +127,19 @@ def create_evaluator(name, namespace):
         return (value >> start) & mask
 
     def evaluate(expression):
-        try:
-            result = simple_eval(
-                expression,
-                names=namespace,
-                functions={'get': get_value, 'set': set_value, 'get_bits': get_bits}
-            )
-            return result
-        except Exception as e:
-            logging.exception(e)
-            return None
+        if isinstance(expression, Expr):
+            try:
+                s = SimpleEval()
+                s.names = namespace
+                s.functions = {
+                    'get': get_value,
+                    'set': set_value,
+                    'get_bits': get_bits
+                }
+                result = s._eval(expression)
 
+                return result
+            except Exception as e:
+                logging.exception(e)
+        return None
     return evaluate
