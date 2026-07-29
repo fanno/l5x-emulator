@@ -49,12 +49,14 @@ class MVM(Instruction):
 class AND(Instruction):
 
     def execute(self, SourceA, SourceB) -> Any:
+        SourceA = getPLCValue(SourceA)
+        SourceB = getPLCValue(SourceB)
         return _AND(SourceA, SourceB, 64)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            SourceA = getPLCValue(self.getMemory(self.args[0]))
-            SourceB = getPLCValue(self.getMemory(self.args[1]))
+            SourceA = self.getMemory(self.args[0])
+            SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
@@ -71,12 +73,14 @@ class AND(Instruction):
 class OR(Instruction):
 
     def execute(self, SourceA, SourceB) -> Any:
+        SourceA = getPLCValue(SourceA)
+        SourceB = getPLCValue(SourceB)
         return _OR(SourceA, SourceB, 64)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            SourceA = getPLCValue(self.getMemory(self.args[0]))
-            SourceB = getPLCValue(self.getMemory(self.args[1]))
+            SourceA = self.getMemory(self.args[0])
+            SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
@@ -93,12 +97,14 @@ class OR(Instruction):
 class XOR(Instruction):
 
     def execute(self, SourceA, SourceB) -> Any:
+        SourceA = getPLCValue(SourceA)
+        SourceB = getPLCValue(SourceB)
         return _XOR(SourceA, SourceB, 64)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            SourceA = getPLCValue(self.getMemory(self.args[0]))
-            SourceB = getPLCValue(self.getMemory(self.args[1]))
+            SourceA = self.getMemory(self.args[0])
+            SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
@@ -115,11 +121,12 @@ class XOR(Instruction):
 class NOT(Instruction):
 
     def execute(self, SourceA) -> Any:
+        SourceA = getPLCValue(SourceA)
         return _NOT(SourceA, 64)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            Source = getPLCValue(self.getMemory(self.args[0]))
+            Source = self.getMemory(self.args[0])
             
             result = self.execute(Source)
             if not result:

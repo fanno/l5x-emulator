@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="37.00" TargetName="PLC_Emulator" TargetType="Controller" ContainsContext="false" ExportDate="Tue Jul 28 21:27:50 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
-<Controller Use="Target" Name="PLC_Emulator" ProcessorType="5069-L330ERMS2" MajorRev="37" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Tue Jul 28 21:27:35 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="37.00" TargetName="PLC_Emulator" TargetType="Controller" ContainsContext="false" ExportDate="Wed Jul 29 13:42:02 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Target" Name="PLC_Emulator" ProcessorType="5069-L330ERMS2" MajorRev="37" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Wed Jul 29 13:41:53 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
  MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false" EtherNetIPMode="A1/A2: Linear/DLR" AutoDiagsEnabled="true" WebServerEnabled="true" DataExchangeId="{F1F5254F-1BE4-45A7-9417-99212A9FD63C}"
 >
 <RedundancyInfo Enabled="false" KeepTestEditsOnSwitchOver="false"/>
@@ -28,7 +28,7 @@
 <Member Name="ASO_Set" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
 <Member Name="ASO_Control" DataType="ALARM_SET_CONTROL" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
 <Member Name="ZZZZZZZZZZTAlarms12" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
-<Member Name="Alarmactive" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTAlarms12" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="AlarmActive" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTAlarms12" BitNumber="0" ExternalAccess="Read/Write"/>
 </Members>
 </DataType>
 <DataType Name="TASCIIConversions" Family="NoFamily" Class="User">
@@ -62,21 +62,26 @@
 </DataType>
 <DataType Name="TBitTest" Family="NoFamily" Class="User">
 <Members>
-<Member Name="ZZZZZZZZZZBitTest0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
-<Member Name="OTE" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest0" BitNumber="0" ExternalAccess="Read/Write"/>
-<Member Name="OTL" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest0" BitNumber="1" ExternalAccess="Read/Write"/>
-<Member Name="OTU" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest0" BitNumber="2" ExternalAccess="Read/Write"/>
-<Member Name="XIO" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest0" BitNumber="3" ExternalAccess="Read/Write"/>
-<Member Name="XIC" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest0" BitNumber="4" ExternalAccess="Read/Write"/>
-<Member Name="XIOStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest0" BitNumber="5" ExternalAccess="Read/Write"/>
-<Member Name="XICStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest0" BitNumber="6" ExternalAccess="Read/Write"/>
-<Member Name="ONS" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest0" BitNumber="7" ExternalAccess="Read/Write"/>
-<Member Name="ZZZZZZZZZZBitTest9" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
-<Member Name="ONSStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest9" BitNumber="0" ExternalAccess="Read/Write"/>
-<Member Name="OSR" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest9" BitNumber="1" ExternalAccess="Read/Write"/>
-<Member Name="OSRStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest9" BitNumber="2" ExternalAccess="Read/Write"/>
-<Member Name="OSF" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest9" BitNumber="3" ExternalAccess="Read/Write"/>
-<Member Name="OSFStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZBitTest9" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTBitTest0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="OTE" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="OTL" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="OTU" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest0" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="XIO" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest0" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="XIC" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest0" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="XIOStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest0" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="XICStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest0" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="ONS" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest0" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTBitTest9" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="ONSStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="OSR" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="OSRStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="OSF" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="OSFStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="LogicAnd1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="LogicAnd2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="LogicOr1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTBitTest18" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="LogicStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest18" BitNumber="0" ExternalAccess="Read/Write"/>
 </Members>
 </DataType>
 <DataType Name="TCompareTest" Family="NoFamily" Class="User">
@@ -152,6 +157,46 @@
 <Member Name="var1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTestUDT0" BitNumber="0" ExternalAccess="Read/Write"/>
 <Member Name="var2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTestUDT0" BitNumber="1" ExternalAccess="Read/Write"/>
 <Member Name="sub" DataType="TestSubUDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="TFBDADVMath" Family="NoFamily" Class="User">
+<Members>
+<Member Name="SourceA" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="SourceB" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="LNStatus" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="LOGtatus" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="EXPTStatus" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="TFBDMath" Family="NoFamily" Class="User">
+<Members>
+<Member Name="SourceA" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="SourceB" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ADDStatus" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="SUBStatus" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="MULStatus" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DIVStatus" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="MODStatus" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="SQRTStatus" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="NEGStatus" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ABSStatus" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="TFBDMathConversions" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Source" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Source2" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DEG" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="RAD" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="TRUNC" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="TFBDTimer" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZTFBDTimer0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="TONR_TimerEnable" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTFBDTimer0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="TONR_Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTFBDTimer0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="TONR_PRE" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
 </Members>
 </DataType>
 <DataType Name="TFileMisc" Family="NoFamily" Class="User">
@@ -792,7 +837,7 @@
 </Module>
 </Modules>
 <AddOnInstructionDefinitions>
-<AddOnInstructionDefinition Name="fbdAOI" Class="Standard" Revision="1.0" ExecutePrescan="false" ExecutePostscan="false" ExecuteEnableInFalse="false" CreatedDate="2026-07-28T17:28:29.705Z" CreatedBy="GT-ROCKWELL\Win10" EditedDate="2026-07-28T17:30:29.655Z" EditedBy="GT-ROCKWELL\Win10" SoftwareRevision="v37.00"
+<AddOnInstructionDefinition Name="fbdAOI" Class="Standard" Revision="1.0" ExecutePrescan="false" ExecutePostscan="false" ExecuteEnableInFalse="false" CreatedDate="2026-07-28T17:28:29.705Z" CreatedBy="GT-ROCKWELL\Win10" EditedDate="2026-07-29T10:38:35.390Z" EditedBy="GT-ROCKWELL\Win10" SoftwareRevision="v37.00"
 >
 <Parameters>
 <Parameter Name="EnableIn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
@@ -804,30 +849,6 @@
 <Description>
 <![CDATA[Enable Output - System Defined Parameter]]>
 </Description>
-</Parameter>
-<Parameter Name="in1" TagType="Base" DataType="REAL" Usage="Input" Radix="Float" Required="false" Visible="false" ExternalAccess="Read/Write">
-<DefaultData Format="L5K">
-<![CDATA[0.00000000e+000]]>
-</DefaultData>
-<DefaultData Format="Decorated">
-<DataValue DataType="REAL" Radix="Float" Value="0.0"/>
-</DefaultData>
-</Parameter>
-<Parameter Name="in2" TagType="Base" DataType="REAL" Usage="Input" Radix="Float" Required="false" Visible="false" ExternalAccess="Read/Write">
-<DefaultData Format="L5K">
-<![CDATA[0.00000000e+000]]>
-</DefaultData>
-<DefaultData Format="Decorated">
-<DataValue DataType="REAL" Radix="Float" Value="0.0"/>
-</DefaultData>
-</Parameter>
-<Parameter Name="out1" TagType="Base" DataType="REAL" Usage="Input" Radix="Float" Required="false" Visible="false" ExternalAccess="Read/Write">
-<DefaultData Format="L5K">
-<![CDATA[0.00000000e+000]]>
-</DefaultData>
-<DefaultData Format="Decorated">
-<DataValue DataType="REAL" Radix="Float" Value="0.0"/>
-</DefaultData>
 </Parameter>
 </Parameters>
 <LocalTags/>
@@ -1023,38 +1044,6 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="LadderLogicAnd1" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="LadderLogicAnd2" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="LadderLogicOr1" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="LadderLogicStatus" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
 <Tag Name="NOT_IMPLEMENTED" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -1090,14 +1079,6 @@
 <DataValueMember Name="InstructFault" DataType="BOOL" Value="0"/>
 <DataValueMember Name="PresetInv" DataType="BOOL" Value="0"/>
 </Structure>
-</Data>
-</Tag>
-<Tag Name="tes3" Class="Standard" TagType="Base" DataType="REAL" Radix="Float" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[0.00000000e+000]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="REAL" Radix="Float" Value="0.0"/>
 </Data>
 </Tag>
 <Tag Name="tes4" Class="Standard" TagType="Base" DataType="REAL" Radix="Float" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
@@ -1422,9 +1403,81 @@
 </Routine>
 </Routines>
 </Program>
-<Program Name="FBDTest" TestEdits="false" MainRoutineName="move" Disabled="false" Class="Standard" UseAsFolder="false">
+<Program Name="FBDTest" TestEdits="false" MainRoutineName="main" Disabled="false" Class="Standard" UseAsFolder="false">
 <Tags>
-<Tag Name="TONR_01" TagType="Base" DataType="FBD_TIMER" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Tag Name="BCD_TO_01" TagType="Base" DataType="FBD_CONVERT" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[1,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="FBD_CONVERT">
+<DataValueMember Name="EnableIn" DataType="BOOL" Value="1"/>
+<DataValueMember Name="Source" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EnableOut" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Dest" DataType="DINT" Radix="Decimal" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="FBDADVMath" TagType="Base" DataType="TFBDADVMath" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[0,0,0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="TFBDADVMath">
+<DataValueMember Name="SourceA" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="SourceB" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="LNStatus" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="LOGtatus" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EXPTStatus" DataType="DINT" Radix="Decimal" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="FBDMath" TagType="Base" DataType="TFBDMath" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[0,0,0,0,0,0,0,0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="TFBDMath">
+<DataValueMember Name="SourceA" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="SourceB" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ADDStatus" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="SUBStatus" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="MULStatus" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="DIVStatus" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="MODStatus" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="SQRTStatus" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="NEGStatus" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ABSStatus" DataType="DINT" Radix="Decimal" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="FBDMathConversions" TagType="Base" DataType="TFBDMathConversions" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[0.00000000e+000,0,0.00000000e+000,0.00000000e+000,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="TFBDMathConversions">
+<DataValueMember Name="Source" DataType="REAL" Radix="Float" Value="0.0"/>
+<DataValueMember Name="Source2" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="DEG" DataType="REAL" Radix="Float" Value="0.0"/>
+<DataValueMember Name="RAD" DataType="REAL" Radix="Float" Value="0.0"/>
+<DataValueMember Name="TRUNC" DataType="DINT" Radix="Decimal" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="FBDTimer" TagType="Base" DataType="TFBDTimer" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="TFBDTimer">
+<DataValueMember Name="TONR_TimerEnable" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TONR_Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TONR_PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="TONR" TagType="Base" DataType="FBD_TIMER" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[1,0,0,0,0,0,0,0,0,4,0,0]]]>
 </Data>
@@ -1445,62 +1498,244 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="TONR_02" TagType="Base" DataType="FBD_TIMER" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Tag Name="TO_BCD_01" TagType="Base" DataType="FBD_CONVERT" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
-<![CDATA[[1,0,0,0,0,0,0,0,0,4,0,0]]]>
+<![CDATA[[1,0,0]]]>
 </Data>
 <Data Format="Decorated">
-<Structure DataType="FBD_TIMER">
+<Structure DataType="FBD_CONVERT">
 <DataValueMember Name="EnableIn" DataType="BOOL" Value="1"/>
-<DataValueMember Name="TimerEnable" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Source" DataType="DINT" Radix="Decimal" Value="0"/>
 <DataValueMember Name="EnableOut" DataType="BOOL" Value="0"/>
-<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="Status" DataType="DINT" Radix="Hex" Value="16#0000_0000"/>
-<DataValueMember Name="InstructFault" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PresetInv" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Dest" DataType="DINT" Radix="Decimal" Value="0"/>
 </Structure>
 </Data>
 </Tag>
 </Tags>
 <Routines>
-<Routine Name="move" Type="FBD">
+<Routine Name="ADV_MATH" Type="FBD">
 <FBDContent SheetSize="D - 22 x 34 in" SheetOrientation="Landscape">
 <Sheet Number="1">
 <Description>
-<![CDATA[name1]]>
+<![CDATA[LN]]>
 </Description>
-<IRef ID="0" X="380" Y="160" Operand="test" HideDesc="false"/>
-<IRef ID="1" X="400" Y="340" Operand="test" HideDesc="true"/>
-<IRef ID="2" X="340" Y="80" Operand="test2" HideDesc="false"/>
-<ORef ID="3" X="950" Y="200" Operand="tes4" HideDesc="false"/>
-<OCon ID="4" X="940" Y="380" Name="PRE"/>
-<Function Type="ADD__F" ID="5" X="520" Y="140"/>
-<Function Type="ADD__F" ID="6" X="660" Y="320"/>
-<Wire FromID="0" ToID="5" ToParam="SourceB"/>
-<Wire FromID="1" ToID="6" ToParam="SourceB"/>
-<Wire FromID="5" FromParam="Dest" ToID="6" ToParam="SourceA"/>
-<Wire FromID="6" FromParam="Dest" ToID="3"/>
-<Wire FromID="6" FromParam="Dest" ToID="4"/>
-<FeedbackWire FromID="2" ToID="5" ToParam="SourceA"/>
+<IRef ID="0" X="200" Y="140" Operand="FBDADVMath.SourceA" HideDesc="false"/>
+<ORef ID="1" X="700" Y="160" Operand="FBDADVMath.LNStatus" HideDesc="false"/>
+<Function Type="LN__F" ID="2" X="420" Y="140"/>
+<Wire FromID="0" ToID="2" ToParam="Source"/>
+<Wire FromID="2" FromParam="Dest" ToID="1"/>
 </Sheet>
 <Sheet Number="2">
 <Description>
-<![CDATA[name2]]>
+<![CDATA[LOG]]>
 </Description>
-<IRef ID="7" X="380" Y="420" Operand="RunTimer" HideDesc="false"/>
-<ICon ID="8" X="340" Y="500" Name="PRE"/>
-<ICon ID="9" X="360" Y="560" Name="test"/>
-<OCon ID="10" X="1220" Y="540" Name="test"/>
-<Block Type="TONR" ID="11" X="860" Y="400" Operand="TONR_01" VisiblePins="EnableIn TimerEnable PRE Reset EnableOut ACC EN TT DN Status InstructFault PresetInv" HideDesc="false"/>
-<Wire FromID="7" ToID="11" ToParam="TimerEnable"/>
-<Wire FromID="8" ToID="11" ToParam="PRE"/>
-<Wire FromID="9" ToID="11" ToParam="Reset"/>
-<Wire FromID="11" FromParam="DN" ToID="10"/>
+<IRef ID="3" X="340" Y="120" Operand="FBDADVMath.SourceA" HideDesc="false"/>
+<ORef ID="4" X="700" Y="140" Operand="FBDADVMath.LOGtatus" HideDesc="false"/>
+<Function Type="LOG__F" ID="5" X="480" Y="120"/>
+<Wire FromID="3" ToID="5" ToParam="Source"/>
+<Wire FromID="5" FromParam="Dest" ToID="4"/>
+</Sheet>
+<Sheet Number="3">
+<Description>
+<![CDATA[EXPT]]>
+</Description>
+<IRef ID="6" X="320" Y="220" Operand="FBDADVMath.SourceA" HideDesc="false"/>
+<IRef ID="7" X="320" Y="280" Operand="FBDADVMath.SourceB" HideDesc="false"/>
+<ORef ID="8" X="680" Y="240" Operand="FBDADVMath.EXPTStatus" HideDesc="false"/>
+<Function Type="EXPT__F" ID="9" X="440" Y="220"/>
+<Wire FromID="6" ToID="9" ToParam="SourceA"/>
+<Wire FromID="7" ToID="9" ToParam="SourceB"/>
+<Wire FromID="9" FromParam="Dest" ToID="8"/>
+</Sheet>
+</FBDContent>
+</Routine>
+<Routine Name="main" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[JSR(Timer,0);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[JSR(MATH,0);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[JSR(ADV_MATH,0);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[JSR(MathConversions,0);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="MATH" Type="FBD">
+<FBDContent SheetSize="D - 22 x 34 in" SheetOrientation="Landscape">
+<Sheet Number="1">
+<Description>
+<![CDATA[ÄDD]]>
+</Description>
+<IRef ID="0" X="200" Y="60" Operand="FBDMath.SourceA" HideDesc="false"/>
+<IRef ID="1" X="240" Y="140" Operand="FBDMath.SourceB" HideDesc="false"/>
+<IRef ID="2" X="260" Y="320" Operand="FBDMath.SourceB" HideDesc="true"/>
+<ORef ID="3" X="880" Y="300" Operand="FBDMath.ADDStatus" HideDesc="false"/>
+<OCon ID="4" X="900" Y="380" Name="PRE"/>
+<Function Type="ADD__F" ID="5" X="380" Y="120"/>
+<Function Type="ADD__F" ID="6" X="520" Y="300"/>
+<Wire FromID="1" ToID="5" ToParam="SourceB"/>
+<Wire FromID="2" ToID="6" ToParam="SourceB"/>
+<Wire FromID="5" FromParam="Dest" ToID="6" ToParam="SourceA"/>
+<Wire FromID="6" FromParam="Dest" ToID="3"/>
+<Wire FromID="6" FromParam="Dest" ToID="4"/>
+<FeedbackWire FromID="0" ToID="5" ToParam="SourceA"/>
+</Sheet>
+<Sheet Number="2">
+<Description>
+<![CDATA[SUB]]>
+</Description>
+<IRef ID="7" X="300" Y="160" Operand="FBDMath.SourceB" HideDesc="false"/>
+<ORef ID="8" X="1000" Y="120" Operand="FBDMath.SUBStatus" HideDesc="false"/>
+<ICon ID="9" X="280" Y="100" Name="PRE"/>
+<Function Type="SUB__F" ID="10" X="640" Y="120"/>
+<Wire FromID="7" ToID="10" ToParam="SourceB"/>
+<Wire FromID="9" ToID="10" ToParam="SourceA"/>
+<Wire FromID="10" FromParam="Dest" ToID="8"/>
+</Sheet>
+<Sheet Number="3">
+<Description>
+<![CDATA[MUL]]>
+</Description>
+<IRef ID="11" X="240" Y="100" Operand="FBDMath.SourceA" HideDesc="false"/>
+<IRef ID="12" X="240" Y="140" Operand="FBDMath.SourceB" HideDesc="false"/>
+<ORef ID="13" X="720" Y="120" Operand="FBDMath.MULStatus" HideDesc="false"/>
+<Function Type="MUL__F" ID="14" X="500" Y="100"/>
+<Wire FromID="11" ToID="14" ToParam="SourceA"/>
+<Wire FromID="12" ToID="14" ToParam="SourceB"/>
+<Wire FromID="14" FromParam="Dest" ToID="13"/>
+</Sheet>
+<Sheet Number="4">
+<Description>
+<![CDATA[DIV]]>
+</Description>
+<IRef ID="15" X="240" Y="140" Operand="FBDMath.SourceA" HideDesc="false"/>
+<IRef ID="16" X="240" Y="180" Operand="FBDMath.SourceB" HideDesc="false"/>
+<ORef ID="17" X="680" Y="160" Operand="FBDMath.DIVStatus" HideDesc="false"/>
+<Function Type="DIV__F" ID="18" X="440" Y="160"/>
+<Wire FromID="15" ToID="18" ToParam="SourceA"/>
+<Wire FromID="16" ToID="18" ToParam="SourceB"/>
+<Wire FromID="18" FromParam="Dest" ToID="17"/>
+</Sheet>
+<Sheet Number="5">
+<Description>
+<![CDATA[MOD]]>
+</Description>
+<IRef ID="19" X="260" Y="120" Operand="FBDMath.SourceA" HideDesc="false"/>
+<IRef ID="20" X="260" Y="160" Operand="FBDMath.SourceB" HideDesc="false"/>
+<ORef ID="21" X="730" Y="140" Operand="FBDMath.MODStatus" HideDesc="false"/>
+<Function Type="MOD__F" ID="22" X="480" Y="120"/>
+<Wire FromID="19" ToID="22" ToParam="SourceA"/>
+<Wire FromID="20" ToID="22" ToParam="SourceB"/>
+<Wire FromID="22" FromParam="Dest" ToID="21"/>
+</Sheet>
+<Sheet Number="6">
+<Description>
+<![CDATA[SQRT]]>
+</Description>
+<IRef ID="23" X="280" Y="120" Operand="FBDMath.SourceA" HideDesc="false"/>
+<ORef ID="24" X="730" Y="160" Operand="FBDMath.SQRTStatus" HideDesc="false"/>
+<Function Type="SQRT__F" ID="25" X="480" Y="140"/>
+<Wire FromID="23" ToID="25" ToParam="Source"/>
+<Wire FromID="25" FromParam="Dest" ToID="24"/>
+</Sheet>
+<Sheet Number="7">
+<Description>
+<![CDATA[NEG]]>
+</Description>
+<IRef ID="26" X="280" Y="100" Operand="FBDMath.SourceA" HideDesc="false"/>
+<ORef ID="27" X="620" Y="120" Operand="FBDMath.NEGStatus" HideDesc="false"/>
+<Function Type="NEG__F" ID="28" X="420" Y="120"/>
+<Wire FromID="26" ToID="28" ToParam="Source"/>
+<Wire FromID="28" FromParam="Dest" ToID="27"/>
+</Sheet>
+<Sheet Number="8">
+<Description>
+<![CDATA[ABS]]>
+</Description>
+<IRef ID="29" X="280" Y="120" Operand="FBDMath.SourceA" HideDesc="false"/>
+<ORef ID="30" X="620" Y="120" Operand="FBDMath.ABSStatus" HideDesc="false"/>
+<Function Type="ABS__F" ID="31" X="420" Y="100"/>
+<Wire FromID="29" ToID="31" ToParam="Source"/>
+<Wire FromID="31" FromParam="Dest" ToID="30"/>
+</Sheet>
+</FBDContent>
+</Routine>
+<Routine Name="MathConversions" Type="FBD">
+<FBDContent SheetSize="D - 22 x 34 in" SheetOrientation="Landscape">
+<Sheet Number="1">
+<Description>
+<![CDATA[DEG]]>
+</Description>
+<IRef ID="0" X="340" Y="140" Operand="FBDMathConversions.Source" HideDesc="false"/>
+<ORef ID="1" X="700" Y="160" Operand="FBDMathConversions.DEG" HideDesc="false"/>
+<Function Type="DEG__F" ID="2" X="540" Y="140"/>
+<Wire FromID="0" ToID="2" ToParam="Source"/>
+<Wire FromID="2" FromParam="Dest" ToID="1"/>
+</Sheet>
+<Sheet Number="2">
+<Description>
+<![CDATA[RAD]]>
+</Description>
+<IRef ID="3" X="500" Y="140" Operand="FBDMathConversions.Source" HideDesc="false"/>
+<ORef ID="4" X="990" Y="160" Operand="FBDMathConversions.RAD" HideDesc="false"/>
+<Function Type="RAD__F" ID="5" X="680" Y="180"/>
+<Wire FromID="3" ToID="5" ToParam="Source"/>
+<Wire FromID="5" FromParam="Dest" ToID="4"/>
+</Sheet>
+<Sheet Number="3">
+<Description>
+<![CDATA[TRUNC]]>
+</Description>
+<IRef ID="6" X="300" Y="160" Operand="FBDMathConversions.Source" HideDesc="false"/>
+<ORef ID="7" X="660" Y="160" Operand="FBDMathConversions.TRUNC" HideDesc="false"/>
+<Function Type="TRUNC__F" ID="8" X="480" Y="160"/>
+<Wire FromID="6" ToID="8" ToParam="Source"/>
+<Wire FromID="8" FromParam="Dest" ToID="7"/>
+</Sheet>
+<Sheet Number="4">
+<Description>
+<![CDATA[TO_BCD]]>
+</Description>
+<IRef ID="9" X="380" Y="240" Operand="FBDMathConversions.Source" HideDesc="false"/>
+<Block Type="TO_BCD" ID="10" X="500" Y="200" Operand="TO_BCD_01" VisiblePins="Source Dest" HideDesc="false"/>
+<Wire FromID="9" ToID="10" ToParam="Source"/>
+</Sheet>
+<Sheet Number="5">
+<Description>
+<![CDATA[BCD_TO]]>
+</Description>
+<IRef ID="11" X="320" Y="340" Operand="FBDMathConversions.Source" HideDesc="false"/>
+<Block Type="BCD_TO" ID="12" X="740" Y="340" Operand="BCD_TO_01" VisiblePins="Source Dest" HideDesc="false"/>
+<Wire FromID="11" ToID="12" ToParam="Source"/>
+</Sheet>
+</FBDContent>
+</Routine>
+<Routine Name="Timer" Type="FBD">
+<FBDContent SheetSize="D - 22 x 34 in" SheetOrientation="Landscape">
+<Sheet Number="1">
+<Description>
+<![CDATA[TONR]]>
+</Description>
+<IRef ID="0" X="280" Y="180" Operand="FBDTimer.TONR_PRE" HideDesc="false"/>
+<IRef ID="1" X="280" Y="260" Operand="FBDTimer.TONR_Reset" HideDesc="false"/>
+<IRef ID="2" X="320" Y="100" Operand="FBDTimer.TONR_TimerEnable" HideDesc="false"/>
+<Block Type="TONR" ID="3" X="600" Y="80" Operand="TONR" VisiblePins="EnableIn TimerEnable PRE Reset EnableOut ACC EN TT DN Status InstructFault PresetInv" HideDesc="false"/>
+<Wire FromID="0" ToID="3" ToParam="PRE"/>
+<Wire FromID="1" ToID="3" ToParam="Reset"/>
+<Wire FromID="2" ToID="3" ToParam="TimerEnable"/>
 </Sheet>
 </FBDContent>
 </Routine>
@@ -1549,7 +1784,28 @@
 </Routine>
 </Routines>
 </Program>
-<Program Name="LadderTest" TestEdits="false" MainRoutineName="main" Disabled="false" Class="Standard" UseAsFolder="false">
+<Program Name="periodic" TestEdits="false" MainRoutineName="main" Disabled="false" Class="Standard" UseAsFolder="false">
+<Tags>
+<Tag Name="Toggle" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+</Tags>
+<Routines>
+<Routine Name="main" Type="ST">
+<STContent>
+<Line Number="0">
+<![CDATA[Toggle := not Toggle;]]>
+</Line>
+</STContent>
+</Routine>
+</Routines>
+</Program>
+<Program Name="RLLTest" TestEdits="false" MainRoutineName="main" Disabled="false" Class="Standard" UseAsFolder="false">
 <Tags>
 <Tag Name="Alarms" TagType="Base" DataType="TAlarms" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
@@ -1571,7 +1827,7 @@
 <DataValueMember Name="EnableOut" DataType="BOOL" Value="0"/>
 <DataValueMember Name="LastState" DataType="BOOL" Value="0"/>
 </StructureMember>
-<DataValueMember Name="Alarmactive" DataType="BOOL" Value="0"/>
+<DataValueMember Name="AlarmActive" DataType="BOOL" Value="0"/>
 </Structure>
 </Data>
 </Tag>
@@ -1731,7 +1987,7 @@
 </Tag>
 <Tag Name="Bit" TagType="Base" DataType="TBitTest" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
-<![CDATA[[0,0]]]>
+<![CDATA[[0,0,0]]]>
 </Data>
 <Data Format="Decorated">
 <Structure DataType="TBitTest">
@@ -1748,6 +2004,10 @@
 <DataValueMember Name="OSRStatus" DataType="BOOL" Value="0"/>
 <DataValueMember Name="OSF" DataType="BOOL" Value="0"/>
 <DataValueMember Name="OSFStatus" DataType="BOOL" Value="0"/>
+<DataValueMember Name="LogicAnd1" DataType="BOOL" Value="0"/>
+<DataValueMember Name="LogicAnd2" DataType="BOOL" Value="0"/>
+<DataValueMember Name="LogicOr1" DataType="BOOL" Value="0"/>
+<DataValueMember Name="LogicStatus" DataType="BOOL" Value="0"/>
 </Structure>
 </Data>
 </Tag>
@@ -1780,301 +2040,6 @@
 <DataValueMember Name="IsNAN_Status" DataType="BOOL" Value="0"/>
 <DataValueMember Name="isINF" DataType="REAL" Radix="Float" Value="0.0"/>
 <DataValueMember Name="IsNAN" DataType="REAL" Radix="Float" Value="0.0"/>
-</Structure>
-</Data>
-</Tag>
-<Tag Name="EquipmentPhase" TagType="Base" DataType="TSpecial" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[[[0,0,0,0,0,0,0,0,0,0],[0,0,0],[0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0],[0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],0,0,0,0,[0,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,[0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000]],0,0,0,[0,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,[0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
-		,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000]],0,0]]]>
-</Data>
-<Data Format="Decorated">
-<Structure DataType="TSpecial">
-<ArrayMember Name="FBC_Source" DataType="DINT" Dimensions="10" Radix="Decimal">
-<Element Index="[0]" Value="0"/>
-<Element Index="[1]" Value="0"/>
-<Element Index="[2]" Value="0"/>
-<Element Index="[3]" Value="0"/>
-<Element Index="[4]" Value="0"/>
-<Element Index="[5]" Value="0"/>
-<Element Index="[6]" Value="0"/>
-<Element Index="[7]" Value="0"/>
-<Element Index="[8]" Value="0"/>
-<Element Index="[9]" Value="0"/>
-</ArrayMember>
-<StructureMember Name="FBC_CMP" DataType="CONTROL">
-<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="POS" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="EU" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="EM" DataType="BOOL" Value="0"/>
-<DataValueMember Name="ER" DataType="BOOL" Value="0"/>
-<DataValueMember Name="UL" DataType="BOOL" Value="0"/>
-<DataValueMember Name="IN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="FD" DataType="BOOL" Value="0"/>
-</StructureMember>
-<StructureMember Name="FBC_ResultControl" DataType="CONTROL">
-<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="POS" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="EU" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="EM" DataType="BOOL" Value="0"/>
-<DataValueMember Name="ER" DataType="BOOL" Value="0"/>
-<DataValueMember Name="UL" DataType="BOOL" Value="0"/>
-<DataValueMember Name="IN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="FD" DataType="BOOL" Value="0"/>
-</StructureMember>
-<ArrayMember Name="FBC_Reference" DataType="DINT" Dimensions="10" Radix="Decimal">
-<Element Index="[0]" Value="0"/>
-<Element Index="[1]" Value="0"/>
-<Element Index="[2]" Value="0"/>
-<Element Index="[3]" Value="0"/>
-<Element Index="[4]" Value="0"/>
-<Element Index="[5]" Value="0"/>
-<Element Index="[6]" Value="0"/>
-<Element Index="[7]" Value="0"/>
-<Element Index="[8]" Value="0"/>
-<Element Index="[9]" Value="0"/>
-</ArrayMember>
-<ArrayMember Name="FBC_Result" DataType="DINT" Dimensions="10" Radix="Decimal">
-<Element Index="[0]" Value="0"/>
-<Element Index="[1]" Value="0"/>
-<Element Index="[2]" Value="0"/>
-<Element Index="[3]" Value="0"/>
-<Element Index="[4]" Value="0"/>
-<Element Index="[5]" Value="0"/>
-<Element Index="[6]" Value="0"/>
-<Element Index="[7]" Value="0"/>
-<Element Index="[8]" Value="0"/>
-<Element Index="[9]" Value="0"/>
-</ArrayMember>
-<ArrayMember Name="DDT_Source" DataType="DINT" Dimensions="10" Radix="Decimal">
-<Element Index="[0]" Value="0"/>
-<Element Index="[1]" Value="0"/>
-<Element Index="[2]" Value="0"/>
-<Element Index="[3]" Value="0"/>
-<Element Index="[4]" Value="0"/>
-<Element Index="[5]" Value="0"/>
-<Element Index="[6]" Value="0"/>
-<Element Index="[7]" Value="0"/>
-<Element Index="[8]" Value="0"/>
-<Element Index="[9]" Value="0"/>
-</ArrayMember>
-<StructureMember Name="DDT_CMP" DataType="CONTROL">
-<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="POS" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="EU" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="EM" DataType="BOOL" Value="0"/>
-<DataValueMember Name="ER" DataType="BOOL" Value="0"/>
-<DataValueMember Name="UL" DataType="BOOL" Value="0"/>
-<DataValueMember Name="IN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="FD" DataType="BOOL" Value="0"/>
-</StructureMember>
-<StructureMember Name="DDT_ResultControl" DataType="CONTROL">
-<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="POS" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="EU" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="EM" DataType="BOOL" Value="0"/>
-<DataValueMember Name="ER" DataType="BOOL" Value="0"/>
-<DataValueMember Name="UL" DataType="BOOL" Value="0"/>
-<DataValueMember Name="IN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="FD" DataType="BOOL" Value="0"/>
-</StructureMember>
-<ArrayMember Name="DDT_Reference" DataType="DINT" Dimensions="10" Radix="Decimal">
-<Element Index="[0]" Value="0"/>
-<Element Index="[1]" Value="0"/>
-<Element Index="[2]" Value="0"/>
-<Element Index="[3]" Value="0"/>
-<Element Index="[4]" Value="0"/>
-<Element Index="[5]" Value="0"/>
-<Element Index="[6]" Value="0"/>
-<Element Index="[7]" Value="0"/>
-<Element Index="[8]" Value="0"/>
-<Element Index="[9]" Value="0"/>
-</ArrayMember>
-<ArrayMember Name="DDT_Result" DataType="DINT" Dimensions="10" Radix="Decimal">
-<Element Index="[0]" Value="0"/>
-<Element Index="[1]" Value="0"/>
-<Element Index="[2]" Value="0"/>
-<Element Index="[3]" Value="0"/>
-<Element Index="[4]" Value="0"/>
-<Element Index="[5]" Value="0"/>
-<Element Index="[6]" Value="0"/>
-<Element Index="[7]" Value="0"/>
-<Element Index="[8]" Value="0"/>
-<Element Index="[9]" Value="0"/>
-</ArrayMember>
-<DataValueMember Name="DTR_Source" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="DTR_Mask" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="DTR_Reference" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="DTR_Output" DataType="BOOL" Value="0"/>
-<StructureMember Name="PID" DataType="PID">
-<DataValueMember Name="CTL" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="CT" DataType="BOOL" Value="0"/>
-<DataValueMember Name="CL" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PVT" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DOE" DataType="BOOL" Value="0"/>
-<DataValueMember Name="SWM" DataType="BOOL" Value="0"/>
-<DataValueMember Name="CA" DataType="BOOL" Value="0"/>
-<DataValueMember Name="MO" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PE" DataType="BOOL" Value="0"/>
-<DataValueMember Name="NDF" DataType="BOOL" Value="0"/>
-<DataValueMember Name="NOBC" DataType="BOOL" Value="0"/>
-<DataValueMember Name="NOZC" DataType="BOOL" Value="0"/>
-<DataValueMember Name="INI" DataType="BOOL" Value="0"/>
-<DataValueMember Name="SPOR" DataType="BOOL" Value="0"/>
-<DataValueMember Name="OLL" DataType="BOOL" Value="0"/>
-<DataValueMember Name="OLH" DataType="BOOL" Value="0"/>
-<DataValueMember Name="EWD" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DVNA" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DVPA" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PVLA" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PVHA" DataType="BOOL" Value="0"/>
-<DataValueMember Name="SP" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="KP" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="KI" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="KD" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="BIAS" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MAXS" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MINS" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="DB" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="SO" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MAXO" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MINO" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="UPD" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="PV" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="ERR" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="OUT" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="PVH" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="PVL" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="DVP" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="DVN" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="PVDB" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="DVDB" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MAXI" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MINI" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="TIE" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MAXCV" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MINCV" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MINTIE" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MAXTIE" DataType="REAL" Radix="Float" Value="0.0"/>
-<ArrayMember Name="DATA" DataType="REAL" Dimensions="17" Radix="Float">
-<Element Index="[0]" Value="0.0"/>
-<Element Index="[1]" Value="0.0"/>
-<Element Index="[2]" Value="0.0"/>
-<Element Index="[3]" Value="0.0"/>
-<Element Index="[4]" Value="0.0"/>
-<Element Index="[5]" Value="0.0"/>
-<Element Index="[6]" Value="0.0"/>
-<Element Index="[7]" Value="0.0"/>
-<Element Index="[8]" Value="0.0"/>
-<Element Index="[9]" Value="0.0"/>
-<Element Index="[10]" Value="0.0"/>
-<Element Index="[11]" Value="0.0"/>
-<Element Index="[12]" Value="0.0"/>
-<Element Index="[13]" Value="0.0"/>
-<Element Index="[14]" Value="0.0"/>
-<Element Index="[15]" Value="0.0"/>
-<Element Index="[16]" Value="0.0"/>
-</ArrayMember>
-</StructureMember>
-<DataValueMember Name="PID_Process" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="PID_Tieback" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="PID_Control" DataType="DINT" Radix="Decimal" Value="0"/>
-<StructureMember Name="PID_Master" DataType="PID">
-<DataValueMember Name="CTL" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="CT" DataType="BOOL" Value="0"/>
-<DataValueMember Name="CL" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PVT" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DOE" DataType="BOOL" Value="0"/>
-<DataValueMember Name="SWM" DataType="BOOL" Value="0"/>
-<DataValueMember Name="CA" DataType="BOOL" Value="0"/>
-<DataValueMember Name="MO" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PE" DataType="BOOL" Value="0"/>
-<DataValueMember Name="NDF" DataType="BOOL" Value="0"/>
-<DataValueMember Name="NOBC" DataType="BOOL" Value="0"/>
-<DataValueMember Name="NOZC" DataType="BOOL" Value="0"/>
-<DataValueMember Name="INI" DataType="BOOL" Value="0"/>
-<DataValueMember Name="SPOR" DataType="BOOL" Value="0"/>
-<DataValueMember Name="OLL" DataType="BOOL" Value="0"/>
-<DataValueMember Name="OLH" DataType="BOOL" Value="0"/>
-<DataValueMember Name="EWD" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DVNA" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DVPA" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PVLA" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PVHA" DataType="BOOL" Value="0"/>
-<DataValueMember Name="SP" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="KP" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="KI" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="KD" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="BIAS" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MAXS" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MINS" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="DB" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="SO" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MAXO" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MINO" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="UPD" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="PV" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="ERR" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="OUT" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="PVH" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="PVL" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="DVP" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="DVN" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="PVDB" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="DVDB" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MAXI" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MINI" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="TIE" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MAXCV" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MINCV" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MINTIE" DataType="REAL" Radix="Float" Value="0.0"/>
-<DataValueMember Name="MAXTIE" DataType="REAL" Radix="Float" Value="0.0"/>
-<ArrayMember Name="DATA" DataType="REAL" Dimensions="17" Radix="Float">
-<Element Index="[0]" Value="0.0"/>
-<Element Index="[1]" Value="0.0"/>
-<Element Index="[2]" Value="0.0"/>
-<Element Index="[3]" Value="0.0"/>
-<Element Index="[4]" Value="0.0"/>
-<Element Index="[5]" Value="0.0"/>
-<Element Index="[6]" Value="0.0"/>
-<Element Index="[7]" Value="0.0"/>
-<Element Index="[8]" Value="0.0"/>
-<Element Index="[9]" Value="0.0"/>
-<Element Index="[10]" Value="0.0"/>
-<Element Index="[11]" Value="0.0"/>
-<Element Index="[12]" Value="0.0"/>
-<Element Index="[13]" Value="0.0"/>
-<Element Index="[14]" Value="0.0"/>
-<Element Index="[15]" Value="0.0"/>
-<Element Index="[16]" Value="0.0"/>
-</ArrayMember>
-</StructureMember>
-<DataValueMember Name="PID_Inhold" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PID_InholdValue" DataType="DINT" Radix="Decimal" Value="0"/>
 </Structure>
 </Data>
 </Tag>
@@ -2444,22 +2409,6 @@
 <DataValueMember Name="AFI" DataType="BOOL" Value="0"/>
 <DataValueMember Name="NOP" DataType="BOOL" Value="0"/>
 </Structure>
-</Data>
-</Tag>
-<Tag Name="Result" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-<Tag Name="rwar" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
 <Tag Name="Sequencer" TagType="Base" DataType="TSequencer" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
@@ -2858,33 +2807,6 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="Step_001" TagType="Base" DataType="SFC_STEP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[[2097152,0,0,0,0,0,0]]]>
-</Data>
-<Data Format="Decorated">
-<Structure DataType="SFC_STEP">
-<DataValueMember Name="Status" DataType="DINT" Radix="Hex" Value="16#0020_0000"/>
-<DataValueMember Name="X" DataType="BOOL" Value="0"/>
-<DataValueMember Name="FS" DataType="BOOL" Value="0"/>
-<DataValueMember Name="SA" DataType="BOOL" Value="0"/>
-<DataValueMember Name="LS" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
-<DataValueMember Name="OV" DataType="BOOL" Value="0"/>
-<DataValueMember Name="AlarmEn" DataType="BOOL" Value="0"/>
-<DataValueMember Name="AlarmLow" DataType="BOOL" Value="0"/>
-<DataValueMember Name="AlarmHigh" DataType="BOOL" Value="0"/>
-<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PauseTimer" DataType="BOOL" Value="1"/>
-<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="T" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="TMax" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="Count" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="LimitLow" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="LimitHigh" DataType="DINT" Radix="Decimal" Value="0"/>
-</Structure>
-</Data>
-</Tag>
 <Tag Name="Stop_000" TagType="Base" DataType="SFC_STOP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0,0,0,0,0]]]>
@@ -2951,14 +2873,6 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="Tran_001" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
 <Tag Name="Trigonometry" TagType="Base" DataType="TTrigonometry" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000,0.00000000e+000
@@ -2978,29 +2892,26 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="werwerwerwer" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
 </Tags>
 <Routines>
 <Routine Name="Alarms" Type="RLL">
 <RLLContent>
 <Rung Number="0" Type="N">
 <Text>
-<![CDATA[ALMD(ALMD,Alarms.ALMD_ProgAck,Alarms.ALMD_ProgReset,Alarms.ALMD_ProgDisable,Alarms.ALMD_ProgEnable);]]>
+<![CDATA[XIC(Alarms.AlarmActive)OTE(AlarmActive);]]>
 </Text>
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[ALMA(ALMA,Alarms.ALMA_in,Alarms.ALMA_ProgAck,Alarms.ALMA_ProgDisable,Alarms.ALMA_ProgEnable);]]>
+<![CDATA[ALMD(ALMD,Alarms.ALMD_ProgAck,Alarms.ALMD_ProgReset,Alarms.ALMD_ProgDisable,Alarms.ALMD_ProgEnable);]]>
 </Text>
 </Rung>
 <Rung Number="2" Type="N">
+<Text>
+<![CDATA[ALMA(ALMA,Alarms.ALMA_in,Alarms.ALMA_ProgAck,Alarms.ALMA_ProgDisable,Alarms.ALMA_ProgEnable);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
 <Comment>
 <![CDATA[ASO MISSING
  ALARM_SET]]>
@@ -3109,6 +3020,11 @@
 <Rung Number="4" Type="N">
 <Text>
 <![CDATA[XIC(Bit.XIC)[OTE(Bit.XICStatus) ,ONS(Bit.ONS) OTE(Bit.ONSStatus) ,OSR(Bit.OSR,Bit.OSRStatus) ,OSF(Bit.OSF,Bit.OSFStatus) ];]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[[XIC(Bit.LogicAnd1) XIC(Bit.LogicAnd2) ,XIC(Bit.LogicOr1) ]OTE(Bit.LogicStatus);]]>
 </Text>
 </Rung>
 </RLLContent>
@@ -3271,15 +3187,6 @@
 </Rung>
 </RLLContent>
 </Routine>
-<Routine Name="Logic" Type="RLL">
-<RLLContent>
-<Rung Number="0" Type="N">
-<Text>
-<![CDATA[[XIC(LadderLogicAnd1) XIC(LadderLogicAnd2) ,XIC(LadderLogicOr1) ]OTE(LadderLogicStatus);]]>
-</Text>
-</Rung>
-</RLLContent>
-</Routine>
 <Routine Name="Loop" Type="RLL">
 <RLLContent>
 <Rung Number="0" Type="N">
@@ -3328,70 +3235,65 @@
 </Rung>
 <Rung Number="7" Type="N">
 <Text>
-<![CDATA[JSR(Logic,0);]]>
+<![CDATA[JSR(Math,0);]]>
 </Text>
 </Rung>
 <Rung Number="8" Type="N">
 <Text>
-<![CDATA[JSR(Math,0);]]>
+<![CDATA[JSR(Move_Logic,0);]]>
 </Text>
 </Rung>
 <Rung Number="9" Type="N">
 <Text>
-<![CDATA[JSR(Move_Logic,0);]]>
+<![CDATA[JSR(EquipmentPhase,0);]]>
 </Text>
 </Rung>
 <Rung Number="10" Type="N">
 <Text>
-<![CDATA[JSR(EquipmentPhase,0);]]>
+<![CDATA[JSR(Program_Control,0);]]>
 </Text>
 </Rung>
 <Rung Number="11" Type="N">
 <Text>
-<![CDATA[JSR(Program_Control,0);]]>
+<![CDATA[JSR(Sequencer,0);]]>
 </Text>
 </Rung>
 <Rung Number="12" Type="N">
 <Text>
-<![CDATA[JSR(Sequencer,0);]]>
+<![CDATA[JSR(Special,0);]]>
 </Text>
 </Rung>
 <Rung Number="13" Type="N">
 <Text>
-<![CDATA[JSR(Special,0);]]>
+<![CDATA[JSR(HMIBC,0);]]>
 </Text>
 </Rung>
 <Rung Number="14" Type="N">
 <Text>
-<![CDATA[JSR(HMIBC,0);]]>
+<![CDATA[JSR(Trigonometry,0);]]>
 </Text>
 </Rung>
 <Rung Number="15" Type="N">
 <Text>
-<![CDATA[JSR(Trigonometry,0);]]>
+<![CDATA[JSR(Math_Conversions,0);]]>
 </Text>
 </Rung>
 <Rung Number="16" Type="N">
 <Text>
-<![CDATA[JSR(Math_Conversions,0);]]>
+<![CDATA[JSR(Motion,0);]]>
 </Text>
 </Rung>
 <Rung Number="17" Type="N">
 <Text>
-<![CDATA[JSR(Motion,0);]]>
+<![CDATA[JSR(ASCII_String,0);]]>
 </Text>
 </Rung>
 <Rung Number="18" Type="N">
 <Text>
-<![CDATA[JSR(ASCII_String,0);]]>
-</Text>
-</Rung>
-<Rung Number="19" Type="N">
-<Text>
 <![CDATA[JSR(ASCII_Conversions,0);]]>
 </Text>
 </Rung>
-<Rung Number="20" Type="N">
+<Rung Number="19" Type="N">
 <Text>
 <![CDATA[JSR(Licence,0);]]>
 </Text>
@@ -3588,7 +3490,7 @@
 </Rung>
 <Rung Number="10" Type="N">
 <Text>
-<![CDATA[[SFR(sfc,Step_000) ,[XIC(ProgramControl.SFP_Pause) OTU(ProgramControl.SFP_Pause) SFP(sfc,Pause) ,XIC(ProgramControl.SFP_Execute) OTU(ProgramControl.SFP_Execute) SFP(sfc,Execute) ] ];]]>
+<![CDATA[[SFR(SFC,Step_000) ,[XIC(ProgramControl.SFP_Pause) OTU(ProgramControl.SFP_Pause) SFP(SFC,Pause) ,XIC(ProgramControl.SFP_Execute) OTU(ProgramControl.SFP_Execute) SFP(SFC,Execute) ] ];]]>
 </Text>
 </Rung>
 <Rung Number="11" Type="N">
@@ -3646,7 +3548,7 @@
 </Rung>
 </RLLContent>
 </Routine>
-<Routine Name="sfc" Type="SFC">
+<Routine Name="SFC" Type="SFC">
 <SFCContent SheetSize="Letter - 8.5 x 11 in" SheetOrientation="Landscape" StepName="Step" TransitionName="Tran" ActionName="Action" StopName="Stop">
 <Step ID="0" X="200" Y="100" Operand="Step_000" HideDesc="false" DescX="240" DescY="80" DescWidth="0" InitialStep="true" PresetUsesExpr="false" LimitHighUsesExpr="false"
  LimitLowUsesExpr="false" ShowActions="true"/>
@@ -3659,7 +3561,7 @@
 </STContent>
 </Condition>
 </Transition>
-<Stop ID="2" X="200" Y="340" Operand="Stop_000" HideDesc="false" DescX="280" DescY="320" DescWidth="0"/>
+<Stop ID="2" X="200" Y="300" Operand="Stop_000" HideDesc="false" DescX="280" DescY="280" DescWidth="0"/>
 <DirectedLink FromID="0" ToID="1" Show="true"/>
 <DirectedLink FromID="1" ToID="2" Show="true"/>
 </SFCContent>
@@ -3763,27 +3665,6 @@
 </Routine>
 </Routines>
 </Program>
-<Program Name="periodic" TestEdits="false" MainRoutineName="main" Disabled="false" Class="Standard" UseAsFolder="false">
-<Tags>
-<Tag Name="Toggle" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
-<Data Format="L5K">
-<![CDATA[0]]>
-</Data>
-<Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
-</Data>
-</Tag>
-</Tags>
-<Routines>
-<Routine Name="main" Type="ST">
-<STContent>
-<Line Number="0">
-<![CDATA[Toggle := not Toggle;]]>
-</Line>
-</STContent>
-</Routine>
-</Routines>
-</Program>
 <Program Name="SafetyProgram" TestEdits="false" MainRoutineName="Main" Disabled="false" Class="Safety" UseAsFolder="false">
 <Tags/>
 <Routines>
@@ -3795,6 +3676,78 @@
 </Text>
 </Rung>
 </RLLContent>
+</Routine>
+</Routines>
+</Program>
+<Program Name="SFCTest" TestEdits="false" Disabled="false" Class="Standard" UseAsFolder="false">
+<Tags>
+<Tag Name="Step_000" TagType="Base" DataType="SFC_STEP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[2097152,0,0,0,0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="SFC_STEP">
+<DataValueMember Name="Status" DataType="DINT" Radix="Hex" Value="16#0020_0000"/>
+<DataValueMember Name="X" DataType="BOOL" Value="0"/>
+<DataValueMember Name="FS" DataType="BOOL" Value="0"/>
+<DataValueMember Name="SA" DataType="BOOL" Value="0"/>
+<DataValueMember Name="LS" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="OV" DataType="BOOL" Value="0"/>
+<DataValueMember Name="AlarmEn" DataType="BOOL" Value="0"/>
+<DataValueMember Name="AlarmLow" DataType="BOOL" Value="0"/>
+<DataValueMember Name="AlarmHigh" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PauseTimer" DataType="BOOL" Value="1"/>
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="T" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TMax" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Count" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="LimitLow" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="LimitHigh" DataType="DINT" Radix="Decimal" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="Stop_000" TagType="Base" DataType="SFC_STOP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[0,0,0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="SFC_STOP">
+<DataValueMember Name="Status" DataType="DINT" Radix="Hex" Value="16#0000_0000"/>
+<DataValueMember Name="X" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Count" DataType="DINT" Radix="Decimal" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="Tran_000" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+</Tags>
+<Routines>
+<Routine Name="SFC" Type="SFC">
+<SFCContent SheetSize="Letter - 8.5 x 11 in" SheetOrientation="Landscape" StepName="Step" TransitionName="Tran" ActionName="Action" StopName="Stop">
+<Step ID="0" X="200" Y="100" Operand="Step_000" HideDesc="false" DescX="240" DescY="80" DescWidth="0" InitialStep="true" PresetUsesExpr="false" LimitHighUsesExpr="false"
+ LimitLowUsesExpr="false" ShowActions="true"/>
+<Transition ID="1" X="200" Y="180" Operand="Tran_000" HideDesc="false" DescX="260" DescY="160" DescWidth="0">
+<Condition>
+<STContent>
+<Line Number="0">
+<![CDATA[sfc_test = 1]]>
+</Line>
+</STContent>
+</Condition>
+</Transition>
+<Stop ID="2" X="200" Y="300" Operand="Stop_000" HideDesc="false" DescX="280" DescY="280" DescWidth="0"/>
+<DirectedLink FromID="0" ToID="1" Show="true"/>
+<DirectedLink FromID="1" ToID="2" Show="true"/>
+</SFCContent>
 </Routine>
 </Routines>
 </Program>
@@ -3989,11 +3942,12 @@
 <Task Name="MainTask" Type="CONTINUOUS" Priority="10" Watchdog="500" DisableUpdateOutputs="false" InhibitTask="false" Class="Standard">
 <ScheduledPrograms>
 <ScheduledProgram Name="AOI"/>
-<ScheduledProgram Name="LadderTest"/>
+<ScheduledProgram Name="RLLTest"/>
 <ScheduledProgram Name="STTest"/>
 <ScheduledProgram Name="EquipmentPhase"/>
 <ScheduledProgram Name="HwTest"/>
 <ScheduledProgram Name="FBDTest"/>
+<ScheduledProgram Name="SFCTest"/>
 </ScheduledPrograms>
 </Task>
 <Task Name="SafetyTask" Type="PERIODIC" Rate="20" Priority="10" Watchdog="20" DisableUpdateOutputs="false" InhibitTask="false" Class="Safety">

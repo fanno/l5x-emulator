@@ -50,7 +50,7 @@ class Instruction:
             await self.ladder_execute(ctx)
 
     async def ladder_execute(self, ctx:"engine.context.ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+        raise NotImplementedError(f"{__class__}, {self.name} not implemented yet")
 
     async def ladder_preScan(self, ctx:"engine.context.ExecutionContext") -> None:
         pass
@@ -75,7 +75,7 @@ class Instruction:
 
 
     async def fbd_execute(self, ctx:"engine.context.ExecutionContext", block:FBDBlock) -> None:
-        raise NotImplementedError(f"{__class__} not implemented yet")
+        raise NotImplementedError(f"{__class__}, {self.name} not implemented yet")
 
     async def fbd_preScan(self, ctx:"engine.context.ExecutionContext", block:FBDBlock) -> None:
         pass

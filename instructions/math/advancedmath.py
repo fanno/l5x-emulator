@@ -8,23 +8,32 @@ from core.registry.instructionregistry import InstructionRegistry
 from  instructions.helper import getPLCValue
 from engine.fbd.block import FBDBlock
 
+from datatypes.fdb import FBD_MATH, FBD_MATH_ADVANCED
+
 @InstructionRegistry.register
 class LN(Instruction):
 
     def execute(self, Source) -> Any:
-        if not isinstance(Source, (int, float)):
-            raise NotImplementedError(f"{__class__} not implemented yet")
+        Source = getPLCValue(Source)
         if Source <= 0:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            return 0.0
         return float(math.log(Source))
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            Source = getPLCValue(self.getMemory(self.args[0]))
+            Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
 
             result = self.execute(Source)
             Dest.setValue(result)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        math:FBD_MATH_ADVANCED = block.Value
+
+        math.Dest.setValue(self.execute(math.Source))
+
+@InstructionRegistry.register
+class LN__F(LN):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         Source = block.inParams["Source"].Value
@@ -36,19 +45,26 @@ class LN(Instruction):
 class LOG(Instruction):
 
     def execute(self, Source) -> Any:
-        if not isinstance(Source, (int, float)):
-            raise NotImplementedError(f"{__class__} not implemented yet")
+        Source = getPLCValue(Source)
         if Source <= 0:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            return 0.0
         return float(math.log10(Source))
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            Source = getPLCValue(self.getMemory(self.args[0]))
+            Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
 
             result = self.execute(Source)
             Dest.setValue(result)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        math:FBD_MATH_ADVANCED = block.Value
+
+        math.Dest.setValue(self.execute(math.Source))
+
+@InstructionRegistry.register
+class LOG__F(LOG):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         Source = block.inParams["Source"].Value
@@ -59,27 +75,39 @@ class LOG(Instruction):
 @InstructionRegistry.register
 class XPY(Instruction):
 
-    def execute(self, SourceX, SourceY) -> Any:
-        if not isinstance(SourceX, (int, float)) or not isinstance(SourceY, (int, float)):
-            raise NotImplementedError(f"{__class__} not implemented yet")
-        return float(math.pow(SourceX, SourceY))
+    def execute(self, SourceA, SourceB) -> Any:
+        SourceA = getPLCValue(SourceA)
+        SourceB = getPLCValue(SourceB)
+        return float(math.pow(SourceA, SourceB))
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            SourceX = getPLCValue(self.getMemory(self.args[0]))
-            SourceY = getPLCValue(self.getMemory(self.args[1]))
+            SourceA = self.getMemory(self.args[0])
+            SourceB = self.getMemory(self.args[1])
             Dest = self.getMemory(self.args[2])
 
-            result = self.execute(SourceX, SourceY)
+            result = self.execute(SourceA, SourceB)
             Dest.setValue(result)
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        SourceX = block.inParams["SourceX"].Value
-        SourceY = block.inParams["SourceY"].Value
+        math:FBD_MATH = block.Value
+
+        math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+
+@InstructionRegistry.register
+class XPY__F(XPY):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        SourceA = block.inParams["SourceA"].Value
+        SourceB = block.inParams["SourceB"].Value
         Dest = block.outParams["Dest"]
 
-        Dest.Value = self.execute(SourceX, SourceY)
+        Dest.Value = self.execute(SourceA, SourceB)
 
 @InstructionRegistry.register
 class EXPT(XPY):
+    pass
+
+@InstructionRegistry.register
+class EXPT__F(XPY__F):
     pass

@@ -49,7 +49,6 @@ class FBDBlock:
         from core.registry.instructionregistry import InstructionRegistry
 
         if self.Function:
-            self.Function = self.Function.replace('__F', '')
             cls = InstructionRegistry.get(self.Function)
             self.instance = cls(self.Function)
         else: 
