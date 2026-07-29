@@ -37,7 +37,7 @@ class FBD_BOOLEAN_AND(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_NOT(UDT):
+class FBD_BOOLEAN_NOT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
@@ -118,7 +118,15 @@ class FBD_LOGICAL(UDT):
     SourceB: DINT = field(init=False, default_factory=DINT)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Dest: DINT = field(init=False, default_factory=DINT)
-    
+
+@DataTypeRegistry.register
+@dataclass
+class FBD_CONVERT(UDT):
+    EnableIn: BOOL = field(init=False, default_factory=BOOL)
+    Source: DINT = field(init=False, default_factory=DINT)
+    EnableOut: BOOL = field(init=False, default_factory=BOOL)
+    Dest: DINT = field(init=False, default_factory=DINT)
+
 @DataTypeRegistry.register
 @dataclass
 class FBD_MASKED_MOVE(UDT):
@@ -187,3 +195,12 @@ class FBD_TRUNCATE(UDT):
     Source: REAL = field(init=False, default_factory=REAL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Dest: DINT = field(init=False, default_factory=DINT)
+
+@DataTypeRegistry.register
+@dataclass
+class FBD_COMPARE(UDT):
+    EnableIn: BOOL = field(init=False, default_factory=BOOL)
+    SourceA: REAL = field(init=False, default_factory=REAL)
+    SourceB: REAL = field(init=False, default_factory=REAL)
+    EnableOut: BOOL = field(init=False, default_factory=BOOL)
+    Dest: BOOL = field(init=False, default_factory=BOOL)

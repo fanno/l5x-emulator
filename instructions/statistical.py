@@ -8,6 +8,7 @@ from core.memory.identity import Identity
 from datatypes.motion import MOVING_AVERAGE, MOVING_STD_DEV
 from datatypes.capture import MINIMUM_CAPTURE, MAXIMUM_CAPTURE
 from datatypes.custom.numbers import REAL
+from engine.fbd.block import FBDBlock
 
 from  instructions.helper import getPLCValue
 
@@ -18,8 +19,8 @@ class SAMPELMemory(Identity):
 @InstructionRegistry.register
 class MAVE(Instruction):
 
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        average:MOVING_AVERAGE = self.getMemory(self.args[0])
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        average:MOVING_AVERAGE = block.Value
         memory = ObjectRegistry.get(average, SAMPELMemory)
 
         number_of_samples = average.NumberOfSamples.getPLCValue()
@@ -63,8 +64,8 @@ class MAVE(Instruction):
 @InstructionRegistry.register
 class MSTD(Instruction):
 
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        average:MOVING_STD_DEV = self.getMemory(self.args[0])
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        average:MOVING_AVERAGE = block.Value
         memory = ObjectRegistry.get(average, SAMPELMemory)
 
         number_of_samples = getPLCValue(average.NumberOfSamples)
@@ -113,13 +114,13 @@ class MMemory(Identity):
 @InstructionRegistry.register
 class MINC(Instruction):
 
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        average:MINIMUM_CAPTURE = self.getMemory(self.args[0])
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        average:MINIMUM_CAPTURE = block.Value
 
         memory = ObjectRegistry.get(average, MMemory)
 
         if average.Reset:
-            average.Out.setValue(average.ResetValue)            
+            average.Out.setValue(average.ResetValue)
             memory.Last.setValue(average.ResetValue)
         else:
             if average.EnableIn:
@@ -131,13 +132,13 @@ class MINC(Instruction):
 @InstructionRegistry.register
 class MAXC(Instruction):
 
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        average:MAXIMUM_CAPTURE = self.getMemory(self.args[0])
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        average:MAXIMUM_CAPTURE = block.Value
 
         memory = ObjectRegistry.get(average, MMemory)
 
         if average.Reset:
-            average.Out.setValue(average.ResetValue)            
+            average.Out.setValue(average.ResetValue)
             memory.Last.setValue(average.ResetValue)
         else:
             if average.EnableIn:

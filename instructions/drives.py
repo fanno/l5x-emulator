@@ -15,7 +15,6 @@ from datatypes.custom.numbers import DINT, REAL
 class PMUL(Instruction):
         
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         pm:PULSE_MULTIPLIER = self.getMemory(self.args[0])
 
         pm.EnableOut._reset()
@@ -85,7 +84,6 @@ class SCRVMemory(Identity):
 class SCRV(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         pm:S_CURVE = self.getMemory(self.args[0])
 
         pm.EnableOut._reset()
@@ -237,7 +235,6 @@ class SCRV(Instruction):
 class PI(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         pm:PROP_INT = self.getMemory(self.args[0])
 
         pm.EnableOut._reset()

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="37.00" TargetName="PLC_Emulator" TargetType="Controller" ContainsContext="false" ExportDate="Sun Jul 26 18:22:37 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
-<Controller Use="Target" Name="PLC_Emulator" ProcessorType="5069-L330ERMS2" MajorRev="37" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Sun Jul 26 18:22:30 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="37.00" TargetName="PLC_Emulator" TargetType="Controller" ContainsContext="false" ExportDate="Tue Jul 28 21:27:50 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Target" Name="PLC_Emulator" ProcessorType="5069-L330ERMS2" MajorRev="37" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Tue Jul 28 21:27:35 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
  MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false" EtherNetIPMode="A1/A2: Linear/DLR" AutoDiagsEnabled="true" WebServerEnabled="true" DataExchangeId="{F1F5254F-1BE4-45A7-9417-99212A9FD63C}"
 >
 <RedundancyInfo Enabled="false" KeepTestEditsOnSwitchOver="false"/>
@@ -792,7 +792,62 @@
 </Module>
 </Modules>
 <AddOnInstructionDefinitions>
-<AddOnInstructionDefinition Name="testAOI" Class="Standard" Revision="1.0" ExecutePrescan="false" ExecutePostscan="false" ExecuteEnableInFalse="false" CreatedDate="2026-01-30T12:43:41.709Z" CreatedBy="GT-ROCKWELL\Win10" EditedDate="2026-01-31T12:05:51.073Z" EditedBy="GT-ROCKWELL\Win10" SoftwareRevision="v35.00"
+<AddOnInstructionDefinition Name="fbdAOI" Class="Standard" Revision="1.0" ExecutePrescan="false" ExecutePostscan="false" ExecuteEnableInFalse="false" CreatedDate="2026-07-28T17:28:29.705Z" CreatedBy="GT-ROCKWELL\Win10" EditedDate="2026-07-28T17:30:29.655Z" EditedBy="GT-ROCKWELL\Win10" SoftwareRevision="v37.00"
+>
+<Parameters>
+<Parameter Name="EnableIn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Input - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="EnableOut" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Output - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="in1" TagType="Base" DataType="REAL" Usage="Input" Radix="Float" Required="false" Visible="false" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0.00000000e+000]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="REAL" Radix="Float" Value="0.0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="in2" TagType="Base" DataType="REAL" Usage="Input" Radix="Float" Required="false" Visible="false" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0.00000000e+000]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="REAL" Radix="Float" Value="0.0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="out1" TagType="Base" DataType="REAL" Usage="Input" Radix="Float" Required="false" Visible="false" ExternalAccess="Read/Write">
+<DefaultData Format="L5K">
+<![CDATA[0.00000000e+000]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="REAL" Radix="Float" Value="0.0"/>
+</DefaultData>
+</Parameter>
+</Parameters>
+<LocalTags/>
+<Routines>
+<Routine Name="Logic" Type="FBD">
+<FBDContent SheetSize="D - 22 x 34 in" SheetOrientation="Landscape">
+<Sheet Number="1">
+<IRef ID="0" X="160" Y="100" Operand="in1" HideDesc="false"/>
+<IRef ID="1" X="120" Y="300" Operand="in2" HideDesc="false"/>
+<ORef ID="2" X="660" Y="280" Operand="out1" HideDesc="false"/>
+<Function Type="ADD__F" ID="3" X="380" Y="200"/>
+<Wire FromID="0" ToID="3" ToParam="SourceA"/>
+<Wire FromID="1" ToID="3" ToParam="SourceB"/>
+<Wire FromID="3" FromParam="Dest" ToID="2"/>
+</Sheet>
+</FBDContent>
+</Routine>
+</Routines>
+</AddOnInstructionDefinition>
+<AddOnInstructionDefinition Name="ladderAOI" Class="Standard" Revision="1.0" ExecutePrescan="true" ExecutePostscan="true" ExecuteEnableInFalse="true" CreatedDate="2026-01-30T12:43:41.709Z" CreatedBy="GT-ROCKWELL\Win10" EditedDate="2026-07-28T19:27:29.701Z" EditedBy="GT-ROCKWELL\Win10" SoftwareRevision="v37.00"
 >
 <Parameters>
 <Parameter Name="EnableIn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
@@ -825,6 +880,7 @@
 </Parameters>
 <LocalTags/>
 <Routines>
+<Routine Name="EnableInFalse" Type="RLL"/>
 <Routine Name="Logic" Type="RLL">
 <RLLContent>
 <Rung Number="0" Type="N">
@@ -839,6 +895,8 @@
 </Rung>
 </RLLContent>
 </Routine>
+<Routine Name="Postscan" Type="RLL"/>
+<Routine Name="Prescan" Type="RLL"/>
 </Routines>
 </AddOnInstructionDefinition>
 </AddOnInstructionDefinitions>
@@ -1005,6 +1063,14 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
+<Tag Name="RunTimer" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
 <Tag Name="sttimer" Class="Standard" TagType="Base" DataType="FBD_TIMER" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[1,0,0,0,0,0,0,0,0,4,0,0]]]>
@@ -1026,6 +1092,38 @@
 </Structure>
 </Data>
 </Tag>
+<Tag Name="tes3" Class="Standard" TagType="Base" DataType="REAL" Radix="Float" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0.00000000e+000]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="REAL" Radix="Float" Value="0.0"/>
+</Data>
+</Tag>
+<Tag Name="tes4" Class="Standard" TagType="Base" DataType="REAL" Radix="Float" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0.00000000e+000]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="REAL" Radix="Float" Value="0.0"/>
+</Data>
+</Tag>
+<Tag Name="test" Class="Standard" TagType="Base" DataType="REAL" Radix="Float" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0.00000000e+000]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="REAL" Radix="Float" Value="0.0"/>
+</Data>
+</Tag>
+<Tag Name="test2" Class="Standard" TagType="Base" DataType="REAL" Radix="Float" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0.00000000e+000]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="REAL" Radix="Float" Value="0.0"/>
+</Data>
+</Tag>
 <Tag Name="testaoi_dint" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -1034,12 +1132,12 @@
 <DataValue DataType="DINT" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
-<Tag Name="test_aoi" Class="Standard" TagType="Base" DataType="testAOI" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Tag Name="test_aoi" Class="Standard" TagType="Base" DataType="ladderAOI" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[1]]]>
 </Data>
 <Data Format="Decorated">
-<Structure DataType="testAOI">
+<Structure DataType="ladderAOI">
 <DataValueMember Name="EnableIn" DataType="BOOL" Value="1"/>
 <DataValueMember Name="EnableOut" DataType="BOOL" Value="0"/>
 <DataValueMember Name="input" DataType="BOOL" Value="0"/>
@@ -1061,7 +1159,7 @@
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[testAOI(test_aoi,testaoi_dint);]]>
+<![CDATA[ladderAOI(test_aoi,testaoi_dint);]]>
 </Text>
 </Rung>
 </RLLContent>
@@ -1321,6 +1419,90 @@
 </Text>
 </Rung>
 </RLLContent>
+</Routine>
+</Routines>
+</Program>
+<Program Name="FBDTest" TestEdits="false" MainRoutineName="move" Disabled="false" Class="Standard" UseAsFolder="false">
+<Tags>
+<Tag Name="TONR_01" TagType="Base" DataType="FBD_TIMER" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[1,0,0,0,0,0,0,0,0,4,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="FBD_TIMER">
+<DataValueMember Name="EnableIn" DataType="BOOL" Value="1"/>
+<DataValueMember Name="TimerEnable" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="EnableOut" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Status" DataType="DINT" Radix="Hex" Value="16#0000_0000"/>
+<DataValueMember Name="InstructFault" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PresetInv" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="TONR_02" TagType="Base" DataType="FBD_TIMER" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[1,0,0,0,0,0,0,0,0,4,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="FBD_TIMER">
+<DataValueMember Name="EnableIn" DataType="BOOL" Value="1"/>
+<DataValueMember Name="TimerEnable" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="EnableOut" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Status" DataType="DINT" Radix="Hex" Value="16#0000_0000"/>
+<DataValueMember Name="InstructFault" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PresetInv" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+</Tags>
+<Routines>
+<Routine Name="move" Type="FBD">
+<FBDContent SheetSize="D - 22 x 34 in" SheetOrientation="Landscape">
+<Sheet Number="1">
+<Description>
+<![CDATA[name1]]>
+</Description>
+<IRef ID="0" X="380" Y="160" Operand="test" HideDesc="false"/>
+<IRef ID="1" X="400" Y="340" Operand="test" HideDesc="true"/>
+<IRef ID="2" X="340" Y="80" Operand="test2" HideDesc="false"/>
+<ORef ID="3" X="950" Y="200" Operand="tes4" HideDesc="false"/>
+<OCon ID="4" X="940" Y="380" Name="PRE"/>
+<Function Type="ADD__F" ID="5" X="520" Y="140"/>
+<Function Type="ADD__F" ID="6" X="660" Y="320"/>
+<Wire FromID="0" ToID="5" ToParam="SourceB"/>
+<Wire FromID="1" ToID="6" ToParam="SourceB"/>
+<Wire FromID="5" FromParam="Dest" ToID="6" ToParam="SourceA"/>
+<Wire FromID="6" FromParam="Dest" ToID="3"/>
+<Wire FromID="6" FromParam="Dest" ToID="4"/>
+<FeedbackWire FromID="2" ToID="5" ToParam="SourceA"/>
+</Sheet>
+<Sheet Number="2">
+<Description>
+<![CDATA[name2]]>
+</Description>
+<IRef ID="7" X="380" Y="420" Operand="RunTimer" HideDesc="false"/>
+<ICon ID="8" X="340" Y="500" Name="PRE"/>
+<ICon ID="9" X="360" Y="560" Name="test"/>
+<OCon ID="10" X="1220" Y="540" Name="test"/>
+<Block Type="TONR" ID="11" X="860" Y="400" Operand="TONR_01" VisiblePins="EnableIn TimerEnable PRE Reset EnableOut ACC EN TT DN Status InstructFault PresetInv" HideDesc="false"/>
+<Wire FromID="7" ToID="11" ToParam="TimerEnable"/>
+<Wire FromID="8" ToID="11" ToParam="PRE"/>
+<Wire FromID="9" ToID="11" ToParam="Reset"/>
+<Wire FromID="11" FromParam="DN" ToID="10"/>
+</Sheet>
+</FBDContent>
 </Routine>
 </Routines>
 </Program>
@@ -3811,6 +3993,7 @@
 <ScheduledProgram Name="STTest"/>
 <ScheduledProgram Name="EquipmentPhase"/>
 <ScheduledProgram Name="HwTest"/>
+<ScheduledProgram Name="FBDTest"/>
 </ScheduledPrograms>
 </Task>
 <Task Name="SafetyTask" Type="PERIODIC" Rate="20" Priority="10" Watchdog="20" DisableUpdateOutputs="false" InhibitTask="false" Class="Safety">

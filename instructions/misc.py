@@ -1,14 +1,19 @@
 from engine.context import ExecutionContext
+
 from engine.instruction import Instruction
+
 from core.registry.instructionregistry import InstructionRegistry
 
 @InstructionRegistry.register
-class LV(Instruction):
-    
+class BRT(Instruction):
+
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         pass
-        # not neded for simulation ?
+        ##  DO NOTHING in simulation
 
-    async def fbd_execute(self, ctx:"ExecutionContext") -> None:
+@InstructionRegistry.register
+class TPT(Instruction):
+
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         pass
-        # not neded for simulation ?
+        ##  DO NOTHING in simulation

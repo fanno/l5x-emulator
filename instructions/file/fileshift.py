@@ -16,7 +16,6 @@ from datatypes.custom.udt import Resettable
 class BSL(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[1])
 
         control.EN._reset()
@@ -39,7 +38,6 @@ class BSL(Instruction):
 class BSR(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[1])
 
         control.EN._reset()
@@ -62,7 +60,6 @@ class BSR(Instruction):
 class FFL(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[2])
 
         control.EN.setValue(True)
@@ -127,7 +124,6 @@ class FFL(Instruction):
 class FFU(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[2])
 
         control.EU.setValue(True)
@@ -207,7 +203,6 @@ class FFU(Instruction):
 class LFL(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[2])
 
         control.EN.setValue(True)
@@ -272,7 +267,6 @@ class LFL(Instruction):
 class LFU(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[2])
 
         control.EU.setValue(True)

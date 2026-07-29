@@ -72,7 +72,7 @@ class PSC(Instruction):
             raise MajorFault(4, 91)
 
         if ctx.RungStatus:
-            ctx.PSC = True
+            ctx.RLL.PSC = True
     
 @InstructionRegistry.register
 class PFL(Instruction):

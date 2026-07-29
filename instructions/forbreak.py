@@ -26,4 +26,4 @@ class BRK(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            ctx.TND = True
+            ctx.RLL.TND = True

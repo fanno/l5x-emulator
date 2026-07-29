@@ -10,7 +10,6 @@ from  instructions.helper import getPLCValue
 class FBC(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         cmp_control:CONTROL = self.getMemory(self.args[3])
         result_control:CONTROL = self.getMemory(self.args[4])
 
@@ -55,7 +54,6 @@ class FBC(Instruction):
 class DDT(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         cmp_control:CONTROL = self.getMemory(self.args[3])
         result_control:CONTROL = self.getMemory(self.args[4])
 
@@ -100,7 +98,6 @@ class DDT(Instruction):
 class DTR(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         source = getPLCValue(self.getMemory(self.args[0]))
         mask = getPLCValue(self.getMemory(self.args[1]))
         reference = self.getMemory(self.args[2])

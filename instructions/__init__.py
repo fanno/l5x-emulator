@@ -6,7 +6,6 @@ from . import safety
 
 from . import alarms
 from . import bit
-from . import boolean
 from . import compare
 from . import drives
 from . import filters
@@ -16,6 +15,7 @@ from . import hmi
 from . import input
 from . import limit
 from . import lisence
+from . import misc
 from . import move
 from . import phase
 from . import process

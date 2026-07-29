@@ -5,12 +5,15 @@ from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.array import Array
 from datatypes.custom.udt import UDT
 
-import logging
+from engine.fbd.block import FBDBlock
+from instructions.helper import getOperand
 
 class Instruction:
     args:list[str]
     name:str
     memory:Memory
+
+    block:FBDBlock
 
     def __init__(self, name:str = None, args:list[str] = None, memory:Memory = None):
         if name is None:
@@ -22,6 +25,7 @@ class Instruction:
         else:
             self.args = args
         self._memory = memory
+        self.wires = []
 
     def getMemory(self, path:list[str] | str) -> DataVariant|Array|UDT:
         if self._memory is None:
@@ -37,6 +41,14 @@ class Instruction:
         else:
             self._memory.set(path)
 
+    async def ladder(self, ctx:"engine.context.ExecutionContext") -> None:
+        if ctx.Context.preScan:
+            await self.ladder_preScan(ctx)
+        elif ctx.Context.postScan:
+            await self.ladder_postScan(ctx)
+        else:
+            await self.ladder_execute(ctx)
+
     async def ladder_execute(self, ctx:"engine.context.ExecutionContext") -> None:
         raise NotImplementedError(f"{__class__} not implemented yet")
 
@@ -46,53 +58,43 @@ class Instruction:
     async def ladder_postScan(self, ctx:"engine.context.ExecutionContext") -> None:
         pass
 
-    async def fbd_execute(self, ctx:"engine.context.ExecutionContext") -> None:
-        await self.ladder_execute(ctx)
+    async def fbd(self, ctx:"engine.context.ExecutionContext", block:FBDBlock) -> None:
+        value:UDT = getOperand(block)
 
-    async def fbd_preScan(self, ctx:"engine.context.ExecutionContext") -> None:
-        await self.ladder_preScan(ctx)
-    
-    async def fbd_postScan(self, ctx:"engine.context.ExecutionContext") -> None:
-        await self.ladder_postScan(ctx)
+        if ctx.Context.preScan:
+            await self.fbd_preScan(ctx, block)
+        elif ctx.Context.postScan:
+            await self.fbd_postScan(ctx, block)
+        else:
+            await self.fbd_execute(ctx, block)
 
-    async def sfc_execute(self, ctx:"engine.context.ExecutionContext") -> None:
-        self.ladder_execute(ctx)
-    
-    async def sfc_preScan(self, ctx:"engine.context.ExecutionContext") -> None:
-        await self.ladder_preScan(ctx)
-    
-    async def sfc_postScan(self, ctx:"engine.context.ExecutionContext") -> None:
-        await self.ladder_postScan(ctx)
-
-    async def st_execute(self, ctx:"engine.context.ExecutionContext") -> None:
-        await self.ladder_execute(ctx)
+        if value:
+            for name, parm in block.outParams.items():
+                if hasattr(value, name):
+                    parm.Value = getattr(value, name)
 
 
-    '''
-    async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
-        match ctx.Type:
-            case RoutineType.RLL:
-                await self.ladder_execute(ctx)
-            case RoutineType.FBD:
-                await self.fbd_execute(ctx)
-            case RoutineType.SFC:
-                await self.sfc_execute(ctx)
+    async def fbd_execute(self, ctx:"engine.context.ExecutionContext", block:FBDBlock) -> None:
+        raise NotImplementedError(f"{__class__} not implemented yet")
+
+    async def fbd_preScan(self, ctx:"engine.context.ExecutionContext", block:FBDBlock) -> None:
+        pass
     
-    async def preScan(self, ctx:"engine.context.ExecutionContext") -> None:
-        match ctx.Type:
-            case RoutineType.RLL:
-                await self.ladder_preScan(ctx)
-            case RoutineType.FBD:
-                await self.fbd_preScan(ctx)
-            case RoutineType.SFC:
-                await self.sfc_preScan(ctx)
-    
-    async def postScan(self, ctx:"") -> None:
-        match ctx.Type:
-            case RoutineType.RLL:
-                await self.ladder_postScan(ctx)
-            case RoutineType.FBD:
-                await self.fbd_postScan(ctx)
-            case RoutineType.SFC:
-                await self.sfc_postScan(ctx)
-    '''
+    async def fbd_postScan(self, ctx:"engine.context.ExecutionContext", block:FBDBlock) -> None:
+        pass
+
+    async def sfc(self, ctx:"engine.context.ExecutionContext") -> None:
+        if ctx.Context.preScan:
+            await self.sfc_execute(ctx)
+        elif ctx.Context.postScan:
+            await self.sfc_preScan(ctx)
+        else:
+            await self.sfc_postScan(ctx)
+
+    async def st(self, ctx:"engine.context.ExecutionContext") -> None:
+        if ctx.Context.preScan:
+            await self.ladder_execute(ctx)
+        elif ctx.Context.postScan:
+            await self.ladder_preScan(ctx)
+        else:
+            await self.ladder_postScan(ctx)

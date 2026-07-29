@@ -132,12 +132,7 @@ class InstructionNode:
     async def eval(self, ctx:"engine.context.ExecutionContext") -> None:
         with Hierarchy.scope(self.name):
             with PLCFaultHandler.minor():
-                if ctx.Context.preScan:
-                    await self.instance.ladder_preScan(ctx)
-                elif ctx.Context.postScan:
-                    await self.instance.ladder_postScan(ctx)
-                else:
-                    await self.instance.ladder_execute(ctx)
+                await self.instance.ladder(ctx)
 
     def __str__(self):
         return f"{self.name}{self.args}"
@@ -171,7 +166,7 @@ class Parallel(InstructionNode):
             output_power |= ctx.RungStatus
             output_enable |= ctx.RungEnabled
 
-            if ctx.Jump is not None:
+            if ctx.RLL.Jump is not None:
                 break
 
         ctx.RungStatus = output_power
@@ -185,5 +180,5 @@ class Series(InstructionNode):
         for node in self.nodes:
             if ctx.RungEnabled:
                 await node.eval(ctx)
-            if ctx.Jump is not None:
+            if ctx.RLL.Jump is not None:
                 break

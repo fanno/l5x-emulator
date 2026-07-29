@@ -26,7 +26,6 @@ class SCL(Instruction):
 class PIDE(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         pide:PID_ENHANCED = self.getMemory(self.args[0])
         
         pide.EnableIn._reset()

@@ -159,7 +159,6 @@ class FLL(Instruction):
 class AVE(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[3])
 
         control.EnableIn._reset()
@@ -213,7 +212,6 @@ class SRT(Instruction):
 class STD(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[3])
 
         control.EN._reset()

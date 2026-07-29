@@ -9,10 +9,9 @@ from instructions.helper import _AND, _OR, _XOR, _NOT
 from datatypes.custom.udt import Resettable
 
 from  instructions.helper import getPLCValue
-
-from datatypes.custom.numbers import DINT
-
-import logging
+from datatypes.fdb import FBD_LOGICAL, FBD_CONVERT, FBD_BOOLEAN_AND, FBD_BOOLEAN_NOT, FBD_BOOLEAN_XOR, FBD_BOOLEAN_OR
+from typing import Any
+from engine.fbd.block import FBDBlock
 
 @InstructionRegistry.register
 class MOV(Instruction):
@@ -49,54 +48,89 @@ class MVM(Instruction):
 @InstructionRegistry.register
 class AND(Instruction):
 
+    def execute(self, SourceA, SourceB) -> Any:
+        return _AND(SourceA, SourceB, 64)
+
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            sourceA = getPLCValue(self.getMemory(self.args[0]))
-            sourceB = getPLCValue(self.getMemory(self.args[1]))
-            dest = self.getMemory(self.args[2])
+            SourceA = getPLCValue(self.getMemory(self.args[0]))
+            SourceB = getPLCValue(self.getMemory(self.args[1]))
+            
+            result = self.execute(SourceA, SourceB)
+            if not result:
+                ctx.RungStatus = False
 
-            destValue = _AND(sourceA, sourceB, 32) # should be 64 ?
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        compare:FBD_LOGICAL = block.Value
 
-            dest.setValue(destValue)
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(compare.SourceA, compare.SourceB)
 
 @InstructionRegistry.register
 class OR(Instruction):
 
+    def execute(self, SourceA, SourceB) -> Any:
+        return _OR(SourceA, SourceB, 64)
+
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            sourceA = getPLCValue(self.getMemory(self.args[0]))
-            sourceB = getPLCValue(self.getMemory(self.args[1]))
-            dest = self.getMemory(self.args[2])
+            SourceA = getPLCValue(self.getMemory(self.args[0]))
+            SourceB = getPLCValue(self.getMemory(self.args[1]))
+            
+            result = self.execute(SourceA, SourceB)
+            if not result:
+                ctx.RungStatus = False
 
-            destValue = _OR(sourceA, sourceB, 32) # should be 64 ?
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        compare:FBD_LOGICAL = block.Value
 
-            dest.setValue(destValue)
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(compare.SourceA, compare.SourceB)
 
 @InstructionRegistry.register
 class XOR(Instruction):
-    
+
+    def execute(self, SourceA, SourceB) -> Any:
+        return _XOR(SourceA, SourceB, 64)
+
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            sourceA = getPLCValue(self.getMemory(self.args[0]))
-            sourceB = getPLCValue(self.getMemory(self.args[1]))
-            dest = self.getMemory(self.args[2])
+            SourceA = getPLCValue(self.getMemory(self.args[0]))
+            SourceB = getPLCValue(self.getMemory(self.args[1]))
+            
+            result = self.execute(SourceA, SourceB)
+            if not result:
+                ctx.RungStatus = False
 
-            destValue = _XOR(sourceA, sourceB, 32) # should be 64 ?
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        compare:FBD_LOGICAL = block.Value
 
-            dest.setValue(destValue)
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(compare.SourceA, compare.SourceB)
 
 @InstructionRegistry.register
 class NOT(Instruction):
 
+    def execute(self, SourceA) -> Any:
+        return _NOT(SourceA, 64)
+
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            sourceA = getPLCValue(self.getMemory(self.args[0]))
-            dest = self.getMemory(self.args[1])
+            Source = getPLCValue(self.getMemory(self.args[0]))
+            
+            result = self.execute(Source)
+            if not result:
+                ctx.RungStatus = False
 
-            destValue = _NOT(sourceA, 64) # should be 64?
-            ## TODO length depend on data size in dest ?
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        compare:FBD_CONVERT = block.Value
 
-            dest.setValue(destValue)
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(compare.Source)
 
 def _to_bytes(value: int, byte_count: int) -> list[int]:
     return [(value >> (8 * i)) & 0xFF for i in range(byte_count)]
@@ -214,3 +248,51 @@ class RESD(Instruction):
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
             raise NotImplementedError(f"{__class__} not implemented yet")
+
+@InstructionRegistry.register
+class BOR(Instruction):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        compare:FBD_BOOLEAN_OR = block.Value
+
+        result = compare.In1 or compare.In2 or compare.In3 or compare.In4 or compare.In5 or compare.In6 or compare.In7 or compare.In8
+
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(result)
+
+@InstructionRegistry.register
+class BNOT(Instruction):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        compare:FBD_BOOLEAN_NOT = block.Value
+
+        result = not compare.In
+
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(result)
+
+@InstructionRegistry.register
+class BXOR(Instruction):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        compare:FBD_BOOLEAN_XOR = block.Value
+
+        result = compare.In1 is not compare.In2
+
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(result)
+
+@InstructionRegistry.register
+class BAND(Instruction):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        compare:FBD_BOOLEAN_AND = block.Value
+
+        result = compare.In1 and compare.In2 and compare.In3 and compare.In4 and compare.In5 and compare.In6 and compare.In7 and compare.In8
+
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(result)

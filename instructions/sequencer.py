@@ -40,7 +40,6 @@ class SQI(Instruction):
 class SQO(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[3])
 
         control.EN.setValue(True)
@@ -95,7 +94,6 @@ class SQO(Instruction):
 class SQL(Instruction):
 
     async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
         control:CONTROL = self.getMemory(self.args[2])
 
         control.EN.setValue(True)

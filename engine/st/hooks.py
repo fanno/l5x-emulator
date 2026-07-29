@@ -37,7 +37,7 @@ def build_exec_env(ctx: "ExecutionContext") -> dict:
         with Hierarchy.scope(name):
             with PLCFaultHandler.minor():
                 instance: Instruction = InstructionRegistry.get(name)(name=name, args=args)
-                await instance.st_execute(ctx)
+                await instance.st(ctx)
 
     return {
         "get": getHook,

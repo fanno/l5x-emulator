@@ -3,6 +3,8 @@ from datatypes.custom.datavariant import DataVariant
 
 from datatypes.custom.numbers import INTIGER
 from datatypes.custom.array import Array
+from datatypes.custom.udt import UDT
+from engine.fbd.block import FBDBlock
 
 from core.memory.helper import getMemory
 
@@ -69,3 +71,12 @@ def getRootPath(address) -> Tuple[str, List[Union[int]]]:
     path = address[:last_bracket_open]
     
     return path, dims
+
+def getOperand(block:FBDBlock) -> UDT:
+    operand:UDT = block.Value
+    for name, parm in block.inParams.items():
+        if parm.Value is not None:
+            if hasattr(operand, name):
+                attr = getattr(operand, name)
+                attr.setValue(parm.Value)
+    return operand

@@ -15,6 +15,8 @@ from datatypes.custom.bool import BOOL
 from datatypes.misc import TIMER
 
 from instructions.timer import TON
+from typing import Any
+from engine.fbd.block import FBDBlock
 
 @dataclass
 class AlarmMemory(Identity):
@@ -39,16 +41,13 @@ class ALMDMemory(AlarmMemory):
 @InstructionRegistry.register
 class ALMD(Instruction):
 
-    async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
-        alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
+    async def preScan(self, alarm:ALARM_DIGITAL):
         ObjectRegistry.remove(alarm)
-        
+
         alarm._reset()
         alarm.Acked.setValue(True)
 
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
+    async def execute(self, alarm:ALARM_DIGITAL) -> Any:
         memory = ObjectRegistry.get(alarm, ALMDMemory)
 
         ProgAck:BOOL = self.getMemory(self.args[1])
@@ -122,6 +121,22 @@ class ALMD(Instruction):
 
         alarm.MinDurationACC.setValue(0)
 
+    async def ladder_preScan(self, ctx):
+        alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
+        await self.preScan(alarm)
+
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
+        await self.execute(alarm)
+
+    async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        alarm:ALARM_DIGITAL = block.Value
+        await self.preScan(alarm)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        alarm:ALARM_DIGITAL = block.Value
+        await self.execute(alarm)
+
 @dataclass
 class ALMAMemory(AlarmMemory):
     HHTimer:TON = None
@@ -153,15 +168,12 @@ class ALMAMemory(AlarmMemory):
 @InstructionRegistry.register
 class ALMA(Instruction):
 
-    async def ladder_preScan(self, ctx):
-        await super().preScan(ctx)
-        alarm:ALARM_ANALOG = self.getMemory(self.args[0])
+    async def preScan(self, alarm:ALARM_DIGITAL):
         ObjectRegistry.remove(alarm)
         
         alarm.reset()
 
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        alarm:ALARM_ANALOG = self.getMemory(self.args[0])
+    async def execute(self, alarm:ALARM_DIGITAL) -> Any:
         memory = ObjectRegistry.get(alarm, ALMAMemory)
 
         In:REAL|INTIGER = self.getMemory(self.args[1])
@@ -277,6 +289,22 @@ class ALMA(Instruction):
         alarm.AlarmCountReset.setValue(False)
 
         alarm.MinDurationACC.setValue(0)
+
+    async def ladder_preScan(self, ctx):
+        alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
+        await self.preScan(alarm)
+
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
+        await self.execute(alarm)
+
+    async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        alarm:ALARM_DIGITAL = block.Value
+        await self.preScan(alarm)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        alarm:ALARM_DIGITAL = block.Value
+        await self.execute(alarm)
 
 @InstructionRegistry.register
 class ASO(Instruction):

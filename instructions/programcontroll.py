@@ -9,7 +9,7 @@ class JMP(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            ctx.Jump = self.args[0]
+            ctx.RLL.Jump = self.args[0]
 
 @InstructionRegistry.register
 class LBL(Instruction):
@@ -21,19 +21,19 @@ class LBL(Instruction):
 class TND(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        ctx.TND = ctx.RungStatus
+        ctx.RLL.TND = ctx.RungStatus
 
 @InstructionRegistry.register
 class MCR(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        ctx.inMCR = not ctx.inMCR
+        ctx.RLL.inMCR = not ctx.RLL.inMCR
 
-        if ctx.inMCR:
+        if ctx.RLL.inMCR:
            if ctx.RungStatus:
-                ctx.MCRActive = True
+                ctx.RLL.MCRActive = True
         else:
-            ctx.MCRActive = False
+            ctx.RLL.MCRActive = False
 
 @InstructionRegistry.register
 class UID(Instruction):

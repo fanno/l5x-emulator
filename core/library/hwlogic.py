@@ -39,7 +39,6 @@ class HWLogic:
         if now > self.next_update:
             self.next_update = now + (self.update_ms / 1000 )
 
-            outputs = {}
             if not self.runOutbound:
                 _out = memory.get(f"{_name}:O")
 
@@ -74,7 +73,6 @@ class HWLogic:
                     self.compinedInbound[self.inAddress] = []
                     for item in self.runInbound[self.inAddress]:
                         self.compinedInbound[self.inAddress].append(compile_item(item))
-                    print(self.compinedInbound[self.inAddress])
 
                 for item in self.compinedInbound[self.inAddress]:
                     if isinstance(item, Expr):
@@ -88,8 +86,6 @@ class HWLogic:
                             eval__compined_func(expr)
                          
             self.updateInbound = not self.updateInbound
-
-            return outputs
 
 def compile_item(item):
     try:
@@ -111,7 +107,6 @@ def create_evaluator(name, namespace):
         return getMemory(f"{name}:{path_str}")
     
     def set_value(path_str, value):
-        print(f"{name}:{path_str}", value)
         setMemory(f"{name}:{path_str}", value)
 
     def get_bits(path_str, start, length):

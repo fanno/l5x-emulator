@@ -250,8 +250,6 @@ class Emulator(threading.Thread):
 
         await self.opcua.createNodes(self.memory, self.mapping)
 
-        await loadPrograms(self.controller, self._server, self.programs)
-
         loadTasks(self.controller, self.tasks)
         await PLCSYSTEM.init(self._server)
 

@@ -82,7 +82,6 @@ instructions = [
 
     'instructions.alarms',
     'instructions.bit',
-    'instructions.boolean',
     'instructions.compare',
     'instructions.drives',
     'instructions.filters',
@@ -92,6 +91,7 @@ instructions = [
     'instructions.input',
     'instructions.limit',
     'instructions.lisence',
+    'instructions.misc',
     'instructions.move',
     'instructions.phase',
     'instructions.process',

@@ -1,5 +1,3 @@
-import logging
-
 from xml.etree.ElementTree import Element
 
 from typing import Optional, List
@@ -9,10 +7,16 @@ from dataclasses import dataclass, field
 from enum import Enum
 
 import engine.context
-from engine.rung import Rung
+from engine.rll.rung import Rung
+from engine.fbd.sheet import Sheet
+
 from engine.st.parser import normalizeST, createPython
 from engine.hierarchy import Hierarchy
 from engine.errors import PLCFaultHandler
+
+from datatypes.custom.datavariant import DataVariant
+from datatypes.custom.array import Array
+from datatypes.custom.udt import UDT
 
 from datatypes.custom.numbers import INT
 
@@ -23,24 +27,12 @@ class RoutineType(Enum):
     ST = 2
     FBD = 3
     SFC = 4
-'''
-def make_async_st(st_source: str) -> str:
-    indented = indent(st_source, "    ")
-    if not indented.strip():
-        indented = "    pass"
-    return "async def __st_main__():\n" + indented + "\n"
-
-def indent(code: str, prefix: str) -> str:
-    return "\n".join(
-        prefix + line if line.strip() else line
-        for line in code.splitlines()
-    )
-'''
 
 @dataclass
 class Routine:
     _Element: Element = field(init=True)
     Rungs: List["Rung"] = field(init=False, default_factory=lambda: [])
+    Sheets: List["Sheet"] = field(init=False, default_factory=lambda: [])
     ST:str = field(init=False, default=None)
     Name: Optional[str] = field(init=False, default=None)
     Type: Optional[RoutineType] = field(init=False, default=None)
@@ -49,12 +41,11 @@ class Routine:
     SFCResuming: INT = field(init=False, default_factory=INT)
     SFCStep: SFC_STEP = field(init=False, default_factory=SFC_STEP)
 
-    RungLine:int = field(init=False, default=1)
-
+    Signals:Optional[dict[str, DataVariant|Array|UDT]] = field(init=False, default_factory=lambda: {})
+    
     def __post_init__(self):
         self.Name = self._Element.get("Name", None)
         self.Type = RoutineType[self._Element.get("Type", None)]
-
         if self.Type == RoutineType.RLL:
             line = 1
             for rung in self._Element.findall("./RLLContent//Rung"):
@@ -76,6 +67,15 @@ class Routine:
                 
             except Exception as e:
                 raise AssertionError(f"Parsing Error: {self.Name}").with_traceback(e.__traceback__)
+        elif self.Type == RoutineType.FBD:
+            for sheet in self._Element.findall("./FBDContent//Sheet"):
+                self.Sheets.append(Sheet(sheet))
+
+            for sheet in self.Sheets:
+                for idx, block in sheet.blocks.items():
+                    if block.Signal:
+                        self.Signals[block.Signal] = block
+
 
     async def execute(self, ctx:"engine.context.ExecutionContext"):
         with Hierarchy.scope(self.Name):
@@ -88,28 +88,25 @@ class Routine:
                         runRoutine = True
 
                         while runRoutine:
-                            self.RungLine = 1
                             runRoutine = False
                             for rung in self.Rungs:
-                                if ctx.Jump is None or ctx.Jump == rung.getLabel():
-                                    ctx.Jump = None
+                                if ctx.RLL.Jump is None or ctx.RLL.Jump == rung.getLabel():
+                                    ctx.RLL.Jump = None
                                     ctx.RungEnabled = True
-                                    ctx.Context.rungLine = self.RungLine
                                     await rung.execute(ctx)
 
-                                    if ctx.EOT or ctx.TND:
+                                    if ctx.RLL.EOT or ctx.RLL.TND:
                                         break
-                                    elif ctx.Jump is not None:
+                                    elif ctx.RLL.Jump is not None:
                                         runRoutine = True
                                         break
-                                self.RungLine += 1
                     case RoutineType.ST:
                         from engine.st.hooks import run_exec_env
 
                         await run_exec_env(self.ST, ctx, self.Name, False)
                     case RoutineType.FBD:
-                        # TODO
-                        pass
+                        for sheet in self.Sheets:
+                            await sheet.execute(ctx)
                     case RoutineType.SFC:
                         if self.SFCPaused == 0:
                             # TODO

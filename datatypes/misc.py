@@ -10,11 +10,6 @@ from datatypes.custom.bool import BOOL
 from datatypes.custom.array import Array
 from datatypes.custom.udt import UDT
 
-
-
-
-
-
 @DataTypeRegistry.register
 @dataclass
 class BUS_OBJ(UDT):

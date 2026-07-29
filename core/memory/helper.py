@@ -12,8 +12,9 @@ from dataclasses import is_dataclass, fields
 
 from engine.helper import CurrentProgramName, currentAOIMemory
 from datatypes.custom.datavariant import DataVariant
-
 from datatypes.custom.array import Array
+from datatypes.custom.string import STRING
+from datatypes.custom.numbers import REAL, LINT
 
 from core.constants import SYSTEMTAGS, CONTROLLERTAGS
 
@@ -39,7 +40,7 @@ class OutputType(Enum):
     PLC = auto()
     UA = auto()
 
-def strNumber(number:str) -> int | float:
+def strNumber(number:str) -> LINT | REAL:
     if isinstance(number, str):
         number = number.replace("_", "")
 
@@ -73,11 +74,11 @@ def strNumber(number:str) -> int | float:
         value = m.group('dec')
 
         if '.' in value or 'e' in value.lower():
-            return float(sign + value)
+            return REAL(float(sign + value))
         else:
-            return int(sign + value)
+            return LINT(int(sign + value))
     else:
-        return number
+        raise ValueError(f"strNumber must be a str")
 
 def getHash(obj) -> str:
     return hashlib.sha256(str(obj).encode('utf-8')).hexdigest()
@@ -110,7 +111,7 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
     try:
         if isinstance(pathRaw, str):
             if pathRaw.startswith("\'"):
-                return pathRaw[1:-1]
+                return STRING(pathRaw[1:-1])
             elif pathRaw[0].isdigit():
                 return strNumber(pathRaw)
             elif any(c in pathRaw for c in ['+','-','/','*','%',]):

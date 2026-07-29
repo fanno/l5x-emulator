@@ -1,5 +1,8 @@
 import math
 
+from typing import Any
+
+from engine.fbd.block import FBDBlock
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from engine.errors import MinorFault
@@ -13,26 +16,44 @@ from datatypes.custom.numbers import SINT, USINT, INT, UINT, DINT, UDINT, LINT, 
 @InstructionRegistry.register
 class DEG(Instruction):
 
+    def execute(self, Source) -> Any:
+        return float(math.degrees(Source))
+
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        value = getPLCValue(self.getMemory(self.args[0]))
-        dest = self.getMemory(self.args[1])
+        if ctx.RungStatus:
+            Source = getPLCValue(self.getMemory(self.args[0]))
+            Dest = self.getMemory(self.args[1])
+            
+            result = self.execute(Source)
+            Dest.setValue(result)
 
-        if not isinstance(value, (int, float)):
-            raise NotImplementedError("Unsupported DEG combination")
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        Source = block.inParams["Source"].Value
+        Dest = block.outParams["Dest"]
 
-        dest.setValue(float(math.degrees(value)))
+        Dest.Value = self.execute(Source)
 
 @InstructionRegistry.register
 class RAD(Instruction):
 
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        value = getPLCValue(self.getMemory(self.args[0]))
-        dest = self.getMemory(self.args[1])
-
-        if not isinstance(value, (int, float)):
+    def execute(self, Source) -> Any:
+        if not isinstance(Source, (int, float)):
             raise NotImplementedError("Unsupported RAD combination")
+        return float(math.radians(Source))
 
-        dest.setValue(float(math.radians(value)))
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            Source = getPLCValue(self.getMemory(self.args[0]))
+            Dest = self.getMemory(self.args[1])
+            
+            result = self.execute(Source)
+            Dest.setValue(result)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        Source = block.inParams["Source"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(Source)
 
 def to_bcd(value: int) -> int:
     bcd = 0
@@ -82,14 +103,25 @@ class TO_BCD(TOD):
 @InstructionRegistry.register
 class FRD(Instruction):
 
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        value = getPLCValue(self.getMemory(self.args[0]))
-        dest = self.getMemory(self.args[1])
-
-        if not isinstance(value, (int, float)):
+    def execute(self, Source) -> Any:
+        if not isinstance(Source, (int, float)):
             raise NotImplementedError("Unsupported FRD combination")
 
-        dest.setValue(float(value - int(value)))
+        return float(Source - int(Source))
+
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            Source = getPLCValue(self.getMemory(self.args[0]))
+            Dest = self.getMemory(self.args[1])
+            
+            result = self.execute(Source)
+            Dest.setValue(result)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        Source = block.inParams["Source"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(Source)
 
 @InstructionRegistry.register
 class BCD_TO(FRD):
@@ -98,19 +130,29 @@ class BCD_TO(FRD):
 @InstructionRegistry.register
 class TRN(Instruction):
 
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        value = getPLCValue(self.getMemory(self.args[0]))
-        dest = self.getMemory(self.args[1])
-
-        if not isinstance(value, (int, float)):
+    def execute(self, Source) -> Any:
+        if not isinstance(Source, (int, float)):
             raise NotImplementedError("Unsupported TRN combination")
 
-        if value >= 0:
-            result = int(value + 0.5)
+        if Source >= 0:
+            result = int(Source + 0.5)
         else:
-            result = int(value - 0.5)
+            result = int(Source - 0.5)
+        return result
 
-        dest.setValue(result)
+    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+        if ctx.RungStatus:
+            Source = getPLCValue(self.getMemory(self.args[0]))
+            Dest = self.getMemory(self.args[1])
+            
+            result = self.execute(Source)
+            Dest.setValue(result)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        Source = block.inParams["Source"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(Source)
     
 @InstructionRegistry.register
 class TRUNC(TRN):

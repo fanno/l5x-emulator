@@ -63,7 +63,6 @@ class HasEnable(Protocol):
 class AOI():
     _Element: Element = field(init=True)
     Routines: Dict[str, "Routine"] = field(init=False, default_factory=lambda: {})
-    MainRoutineName: Optional[str] = field(init=False, default="Logic")
     Name:str = field(init=False)
 
     Parameters: list[Parameter] = field(init=False, default_factory=lambda: [])
@@ -77,6 +76,9 @@ class AOI():
     SignatureID:DINT = field(init=False, default_factory=DINT)
     Vendor:DINT = field(init=False, default_factory=DINT)
 
+    ExecutePrescan:BOOL = field(init=False, default_factory=BOOL)
+    ExecutePostscan:BOOL = field(init=False, default_factory=BOOL)
+    ExecuteEnableInFalse:BOOL = field(init=False, default_factory=BOOL)
     def __post_init__(self):
         from engine.routine import Routine
         
@@ -88,6 +90,10 @@ class AOI():
         Revision = self._Element.get("Revision").split('.')
         self.MajorRevision.setValue(Revision[0])
         self.MinorRevision.setValue(Revision[1])
+
+        self.ExecutePrescan = BOOL(self._Element.get("ExecutePrescan", False))
+        self.ExecutePostscan = BOOL(self._Element.get("ExecutePostscan", False))
+        self.ExecuteEnableInFalse = BOOL(self._Element.get("ExecuteEnableInFalse", False))
 
         for element in self._Element.findall("./LocalTags//LocalTag"):
             p = Local(_Element=element)
@@ -109,7 +115,25 @@ class AOI():
             with PLCFaultHandler.minor():
                 from engine.context import ExecutionContext
                 context = ExecutionContext(ProgramRef=self)
-                await self.Routines[self.MainRoutineName].execute(context)
+                context.Context = ctx.Context
+
+                context.RungStatus = ctx.RungStatus
+
+                if context.Context.preScan:
+                    if self.ExecutePrescan:
+                        if "Prescan" in self.Routines:
+                            await self.Routines["Prescan"].execute(context)
+                elif context.Context.preScan:
+                    if self.ExecutePostscan:
+                        if "Postscan" in self.Routines:
+                            await self.Routines["Postscan"].execute(context)
+                elif not context.RungStatus:
+                    if self.ExecuteEnableInFalse:
+                        if "EnableInFalse" in self.Routines:
+                            await self.Routines["EnableInFalse"].execute(context)
+                else:
+                    if "Logic" in self.Routines:
+                        await self.Routines["Logic"].execute(context)
 
 class AOIRegistry:
     _registry: ClassVar[Dict[str, AOI]] = {}
@@ -248,32 +272,14 @@ class AOI_CLASS(Instruction):
                                 value = aoi.memory.get(p.Name)
                                 setattr(aoiData, p.Name, value)
 
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
+    async def ladder(self, ctx:"ExecutionContext") -> None:
         await self.execute(ctx)
 
-    async def ladder_preScan(self, ctx:"ExecutionContext") -> None:
-        await self.execute(ctx)
-    
-    async def ladder_postScan(self, ctx:"ExecutionContext") -> None:
+    async def fbd(self, ctx:"ExecutionContext") -> None:
         await self.execute(ctx)
 
-    async def fbd_execute(self, ctx:"ExecutionContext") -> None:
+    async def st(self, ctx:"ExecutionContext") -> None:
         await self.execute(ctx)
 
-    async def fbd_preScan(self, ctx:"ExecutionContext") -> None:
-        await self.execute(ctx)
-    
-    async def fbd_postScan(self, ctx:"ExecutionContext") -> None:
-        await self.execute(ctx)
-
-    async def sfc_execute(self, ctx:"ExecutionContext") -> None:
-        await self.execute(ctx)
-    
-    async def sfc_preScan(self, ctx:"ExecutionContext") -> None:
-        await self.execute(ctx)
-    
-    async def sfc_postScan(self, ctx:"ExecutionContext") -> None:
-        await self.execute(ctx)
-
-    async def st_execute(self, ctx:"ExecutionContext") -> None:
+    async def sfc(self, ctx:"ExecutionContext") -> None:
         await self.execute(ctx)

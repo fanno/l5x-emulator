@@ -38,11 +38,13 @@ class InstructionRegistry:
             logging.debug(f"InstructionRegistry: {name}> {args}, {ctx}")
             match ctx.Type:
                 case RoutineType.RLL:
-                    await cls.ladder_execute(args, ctx)
+                    await cls.ladder(args, ctx)
                 case RoutineType.ST:
-                    await cls.st_execute(args, ctx)
+                    await cls.st(args, ctx)
                 case RoutineType.FBD:
-                    await cls.fbd_execute(args, ctx)
+                    ## TODO not aplickable ?
+                    #await cls.fbd(args, ctx)
+                    pass
                 case RoutineType.SFC:
                     await cls.sfc_execute(args, ctx)
         else:

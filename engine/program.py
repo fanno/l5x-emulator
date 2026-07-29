@@ -186,6 +186,6 @@ class Program():
     def pcs(self, name:str, ctx:"engine.context.ExecutionContext") -> bool:
         PSC = True
         if name in self.Routines:
-            PSC = ctx.PSC
+            PSC = ctx.RLL.PSC
 
         return PSC

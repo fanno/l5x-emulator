@@ -26,8 +26,8 @@ class Rung:
     async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
         with Hierarchy.scope(f"Rung[{str(self.Line)}]"):
             with PLCFaultHandler.minor():
-                if ctx.inMCR:
-                    ctx.RungStatus = ctx.MCRActive
+                if ctx.RLL.inMCR:
+                    ctx.RungStatus = ctx.RLL.MCRActive
                 else:
                     ctx.RungStatus = True
                 await self.Tree.eval(ctx)
