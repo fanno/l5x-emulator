@@ -55,7 +55,7 @@ class FBDBlock:
             self.instance = None
 
     async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
-        with Hierarchy.scope(f"Block[{self._Type}{str(self.Function)}]"):
+        with Hierarchy.scope(f"Block[{self._Type}, {str(self.Function)}]"):
             with PLCFaultHandler.minor():
                 if self.Operand and self.Value is None:
                     self.Value = getMemory(self.Operand)
