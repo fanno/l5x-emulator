@@ -18,11 +18,12 @@ from datatypes.fdb import FBD_CONVERT, FBD_MATH_ADVANCED, FBD_CONVERT
 class DEG(Instruction):
 
     def execute(self, Source) -> Any:
+        Source = getPLCValue(Source)
         return float(math.degrees(Source))
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            Source = getPLCValue(self.getMemory(self.args[0]))
+            Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
             
             result = self.execute(Source)
@@ -38,7 +39,7 @@ class DEG(Instruction):
 class DEG__F(DEG):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        Source = getPLCValue(block.inParams["Source"].Value)
+        Source = block.inParams["Source"].Value
         Dest = block.outParams["Dest"]
 
         Dest.Value = self.execute(Source)
@@ -47,11 +48,12 @@ class DEG__F(DEG):
 class RAD(Instruction):
 
     def execute(self, Source) -> Any:
+        Source = getPLCValue(Source)
         return float(math.radians(Source))
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            Source = getPLCValue(self.getMemory(self.args[0]))
+            Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
             
             result = self.execute(Source)
@@ -67,7 +69,7 @@ class RAD(Instruction):
 class RAD__F(RAD):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        Source = getPLCValue(block.inParams["Source"].Value)
+        Source = block.inParams["Source"].Value
         Dest = block.outParams["Dest"]
 
         Dest.Value = self.execute(Source)
@@ -158,6 +160,7 @@ class BCD_TO(FRD):
 class TRN(Instruction):
 
     def execute(self, Source) -> Any:
+        Source = getPLCValue(Source)
         if Source >= 0:
             result = int(Source + 0.5)
         else:
@@ -166,7 +169,7 @@ class TRN(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            Source = getPLCValue(self.getMemory(self.args[0]))
+            Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
             
             result = self.execute(Source)
@@ -182,21 +185,15 @@ class TRN(Instruction):
 class TRN__F(TRN):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        Source = getPLCValue(block.inParams["Source"].Value)
+        Source = block.inParams["Source"].Value
         Dest = block.outParams["Dest"]
 
         Dest.Value = self.execute(Source)
-
 
 @InstructionRegistry.register
 class TRUNC(TRN):
     pass
 
 @InstructionRegistry.register
-class TRUNC__F(TRUNC):
-
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        Source = getPLCValue(block.inParams["Source"].Value)
-        Dest = block.outParams["Dest"]
-
-        Dest.Value = self.execute(Source)
+class TRUNC__F(TRN__F):
+    pass

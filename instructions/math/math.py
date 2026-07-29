@@ -105,8 +105,8 @@ class DIV(Instruction):
 class DIV__F(DIV):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        SourceA = getPLCValue(block.inParams["SourceA"].Value)
-        SourceB = getPLCValue(block.inParams["SourceB"].Value)
+        SourceA = block.inParams["SourceA"].Value
+        SourceB = block.inParams["SourceB"].Value
         Dest = block.outParams["Dest"]
 
         Dest.Value = self.execute(SourceA, SourceB)
@@ -138,8 +138,8 @@ class MUL(Instruction):
 class MUL__F(MUL):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        SourceA = getPLCValue(block.inParams["SourceA"].Value)
-        SourceB = getPLCValue(block.inParams["SourceB"].Value)
+        SourceA = block.inParams["SourceA"].Value
+        SourceB = block.inParams["SourceB"].Value
         Dest = block.outParams["Dest"]
 
         Dest.Value = self.execute(SourceA, SourceB)
@@ -173,8 +173,8 @@ class MOD(Instruction):
 class MOD__F(MOD):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        SourceA = getPLCValue(block.inParams["SourceA"].Value)
-        SourceB = getPLCValue(block.inParams["SourceB"].Value)
+        SourceA = block.inParams["SourceA"].Value
+        SourceB = block.inParams["SourceB"].Value
         Dest = block.outParams["Dest"]
 
         Dest.Value = self.execute(SourceA, SourceB)
