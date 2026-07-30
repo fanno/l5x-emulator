@@ -18,6 +18,8 @@ from datatypes.custom.numbers import REAL, LINT
 
 from core.constants import SYSTEMTAGS, CONTROLLERTAGS
 
+from engine.scan import PreScan, PostScan
+
 #BASE_OR_DEC_PATTERN = re.compile(
 #    r"""^
 #        (?:
@@ -167,6 +169,9 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
     return result    
 
 def setMemory(path:list[str] | str, value):
+    if PreScan.isActive() or PostScan.isActive():
+        return
+
     path = resolvePath(path)
     if value is None:
         raise MemoryException("setMemory", path)

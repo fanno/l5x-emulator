@@ -28,7 +28,7 @@ class BOOL(COMPARE, DataVariant):
         return self._value
 
     @classmethod
-    def toValue(self, value:str|int|bool):
+    def toValue(cls, value:str|int|bool):
         value = super().toValue(value)
         if isinstance(value, str):
             value = value.lower() in ('true', '1', 'yes', 'on')

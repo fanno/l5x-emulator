@@ -48,7 +48,7 @@ class INTIGER(COMPARE, MATH, DataVariant):
         PLC_TYPE_MAP[self.__class__.__name__].size * 8
     
     @classmethod
-    def toValue(self, value: int, type_name: str):
+    def toValue(cls, value: int, type_name: str):
         value = super().toValue(value)
         if value is None:
             value = 0

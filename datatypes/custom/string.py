@@ -121,11 +121,11 @@ class STRING(COMPARE, DataVariant):
         return re.sub(r'\$([0-9A-F]{2})', hex_to_char, text)
     
     @classmethod
-    def toValue(self, value:str):
+    def toValue(cls, value:str):
         if value is None:
             value = ""
 
-        value = self.hexToChar(value)
+        value = cls.hexToChar(value)
         return value
 
 @DataTypeRegistry.register

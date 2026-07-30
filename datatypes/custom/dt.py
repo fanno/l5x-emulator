@@ -96,7 +96,7 @@ class DT(COMPARE, MATH, DataVariant):
         return f"DT#{dt_str}.{us_formatted}({tz_str})"
 
     @classmethod
-    def toValue(self, value:datetime|int|str):
+    def toValue(cls, value:datetime|int|str):
         value = super().toValue(value)
         if isinstance(value, datetime):
             result = value

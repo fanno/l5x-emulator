@@ -9,6 +9,8 @@ from datatypes.custom.udt import UDT
 from engine.fbd.block import FBDBlock
 from instructions.helper import getOperand
 
+from engine.scan import PreScan, PostScan
+
 class Instruction:
     args:list[str]
     name:str
@@ -44,9 +46,11 @@ class Instruction:
 
     async def ladder(self, ctx:"engine.context.ExecutionContext") -> None:
         if ctx.Context.preScan:
-            await self.ladder_preScan(ctx)
+            with PreScan.scope(ctx.Context):
+                await self.ladder_preScan(ctx)
         elif ctx.Context.postScan:
-            await self.ladder_postScan(ctx)
+            with PostScan.scope(ctx.Context):
+                await self.ladder_postScan(ctx)
         else:
             await self.ladder_execute(ctx)
 
@@ -63,9 +67,11 @@ class Instruction:
         value:UDT = getOperand(block)
 
         if ctx.Context.preScan:
-            await self.fbd_preScan(ctx, block)
+            with PreScan.scope(ctx.Context):
+                await self.fbd_preScan(ctx, block)
         elif ctx.Context.postScan:
-            await self.fbd_postScan(ctx, block)
+            with PostScan.scope(ctx.Context):
+                await self.fbd_postScan(ctx, block)
         else:
             await self.fbd_execute(ctx, block)
 
@@ -85,17 +91,21 @@ class Instruction:
 
     async def sfc(self, ctx:"engine.context.ExecutionContext") -> None:
         if ctx.Context.preScan:
-            await self.sfc_preScan(ctx)
+            with PreScan.scope(ctx.Context):
+                await self.sfc_preScan(ctx)
         elif ctx.Context.postScan:
-            await self.sfc_postScan(ctx)
+            with PostScan.scope(ctx.Context):
+                await self.sfc_postScan(ctx)
         else:
             await self.sfc_execute(ctx)
 
     async def st(self, ctx:"engine.context.ExecutionContext") -> None:
         if ctx.Context.preScan:
-            await self.st_preScan(ctx)
+            with PreScan.scope(ctx.Context):
+                await self.st_preScan(ctx)
         elif ctx.Context.postScan:
-            await self.st_postScan(ctx)
+            with PostScan.scope(ctx.Context):
+                await self.st_postScan(ctx)
         else:
             await self.st_execute(ctx)
 

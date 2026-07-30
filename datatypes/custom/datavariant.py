@@ -28,9 +28,9 @@ class DataVariant:
         raise NotImplementedError(f"{__class__} getUAValue not implemented yet")
     
     @classmethod
-    def toValue(self, value:Any) -> Any:
+    def toValue(cls, value:Any) -> Any:
         if value is None:
-            default_type = getattr(self, '_py_variant', None)
+            default_type = getattr(cls, '_py_variant', None)
             if default_type is not None:
                 return default_type()
             return None

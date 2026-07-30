@@ -21,6 +21,8 @@ from datatypes.custom.numbers import LINT, DINT
 from datatypes.custom.string import STRING
 from datatypes.custom.array import Array
 
+from engine.scan import PreScan, PostScan
+
 TT = TypeVar("TT", bound=type)
 
 @dataclass
@@ -122,11 +124,13 @@ class AOI():
                 if context.Context.preScan:
                     if self.ExecutePrescan:
                         if "Prescan" in self.Routines:
-                            await self.Routines["Prescan"].execute(context)
+                            with PreScan.scope(context.Context):
+                                await self.Routines["Prescan"].execute(context)
                 elif context.Context.preScan:
                     if self.ExecutePostscan:
                         if "Postscan" in self.Routines:
-                            await self.Routines["Postscan"].execute(context)
+                            with PostScan.scope(context.Context):
+                                await self.Routines["Postscan"].execute(context)
                 elif not context.RungStatus:
                     if self.ExecuteEnableInFalse:
                         if "EnableInFalse" in self.Routines:
