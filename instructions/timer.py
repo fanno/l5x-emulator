@@ -118,6 +118,10 @@ class RTO(Instruction):
 @InstructionRegistry.register
 class TONR(Instruction):
 
+    def preScan(self, timer:FBD_TIMER, ctx:"ExecutionContext") -> None:
+        timer.EnableIn._reset()
+        timer.EnableOut._reset()
+
     def execute(self, timer:FBD_TIMER, ctx:"ExecutionContext") -> Any:
         memory = ObjectRegistry.get(timer, TimerMemory)
 
@@ -143,27 +147,14 @@ class TONR(Instruction):
         timer.TT.setValue((timer.ACC <= timer.ACC) and timer.EN)
         timer.DN.setValue((timer.ACC >= timer.PRE) and timer.EN)
 
-    async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        timer:FBD_TIMER = block.Value
-
-        timer.EnableIn._reset()
-        timer.EnableOut._reset()
-    
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        timer:FBD_TIMER = block.Value
-        self.execute(timer, ctx)
-
 @InstructionRegistry.register
 class TOFR(Instruction):
 
-    async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        timer:FBD_TIMER = block.Value
-
+    def preScan(self, timer:FBD_TIMER, ctx:"ExecutionContext") -> None:
         timer.EnableIn._reset()
-        timer.EnableOut._reset()    
+        timer.EnableOut._reset()
 
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        timer:FBD_TIMER = block.Value
+    def execute(self, timer:FBD_TIMER, ctx:"ExecutionContext") -> Any:
         memory = ObjectRegistry.get(timer, TimerMemory)
 
         timer.EN.setValue(timer.TimerEnable or timer.Reset)
@@ -194,14 +185,11 @@ class TOFR(Instruction):
 @InstructionRegistry.register
 class RTOR(Instruction):
 
-    async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        timer:FBD_TIMER = block.Value
-
+    def preScan(self, timer:FBD_TIMER, ctx:"ExecutionContext") -> None:
         timer.EnableIn._reset()
-        timer.EnableOut._reset()    
+        timer.EnableOut._reset()
 
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        timer:FBD_TIMER = block.Value
+    def execute(self, timer:FBD_TIMER, ctx:"ExecutionContext") -> Any:
         memory = ObjectRegistry.get(timer, TimerMemory)
 
         timer.EN.setValue(timer.TimerEnable)
@@ -231,7 +219,6 @@ class RTOR(Instruction):
         timer.ACC.setValue(timer.ACC)
 
         return timer
-
 
 @InstructionRegistry.register
 class RES(Instruction):

@@ -1,6 +1,6 @@
 import re
 
-from engine.st.st import ST
+import engine.st.st
 from engine.st.helper import hook_expression
 
 RE_IF = re.compile(r"^if\s+(.*?)\s+then$", re.I)
@@ -8,7 +8,7 @@ RE_ELSIF = re.compile(r"^elsif\s+(.*?)\s+then$", re.I)
 RE_ELSE = re.compile(r"^else$", re.I)
 RE_END_IF = re.compile(r"^end_if\s*;?$", re.I)
 
-def IF(line:str, st:ST) -> bool:
+def IF(line:str, st:"engine.st.st.ST") -> bool:
     m = RE_IF.match(line)
     if m:
         st.block_stack.append("IF")

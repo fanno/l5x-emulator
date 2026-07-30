@@ -19,7 +19,7 @@ class ONSMemory(Identity):
 @InstructionRegistry.register
 class OSRI(Instruction):
 
-    async def preScan(self, ons:FBD_ONESHOT):
+    async def preScan(self, ons:FBD_ONESHOT, ctx:"ExecutionContext"):
         memory = ObjectRegistry.get(ons, ONSMemory)
 
         memory.ONS.setValue(ons.InputBit)
@@ -27,7 +27,7 @@ class OSRI(Instruction):
         ons.EnableIn._reset()
         ons.EnableOut._reset()
 
-    async def execute(self, ons:FBD_ONESHOT) -> Any:
+    async def execute(self, ons:FBD_ONESHOT, ctx:"ExecutionContext") -> Any:
         if ons.EnableIn:
             memory = ObjectRegistry.get(ons, ONSMemory)
 
@@ -39,27 +39,11 @@ class OSRI(Instruction):
             memory.ONS.setValue(ons.InputBit)
         
         ons.EnableOut.setValue(ons.EnableIn)
-
-    async def ladder_preScan(self, ctx):
-        alarm:FBD_ONESHOT = self.getMemory(self.args[0])
-        await self.preScan(alarm)
-
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        alarm:FBD_ONESHOT = self.getMemory(self.args[0])
-        await self.execute(alarm)
-
-    async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        alarm:FBD_ONESHOT = block.Value
-        await self.preScan(alarm)
-
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        alarm:FBD_ONESHOT = block.Value
-        await self.execute(alarm)
     
 @InstructionRegistry.register
 class OSFI(Instruction):
 
-    async def preScan(self, ons:FBD_ONESHOT):
+    async def preScan(self, ons:FBD_ONESHOT, ctx:"ExecutionContext"):
         memory = ObjectRegistry.get(ons, ONSMemory)
 
         memory.ONS.setValue(ons.InputBit)
@@ -67,7 +51,7 @@ class OSFI(Instruction):
         ons.EnableIn._reset()
         ons.EnableOut._reset()
 
-    async def execute(self, ons:FBD_ONESHOT) -> Any:
+    async def execute(self, ons:FBD_ONESHOT, ctx:"ExecutionContext") -> Any:
         ons:FBD_ONESHOT = self.getMemory(self.args[0])
 
         if ons.EnableIn:
@@ -81,22 +65,6 @@ class OSFI(Instruction):
             memory.ONS.setValue(ons.InputBit)
 
         ons.EnableOut.setValue(ons.EnableIn)
-
-    async def ladder_preScan(self, ctx):
-        alarm:FBD_ONESHOT = self.getMemory(self.args[0])
-        await self.preScan(alarm)
-
-    async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        alarm:FBD_ONESHOT = self.getMemory(self.args[0])
-        await self.execute(alarm)
-
-    async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        alarm:FBD_ONESHOT = block.Value
-        await self.preScan(alarm)
-
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        alarm:FBD_ONESHOT = block.Value
-        await self.execute(alarm)
 
 @InstructionRegistry.register
 class XIC(Instruction):

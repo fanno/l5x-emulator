@@ -40,7 +40,7 @@ class FBC(Instruction):
                     if cmp_control.LEN <= 0 or cmp_control.POS < 0:
                         cmp_control.ER.setValue(True)
                     else:
-                        raise NotImplementedError(f"{__class__} not implemented yet")
+                        self.raiseNotImplementedError(ctx)
         else:
             cmp_control.EN.setValue(False)
             cmp_control.FD.setValue(False)
@@ -84,7 +84,7 @@ class DDT(Instruction):
                     if cmp_control.LEN <= 0 or cmp_control.POS < 0:
                         cmp_control.ER.setValue(True)
                     else:
-                        raise NotImplementedError(f"{__class__} not implemented yet")
+                        self.raiseNotImplementedError(ctx)
         else:
             cmp_control.EN.setValue(False)
             cmp_control.FD.setValue(False)
@@ -134,4 +134,4 @@ class PID(Instruction):
         InholdValue = self.getMemory(self.args[6])
         
         if ctx.RungStatus:        
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)

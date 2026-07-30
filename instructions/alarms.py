@@ -49,16 +49,6 @@ class ALMD(Instruction):
 
     async def execute(self, alarm:ALARM_DIGITAL) -> Any:
         memory = ObjectRegistry.get(alarm, ALMDMemory)
-
-        ProgAck:BOOL = self.getMemory(self.args[1])
-        ProgReset:BOOL = self.getMemory(self.args[2])
-        ProgDisable:BOOL = self.getMemory(self.args[3])
-        ProgEnable:BOOL = self.getMemory(self.args[4])
-
-        alarm.ProgAck.setValue(ProgAck)
-        alarm.ProgReset.setValue(ProgReset)
-        alarm.ProgDisable.setValue(ProgDisable) #TODO USE ?
-        alarm.ProgEnable.setValue(ProgEnable) #TODO USE ?
         
         memory.setMinDuration(alarm.MinDurationPRE)
 
@@ -123,18 +113,32 @@ class ALMD(Instruction):
 
     async def ladder_preScan(self, ctx):
         alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
+
+        ProgAck:BOOL = self.getMemory(self.args[1])
+        ProgReset:BOOL = self.getMemory(self.args[2])
+        ProgDisable:BOOL = self.getMemory(self.args[3])
+        ProgEnable:BOOL = self.getMemory(self.args[4])
+
+        alarm.ProgAck.setValue(ProgAck)
+        alarm.ProgReset.setValue(ProgReset)
+        alarm.ProgDisable.setValue(ProgDisable) #TODO USE ?
+        alarm.ProgEnable.setValue(ProgEnable) #TODO USE ?
+
         await self.preScan(alarm)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
-        await self.execute(alarm)
 
-    async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        alarm:ALARM_DIGITAL = block.Value
-        await self.preScan(alarm)
+        ProgAck:BOOL = self.getMemory(self.args[1])
+        ProgReset:BOOL = self.getMemory(self.args[2])
+        ProgDisable:BOOL = self.getMemory(self.args[3])
+        ProgEnable:BOOL = self.getMemory(self.args[4])
 
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        alarm:ALARM_DIGITAL = block.Value
+        alarm.ProgAck.setValue(ProgAck)
+        alarm.ProgReset.setValue(ProgReset)
+        alarm.ProgDisable.setValue(ProgDisable) #TODO USE ?
+        alarm.ProgEnable.setValue(ProgEnable) #TODO USE ?
+
         await self.execute(alarm)
 
 @dataclass
@@ -168,21 +172,13 @@ class ALMAMemory(AlarmMemory):
 @InstructionRegistry.register
 class ALMA(Instruction):
 
-    async def preScan(self, alarm:ALARM_DIGITAL):
+    async def preScan(self, alarm:ALARM_DIGITAL, ctx:"ExecutionContext"):
         ObjectRegistry.remove(alarm)
         
         alarm.reset()
 
-    async def execute(self, alarm:ALARM_DIGITAL) -> Any:
+    async def execute(self, alarm:ALARM_DIGITAL, ctx:"ExecutionContext") -> Any:
         memory = ObjectRegistry.get(alarm, ALMAMemory)
-
-        In:REAL|INTIGER = self.getMemory(self.args[1])
-        ProgAckALL:BOOL = self.getMemory(self.args[2])
-        ProgDisable:BOOL = self.getMemory(self.args[3])
-        ProgEnable:BOOL = self.getMemory(self.args[4])
-
-        alarm.ProgDisable.setValue(ProgDisable) #TODO USE ?
-        alarm.ProgEnable.setValue(ProgEnable) #TODO USE ?
 
         memory.setMinDuration(alarm.MinDurationPRE)
 
@@ -192,10 +188,10 @@ class ALMA(Instruction):
         isInLLAlarm = False
         if not alarm.OperDisable or alarm.OperEnable:
             if not alarm.ProgDisable or alarm.ProgEnable:
-                isInHHAlarm = alarm.HEnabled and In > alarm.HLimit
-                isInHAlarm = alarm.HEnabled and In > alarm.HLimit
-                isInLAlarm = alarm.LEnabled and In < alarm.LLimit
-                isInLLAlarm = alarm.LLEnabled and In < alarm.LLLimit
+                isInHHAlarm = alarm.HEnabled and alarm.In > alarm.HLimit
+                isInHAlarm = alarm.HEnabled and alarm.In > alarm.HLimit
+                isInLAlarm = alarm.LEnabled and alarm.In < alarm.LLimit
+                isInLLAlarm = alarm.LLEnabled and alarm.In < alarm.LLLimit
 
         HHTimer = await memory.HHTimer.ladder_execute(ExecutionContext(RungStatus=isInHHAlarm))
         HTimer = await memory.HTimer.ladder_execute(ExecutionContext(RungStatus=isInHAlarm))
@@ -221,19 +217,19 @@ class ALMA(Instruction):
 
         if not alarm.AckRequired:
             if alarm.HHInAlarm:
-                if In < (alarm.HHLimit - alarm.Deadband):
+                if alarm.In < (alarm.HHLimit - alarm.Deadband):
                     alarm.HHInAlarm.setValue(False)
                     alarm.HHAcked.setValue(True)
             if alarm.HInAlarm:
-                if In < (alarm.HLimit - alarm.Deadband):
+                if alarm.In < (alarm.HLimit - alarm.Deadband):
                     alarm.HInAlarm.setValue(False)
                     alarm.HAcked.setValue(True)
             if alarm.LInAlarm:
-                if In < (alarm.LLimit + alarm.Deadband):
+                if alarm.In < (alarm.LLimit + alarm.Deadband):
                     alarm.LInAlarm.setValue(False)
                     alarm.LAcked.setValue(True)
             if alarm.LLInAlarm:
-                if In < (alarm.LLLimit + alarm.Deadband):
+                if alarm.In < (alarm.LLLimit + alarm.Deadband):
                     alarm.LLInAlarm.setValue(False)
                     alarm.LLAcked.setValue(True)
         else:
@@ -292,19 +288,31 @@ class ALMA(Instruction):
 
     async def ladder_preScan(self, ctx):
         alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
-        await self.preScan(alarm)
+
+        In:REAL|INTIGER = self.getMemory(self.args[1])
+        ProgAckALL:BOOL = self.getMemory(self.args[2])
+        ProgDisable:BOOL = self.getMemory(self.args[3])
+        ProgEnable:BOOL = self.getMemory(self.args[4])
+
+        alarm.In.setValue(In)
+        alarm.ProgDisable.setValue(ProgDisable) #TODO USE ?
+        alarm.ProgEnable.setValue(ProgEnable) #TODO USE ?
+
+        await self.preScan(alarm, ctx)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         alarm:ALARM_DIGITAL = self.getMemory(self.args[0])
-        await self.execute(alarm)
+        
+        In:REAL|INTIGER = self.getMemory(self.args[1])
+        ProgAckALL:BOOL = self.getMemory(self.args[2])
+        ProgDisable:BOOL = self.getMemory(self.args[3])
+        ProgEnable:BOOL = self.getMemory(self.args[4])
 
-    async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        alarm:ALARM_DIGITAL = block.Value
-        await self.preScan(alarm)
+        alarm.In.setValue(In)
+        alarm.ProgDisable.setValue(ProgDisable) #TODO USE ?
+        alarm.ProgEnable.setValue(ProgEnable) #TODO USE ?
 
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        alarm:ALARM_DIGITAL = block.Value
-        await self.execute(alarm)
+        await self.execute(alarm, ctx)
 
 @InstructionRegistry.register
 class ASO(Instruction):

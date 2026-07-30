@@ -8,6 +8,8 @@ from  instructions.helper import getPLCValue
 from typing import Any
 from engine.fbd.block import FBDBlock
 
+from datatypes.fdb import FBD_MATH_ADVANCED
+
 
 @InstructionRegistry.register
 class SIN(Instruction):
@@ -22,6 +24,15 @@ class SIN(Instruction):
 
             result = self.execute(Source)
             Dest.setValue(result)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        Source = block.inParams["Source"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(Source)
+
+@InstructionRegistry.register
+class SIN__F(SIN):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         Source = block.inParams["Source"].Value
@@ -47,7 +58,16 @@ class COS(Instruction):
         Source = block.inParams["Source"].Value
         Dest = block.outParams["Dest"]
 
-        Dest.Value = self.execute(Source)            
+        Dest.Value = self.execute(Source)
+
+@InstructionRegistry.register
+class COS__F(COS):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        Source = block.inParams["Source"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(Source)        
     
 @InstructionRegistry.register
 class TAN(Instruction):
@@ -64,11 +84,18 @@ class TAN(Instruction):
             Dest.setValue(result)
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        math:FBD_MATH_ADVANCED = block.Value
+        math.Dest = self.execute(math.Source)
+
+@InstructionRegistry.register
+class TAN__F(TAN):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         Source = block.inParams["Source"].Value
         Dest = block.outParams["Dest"]
 
-        Dest.Value = self.execute(Source)      
-    
+        Dest.Value = self.execute(Source)
+
 @InstructionRegistry.register
 class ASN(Instruction):
 
@@ -84,14 +111,30 @@ class ASN(Instruction):
             Dest.setValue(result)
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        math:FBD_MATH_ADVANCED = block.Value
+        math.Dest = self.execute(math.Source)
+
+@InstructionRegistry.register
+class ASN__F(ASN):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         Source = block.inParams["Source"].Value
         Dest = block.outParams["Dest"]
 
-        Dest.Value = self.execute(Source)      
+        Dest.Value = self.execute(Source)
     
 @InstructionRegistry.register
 class ASIN(ASN):
     pass
+
+@InstructionRegistry.register
+class ASIN__F(ASN__F):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        Source = block.inParams["Source"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(Source)
 
 @InstructionRegistry.register
 class ACS(Instruction):
@@ -108,14 +151,30 @@ class ACS(Instruction):
             Dest.setValue(result)
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        math:FBD_MATH_ADVANCED = block.Value
+        math.Dest = self.execute(math.Source)
+
+@InstructionRegistry.register
+class ACS__F(ACS):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         Source = block.inParams["Source"].Value
         Dest = block.outParams["Dest"]
 
-        Dest.Value = self.execute(Source)      
-    
+        Dest.Value = self.execute(Source)
+
 @InstructionRegistry.register
 class ACOS(ACS):
     pass
+
+@InstructionRegistry.register
+class ACOS__F(ACS__F):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        Source = block.inParams["Source"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(Source)
 
 @InstructionRegistry.register
 class ATN(Instruction):
@@ -132,6 +191,13 @@ class ATN(Instruction):
             Dest.setValue(result)
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        math:FBD_MATH_ADVANCED = block.Value
+        math.Dest = self.execute(math.Source)
+
+@InstructionRegistry.register
+class ATN__F(ATN):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         Source = block.inParams["Source"].Value
         Dest = block.outParams["Dest"]
 
@@ -140,6 +206,15 @@ class ATN(Instruction):
 @InstructionRegistry.register
 class ATAN(ATN):
     pass
+
+@InstructionRegistry.register
+class ATAN__F(ATN__F):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        Source = block.inParams["Source"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(Source)
 
 @InstructionRegistry.register
 class ATAN2(Instruction):
@@ -155,6 +230,16 @@ class ATAN2(Instruction):
 
             result = self.execute(SourceY, SourceX)
             Dest.setValue(result)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        SourceY = block.inParams["SourceY"].Value
+        SourceX = block.inParams["SourceX"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(SourceY, SourceX)
+
+@InstructionRegistry.register
+class ATAN2__F(ATAN2):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         SourceY = block.inParams["SourceY"].Value

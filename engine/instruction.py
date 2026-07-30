@@ -1,3 +1,4 @@
+from typing import Any
 import engine.context
 from core.memory.memory import Memory
 
@@ -50,7 +51,7 @@ class Instruction:
             await self.ladder_execute(ctx)
 
     async def ladder_execute(self, ctx:"engine.context.ExecutionContext") -> None:
-        raise NotImplementedError(f"{__class__}, {self.name} not implemented yet")
+        self.raiseNotImplementedError(ctx)
 
     async def ladder_preScan(self, ctx:"engine.context.ExecutionContext") -> None:
         pass
@@ -73,28 +74,48 @@ class Instruction:
                 if hasattr(value, name):
                     parm.Value = getattr(value, name)
 
-
     async def fbd_execute(self, ctx:"engine.context.ExecutionContext", block:FBDBlock) -> None:
-        raise NotImplementedError(f"{__class__}, {self.name} not implemented yet")
+        self.execute(block.Value, ctx)
 
     async def fbd_preScan(self, ctx:"engine.context.ExecutionContext", block:FBDBlock) -> None:
-        pass
+        self.preScan(block.Value, ctx)
     
     async def fbd_postScan(self, ctx:"engine.context.ExecutionContext", block:FBDBlock) -> None:
-        pass
+        self.postScan(block.Value, ctx)
 
     async def sfc(self, ctx:"engine.context.ExecutionContext") -> None:
         if ctx.Context.preScan:
-            await self.sfc_execute(ctx)
-        elif ctx.Context.postScan:
             await self.sfc_preScan(ctx)
-        else:
+        elif ctx.Context.postScan:
             await self.sfc_postScan(ctx)
+        else:
+            await self.sfc_execute(ctx)
 
     async def st(self, ctx:"engine.context.ExecutionContext") -> None:
         if ctx.Context.preScan:
-            await self.ladder_execute(ctx)
+            await self.st_preScan(ctx)
         elif ctx.Context.postScan:
-            await self.ladder_preScan(ctx)
+            await self.st_postScan(ctx)
         else:
-            await self.ladder_postScan(ctx)
+            await self.st_execute(ctx)
+
+    async def st_execute(self, ctx:"engine.context.ExecutionContext") -> None:
+        self.execute(self.getMemory(self.args[0]), ctx)
+
+    async def st_preScan(self, ctx:"engine.context.ExecutionContext") -> None:
+        self.preScan(self.getMemory(self.args[0]), ctx)
+    
+    async def st_postScan(self, ctx:"engine.context.ExecutionContext") -> None:
+       self.postScan(self.getMemory(self.args[0]), ctx)
+
+    def postScan(self, timer:UDT, ctx:"engine.context.ExecutionContext") -> None:
+        pass
+
+    def preScan(self, timer:UDT, ctx:"engine.context.ExecutionContext") -> None:
+        pass
+
+    def execute(self, timer:UDT, ctx:"engine.context.ExecutionContext") -> Any:
+        self.raiseNotImplementedError(ctx)
+
+    def raiseNotImplementedError(self, ctx:"engine.context.ExecutionContext"):
+        raise NotImplementedError(f"{__class__}, {self.name}, ARGS: {self.args} not implemented yet")

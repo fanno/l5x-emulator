@@ -1,7 +1,6 @@
-import logging
 import re
 
-from engine.st.st import ST
+import engine.st.st
 from engine.st.helper import hook_expression
 
 RE_FOR = re.compile(
@@ -16,7 +15,7 @@ RE_FOR_BY = re.compile(
 
 RE_END_FOR = re.compile(r"^end_for\s*;?$", re.I)
 
-def FOR(line:str, st:ST):
+def FOR(line:str, st:"engine.st.st.ST"):
     line = line.strip()
 
     m = RE_FOR_BY.match(line)
@@ -36,7 +35,7 @@ def FOR(line:str, st:ST):
 
     return False
 
-def addFor(st:ST, var:str, start, end, step) -> bool:
+def addFor(st:"engine.st.st.ST", var:str, start, end, step) -> bool:
     st.block_stack.append("FOR")
     start = hook_expression(start)
     end = hook_expression(end)

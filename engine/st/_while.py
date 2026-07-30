@@ -1,12 +1,13 @@
 import re
 
-from engine.st.st import ST
+import engine.st.st
+
 from engine.st.helper import hook_expression
 
 RE_WHILE = re.compile(r"^while\s+(.*?)\s+do$", re.I)
 RE_END_WHILE = re.compile(r"^end_while\s*;?$", re.I)
 
-def WHILE(line:str, st:ST):
+def WHILE(line:str, st:"engine.st.st.ST"):
     m = RE_WHILE.match(line)
     if m:
         st.block_stack.append("WHILE")

@@ -94,7 +94,7 @@ class PXRQ(Instruction):
     
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
     
 @InstructionRegistry.register
 class PPD(Instruction):

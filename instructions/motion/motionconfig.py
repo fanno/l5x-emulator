@@ -7,25 +7,25 @@ class MAAT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MRAT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MAHD(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MRHD(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)

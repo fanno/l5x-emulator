@@ -244,25 +244,25 @@ class PI(Instruction):
         pi:PROP_INT = self.getMemory(self.args[0])
 
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class INTG(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class SOC(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class UPDN(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)

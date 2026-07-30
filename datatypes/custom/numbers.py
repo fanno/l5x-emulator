@@ -132,6 +132,10 @@ class REAL(COMPARE, MATH, DataVariant):
     def toValue(value:str|int|float):
         if value is None:
             value = 0.0
+
+        if isinstance(value, DataVariant): 
+            value = value.getPLCValue()
+
         if isinstance(value, str):
             from core.memory import helper
             value = helper.strNumber(value)
@@ -140,6 +144,7 @@ class REAL(COMPARE, MATH, DataVariant):
                 value = 1.0
             else:
                 value = 0.0
+
         if not isinstance(value, float):
             value = float(value)
 

@@ -9,8 +9,8 @@ from enum import Enum
 import engine.context
 from engine.rll.rung import Rung
 from engine.fbd.sheet import Sheet
+from engine.st.st import ST
 
-from engine.st.parser import normalizeST, createPython
 from engine.hierarchy import Hierarchy
 from engine.errors import PLCFaultHandler
 
@@ -18,9 +18,10 @@ from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.array import Array
 from datatypes.custom.udt import UDT
 
-from datatypes.custom.numbers import INT
+from engine.sfc.sfc import SFC
 
 from datatypes.sfc import SFC_STEP
+from datatypes.custom.numbers import INT
 
 class RoutineType(Enum):
     RLL = 1
@@ -34,9 +35,9 @@ class Routine:
     Rungs: List["Rung"] = field(init=False, default_factory=lambda: [])
     Sheets: List["Sheet"] = field(init=False, default_factory=lambda: [])
     ST:str = field(init=False, default=None)
+    _SFC:SFC = field(init=False, default=None)
     Name: Optional[str] = field(init=False, default=None)
     Type: Optional[RoutineType] = field(init=False, default=None)
-
     SFCPaused: INT = field(init=False, default_factory=INT)
     SFCResuming: INT = field(init=False, default_factory=INT)
     SFCStep: SFC_STEP = field(init=False, default_factory=SFC_STEP)
@@ -54,19 +55,9 @@ class Routine:
                     self.Rungs.append(Rung(Text=text.text, Line=line))
                 line  += 1
         elif self.Type == RoutineType.ST:
-            from engine.st.hooks import make_async_st
-            lines = []
-
-            try:
-                for line in self._Element.findall("./STContent//Line"):
-                    lines.append(line.text.strip())
-
-                r1 = normalizeST(lines)
-                self.ST = createPython(r1)
-                self.ST = make_async_st(self.ST)
-                
-            except Exception as e:
-                raise AssertionError(f"Parsing Error: {self.Name}").with_traceback(e.__traceback__)
+            content = self._Element.find("./STContent")
+            st = ST(content)
+            self.ST = st.getPython()
         elif self.Type == RoutineType.FBD:
             for sheet in self._Element.findall("./FBDContent//Sheet"):
                 self.Sheets.append(Sheet(sheet))
@@ -75,7 +66,10 @@ class Routine:
                 for idx, block in sheet.blocks.items():
                     if block.Signal:
                         self.Signals[block.Signal] = block
+        elif self.Type == RoutineType.SFC:
+            content = self._Element.find("./SFCContent")
 
+            self._SFC = SFC(content)
 
     async def execute(self, ctx:"engine.context.ExecutionContext"):
         with Hierarchy.scope(self.Name):
@@ -108,6 +102,9 @@ class Routine:
                         for sheet in self.Sheets:
                             await sheet.execute(ctx)
                     case RoutineType.SFC:
-                        if self.SFCPaused == 0:
-                            # TODO
-                            pass
+                        ctx.SFC.Paused = self.SFCPaused
+                        ctx.SFC.Resuming = self.SFCResuming
+                        ctx.SFC.Step = self.SFCStep
+
+                        if ctx.SFC.Paused == 0:
+                            self._SFC.execute()

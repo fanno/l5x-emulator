@@ -25,7 +25,7 @@ class MAVE(Instruction):
 
         number_of_samples = average.NumberOfSamples.getPLCValue()
 
-        raise NotImplementedError(f"{__class__} not implemented yet")
+        self.raiseNotImplementedError(ctx)
 
         if not ctx.RungStatus or number_of_samples < 1:
             samples = 0
@@ -70,7 +70,7 @@ class MSTD(Instruction):
 
         number_of_samples = getPLCValue(average.NumberOfSamples)
 
-        raise NotImplementedError(f"{__class__} not implemented yet")
+        self.raiseNotImplementedError(ctx)
 
         if not ctx.RungStatus or number_of_samples < 1:
             samples = 0

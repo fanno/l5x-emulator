@@ -7,53 +7,53 @@ class CPM(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class CBIM(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class CBSSM(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class CSM(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class EPMS(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class AVC(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MMVC(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MVC(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)

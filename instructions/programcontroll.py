@@ -117,17 +117,17 @@ class SFP(Instruction):
             name = self.args[0]
             state = self.args[1]
             if state == 'Execute':
-                ctx.ProgramRef.Routines[name].SFCPaused.setValue(0)
+                ctx.ProgramRef.Routines[name].SFC.Paused.setValue(0)
             else:
-                ctx.ProgramRef.Routines[name].SFCPaused.setValue(1)
+                ctx.ProgramRef.Routines[name].SFC.Paused.setValue(1)
     
 @InstructionRegistry.register
 class EOT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.SFCTransition:
+        if ctx.SFC.Transition:
             if ctx.RungStatus:
-                ctx.SFCStatus.setValue(self.getMemory(self.args[0]))
+                ctx.SFC.Status.setValue(self.getMemory(self.args[0]))
         else:
             ctx.RungStatus = False
             ctx.RungEnabled = True

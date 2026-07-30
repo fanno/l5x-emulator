@@ -9,6 +9,24 @@ from datatypes.custom.bool import BOOL
 from core.emulatorcontext import EmulatorContext
 
 from engine.fbd.sheet import Sheet
+from datatypes.sfc import SFC_STEP
+from datatypes.custom.numbers import INT
+
+'''
+
+
+    SFCStatus:BOOL = field(init=True, default_factory=BOOL)
+    SFCTransition:bool = field(init=True, default=False)
+
+'''
+@dataclass
+class SFCContext:
+    Paused: INT = field(init=False, default_factory=INT)
+    Resuming: INT = field(init=False, default_factory=INT)
+    Step: SFC_STEP = field(init=False, default_factory=SFC_STEP)
+    Status:BOOL = field(init=True, default_factory=BOOL)
+    Transition:bool = field(init=True, default=False)
+
 
 @dataclass
 class FBDContext:
@@ -34,8 +52,8 @@ class ExecutionContext:
     Type:RoutineType = field(init=True, default=RoutineType.RLL)
     InputArgs:list = field(init=True, default_factory=list)
     ReturnArgs:list = field(init=True, default_factory=list)
-    SFCStatus:BOOL = field(init=True, default_factory=BOOL)
+    
     Context:EmulatorContext = field(init=True, default_factory=EmulatorContext)
     FBD:FBDContext = field(init=True, default_factory=FBDContext)
     RLL:RLLContext = field(init=True, default_factory=RLLContext)
-    SFCTransition:bool = field(init=True, default=False)
+    SFC:SFCContext = field(init=True, default_factory=SFCContext)

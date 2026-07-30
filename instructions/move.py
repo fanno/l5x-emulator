@@ -69,6 +69,15 @@ class AND(Instruction):
 
         Dest.Value = self.execute(compare.SourceA, compare.SourceB)
 
+class AND__F(AND):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        SourceA = block.inParams["SourceA"].Value
+        SourceB = block.inParams["SourceB"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(SourceA, SourceB)
+
 @InstructionRegistry.register
 class OR(Instruction):
 
@@ -92,6 +101,15 @@ class OR(Instruction):
         Dest = block.outParams["Dest"]
 
         Dest.Value = self.execute(compare.SourceA, compare.SourceB)
+
+class OR__F(OR):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        SourceA = block.inParams["SourceA"].Value
+        SourceB = block.inParams["SourceB"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(SourceA, SourceB)
 
 @InstructionRegistry.register
 class XOR(Instruction):
@@ -117,12 +135,21 @@ class XOR(Instruction):
 
         Dest.Value = self.execute(compare.SourceA, compare.SourceB)
 
+class XOR__F(XOR):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        SourceA = block.inParams["SourceA"].Value
+        SourceB = block.inParams["SourceB"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(SourceA, SourceB)
+
 @InstructionRegistry.register
 class NOT(Instruction):
 
-    def execute(self, SourceA) -> Any:
-        SourceA = getPLCValue(SourceA)
-        return _NOT(SourceA, 64)
+    def execute(self, Source) -> Any:
+        Source = getPLCValue(Source)
+        return _NOT(Source, 64)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
@@ -138,6 +165,14 @@ class NOT(Instruction):
         Dest = block.outParams["Dest"]
 
         Dest.Value = self.execute(compare.Source)
+
+class NOT__F(NOT):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        Source = block.inParams["Source"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = self.execute(Source)        
 
 def _to_bytes(value: int, byte_count: int) -> list[int]:
     return [(value >> (8 * i)) & 0xFF for i in range(byte_count)]
@@ -219,42 +254,42 @@ class MVMT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class BTDT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class DFF(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class JKFF(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class SETD(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class RESD(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class BOR(Instruction):
@@ -268,6 +303,15 @@ class BOR(Instruction):
 
         Dest.Value = self.execute(result)
 
+class BOR__F(BOR):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        In1 = block.inParams["In1"].Value
+        In2 = block.inParams["In2"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = In1 or In2  
+
 @InstructionRegistry.register
 class BNOT(Instruction):
 
@@ -280,17 +324,34 @@ class BNOT(Instruction):
 
         Dest.Value = self.execute(result)
 
+class BNOT__F(BNOT):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        In = block.inParams["In"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = not In
+
 @InstructionRegistry.register
 class BXOR(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_BOOLEAN_XOR = block.Value
-
-        result = compare.In1 is not compare.In2
-
         Dest = block.outParams["Dest"]
 
+        result = compare.In1 != compare.In2
+
         Dest.Value = self.execute(result)
+
+class BXOR__F(BXOR):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        In1 = block.inParams["In1"].Value
+        In2 = block.inParams["In2"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = In1 != In2
+
 
 @InstructionRegistry.register
 class BAND(Instruction):
@@ -303,3 +364,12 @@ class BAND(Instruction):
         Dest = block.outParams["Dest"]
 
         Dest.Value = self.execute(result)
+
+class BAND__F(BAND):
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        In1 = block.inParams["In1"].Value
+        In2 = block.inParams["In2"].Value
+        Dest = block.outParams["Dest"]
+
+        Dest.Value = In1 and In2

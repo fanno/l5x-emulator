@@ -1,13 +1,13 @@
 import re
 
-from engine.st.st import ST
+import engine.st.st
 from engine.st.helper import hook_expression, hook_assignment
 
 RE_CASE = re.compile(r"^case\s+(.*?)\s+of$", re.I)
 RE_CASE_ITEM = re.compile(r"^(.*?):$")
 RE_END_CASE = re.compile(r"^end_case\s*;?$", re.I)
 
-def CASE(line:str, st:ST) -> bool:
+def CASE(line:str, st:"engine.st.st.ST") -> bool:
     m = RE_CASE.match(line)
     if m:
         st.block_stack.append("case")

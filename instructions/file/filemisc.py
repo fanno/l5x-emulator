@@ -14,7 +14,7 @@ class FAL(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
         
             '''
             control:CONTROL = self.getMemory(self.args[0])
@@ -37,7 +37,7 @@ class FSC(Instruction):
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
 
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
             '''
             control:CONTROL = self.getMemory(self.args[0])
             array = self.getMemory(self.args[1])
@@ -206,7 +206,7 @@ class SRT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RungStatus:
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class STD(Instruction):
@@ -222,7 +222,7 @@ class STD(Instruction):
         if ctx.RungStatus:
             control:CONTROL = self.getMemory(self.args[3])
 
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class SIZE(Instruction):
@@ -237,7 +237,7 @@ class SIZE(Instruction):
             dest:DataVariant = self.getMemory(self.args[2])
 
             if not isinstance(source, (Array | STRING)):
-                raise NotImplementedError(f"{__class__} not implemented yet")
+                self.raiseNotImplementedError(ctx)
 
             if isinstance(source, STRING):
                 size = source._maxlength

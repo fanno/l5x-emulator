@@ -28,7 +28,7 @@ class MSG(Instruction):
         if ctx.RungStatus:
             source = self.args[0]
             ## TODO NEED TO be fixed
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
         
 @InstructionRegistry.register
 class GSV(Instruction):
@@ -627,7 +627,7 @@ class GSV(Instruction):
                                 #TODO
                                 pass
 
-            raise NotImplementedError(f"{__class__} not implemented yet: {self.args}")
+            self.raiseNotImplementedError(ctx)
         
 @InstructionRegistry.register
 class SSV(Instruction):
@@ -923,7 +923,7 @@ class SSV(Instruction):
                                 pass
 
             ## TODO NEED TO be fixed
-            raise NotImplementedError(f"{__class__} not implemented yet")
+            self.raiseNotImplementedError(ctx)
         
 @InstructionRegistry.register
 class IOT(Instruction):

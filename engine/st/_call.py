@@ -1,6 +1,6 @@
 import re
 
-from engine.st.st import ST
+import engine.st.st
 
 RE_CALL = re.compile(
     r"^([A-Za-z_]\w*)\s*\((.*)\)\s*;?$",
@@ -47,7 +47,7 @@ def format_call_arg(arg):
     escaped = arg.replace("\\", "\\\\").replace('"', '\\"')
     return f'"{escaped}"'
 
-def CALL(line, st:ST):
+def CALL(line, st:"engine.st.st.ST"):
     m = RE_CALL.match(line)
     if m:
         func_name, arg_str = m.groups()
