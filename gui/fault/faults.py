@@ -43,7 +43,7 @@ class FaultTabs(Notebook):
                                 show='tree headings',
                                 selectmode=tk.NONE)
 
-        titel = "Major fault"
+        titel = "Minor fault"
         frame = Frame(self)
         frame.pack(fill=tk.BOTH, expand=tk.TRUE)
         self.add(frame, text=titel)
