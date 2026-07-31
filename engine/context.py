@@ -11,11 +11,6 @@ from engine.fbd.sheet import Sheet
 from datatypes.sfc import SFC_STEP
 from datatypes.custom.numbers import INT
 
-'''
-    SFCStatus:BOOL = field(init=True, default_factory=BOOL)
-    SFCTransition:bool = field(init=True, default=False)
-
-'''
 class EmulatorContext():
     preScan:bool
     postScan:bool
