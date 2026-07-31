@@ -17,7 +17,7 @@ from engine.fbd.block import FBDBlock
 class MOV(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             result = getPLCValue(self.getMemory(self.args[0]))
             dest = self.getMemory(self.args[1])
 
@@ -31,7 +31,7 @@ class MOVE(MOV):
 class MVM(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             source = getPLCValue(self.getMemory(self.args[0]))
             mask = getPLCValue(self.getMemory(self.args[1]))
             dest = self.getMemory(self.args[2])
@@ -54,13 +54,13 @@ class AND(Instruction):
         return _AND(SourceA, SourceB, 64)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_LOGICAL = block.Value
@@ -87,13 +87,13 @@ class OR(Instruction):
         return _OR(SourceA, SourceB, 64)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_LOGICAL = block.Value
@@ -120,13 +120,13 @@ class XOR(Instruction):
         return _XOR(SourceA, SourceB, 64)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_LOGICAL = block.Value
@@ -152,12 +152,12 @@ class NOT(Instruction):
         return _NOT(Source, 64)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = self.getMemory(self.args[0])
             
             result = self.execute(Source)
             if not result:
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_CONVERT = block.Value
@@ -187,7 +187,7 @@ def _from_bytes(bytes_):
 class SWPB(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             sourceA = getPLCValue(self.getMemory(self.args[0]))
             orderMode = self.args[1]
             dest = self.getMemory(self.args[2])
@@ -221,7 +221,7 @@ class SWPB(Instruction):
 class CLR(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             dest = self.getMemory(self.args[0])
             if isinstance(dest, Resettable):
                 dest._reset()
@@ -230,7 +230,7 @@ class CLR(Instruction):
 class BTD(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             source = getPLCValue(self.getMemory(self.args[0]))
             sourceBit = getPLCValue(self.getMemory(self.args[1]))
             dest = self.getMemory(self.args[2])
@@ -253,42 +253,42 @@ class BTD(Instruction):
 class MVMT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class BTDT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class DFF(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class JKFF(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class SETD(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class RESD(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register

@@ -14,8 +14,8 @@ from  instructions.helper import getPLCValue
 class SQI(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
-            array = self.getMemory(self.args[0])
+        if ctx.RLL.RungStatus:
+            array:Array[DataVariant] = self.getMemory(self.args[0])
             mask = getPLCValue(self.getMemory(self.args[1]))
             source = getPLCValue(self.getMemory(self.args[2]))
             control:CONTROL = self.getMemory(self.args[3])
@@ -28,13 +28,13 @@ class SQI(Instruction):
             if length > 0 and position <= 0 and position <= length:
                 if position > len(array):
                     control.ER.setValue(True)
-                    ctx.RungStatus = False
+                    ctx.RLL.RungStatus = False
                 else:
                     if (source & mask) != (array[position]):
-                        ctx.RungStatus = False
+                        ctx.RLL.RungStatus = False
             else:
                 control.ER.setValue(True)
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
     
 @InstructionRegistry.register
 class SQO(Instruction):
@@ -45,7 +45,7 @@ class SQO(Instruction):
         control.EN.setValue(True)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             array:Array[DataVariant] = self.getMemory(self.args[0])
             mask = getPLCValue(self.getMemory(self.args[1]))
             dest = self.getMemory(self.args[2])
@@ -106,7 +106,7 @@ class SQL(Instruction):
         length = getPLCValue(control.LEN)
         position = getPLCValue(control.POS)
 
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             sourceValue = getPLCValue(source)
 
             if length > 0 and position >= 0:
@@ -130,7 +130,7 @@ class SQL(Instruction):
 
                 if not control.ER:
                     if position > len(array):
-                        raise MajorFault(4,20)
+                        raise MajorFault(4, 20)
                     else:
                         array[position].setValue(sourceValue)
             else:

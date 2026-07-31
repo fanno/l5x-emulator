@@ -8,7 +8,7 @@ from core.registry.instructionregistry import InstructionRegistry
 class JMP(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             ctx.RLL.Jump = self.args[0]
 
 @InstructionRegistry.register
@@ -21,7 +21,7 @@ class LBL(Instruction):
 class TND(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        ctx.RLL.TND = ctx.RungStatus
+        ctx.RLL.TND = ctx.RLL.RungStatus
 
 @InstructionRegistry.register
 class MCR(Instruction):
@@ -30,7 +30,7 @@ class MCR(Instruction):
         ctx.RLL.inMCR = not ctx.RLL.inMCR
 
         if ctx.RLL.inMCR:
-           if ctx.RungStatus:
+           if ctx.RLL.RungStatus:
                 ctx.RLL.MCRActive = True
         else:
             ctx.RLL.MCRActive = False
@@ -51,20 +51,20 @@ class UIE(Instruction):
 class AFI(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        ctx.RungStatus = False
+        ctx.RLL.RungStatus = False
 
 @InstructionRegistry.register
 class NOP(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        ctx.RungStatus = False
-        ctx.RungEnabled = True
+        ctx.RLL.RungStatus = False
+        ctx.RLL.RungEnabled = True
 
 @InstructionRegistry.register
 class JSR(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             inputSize = int(self.args[1])
             inputArgs = self.args[2:2 + inputSize]
 
@@ -87,7 +87,7 @@ class JSR(Instruction):
 class RET(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             if not ctx.Context.preScan and not ctx.Context.preScan :
                 ctx.ReturnArgs = []
                 for i, key in enumerate(self.args):
@@ -105,7 +105,7 @@ class SBR(Instruction):
 class SFR(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             name = self.args[0]
             ctx.ProgramRef.Routines[name].SFCStep = self.getMemory(self.args[1])
     
@@ -113,7 +113,7 @@ class SFR(Instruction):
 class SFP(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             name = self.args[0]
             state = self.args[1]
             if state == 'Execute':
@@ -126,11 +126,11 @@ class EOT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.SFC.Transition:
-            if ctx.RungStatus:
+            if ctx.RLL.RungStatus:
                 ctx.SFC.Status.setValue(self.getMemory(self.args[0]))
         else:
-            ctx.RungStatus = False
-            ctx.RungEnabled = True
+            ctx.RLL.RungStatus = False
+            ctx.RLL.RungEnabled = True
     
 @InstructionRegistry.register
 class EVENT(Instruction):

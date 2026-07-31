@@ -20,7 +20,7 @@ class LN(Instruction):
         return float(math.log(Source))
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
 
@@ -51,7 +51,7 @@ class LOG(Instruction):
         return float(math.log10(Source))
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
 
@@ -81,7 +81,7 @@ class XPY(Instruction):
         return float(math.pow(SourceA, SourceB))
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             Dest = self.getMemory(self.args[2])

@@ -1,8 +1,12 @@
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
+from engine.errors import MinorFault
+
 from core.registry.instructionregistry import InstructionRegistry
 from datatypes.pid import PID as dtPID
 from datatypes.misc import CONTROL
+from datatypes.custom.array import Array
+from datatypes.custom.datavariant import DataVariant
 
 from  instructions.helper import getPLCValue
 
@@ -23,13 +27,16 @@ class FBC(Instruction):
             result_control.POS._reset()
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        source = self.getMemory(self.args[0])
-        referance = self.getMemory(self.args[1])
-        result = self.getMemory(self.args[2])
+        source:Array[DataVariant] = self.getMemory(self.args[0])
+        referance:Array[DataVariant] = self.getMemory(self.args[1])
+        result:Array[DataVariant] = self.getMemory(self.args[2])
         cmp_control:CONTROL = self.getMemory(self.args[3])
         result_control:CONTROL = self.getMemory(self.args[4])
 
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus: 
+            if result_control.POS > len(result):
+                raise MinorFault(4, 20)
+
             if not cmp_control.EN:
                 cmp_control.EN.setValue(True)
 
@@ -67,13 +74,16 @@ class DDT(Instruction):
             result_control.POS._reset()
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        source = self.getMemory(self.args[0])
-        referance = self.getMemory(self.args[1])
-        result = self.getMemory(self.args[2])
+        source:Array[DataVariant] = self.getMemory(self.args[0])
+        referance:Array[DataVariant] = self.getMemory(self.args[1])
+        result:Array[DataVariant] = self.getMemory(self.args[2])
         cmp_control:CONTROL = self.getMemory(self.args[3])
         result_control:CONTROL = self.getMemory(self.args[4])
 
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
+            if result_control.POS > len(result):
+                raise MinorFault(4, 20)
+                        
             if not cmp_control.EN:
                 cmp_control.EN.setValue(True)
 
@@ -107,7 +117,7 @@ class DTR(Instruction):
         reference.setValue(maskedSource)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             source = getPLCValue(self.getMemory(self.args[0]))
             mask = getPLCValue(self.getMemory(self.args[1]))
             reference = self.getMemory(self.args[2])
@@ -117,7 +127,7 @@ class DTR(Instruction):
             maskedRef = referenceValue & mask
 
             if maskedSource == maskedRef:
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
             else:
                 reference.setValue(maskedSource)
 
@@ -129,9 +139,9 @@ class PID(Instruction):
         process = self.getMemory(self.args[1])
         tieback = self.getMemory(self.args[2])
         control = self.getMemory(self.args[3])
-        PIDMaster = self.getMemory(self.args[4])
+        PIDMaster:dtPID = self.getMemory(self.args[4])
         InholdBit = self.getMemory(self.args[5])
         InholdValue = self.getMemory(self.args[6])
         
-        if ctx.RungStatus:        
+        if ctx.RLL.RungStatus:        
             self.raiseNotImplementedError(ctx)

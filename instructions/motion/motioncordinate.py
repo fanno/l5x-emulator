@@ -6,75 +6,75 @@ from core.registry.instructionregistry import InstructionRegistry
 class MCS(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MCLM(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MCCM(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MCPM(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MCCD(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MCT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MCTP(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MCTO(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MCTPO(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MCSR(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
 class MDCC(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)

@@ -14,27 +14,27 @@ from datatypes.fdb import FBD_COMPARE
 class CMP(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             expression = "return " + hook_expression(self.args[0])
 
             from engine.st.hooks import run_exec_env
-            ctx.RungStatus = await run_exec_env(expression, ctx, "CMP")
+            ctx.RLL.RungStatus = await run_exec_env(expression, ctx, "CMP")
 
 @InstructionRegistry.register
 class LIM(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             aValue = self.getMemory(self.args[0])
             Value = self.getMemory(self.args[1])
             bValue = self.getMemory(self.args[2])
             
             if aValue < bValue:
                 if aValue <= Value or bValue >= Value:
-                    ctx.RungStatus = False
+                    ctx.RLL.RungStatus = False
             else:
                 if aValue >= Value or bValue <= Value:
-                    ctx.RungStatus = False
+                    ctx.RLL.RungStatus = False
 
 @InstructionRegistry.register
 class LIMIT(LIM):
@@ -44,12 +44,12 @@ class LIMIT(LIM):
 class MEQ(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             sourceValue = self.getMemory(self.args[0])
             maskValue = self.getMemory(self.args[1])
             compageValue = self.getMemory(self.args[2])
 
-            ctx.RungStatus = (sourceValue & maskValue) == (compageValue & maskValue)
+            ctx.RLL.RungStatus = (sourceValue & maskValue) == (compageValue & maskValue)
 
 @InstructionRegistry.register
 class EQU(Instruction):
@@ -60,13 +60,13 @@ class EQU(Instruction):
         return SourceA == SourceB
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
@@ -100,13 +100,13 @@ class NEQ(Instruction):
         return SourceA != SourceB
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
@@ -140,13 +140,13 @@ class LES(Instruction):
         return SourceA < SourceB
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
@@ -180,13 +180,13 @@ class GRT(Instruction):
         return SourceA > SourceB
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
@@ -228,13 +228,13 @@ class LEQ(Instruction):
         return SourceA <= SourceB
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
@@ -268,13 +268,13 @@ class GEQ(Instruction):
         return SourceA >= SourceB
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             
             result = self.execute(SourceA, SourceB)
             if not result:
-                ctx.RungStatus = False
+                ctx.RLL.RungStatus = False
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
@@ -303,14 +303,14 @@ class GE__F(GEQ__F):
 class IsINF(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             source = getPLCValue(self.getMemory(self.args[0]))
-            ctx.RungStatus = math.isinf(source)
+            ctx.RLL.RungStatus = math.isinf(source)
 
 @InstructionRegistry.register
 class IsNAN(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             source = getPLCValue(self.getMemory(self.args[0]))
-            ctx.RungStatus = math.isnan(source)
+            ctx.RLL.RungStatus = math.isnan(source)

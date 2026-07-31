@@ -22,7 +22,7 @@ class DEG(Instruction):
         return float(math.degrees(Source))
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
             
@@ -52,7 +52,7 @@ class RAD(Instruction):
         return float(math.radians(Source))
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
             
@@ -138,7 +138,7 @@ class FRD(Instruction):
         return float(Source - int(Source))
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
             
@@ -168,7 +168,7 @@ class TRN(Instruction):
         return result
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
             

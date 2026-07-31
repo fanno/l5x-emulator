@@ -13,7 +13,7 @@ from  instructions.helper import getPLCValue, getRootPath
 class FAL(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
         
             '''
@@ -35,7 +35,7 @@ class FAL(Instruction):
 class FSC(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
 
             self.raiseNotImplementedError(ctx)
             '''
@@ -57,7 +57,7 @@ class FSC(Instruction):
 class COP(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             src_path, src_dims = getRootPath(self.args[0])
             dest_path, dest_dims = getRootPath(self.args[1])
             length = getPLCValue(self.getMemory(self.args[2]))
@@ -120,7 +120,7 @@ class CPS(COP):
 class FLL(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             dest_path, dest_dims = getRootPath(self.args[1])
             length = getPLCValue(self.getMemory(self.args[2]))
 
@@ -167,7 +167,7 @@ class AVE(Instruction):
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[3])
 
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
 
             arrayName, dims = getRootPath(self.args[0])
             array = self.getMemory(arrayName)
@@ -205,7 +205,7 @@ class AVE(Instruction):
 class SRT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
 
 @InstructionRegistry.register
@@ -219,7 +219,7 @@ class STD(Instruction):
         control.ER._reset()
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             control:CONTROL = self.getMemory(self.args[3])
 
             self.raiseNotImplementedError(ctx)
@@ -228,7 +228,7 @@ class STD(Instruction):
 class SIZE(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             dim = self.args[1]
 
             source, dims = getRootPath(self.args[0])

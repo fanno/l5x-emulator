@@ -40,7 +40,7 @@ class PIDE(Instruction):
 
         pide.EnableOut.setValue(pide.EnableIn)
 
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
     
 @InstructionRegistry.register

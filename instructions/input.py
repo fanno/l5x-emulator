@@ -25,7 +25,7 @@ from engine.helper import CurrentProgramName, CurrentTaskName
 class MSG(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             source = self.args[0]
             ## TODO NEED TO be fixed
             self.raiseNotImplementedError(ctx)
@@ -34,7 +34,7 @@ class MSG(Instruction):
 class GSV(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Class = self.args[0]
             instance = self.args[1]
             attribute = self.args[2]
@@ -633,7 +633,7 @@ class GSV(Instruction):
 class SSV(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Class = self.args[0]
             instance = self.args[1]
             attribute = self.args[2]

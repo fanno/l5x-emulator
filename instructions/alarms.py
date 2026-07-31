@@ -16,7 +16,6 @@ from datatypes.misc import TIMER
 
 from instructions.timer import TON
 from typing import Any
-from engine.fbd.block import FBDBlock
 
 @dataclass
 class AlarmMemory(Identity):
@@ -321,7 +320,7 @@ class ASO(Instruction):
         AlarmSet:ALARM_SET = self.getMemory(self.args[0])
         Control:ALARM_SET_CONTROL = self.getMemory(self.args[1])
 
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             if not Control.LastState:
                 Operation = self.args[2]
 

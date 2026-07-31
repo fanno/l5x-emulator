@@ -71,7 +71,7 @@ class PSC(Instruction):
         if ctx.ProgramRef.Type != 'EquipmentPhase':
             raise MajorFault(4, 91)
 
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             ctx.RLL.PSC = True
     
 @InstructionRegistry.register
@@ -81,7 +81,7 @@ class PFL(Instruction):
         if ctx.ProgramRef.Type != 'EquipmentPhase':
             raise MajorFault(4, 91)
         
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             code = getPLCValue(self.getMemory(self.args[0]))
 
             phase:PHASE = self.getMemory(ctx.ProgramRef.Name)
@@ -93,7 +93,7 @@ class PFL(Instruction):
 class PXRQ(Instruction):
     
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.raiseNotImplementedError(ctx)
     
 @InstructionRegistry.register
@@ -103,7 +103,7 @@ class PPD(Instruction):
         if ctx.ProgramRef.Type != 'EquipmentPhase':
             raise MajorFault(4, 91)
             
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             phase:PHASE = self.getMemory(ctx.ProgramRef.Name)
             if phase.PauseEnabled:
                 phase.Paused.setValue(True)
@@ -112,7 +112,7 @@ class PPD(Instruction):
 class PCMD(Instruction):
     
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             phase:PHASE = self.getMemory(self.args[0])
             command:str = self.args[1]
             result = self.getMemory(self.args[2])
@@ -175,7 +175,7 @@ class PCMD(Instruction):
 class POVR(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             phase:PHASE = self.getMemory(self.args[0])
             command:str = self.args[1]
             result = self.getMemory(self.args[2])
@@ -207,7 +207,7 @@ class POVR(Instruction):
 class PCLF(Instruction):
     
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             phase:PHASE = self.getMemory(self.args[0])
 
             phase.Failure._reset()
@@ -219,7 +219,7 @@ class PRNP(Instruction):
         if ctx.ProgramRef.Type != 'EquipmentPhase':
             raise MajorFault(4, 91)
         
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             phase:PHASE = self.getMemory(ctx.ProgramRef.Name)
 
             phase.NewInputParameters._reset()
@@ -228,7 +228,7 @@ class PRNP(Instruction):
 class PATT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             phase:PHASE = self.getMemory(self.args[0])
             result = self.getMemory(self.args[2])
 
@@ -246,7 +246,7 @@ class PATT(Instruction):
 class PDET(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             phase:PHASE = self.getMemory(self.args[0])
 
             phase.Owner._reset()

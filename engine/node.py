@@ -151,26 +151,26 @@ class Parallel(InstructionNode):
         self.nodes = branches
 
     async def eval(self, ctx:"engine.context.ExecutionContext") -> None:
-        input_power = ctx.RungStatus
-        input_enable = ctx.RungEnabled
+        input_power = ctx.RLL.RungStatus
+        input_enable = ctx.RLL.RungEnabled
         output_power = False
         output_enable = False
 
         for node in self.nodes:
-            ctx.RungEnabled = input_enable
-            ctx.RungStatus = input_power
-            if ctx.RungEnabled:
+            ctx.RLL.RungEnabled = input_enable
+            ctx.RLL.RungStatus = input_power
+            if ctx.RLL.RungEnabled:
                 await node.eval(ctx)
             else:
-                ctx.RungStatus = False
-            output_power |= ctx.RungStatus
-            output_enable |= ctx.RungEnabled
+                ctx.RLL.RungStatus = False
+            output_power |= ctx.RLL.RungStatus
+            output_enable |= ctx.RLL.RungEnabled
 
             if ctx.RLL.Jump is not None:
                 break
 
-        ctx.RungStatus = output_power
-        ctx.RungEnabled = output_enable
+        ctx.RLL.RungStatus = output_power
+        ctx.RLL.RungEnabled = output_enable
 
 class Series(InstructionNode):
     def __init__(self, series:list[InstructionNode]):
@@ -178,7 +178,7 @@ class Series(InstructionNode):
         
     async def eval(self, ctx:"engine.context.ExecutionContext") -> None:
         for node in self.nodes:
-            if ctx.RungEnabled:
+            if ctx.RLL.RungEnabled:
                 await node.eval(ctx)
             if ctx.RLL.Jump is not None:
                 break

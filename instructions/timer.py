@@ -32,9 +32,9 @@ class TON(Instruction):
         timer:TIMER = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(timer, TimerMemory)
 
-        timer.EN.setValue(ctx.RungStatus)
+        timer.EN.setValue(ctx.RLL.RungStatus)
         
-        if not ctx.RungStatus:
+        if not ctx.RLL.RungStatus:
             memory.LAST_TIME.setValue(0)
             timer.ACC.setValue(0)
         else:
@@ -64,7 +64,7 @@ class TOF(Instruction):
         timer:TIMER = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(timer, TimerMemory)
 
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             timer.EN.setValue(True)
             timer.DN.setValue(True)
             timer.TT.setValue(False)
@@ -96,9 +96,9 @@ class RTO(Instruction):
         timer:TIMER = self.getMemory(self.args[0])
         memory = ObjectRegistry.get(timer, TimerMemory)
 
-        timer.EN.setValue(ctx.RungStatus)
+        timer.EN.setValue(ctx.RLL.RungStatus)
         
-        if not ctx.RungStatus:
+        if not ctx.RLL.RungStatus:
             memory.LAST_TIME.setValue(0)
             timer.TT.setValue(False)
         else:
@@ -125,27 +125,28 @@ class TONR(Instruction):
     def execute(self, timer:FBD_TIMER, ctx:"ExecutionContext") -> Any:
         memory = ObjectRegistry.get(timer, TimerMemory)
 
-        timer.EN.setValue(timer.TimerEnable and not timer.Reset)
-        timer.EnableIn.setValue(timer.EN)
-        timer.EnableOut.setValue(timer.EN)
+        if timer.EnableIn:
+            timer.EN.setValue(timer.TimerEnable and not timer.Reset)
 
-        timer.Status.setValue(0)
-        timer.InstructFault.setValue(False)
-        timer.PresetInv.setValue(False)
-        if timer.EN:
-            now = ctx.Time.now()
-            if memory.LAST_TIME == 0:
-                memory.LAST_TIME = now
-            elif timer.PRE > timer.ACC:
-                timer.ACC += (now - memory.LAST_TIME)
-                memory.LAST_TIME = now
+            timer.Status.setValue(0)
+            timer.InstructFault.setValue(False)
+            timer.PresetInv.setValue(False)
+            if timer.EN:
+                now = ctx.Time.now()
+                if memory.LAST_TIME == 0:
+                    memory.LAST_TIME = now
+                elif timer.PRE > timer.ACC:
+                    timer.ACC += (now - memory.LAST_TIME)
+                    memory.LAST_TIME = now
 
-        if not timer.EN or timer.Reset:
-            memory.LAST_TIME.setValue(0)
-            timer.ACC.setValue(0)
+            if not timer.EN or timer.Reset:
+                memory.LAST_TIME.setValue(0)
+                timer.ACC.setValue(0)
 
-        timer.TT.setValue((timer.ACC <= timer.ACC) and timer.EN)
-        timer.DN.setValue((timer.ACC >= timer.PRE) and timer.EN)
+            timer.TT.setValue((timer.ACC <= timer.ACC) and timer.EN)
+            timer.DN.setValue((timer.ACC >= timer.PRE) and timer.EN)
+
+        timer.EnableOut.setValue(timer.EnableIn)
 
 @InstructionRegistry.register
 class TOFR(Instruction):
@@ -157,29 +158,29 @@ class TOFR(Instruction):
     def execute(self, timer:FBD_TIMER, ctx:"ExecutionContext") -> Any:
         memory = ObjectRegistry.get(timer, TimerMemory)
 
-        timer.EN.setValue(timer.TimerEnable or timer.Reset)
-        timer.EnableIn.setValue(timer.EN)
-        timer.EnableOut.setValue(timer.EN)
+        if timer.EnableIn:
+            timer.EN.setValue(timer.TimerEnable or timer.Reset)
 
-        timer.Status.setValue(0) #TODO
-        timer.InstructFault.setValue(False) #TODO
-        timer.PresetInv.setValue(False) #TODO
-        if not timer.EN:
-            now = ctx.Time.now()
-            if memory.LAST_TIME == 0:
-                memory.LAST_TIME = now
-            elif timer.PRE > timer.ACC:
-                timer.ACC += (now - memory.LAST_TIME)
-                timer.ACC.setValue(timer.ACC + (now - memory.LAST_TIME))
-                memory.LAST_TIME = now
+            timer.Status.setValue(0) #TODO
+            timer.InstructFault.setValue(False) #TODO
+            timer.PresetInv.setValue(False) #TODO
+            if not timer.EN:
+                now = ctx.Time.now()
+                if memory.LAST_TIME == 0:
+                    memory.LAST_TIME = now
+                elif timer.PRE > timer.ACC:
+                    timer.ACC += (now - memory.LAST_TIME)
+                    timer.ACC.setValue(timer.ACC + (now - memory.LAST_TIME))
+                    memory.LAST_TIME = now
 
-        if timer.EN or timer.Reset:
-            memory.LAST_TIME.setValue(0)
-            timer.ACC.setValue(0)
+            if timer.EN or timer.Reset:
+                memory.LAST_TIME.setValue(0)
+                timer.ACC.setValue(0)
 
-        timer.TT.setValue((timer.ACC <= timer.PRE) and not timer.EN)
-        timer.DN.setValue((timer.ACC <= timer.PRE) and not timer.EN)
+            timer.TT.setValue((timer.ACC <= timer.PRE) and not timer.EN)
+            timer.DN.setValue((timer.ACC <= timer.PRE) and not timer.EN)
 
+        timer.EnableOut.setValue(timer.EnableIn)
         return timer
 
 @InstructionRegistry.register
@@ -192,31 +193,32 @@ class RTOR(Instruction):
     def execute(self, timer:FBD_TIMER, ctx:"ExecutionContext") -> Any:
         memory = ObjectRegistry.get(timer, TimerMemory)
 
-        timer.EN.setValue(timer.TimerEnable)
-        timer.EnableIn.setValue(timer.EN)
-        timer.EnableOut.setValue(timer.EN)
+        if timer.EnableIn:
+            timer.EN.setValue(timer.TimerEnable)
 
-        timer.Status.setValue(0)
-        timer.InstructFault.setValue(False)
-        timer.PresetInv.setValue(False)
-        if timer.EN:
-            now = ctx.Time.now()
-            if memory.LAST_TIME == 0:
-                memory.LAST_TIME = now
-            elif timer.PRE > timer.ACC:
-                timer.ACC += (now - memory.LAST_TIME)
-                memory.LAST_TIME = now
-        else:
-            memory.LAST_TIME.setValue(0)
+            timer.Status.setValue(0)
+            timer.InstructFault.setValue(False)
+            timer.PresetInv.setValue(False)
+            if timer.EN:
+                now = ctx.Time.now()
+                if memory.LAST_TIME == 0:
+                    memory.LAST_TIME = now
+                elif timer.PRE > timer.ACC:
+                    timer.ACC += (now - memory.LAST_TIME)
+                    memory.LAST_TIME = now
+            else:
+                memory.LAST_TIME.setValue(0)
 
-        if timer.Reset:
-            memory.LAST_TIME.setValue(0)
-            timer.ACC.setValue(0)
+            if timer.Reset:
+                memory.LAST_TIME.setValue(0)
+                timer.ACC.setValue(0)
 
-        timer.TT.setValue((timer.ACC <= timer.PRE) and timer.EN)
-        timer.DN.setValue((timer.ACC >= timer.PRE) and timer.EN)
+            timer.TT.setValue((timer.ACC <= timer.PRE) and timer.EN)
+            timer.DN.setValue((timer.ACC >= timer.PRE) and timer.EN)
 
-        timer.ACC.setValue(timer.ACC)
+            timer.ACC.setValue(timer.ACC)
+
+        timer.EnableOut.setValue(timer.EnableIn)
 
         return timer
 
@@ -258,9 +260,9 @@ class CTU(Instruction):
     async def ladder_execute(self, ctx:"ExecutionContext") -> COUNTER:
         counter:COUNTER = self.getMemory(self.args[0])
 
-        counter.CU.setValue(ctx.RungStatus)
+        counter.CU.setValue(ctx.RLL.RungStatus)
 
-        if ctx.RungStatus and not counter.OV:
+        if ctx.RLL.RungStatus and not counter.OV:
             counter.ACC += 1
 
         counter.OV.setValue(counter.ACC >= 2147483647)
@@ -280,9 +282,9 @@ class CTD(Instruction):
     async def ladder_execute(self, ctx:"ExecutionContext") -> COUNTER:
         counter:COUNTER = self.getMemory(self.args[0])
 
-        counter.CU.setValue(ctx.RungStatus)
+        counter.CU.setValue(ctx.RLL.RungStatus)
 
-        if ctx.RungStatus and not counter.UN:
+        if ctx.RLL.RungStatus and not counter.UN:
             counter.ACC -= 1
 
         counter.OV.setValue(counter.ACC >= 2147483647)

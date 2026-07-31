@@ -10,7 +10,7 @@ from  instructions.helper import getPLCValue
 class DTOS(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             source = self.getMemory(self.args[0])
             sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])
@@ -27,7 +27,7 @@ class DTOS(Instruction):
 class STOD(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             source = self.getMemory(self.args[0])
             sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])
@@ -48,7 +48,7 @@ class RTOS(Instruction):
 class STOR(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             source = self.getMemory(self.args[0])
             sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])
@@ -60,7 +60,7 @@ class STOR(Instruction):
 class UPPER(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             source = self.getMemory(self.args[0])
             sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])
@@ -71,7 +71,7 @@ class UPPER(Instruction):
 class LOWER(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             source = self.getMemory(self.args[0])
             sourceValue = getPLCValue(source)
             dest = self.getMemory(self.args[1])

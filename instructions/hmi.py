@@ -14,7 +14,7 @@ class HMIBC(Instruction):
     
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         value:HMIBC = self.getMemory(self.args[0])
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             self.execute(value, ctx)
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:

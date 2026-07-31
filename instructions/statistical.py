@@ -1,3 +1,4 @@
+from typing import Any
 import math
 from dataclasses import dataclass, field
 from engine.context import ExecutionContext
@@ -8,6 +9,7 @@ from core.memory.identity import Identity
 from datatypes.motion import MOVING_AVERAGE, MOVING_STD_DEV
 from datatypes.capture import MINIMUM_CAPTURE, MAXIMUM_CAPTURE
 from datatypes.custom.numbers import REAL
+from datatypes.custom.array import Array
 from engine.fbd.block import FBDBlock
 
 from  instructions.helper import getPLCValue
@@ -19,21 +21,21 @@ class SAMPELMemory(Identity):
 @InstructionRegistry.register
 class MAVE(Instruction):
 
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        average:MOVING_AVERAGE = block.Value
+    def preScan(self, average:MOVING_AVERAGE, ctx:"ExecutionContext", storages:Array, weights:Array):
+        average.EnableIn._reset()
+        average.EnableOut._reset()
+
+    def execute(self, average:MOVING_AVERAGE, ctx:"ExecutionContext", storages:Array, weights:Array) -> Any:
         memory = ObjectRegistry.get(average, SAMPELMemory)
 
         number_of_samples = average.NumberOfSamples.getPLCValue()
 
         self.raiseNotImplementedError(ctx)
-
-        if not ctx.RungStatus or number_of_samples < 1:
+        
+        if not average.EnableIn or number_of_samples < 1:
             samples = 0
         else:
             samples = memory.SAMPELS.getPLCValue()
-
-            storages:list[float] = self.getMemory(self.args[1])
-            weights:list[float] = self.getMemory(self.args[2])
         
             storages.insert(0, average.In.getPLCValue())
             storages.pop(number_of_samples)
@@ -59,25 +61,59 @@ class MAVE(Instruction):
 
             average.Out.setValue(total)
 
+        average.EnableOut.setValue(average.EnableIn)
+
         memory.SAMPELS.setValue(samples)
+
+    async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        average:MOVING_AVERAGE = block.Value
+
+        StorageArray = block.inParams["StorageArray"].Value
+        WeightArray = block.inParams["WeightArray"].Value
+
+        self.preScan(average, ctx, StorageArray, WeightArray)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        average:MOVING_AVERAGE = block.Value
+
+        StorageArray = block.inParams["StorageArray"].Value
+        WeightArray = block.inParams["WeightArray"].Value
+
+        self.execute(average, ctx, StorageArray, WeightArray)
+
+    async def st_preScan(self, ctx:"ExecutionContext") -> None:
+        In:MOVING_AVERAGE = self.getMemory(self.args[0])
+        StorageArray:Array = self.getMemory(self.args[1])
+        WeightArray:Array = self.getMemory(self.args[2])
+
+        self.preScan(In, ctx, StorageArray, WeightArray)
+
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        In:MOVING_AVERAGE = self.getMemory(self.args[0])
+        StorageArray:Array = self.getMemory(self.args[1])
+        WeightArray:Array = self.getMemory(self.args[2])
+
+        self.execute(In, ctx, StorageArray, WeightArray)
 
 @InstructionRegistry.register
 class MSTD(Instruction):
 
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        average:MOVING_AVERAGE = block.Value
+    def preScan(self, average:MOVING_AVERAGE, ctx:"ExecutionContext", storages:Array):
+        average.EnableIn._reset()
+        average.EnableOut._reset()
+
+    def execute(self, average:MOVING_AVERAGE, ctx:"ExecutionContext", storages:Array) -> Any:    
         memory = ObjectRegistry.get(average, SAMPELMemory)
 
         number_of_samples = getPLCValue(average.NumberOfSamples)
 
         self.raiseNotImplementedError(ctx)
 
-        if not ctx.RungStatus or number_of_samples < 1:
+        if not average.EnableIn or number_of_samples < 1:
             samples = 0
         else:
             samples = getPLCValue(average.SAMPELS)
-
-            storages:list[float] = self.getMemory(self.args[1])
 
             storages.insert(0, getPLCValue(average.In))
             storages.pop(number_of_samples)
@@ -105,7 +141,44 @@ class MSTD(Instruction):
 
             average.Out.setValue(std_dev)
 
+        average.EnableOut.setValue(average.EnableIn)
+
         memory.SAMPELS.setValue(samples)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        average:MOVING_AVERAGE = block.Value
+
+        StorageArray = block.inParams["StorageArray"].Value
+
+        self.execute(average, ctx, StorageArray)
+
+    async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        average:MOVING_AVERAGE = block.Value
+
+        StorageArray = block.inParams["StorageArray"].Value
+
+        self.preScan(average, ctx, StorageArray)
+
+    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
+        average:MOVING_AVERAGE = block.Value
+
+        StorageArray = block.inParams["StorageArray"].Value
+
+        self.execute(average, ctx, StorageArray)
+
+    async def st_preScan(self, ctx:"ExecutionContext") -> None:
+        In:MOVING_AVERAGE = self.getMemory(self.args[0])
+        StorageArray:Array = self.getMemory(self.args[1])
+
+        self.preScan(In, ctx, StorageArray)
+
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        In:MOVING_AVERAGE = self.getMemory(self.args[0])
+        StorageArray:Array = self.getMemory(self.args[1])
+
+        self.execute(In, ctx, StorageArray)
+
 
 @dataclass
 class MMemory(Identity):
@@ -114,35 +187,39 @@ class MMemory(Identity):
 @InstructionRegistry.register
 class MINC(Instruction):
 
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        average:MINIMUM_CAPTURE = block.Value
+    def preScan(self, min:MINIMUM_CAPTURE, ctx:"ExecutionContext"):
+        min.EnableIn._reset()
+        min.EnableOut._reset()
 
-        memory = ObjectRegistry.get(average, MMemory)
+    def execute(self, min:MINIMUM_CAPTURE, ctx:"ExecutionContext") -> Any:    
+        memory = ObjectRegistry.get(min, MMemory)
 
-        if average.Reset:
-            average.Out.setValue(average.ResetValue)
-            memory.Last.setValue(average.ResetValue)
+        if min.Reset:
+            min.Out.setValue(min.ResetValue)
+            memory.Last.setValue(min.ResetValue)
         else:
-            if average.EnableIn:
-                if average.In < memory.Last:
-                    memory.Last.setValue(average.In)
+            if min.EnableIn:
+                if min.In < memory.Last:
+                    memory.Last.setValue(min.In)
 
-        average.EnableOut.setValue(average.EnableIn)
+        min.EnableOut.setValue(min.EnableIn)
 
 @InstructionRegistry.register
 class MAXC(Instruction):
 
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        average:MAXIMUM_CAPTURE = block.Value
+    def preScan(self, max:MAXIMUM_CAPTURE, ctx:"ExecutionContext"):
+        max.EnableIn._reset()
+        max.EnableOut._reset()
 
-        memory = ObjectRegistry.get(average, MMemory)
+    def execute(self, max:MAXIMUM_CAPTURE, ctx:"ExecutionContext") -> Any:    
+        memory = ObjectRegistry.get(max, MMemory)
 
-        if average.Reset:
-            average.Out.setValue(average.ResetValue)
-            memory.Last.setValue(average.ResetValue)
+        if max.Reset:
+            max.Out.setValue(max.ResetValue)
+            memory.Last.setValue(max.ResetValue)
         else:
-            if average.EnableIn:
-                if average.In > memory.Last:
-                    memory.Last.setValue(average.In)
+            if max.EnableIn:
+                if max.In > memory.Last:
+                    memory.Last.setValue(max.In)
 
-        average.EnableOut.setValue(average.EnableIn)
+        max.EnableOut.setValue(max.EnableIn)

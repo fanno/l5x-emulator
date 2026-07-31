@@ -18,7 +18,7 @@ class SIN(Instruction):
         return math.sin(Source)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = getPLCValue(self.getMemory(self.args[0]))
             Dest = self.getMemory(self.args[1])
 
@@ -47,7 +47,7 @@ class COS(Instruction):
         return math.cos(Source)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = getPLCValue(self.getMemory(self.args[0]))
             Dest = self.getMemory(self.args[1])
 
@@ -76,7 +76,7 @@ class TAN(Instruction):
         return math.tan(Source)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = getPLCValue(self.getMemory(self.args[0]))
             Dest = self.getMemory(self.args[1])
 
@@ -103,7 +103,7 @@ class ASN(Instruction):
         return math.asin(Source)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = getPLCValue(self.getMemory(self.args[0]))
             Dest = self.getMemory(self.args[1])
 
@@ -143,7 +143,7 @@ class ACS(Instruction):
         return math.acos(Source)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = getPLCValue(self.getMemory(self.args[0]))
             Dest = self.getMemory(self.args[1])
 
@@ -183,7 +183,7 @@ class ATN(Instruction):
         return math.atan(Source)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = getPLCValue(self.getMemory(self.args[0]))
             Dest = self.getMemory(self.args[1])
 
@@ -223,7 +223,7 @@ class ATAN2(Instruction):
         return math.atan2(SourceY, SourceX)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceY = getPLCValue(self.getMemory(self.args[0]))
             SourceX = getPLCValue(self.getMemory(self.args[1]))
             Dest = self.getMemory(self.args[2])

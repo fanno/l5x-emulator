@@ -27,7 +27,7 @@ class Rung:
         with Hierarchy.scope(f"Rung[{str(self.Line)}]"):
             with PLCFaultHandler.minor():
                 if ctx.RLL.inMCR:
-                    ctx.RungStatus = ctx.RLL.MCRActive
+                    ctx.RLL.RungStatus = ctx.RLL.MCRActive
                 else:
-                    ctx.RungStatus = True
+                    ctx.RLL.RungStatus = True
                 await self.Tree.eval(ctx)

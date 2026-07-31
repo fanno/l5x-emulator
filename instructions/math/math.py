@@ -21,7 +21,7 @@ class ADD(Instruction):
         return SourceA + SourceB
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             Dest = self.getMemory(self.args[2])
@@ -53,7 +53,7 @@ class SUB(Instruction):
         return SourceA - SourceB
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             Dest = self.getMemory(self.args[2])
@@ -88,7 +88,7 @@ class DIV(Instruction):
             raise MinorFault(4, 4)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             Dest = self.getMemory(self.args[2])
@@ -121,7 +121,7 @@ class MUL(Instruction):
         return SourceA * SourceB
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             Dest = self.getMemory(self.args[2])
@@ -156,7 +156,7 @@ class MOD(Instruction):
             raise MinorFault(4, 4)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             SourceA = self.getMemory(self.args[0])
             SourceB = self.getMemory(self.args[1])
             Dest = self.getMemory(self.args[2])
@@ -187,7 +187,7 @@ class SQR(Instruction):
         return math.sqrt(Source)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
             
@@ -225,7 +225,7 @@ class ABS(Instruction):
         return abs(Source)
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
             
@@ -255,7 +255,7 @@ class NEG(Instruction):
         return 0 - Source
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Source = self.getMemory(self.args[0])
             Dest = self.getMemory(self.args[1])
             
@@ -281,7 +281,7 @@ class NEG__F(NEG):
 class CPT(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             Dest = self.getMemory(self.args[0])
             Expression = getPLCValue(self.getMemory(self.args[1]))
 

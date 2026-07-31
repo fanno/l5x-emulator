@@ -86,7 +86,7 @@ class Routine:
                             for rung in self.Rungs:
                                 if ctx.RLL.Jump is None or ctx.RLL.Jump == rung.getLabel():
                                     ctx.RLL.Jump = None
-                                    ctx.RungEnabled = True
+                                    ctx.RLL.RungEnabled = True
                                     await rung.execute(ctx)
 
                                     if ctx.RLL.EOT or ctx.RLL.TND:

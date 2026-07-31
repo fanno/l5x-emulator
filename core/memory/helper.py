@@ -10,7 +10,7 @@ from core.errors import MemoryException
 
 from dataclasses import is_dataclass, fields
 
-from engine.helper import CurrentProgramName, currentAOIMemory
+from engine.helper import CurrentProgramName
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.array import Array
 from datatypes.custom.string import STRING
@@ -123,7 +123,8 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
             path:list[str] = resolvePath(pathRaw)
             
             from engine.aoi.memory import AOIMemory
-            aoi = currentAOIMemory()
+            from engine.aoi.aoi import AOIContextMemory
+            aoi = AOIContextMemory.get()
             if isinstance(aoi, AOIMemory):
                 if aoi.memory.has(path):
                     result = aoi.memory.get(path)
@@ -178,7 +179,8 @@ def setMemory(path:list[str] | str, value):
     try:
         if isinstance(path, list):
             from engine.aoi.memory import AOIMemory
-            aoi = currentAOIMemory()
+            from engine.aoi.aoi import AOIContextMemory
+            aoi = AOIContextMemory.get()
             if isinstance(aoi, AOIMemory):
                 if aoi.memory.has(path):
                     aoi.memory.set(path, value)

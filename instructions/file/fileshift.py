@@ -24,7 +24,7 @@ class BSL(Instruction):
         control.POS._reset()
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             value:Array[DataVariant] = self.getMemory(self.args[0])
             control:CONTROL = self.getMemory(self.args[1])
             source = self.getMemory(self.args[2])
@@ -46,7 +46,7 @@ class BSR(Instruction):
         control.POS._reset()
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             value:Array[DataVariant] = self.getMemory(self.args[0])
             control:CONTROL = self.getMemory(self.args[1])
             source = self.getMemory(self.args[2])
@@ -78,7 +78,7 @@ class FFL(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             if control.LEN <= 0 or control.POS < 0:
                 control.DN.setValue(True)
                 control.EM.setValue(True)
@@ -142,7 +142,7 @@ class FFU(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             if control.LEN <= 0 or control.POS < 0:
                 control.DN.setValue(True)
                 control.EM.setValue(True)
@@ -221,7 +221,7 @@ class LFL(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             if control.LEN <= 0 or control.POS < 0:
                 control.DN.setValue(True)
                 control.EM.setValue(True)
@@ -285,7 +285,7 @@ class LFU(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         control:CONTROL = self.getMemory(self.args[2])
-        if ctx.RungStatus:
+        if ctx.RLL.RungStatus:
             if control.LEN <= 0 or control.POS < 0:
                 control.DN.setValue(True)
                 control.EM.setValue(True)
