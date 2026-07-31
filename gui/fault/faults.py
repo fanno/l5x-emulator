@@ -29,6 +29,9 @@ class FaultTabs(Notebook):
 
         self.name = name
 
+        self.minorCounter = 0
+        self.majorCounter = 0
+
         self.queue = Queue()
         self.Majorfault = deque(maxlen=100)
         self.Minorfaults = deque(maxlen=100)
@@ -40,16 +43,18 @@ class FaultTabs(Notebook):
         frame.pack(fill=tk.BOTH, expand=tk.TRUE)
         self.add(frame, text=titel)
         self.major = FaultGrid(frame,
-                                show='tree headings',
-                                selectmode=tk.NONE)
+                               name=titel,
+                               show='tree headings',
+                               selectmode=tk.NONE)
 
         titel = "Minor fault"
         frame = Frame(self)
         frame.pack(fill=tk.BOTH, expand=tk.TRUE)
         self.add(frame, text=titel)
         self.minor = FaultGrid(frame,
-                                show='tree headings',
-                                selectmode=tk.NONE)
+                               name=titel,
+                               show='tree headings',
+                               selectmode=tk.NONE)
 
         titel = "Excaption Log"
         frame = Frame(self)
@@ -71,8 +76,10 @@ class FaultTabs(Notebook):
             while True:
                 event = self.queue.get_nowait()
                 if isinstance(event, MinorFaultEvent):
+                    self.minorCounter += 1
                     self.Minorfaults.appendleft(event.fault)
                 elif isinstance(event, MajorFaultEvent):
+                    self.majorCounter += 1
                     self.Majorfault.appendleft(event.fault)
         except Empty:
             pass
@@ -81,8 +88,8 @@ class FaultTabs(Notebook):
 
     def process_faults(self):
         self.process_queue()
-        self.minor.updateContent(self.Minorfaults)
-        self.major.updateContent(self.Majorfault)
+        self.minor.updateContent(self.Minorfaults, self.minorCounter)
+        self.major.updateContent(self.Majorfault, self.majorCounter)
 
         self._UpdateUI()
 

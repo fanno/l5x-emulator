@@ -2,34 +2,16 @@ import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
 from tkinter import ttk
 
+from gui.helper import getParentTab
+
 class UpdatingScrolledText(ScrolledText):
     def __init__(self, master, name:str, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
         self.name = name
         self.pack(fill=tk.BOTH, expand=tk.TRUE)
-
-        self._notebook = None
-
-        widget = self.master
-        while widget is not None:
-            if isinstance(widget, ttk.Notebook):
-                # Try each tab — find the one that contains us
-                for tab_id in widget.tabs():
-                    tab_widget = widget.nametowidget(tab_id)
-                    # Check if we're inside this tab
-                    w = self
-                    while w is not None:
-                        if w is tab_widget:
-                            self._tab_id = tab_id
-                            self._notebook = widget
-                            break
-                        w = w.master
-                    if self._notebook:
-                        break
-            if self._notebook:
-                break
-            widget = widget.master
+        
+        self._notebook, self._tab_id = getParentTab(self)
 
     def canUpdate(self) -> bool:
         _, pos = self.yview()

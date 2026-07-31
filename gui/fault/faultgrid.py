@@ -3,11 +3,13 @@ import logging
 from tkinter.ttk import Treeview, Scrollbar
 from tkinter import Event, PhotoImage
 import tkinter as tk
+from tkinter import ttk
 
 from engine.errors import PLCFault
 
 import json
 from collections import defaultdict
+from gui.helper import getParentTab
 
 class FaultGrid(Treeview):
     PADDING = 5
@@ -19,8 +21,10 @@ class FaultGrid(Treeview):
 
     FAULT_TEXTS = defaultdict(dict)
 
-    def __init__(self, master, *args, **kwargs):
+    def __init__(self, master, name, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
+
+        self.name = name
 
         self.checked_img = PhotoImage(width=16, height=16)
         self.checked_img.put("green", to=(0,0,15,15))
@@ -62,6 +66,8 @@ class FaultGrid(Treeview):
 
         self.pack(fill=tk.BOTH, expand=tk.TRUE)
 
+        self._notebook, self._tab_id = getParentTab(self)
+
     def _on_scroll(self, *args):
         self.yview(*args)
 
@@ -76,7 +82,9 @@ class FaultGrid(Treeview):
         self.yview_scroll(delta, tk.UNITS)
         return 'break'
 
-    def updateContent(self, data:list[PLCFault]):
+    def updateContent(self, data:list[PLCFault], count:int):
+        self.setTabTitle(f"{self.name} {len(data)}/{count}")
+
         if self.winfo_viewable():
             self.delete(*self.get_children())
 
@@ -84,14 +92,14 @@ class FaultGrid(Treeview):
                 value = (str(v.time), str(v.type), str(v.code), v.hierarchy, FaultGrid.getText(v.type, v.code))
                 tag = 'odd' if k % 2 else 'even'
                 tags=(tag,)
-                iid = self.insert('', tk.END, text=str(k), values=value, open=tk.FALSE,tags=tags)
+                iid = self.insert('', tk.END, text=str(k+1), values=value, open=tk.FALSE,tags=tags)
 
     def _populate(self, parent, data:list[PLCFault]):
         for k, v in enumerate(data):
             value = (str(v.time), str(v.type), str(v.code), FaultGrid.getText(v.type, v.code))
             tag = 'odd' if k % 2 else 'even'
             tags=(tag,)
-            iid = self.insert(parent, tk.END, text=str(k), values=value, open=tk.FALSE,tags=tags)
+            iid = self.insert(parent, tk.END, text=str(k+1), values=value, open=tk.FALSE,tags=tags)
 
     @staticmethod
     def loadText():
@@ -116,3 +124,9 @@ class FaultGrid(Treeview):
             code,
             f"Unknown fault (Type={type}, Code={code})"
         )
+
+    def setTabTitle(self, new_title):
+        if isinstance(self._notebook, ttk.Notebook):
+            self._notebook.tab(self._tab_id, text=new_title)
+            return True
+        return False
