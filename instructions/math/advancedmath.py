@@ -29,8 +29,9 @@ class LN(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
-
-        math.Dest.setValue(self.execute(math.Source))
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class LN__F(LN):
@@ -60,8 +61,9 @@ class LOG(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
-
-        math.Dest.setValue(self.execute(math.Source))
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class LOG__F(LOG):
@@ -91,8 +93,9 @@ class XPY(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH = block.Value
-
-        math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class XPY__F(XPY):

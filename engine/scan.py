@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from core.emulatorcontext import EmulatorContext
+from engine.context import EmulatorContext
 
 class Scan:
     Context:EmulatorContext = None

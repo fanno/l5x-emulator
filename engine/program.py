@@ -20,7 +20,7 @@ from engine.errors import PLCFaultHandler
 
 from core.xml.tags import loadTags
 from core.timebase import getTimeMonotonic
-from core.emulatorcontext import EmulatorContext
+from engine.context import EmulatorContext
 
 from opcua.tag import OpcuaTag
 from opcua.mapping import Mapping

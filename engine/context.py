@@ -6,7 +6,7 @@ from engine.routine import Routine, RoutineType
 from core.timebase import TimeBase
 
 from datatypes.custom.bool import BOOL
-from core.emulatorcontext import EmulatorContext
+from engine.context import EmulatorContext
 
 from engine.fbd.sheet import Sheet
 from datatypes.sfc import SFC_STEP
@@ -19,6 +19,14 @@ from datatypes.custom.numbers import INT
     SFCTransition:bool = field(init=True, default=False)
 
 '''
+class EmulatorContext():
+    preScan:bool
+    postScan:bool
+
+    def __init__(self, pre:bool=False, post:bool=False):
+        self.preScan = pre
+        self.postScan = post
+
 @dataclass
 class SFCContext:
     Paused: INT = field(init=False, default_factory=INT)
@@ -26,7 +34,6 @@ class SFCContext:
     Step: SFC_STEP = field(init=False, default_factory=SFC_STEP)
     Status:BOOL = field(init=True, default_factory=BOOL)
     Transition:bool = field(init=True, default=False)
-
 
 @dataclass
 class FBDContext:

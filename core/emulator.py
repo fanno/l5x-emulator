@@ -39,7 +39,7 @@ from core.servicelocator import ServiceLocator
 from core.library.libeary import initPyInstaller, load_all_hardware, get_paths
 from core.library.hwlogic import HWLogic
 from core.log import IndentedFormatter
-from core.emulatorcontext import EmulatorContext
+from engine.context import EmulatorContext
 from opcua.structure import Structure, StructureField
 from opcua.tag import OpcuaTag
 from opcua.mapping import Mapping

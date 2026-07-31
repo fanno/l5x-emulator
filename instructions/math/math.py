@@ -31,8 +31,9 @@ class ADD(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH = block.Value
-
-        math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class ADD__F(ADD):
@@ -64,7 +65,9 @@ class SUB(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH = block.Value
 
-        math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class SUB__F(SUB):
@@ -99,7 +102,9 @@ class DIV(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH = block.Value
 
-        math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class DIV__F(DIV):
@@ -132,7 +137,9 @@ class MUL(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH = block.Value
 
-        math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class MUL__F(MUL):
@@ -167,7 +174,9 @@ class MOD(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH = block.Value
 
-        math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.SourceA, math.SourceB))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class MOD__F(MOD):
@@ -197,7 +206,9 @@ class SQR(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
 
-        math.Dest.setValue(self.execute(math.Source))
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class SQR__F(SQR):
@@ -235,8 +246,9 @@ class ABS(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
 
-        result = self.execute(math.Source)
-        math.Dest.Value = self.execute(result)
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class ABS__F(ABS):
@@ -265,8 +277,9 @@ class NEG(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
 
-        result = self.execute(math.Source)
-        math.Dest.Value = self.execute(result)
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class NEG__F(NEG):

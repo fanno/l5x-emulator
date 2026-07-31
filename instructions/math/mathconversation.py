@@ -32,8 +32,9 @@ class DEG(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
 
-        result = self.execute(math.Source)
-        math.Dest.Value = self.execute(result)
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class DEG__F(DEG):
@@ -62,8 +63,9 @@ class RAD(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
 
-        result = self.execute(math.Source)
-        math.Dest.Value = self.execute(result)
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class RAD__F(RAD):
@@ -122,9 +124,10 @@ class TOD(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         value:FBD_CONVERT = block.Value
-
-        result = self.execute(value.Source, value.Dest)
-        value.Dest.setValue(result)
+        if value.EnableIn:
+            result = self.execute(value.Source, value.Dest)
+            value.Dest.setValue(result)
+        value.EnableOut.setValue(value.EnableIn)
 
 @InstructionRegistry.register
 class TO_BCD(TOD):
@@ -148,9 +151,9 @@ class FRD(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_CONVERT = block.Value
 
-        result = self.execute(math.Source)
-        math.Dest.setValue(result)
-       
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class BCD_TO(FRD):
@@ -178,8 +181,9 @@ class TRN(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
 
-        result = self.execute(math.Source)
-        math.Dest.Value = self.execute(result)
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class TRN__F(TRN):

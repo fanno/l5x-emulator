@@ -296,29 +296,32 @@ class CTD(Instruction):
 @InstructionRegistry.register
 class CTUD(Instruction):
 
+    def preScan(self, counter:FBD_COUNTER, ctx:"ExecutionContext"):
+        counter.EnableIn._reset()
+        counter.EnableOut._reset()
+
+    def execute(self, counter:FBD_COUNTER, ctx:"ExecutionContext") -> Any:
+        if counter.EnableIn:
+            if counter.CUEnable and not counter.CU:
+                counter.ACC += 1
+
+            if counter.CDEnable and not counter.CD:
+                counter.ACC -= 1
+
+            counter.CU.setValue(counter.CUEnable)
+            counter.CD.setValue(counter.CDEnable)
+
+            if counter.Reset:
+                counter.ACC.setValue(0)
+
+            counter.OV.setValue(counter.ACC >= 2147483647)
+            counter.UN.setValue(counter.ACC <= -2147483648)
+            counter.DN.setValue(counter.ACC >= counter.PRE)
+        counter.EnableOut.setValue(counter.EnableIn)
+        return counter
+    
     async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock):
         counter:FBD_COUNTER = block.Value
 
         counter.EnableIn._reset()
         counter.EnableOut._reset()
-
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> FBD_COUNTER:
-        counter:FBD_COUNTER = block.Value
-
-        if counter.CUEnable and not counter.CU:
-            counter.ACC += 1
-
-        if counter.CDEnable and not counter.CD:
-            counter.ACC -= 1
-
-        counter.CU.setValue(counter.CUEnable)
-        counter.CD.setValue(counter.CDEnable)
-
-        if counter.Reset:
-            counter.ACC.setValue(0)
-
-        counter.OV.setValue(counter.ACC >= 2147483647)
-        counter.UN.setValue(counter.ACC <= -2147483648)
-        counter.DN.setValue(counter.ACC >= counter.PRE)
-
-        return counter

@@ -21,3 +21,4 @@ class HMIBC(Instruction):
         value:HMIBCdt = block.Value
         if value.EnableIn:
             self.execute(value, ctx)
+        value.EnableOut.setValue(value.EnableIn)

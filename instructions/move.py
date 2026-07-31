@@ -64,10 +64,9 @@ class AND(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_LOGICAL = block.Value
-
-        Dest = block.outParams["Dest"]
-
-        Dest.Value = self.execute(compare.SourceA, compare.SourceB)
+        if compare.EnableIn:
+            compare.Dest.setValue(self.execute(compare.SourceA, compare.SourceB))
+        compare.EnableOut.setValue(compare.EnableIn)
 
 class AND__F(AND):
 
@@ -97,10 +96,9 @@ class OR(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_LOGICAL = block.Value
-
-        Dest = block.outParams["Dest"]
-
-        Dest.Value = self.execute(compare.SourceA, compare.SourceB)
+        if compare.EnableIn:
+            compare.Dest.setValue(self.execute(compare.SourceA, compare.SourceB))
+        compare.EnableOut.setValue(compare.EnableIn)
 
 class OR__F(OR):
 
@@ -130,10 +128,9 @@ class XOR(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_LOGICAL = block.Value
-
-        Dest = block.outParams["Dest"]
-
-        Dest.Value = self.execute(compare.SourceA, compare.SourceB)
+        if compare.EnableIn:
+            compare.Dest.setValue(self.execute(compare.SourceA, compare.SourceB))
+        compare.EnableOut.setValue(compare.EnableIn)
 
 class XOR__F(XOR):
 
@@ -160,11 +157,10 @@ class NOT(Instruction):
                 ctx.RLL.RungStatus = False
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        compare:FBD_CONVERT = block.Value
-
-        Dest = block.outParams["Dest"]
-
-        Dest.Value = self.execute(compare.Source)
+        compare:FBD_LOGICAL = block.Value
+        if compare.EnableIn:
+            compare.Dest.setValue(self.execute(compare.Source))
+        compare.EnableOut.setValue(compare.EnableIn)
 
 class NOT__F(NOT):
 
@@ -297,11 +293,10 @@ class BOR(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_BOOLEAN_OR = block.Value
 
-        result = compare.In1 or compare.In2 or compare.In3 or compare.In4 or compare.In5 or compare.In6 or compare.In7 or compare.In8
-
-        Dest = block.outParams["Dest"]
-
-        Dest.Value = self.execute(result)
+        if compare.EnableIn:
+            result = compare.In1 or compare.In2 or compare.In3 or compare.In4 or compare.In5 or compare.In6 or compare.In7 or compare.In8
+            compare.Out.setValue(result)
+        compare.EnableOut.setValue(compare.EnableIn)
 
 class BOR__F(BOR):
 
@@ -318,11 +313,10 @@ class BNOT(Instruction):
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_BOOLEAN_NOT = block.Value
 
-        result = not compare.In
-
-        Dest = block.outParams["Dest"]
-
-        Dest.Value = self.execute(result)
+        if compare.EnableIn:
+            result = not compare.In
+            compare.Out.setValue(result)
+        compare.EnableOut.setValue(compare.EnableIn)
 
 class BNOT__F(BNOT):
 
@@ -337,11 +331,12 @@ class BXOR(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_BOOLEAN_XOR = block.Value
-        Dest = block.outParams["Dest"]
 
-        result = compare.In1 != compare.In2
+        if compare.EnableIn:
+            result = compare.In1 != compare.In2
 
-        Dest.Value = self.execute(result)
+            compare.Out.setValue(result)
+        compare.EnableOut.setValue(compare.EnableIn)
 
 class BXOR__F(BXOR):
 
@@ -352,18 +347,17 @@ class BXOR__F(BXOR):
 
         Dest.Value = In1 != In2
 
-
 @InstructionRegistry.register
 class BAND(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_BOOLEAN_AND = block.Value
 
-        result = compare.In1 and compare.In2 and compare.In3 and compare.In4 and compare.In5 and compare.In6 and compare.In7 and compare.In8
+        if compare.EnableIn:
+            result = compare.In1 and compare.In2 and compare.In3 and compare.In4 and compare.In5 and compare.In6 and compare.In7 and compare.In8
 
-        Dest = block.outParams["Dest"]
-
-        Dest.Value = self.execute(result)
+            compare.Out.setValue(result)
+        compare.EnableOut.setValue(compare.EnableIn)
 
 class BAND__F(BAND):
 

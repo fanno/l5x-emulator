@@ -26,10 +26,14 @@ class SIN(Instruction):
             Dest.setValue(result)
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        Source = block.inParams["Source"].Value
-        Dest = block.outParams["Dest"]
+        math:FBD_MATH_ADVANCED = block.Value
 
-        Dest.Value = self.execute(Source)
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
+
+
+
 
 @InstructionRegistry.register
 class SIN__F(SIN):
@@ -55,10 +59,11 @@ class COS(Instruction):
             Dest.setValue(result)
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        Source = block.inParams["Source"].Value
-        Dest = block.outParams["Dest"]
+        math:FBD_MATH_ADVANCED = block.Value
 
-        Dest.Value = self.execute(Source)
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class COS__F(COS):
@@ -85,7 +90,10 @@ class TAN(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
-        math.Dest = self.execute(math.Source)
+
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class TAN__F(TAN):
@@ -112,7 +120,10 @@ class ASN(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
-        math.Dest = self.execute(math.Source)
+
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class ASN__F(ASN):
@@ -152,7 +163,10 @@ class ACS(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
-        math.Dest = self.execute(math.Source)
+
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class ACS__F(ACS):
@@ -192,7 +206,10 @@ class ATN(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
-        math.Dest = self.execute(math.Source)
+
+        if math.EnableIn:
+            math.Dest.setValue(self.execute(math.Source))
+        math.EnableOut.setValue(math.EnableIn)
 
 @InstructionRegistry.register
 class ATN__F(ATN):
@@ -230,13 +247,6 @@ class ATAN2(Instruction):
 
             result = self.execute(SourceY, SourceX)
             Dest.setValue(result)
-
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        SourceY = block.inParams["SourceY"].Value
-        SourceX = block.inParams["SourceX"].Value
-        Dest = block.outParams["Dest"]
-
-        Dest.Value = self.execute(SourceY, SourceX)
 
 @InstructionRegistry.register
 class ATAN2__F(ATAN2):

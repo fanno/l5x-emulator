@@ -16,7 +16,7 @@ from engine.helper import CurrentTaskName
 from engine.hierarchy import Hierarchy
 from engine.errors import PLCFaultHandler
 
-from core.emulatorcontext import EmulatorContext
+from engine.context import EmulatorContext
 from core.timebase import getTimeMonotonic
 
 from datatypes.custom.numbers import DINT, INT

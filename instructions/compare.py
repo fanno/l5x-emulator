@@ -70,8 +70,10 @@ class EQU(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
-        result = self.execute(compare.SourceA, compare.SourceB)
-        compare.Dest.setValue(result)
+        if compare.EnableIn:
+            result = self.execute(compare.SourceA, compare.SourceB)
+            compare.Dest.setValue(result)
+        compare.EnableOut.setValue(compare.EnableIn)
 
 @InstructionRegistry.register
 class EQU__F(EQU):
@@ -110,8 +112,10 @@ class NEQ(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
-        result = self.execute(compare.SourceA, compare.SourceB)
-        compare.Dest.setValue(result)
+        if compare.EnableIn:
+            result = self.execute(compare.SourceA, compare.SourceB)
+            compare.Dest.setValue(result)
+        compare.EnableOut.setValue(compare.EnableIn)
 
 @InstructionRegistry.register
 class NEQ__F(NEQ):
@@ -150,8 +154,10 @@ class LES(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
-        result = self.execute(compare.SourceA, compare.SourceB)
-        compare.Dest.setValue(result)
+        if compare.EnableIn:
+            result = self.execute(compare.SourceA, compare.SourceB)
+            compare.Dest.setValue(result)
+        compare.EnableOut.setValue(compare.EnableIn)
 
 @InstructionRegistry.register
 class LES__F(LES):
@@ -190,15 +196,10 @@ class GRT(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
-
-        Dest = block.outParams["Dest"]
-
-        Dest.Value = self.execute(compare.SourceA, compare.SourceB)
-
-    async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
-        compare:FBD_COMPARE = block.Value
-        result = self.execute(compare.SourceA, compare.SourceB)
-        compare.Dest.setValue(result)
+        if compare.EnableIn:
+            result = self.execute(compare.SourceA, compare.SourceB)
+            compare.Dest.setValue(result)
+        compare.EnableOut.setValue(compare.EnableIn)
 
 @InstructionRegistry.register
 class GRT__F(GRT):
@@ -238,8 +239,10 @@ class LEQ(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
-        result = self.execute(compare.SourceA, compare.SourceB)
-        compare.Dest.setValue(result)
+        if compare.EnableIn:
+            result = self.execute(compare.SourceA, compare.SourceB)
+            compare.Dest.setValue(result)
+        compare.EnableOut.setValue(compare.EnableIn)
 
 @InstructionRegistry.register
 class LEQ__F(LEQ):
@@ -278,8 +281,10 @@ class GEQ(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         compare:FBD_COMPARE = block.Value
-        result = self.execute(compare.SourceA, compare.SourceB)
-        compare.Dest.setValue(result)
+        if compare.EnableIn:
+            result = self.execute(compare.SourceA, compare.SourceB)
+            compare.Dest.setValue(result)
+        compare.EnableOut.setValue(compare.EnableIn)
 
 @InstructionRegistry.register
 class GEQ__F(GEQ):

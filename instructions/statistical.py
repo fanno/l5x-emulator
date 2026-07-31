@@ -26,44 +26,47 @@ class MAVE(Instruction):
         average.EnableOut._reset()
 
     def execute(self, average:MOVING_AVERAGE, ctx:"ExecutionContext", storages:Array, weights:Array) -> Any:
-        memory = ObjectRegistry.get(average, SAMPELMemory)
+        if average.EnableIn:
+            memory = ObjectRegistry.get(average, SAMPELMemory)
 
-        number_of_samples = average.NumberOfSamples.getPLCValue()
 
-        self.raiseNotImplementedError(ctx)
-        
-        if not average.EnableIn or number_of_samples < 1:
-            samples = 0
-        else:
-            samples = memory.SAMPELS.getPLCValue()
-        
-            storages.insert(0, average.In.getPLCValue())
-            storages.pop(number_of_samples)
+            number_of_samples = average.NumberOfSamples.getPLCValue()
 
-            if samples < number_of_samples:
-                samples += 1
+            self.raiseNotImplementedError(ctx)
+            
+            if not average.EnableIn or number_of_samples < 1:
+                samples = 0
+            else:
+                samples = memory.SAMPELS.getPLCValue()
+            
+                storages.insert(0, average.In.getPLCValue())
+                storages.pop(number_of_samples)
 
-            total = 0.0
+                if samples < number_of_samples:
+                    samples += 1
 
-            limit = min(samples, number_of_samples)
+                total = 0.0
 
-            for i in range(limit):
-                if average.UseWeights:
-                    total += storages[i] * weights[i]
-                else:
-                    total += storages[i]
+                limit = min(samples, number_of_samples)
 
-            if not average.UseWeights:
-                if samples > 0:
-                    total = total / samples
-                else:
-                    total = 0.0
+                for i in range(limit):
+                    if average.UseWeights:
+                        total += storages[i] * weights[i]
+                    else:
+                        total += storages[i]
 
-            average.Out.setValue(total)
+                if not average.UseWeights:
+                    if samples > 0:
+                        total = total / samples
+                    else:
+                        total = 0.0
 
+                average.Out.setValue(total)
+
+            average.EnableOut.setValue(average.EnableIn)
+
+            memory.SAMPELS.setValue(samples)
         average.EnableOut.setValue(average.EnableIn)
-
-        memory.SAMPELS.setValue(samples)
 
     async def fbd_preScan(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         average:MOVING_AVERAGE = block.Value
@@ -88,7 +91,6 @@ class MAVE(Instruction):
 
         self.preScan(In, ctx, StorageArray, WeightArray)
 
-
     async def st_execute(self, ctx:"ExecutionContext") -> None:
         In:MOVING_AVERAGE = self.getMemory(self.args[0])
         StorageArray:Array = self.getMemory(self.args[1])
@@ -103,47 +105,49 @@ class MSTD(Instruction):
         average.EnableIn._reset()
         average.EnableOut._reset()
 
-    def execute(self, average:MOVING_AVERAGE, ctx:"ExecutionContext", storages:Array) -> Any:    
-        memory = ObjectRegistry.get(average, SAMPELMemory)
+    def execute(self, average:MOVING_AVERAGE, ctx:"ExecutionContext", storages:Array) -> Any:
+        if average.EnableIn:
+            memory = ObjectRegistry.get(average, SAMPELMemory)
 
-        number_of_samples = getPLCValue(average.NumberOfSamples)
+            number_of_samples = getPLCValue(average.NumberOfSamples)
 
-        self.raiseNotImplementedError(ctx)
+            self.raiseNotImplementedError(ctx)
 
-        if not average.EnableIn or number_of_samples < 1:
-            samples = 0
-        else:
-            samples = getPLCValue(average.SAMPELS)
+            if not average.EnableIn or number_of_samples < 1:
+                samples = 0
+            else:
+                samples = getPLCValue(average.SAMPELS)
 
-            storages.insert(0, getPLCValue(average.In))
-            storages.pop(number_of_samples)
+                storages.insert(0, getPLCValue(average.In))
+                storages.pop(number_of_samples)
 
-            if samples < number_of_samples:
-                samples += 1
+                if samples < number_of_samples:
+                    samples += 1
 
-            limit = min(samples, number_of_samples)
+                limit = min(samples, number_of_samples)
 
-            sum_values = sum(storages[i] for i in range(limit))
-            mean = sum_values / limit
+                sum_values = sum(storages[i] for i in range(limit))
+                mean = sum_values / limit
 
-            sum_sq_diff = 0.0
-            for i in range(limit):
-                diff = storages[i] - mean
-                sum_sq_diff += diff * diff
+                sum_sq_diff = 0.0
+                for i in range(limit):
+                    diff = storages[i] - mean
+                    sum_sq_diff += diff * diff
 
-            divisor = limit
-            if limit > 1:
-                divisor = limit - 1
+                divisor = limit
+                if limit > 1:
+                    divisor = limit - 1
 
-            variance = sum_sq_diff / divisor if divisor > 0 else 0.0
+                variance = sum_sq_diff / divisor if divisor > 0 else 0.0
 
-            std_dev = math.sqrt(variance) if variance >= 0 else 0.0
+                std_dev = math.sqrt(variance) if variance >= 0 else 0.0
 
-            average.Out.setValue(std_dev)
+                average.Out.setValue(std_dev)
 
+            average.EnableOut.setValue(average.EnableIn)
+
+            memory.SAMPELS.setValue(samples)
         average.EnableOut.setValue(average.EnableIn)
-
-        memory.SAMPELS.setValue(samples)
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         average:MOVING_AVERAGE = block.Value
@@ -194,13 +198,14 @@ class MINC(Instruction):
     def execute(self, min:MINIMUM_CAPTURE, ctx:"ExecutionContext") -> Any:    
         memory = ObjectRegistry.get(min, MMemory)
 
-        if min.Reset:
-            min.Out.setValue(min.ResetValue)
-            memory.Last.setValue(min.ResetValue)
-        else:
-            if min.EnableIn:
-                if min.In < memory.Last:
-                    memory.Last.setValue(min.In)
+        if min.EnableIn:
+            if min.Reset:
+                min.Out.setValue(min.ResetValue)
+                memory.Last.setValue(min.ResetValue)
+            else:
+                if min.EnableIn:
+                    if min.In < memory.Last:
+                        memory.Last.setValue(min.In)
 
         min.EnableOut.setValue(min.EnableIn)
 
@@ -214,12 +219,13 @@ class MAXC(Instruction):
     def execute(self, max:MAXIMUM_CAPTURE, ctx:"ExecutionContext") -> Any:    
         memory = ObjectRegistry.get(max, MMemory)
 
-        if max.Reset:
-            max.Out.setValue(max.ResetValue)
-            memory.Last.setValue(max.ResetValue)
-        else:
-            if max.EnableIn:
-                if max.In > memory.Last:
-                    memory.Last.setValue(max.In)
+        if max.EnableIn:
+            if max.Reset:
+                max.Out.setValue(max.ResetValue)
+                memory.Last.setValue(max.ResetValue)
+            else:
+                if max.EnableIn:
+                    if max.In > memory.Last:
+                        memory.Last.setValue(max.In)
 
         max.EnableOut.setValue(max.EnableIn)
