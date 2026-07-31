@@ -6,15 +6,12 @@ from engine.routine import Routine, RoutineType
 from core.timebase import TimeBase
 
 from datatypes.custom.bool import BOOL
-from engine.context import EmulatorContext
 
 from engine.fbd.sheet import Sheet
 from datatypes.sfc import SFC_STEP
 from datatypes.custom.numbers import INT
 
 '''
-
-
     SFCStatus:BOOL = field(init=True, default_factory=BOOL)
     SFCTransition:bool = field(init=True, default=False)
 

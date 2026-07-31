@@ -20,7 +20,7 @@ from engine.errors import PLCFaultHandler
 
 from core.xml.tags import loadTags
 from core.timebase import getTimeMonotonic
-from engine.context import EmulatorContext
+import engine.context
 
 from opcua.tag import OpcuaTag
 from opcua.mapping import Mapping
@@ -129,11 +129,11 @@ class Program():
             if self.MAXSCANTIME < diff:
                 self.MAXSCANTIME.setValue(diff)
 
-    async def execute(self, context:EmulatorContext = None):
+    async def execute(self, context:"engine.context.EmulatorContext" = None):
         with Hierarchy.scope(self.Name):
             with PLCFaultHandler.minor():
                 if context is None:
-                    context = EmulatorContext()
+                    context = engine.context.EmulatorContext()
                 if self.DisableFlag == 0:
                     if self.Type != 'EquipmentPhase':
                         if self.MainRoutineName in self.Routines:
@@ -176,7 +176,7 @@ class Program():
                     self.LASTSCANTIME.setValue(0)
                     self.MAXSCANTIME.setValue(0)
 
-    async def run(self, name:str, context:EmulatorContext = None) -> "engine.context.ExecutionContext":
+    async def run(self, name:str, context:"engine.context.EmulatorContext" = None) -> "engine.context.ExecutionContext":
         async with self.program_context(), self.program_time():
             from engine.context import ExecutionContext
             ctx = ExecutionContext(ProgramRef=self, Context=context)

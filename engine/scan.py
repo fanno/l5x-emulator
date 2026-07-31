@@ -1,16 +1,16 @@
 from contextlib import contextmanager
 
-from engine.context import EmulatorContext
+import engine.context
 
 class Scan:
-    Context:EmulatorContext = None
+    Context:"engine.context.EmulatorContext" = None
 
 class PreScan(Scan):
     _stack: list[int] = []
     
     @classmethod
     @contextmanager
-    def scope(cls, ctx:EmulatorContext):
+    def scope(cls, ctx:"engine.context.EmulatorContext"):
         if cls.Context is None:
             cls.Context = ctx
         if cls.Context is None:
@@ -38,7 +38,7 @@ class PostScan(Scan):
 
     @classmethod
     @contextmanager
-    def scope(cls, ctx:EmulatorContext):
+    def scope(cls, ctx:"engine.context.EmulatorContext"):
         if cls.Context is None:
             cls.Context = ctx
         if cls.Context is None:
