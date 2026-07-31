@@ -1,4 +1,4 @@
-from engine.context import ExecutionContext
+from engine.context import ExecutionContext, RLLContext
 
 from dataclasses import dataclass, field
 
@@ -61,7 +61,7 @@ class ALMD(Instruction):
             if not alarm.ProgDisable or alarm.ProgEnable:
                 isInAlarm = alarm.In == alarm.Condition
 
-        timer = await memory.timer.ladder_execute(ExecutionContext(RungStatus=isInAlarm))
+        timer = await memory.timer.ladder_execute(ExecutionContext(RLL=RLLContext(RungStatus=isInAlarm)))
 
         if isInAlarm:
             if timer.DN:
@@ -192,10 +192,10 @@ class ALMA(Instruction):
                 isInLAlarm = alarm.LEnabled and alarm.In < alarm.LLimit
                 isInLLAlarm = alarm.LLEnabled and alarm.In < alarm.LLLimit
 
-        HHTimer = await memory.HHTimer.ladder_execute(ExecutionContext(RungStatus=isInHHAlarm))
-        HTimer = await memory.HTimer.ladder_execute(ExecutionContext(RungStatus=isInHAlarm))
-        LTimer = await memory.LTimer.ladder_execute(ExecutionContext(RungStatus=isInLAlarm))
-        LLTimer = await memory.LLTimer.ladder_execute(ExecutionContext(RungStatus=isInLLAlarm))
+        HHTimer = await memory.HHTimer.ladder_execute(ExecutionContext(RLL=RLLContext(RungStatus=isInHHAlarm)))
+        HTimer = await memory.HTimer.ladder_execute(ExecutionContext(RLL=RLLContext(RungStatus=isInHAlarm)))
+        LTimer = await memory.LTimer.ladder_execute(ExecutionContext(RLL=RLLContext(RungStatus=isInLAlarm)))
+        LLTimer = await memory.LLTimer.ladder_execute(ExecutionContext(RLL=RLLContext(RungStatus=isInLLAlarm)))
 
         if HHTimer.DN:
             if not alarm.HHInAlarm:
