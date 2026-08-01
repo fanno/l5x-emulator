@@ -1,8 +1,7 @@
-from xml.etree.ElementTree import Element
-
-from dataclasses import dataclass, field
-
 from typing import TypeVar, Dict, ClassVar, Any, Protocol, runtime_checkable, Optional, Dict, TYPE_CHECKING
+from contextlib import contextmanager
+from xml.etree.ElementTree import Element
+from dataclasses import dataclass, field
 
 from core.objectregistry import ObjectRegistry
 from core.registry.datatyperegistry import DataTypeRegistry
@@ -10,21 +9,18 @@ from core.registry.datatyperegistry import DataTypeRegistry
 if TYPE_CHECKING:
     from engine.context import ExecutionContext
     from engine.routine import Routine
-    
 from engine.instruction import Instruction
 from engine.hierarchy import Hierarchy
 from engine.errors import PLCFaultHandler
+from engine.scan import PreScan, PostScan
+from engine.aoi.memory import AOIMemory
+from engine.context import EmulatorContext
 
 from datatypes.custom.bool import BOOL
 from datatypes.custom.dt import DT
 from datatypes.custom.numbers import LINT, DINT
 from datatypes.custom.string import STRING
 from datatypes.custom.array import Array
-
-from engine.scan import PreScan, PostScan
-
-from engine.aoi.memory import AOIMemory
-from contextlib import contextmanager
 
 TT = TypeVar("TT", bound=type)
 
@@ -119,19 +115,19 @@ class AOI():
             with PLCFaultHandler.minor():
                 from engine.context import ExecutionContext
                 context = ExecutionContext(ProgramRef=self)
-                context.Context = ctx.Context
 
+                emulator = EmulatorContext.get()
                 context.RungStatus = ctx.RLL.RungStatus
 
-                if context.Context.preScan:
+                if emulator.preScan:
                     if self.ExecutePrescan:
                         if "Prescan" in self.Routines:
-                            with PreScan.scope(context.Context):
+                            with PreScan.scope(emulator):
                                 await self.Routines["Prescan"].execute(context)
-                elif context.Context.preScan:
+                elif emulator.preScan:
                     if self.ExecutePostscan:
                         if "Postscan" in self.Routines:
-                            with PostScan.scope(context.Context):
+                            with PostScan.scope(emulator):
                                 await self.Routines["Postscan"].execute(context)
                 elif not context.RungStatus:
                     if self.ExecuteEnableInFalse:
@@ -146,8 +142,8 @@ class AOIRegistry:
 
     @staticmethod
     def register(cls: AOI) -> None:
-        if cls.Name in AOIRegistry._registry:
-            raise ValueError(f"AOI {cls.Name} already registered")
+        #if cls.Name in AOIRegistry._registry:
+        #    raise ValueError(f"AOI {cls.Name} already registered")
         AOIRegistry._registry[cls.Name] = cls
 
     @staticmethod
@@ -210,6 +206,10 @@ class AOIRegistry:
     @staticmethod
     def get(name:str) -> AOI:
         return AOIRegistry._registry[name]
+    
+    @staticmethod
+    def clear() -> None:
+        AOIRegistry._registry = {}
 
 class AOI_CLASS(Instruction):
     aoiObject:AOI

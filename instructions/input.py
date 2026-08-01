@@ -1,25 +1,24 @@
+from typing import List
+
+from core.registry.instructionregistry import InstructionRegistry
+from core.system import PLCSYSTEM
+from core.controller import ProductCodes
+
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
-from core.registry.instructionregistry import InstructionRegistry
-
 from engine.aoi.aoi import AOIRegistry
+from engine.helper import CurrentProgramName, CurrentTaskName
+from engine.context import EmulatorContext
 
 from datatypes.custom.numbers import LINT, SINT, INT, DINT, UINT, UDINT, LINT, ULINT, USINT
 from datatypes.custom.dt import DT
-from datatypes.custom.array import Array, isarray
+from datatypes.custom.array import isarray
 from datatypes.custom.string import STRING
 from datatypes.custom.bool import BOOL
 from datatypes.custom.time import TIME32, TIME
 from datatypes.custom.datavariant import DataVariant
 
-from core.system import PLCSYSTEM
-from core.controller import ProductCodes
-
-from typing import List
-
 from instructions.helper import split_to_dint
-
-from engine.helper import CurrentProgramName, CurrentTaskName
 
 @InstructionRegistry.register
 class MSG(Instruction):
@@ -117,9 +116,7 @@ class GSV(Instruction):
                                 dest.setValue(0)
                                 return
                         case 'Name':
-                            from core.emulator import Emulator
-                            from core.servicelocator import ServiceLocator
-                            emulator = ServiceLocator.get(Emulator)
+                            emulator = EmulatorContext.get()
 
                             if isinstance(dest, STRING):
                                 dest.setValue(emulator.DeviceName)
@@ -139,9 +136,7 @@ class GSV(Instruction):
                 case 'ControllerDevice':
                     dest = self.getMemory(self.args[3])
 
-                    from core.emulator import Emulator
-                    from core.servicelocator import ServiceLocator
-                    emulator = ServiceLocator.get(Emulator)
+                    emulator = EmulatorContext.get()
 
                     match attribute:
                         case 'DeviceName':
@@ -354,9 +349,7 @@ class GSV(Instruction):
                 case 'Program':
                     dest = self.getMemory(self.args[3])
 
-                    from core.emulator import Emulator
-                    from core.servicelocator import ServiceLocator
-                    emulator = ServiceLocator.get(Emulator)
+                    emulator = EmulatorContext.get()
 
                     if instance == 'THIS':
                         instance = CurrentProgramName.get()
@@ -481,9 +474,7 @@ class GSV(Instruction):
                 case 'Task':
                     dest = self.getMemory(self.args[3])
 
-                    from core.emulator import Emulator
-                    from core.servicelocator import ServiceLocator
-                    emulator = ServiceLocator.get(Emulator)
+                    emulator = EmulatorContext.get()
 
                     if instance == 'THIS':
                         instance = CurrentTaskName.get()
@@ -721,9 +712,7 @@ class SSV(Instruction):
                 case 'Message':
                     pass
                 case 'Module':
-                    from core.emulator import Emulator
-                    from core.servicelocator import ServiceLocator
-                    emulator = ServiceLocator.get(Emulator)
+                    emulator = EmulatorContext.get()
                     match attribute:
                         case 'Mode':
                             if isinstance(source, INT):
@@ -759,9 +748,7 @@ class SSV(Instruction):
                             #TODO
                             pass
                 case 'Program':
-                    from core.emulator import Emulator
-                    from core.servicelocator import ServiceLocator
-                    emulator = ServiceLocator.get(Emulator)
+                    emulator = EmulatorContext.get()
 
                     if instance == 'THIS':
                         instance = CurrentProgramName.get()
@@ -806,77 +793,74 @@ class SSV(Instruction):
                     #TODO
                     pass
                 case 'Task':
-                    from core.emulator import Emulator
-                    from core.servicelocator import ServiceLocator
-                    emulator = ServiceLocator.get(Emulator)
+                    emulator = EmulatorContext.get()
 
-                    if isinstance(emulator, Emulator):
-                        if instance == 'THIS':
-                            instance = CurrentTaskName.get()
+                    if instance == 'THIS':
+                        instance = CurrentTaskName.get()
 
-                        task = emulator.tasks[instance]
+                    task = emulator.tasks[instance]
 
-                        match attribute:
-                            case 'DisableUpdateOutputs':
-                                if isinstance(source, DINT):
-                                    task.DisableUpdateOutputs.setValue(source)
-                                    return
-                            case 'EnableTimeOut':
-                                if isinstance(source, DINT):
-                                    task.EnableTimeOut.setValue(source)
-                                    return
-                            case 'InhibitTask':
-                                if isinstance(source, DINT):
-                                    task.InhibitTask.setValue(source)
-                                    return
-                            case 'LastScanTime':
-                                if isinstance(source, (DINT, TIME32)):
-                                    task.LastScanTime.setValue(source)
-                                    return
-                            case 'MaximumInterval':
-                                if isarray(source, DINT, 2) or isarray(source, TIME32, 2):
-                                    #TODO
-                                    pass
-                                if isinstance(source, TIME):
-                                    #TODO
-                                    pass
-                            case 'MaxScanTime':
-                                if isinstance(source, (DINT, TIME32)):
-                                    task.MaxScanTime.setValue(source)
-                                    return
-                            case 'MinimumInterval':
-                                if isarray(source, DINT, 2) or isarray(source, TIME32, 2):
-                                    #TODO
-                                    pass
-                                if isinstance(source, TIME):
-                                    #TODO
-                                    pass
-                            case 'OverlapCount':
-                                if isinstance(source, DINT):
-                                    task.OverlapCount.setValue(source)
-                            case 'Priority':
-                                if isinstance(source, INT):
-                                    task.Priority.setValue(source)
-                                    return
-                            case 'Rate':
-                                if isinstance(source, DINT):
-                                    task.Rate.setValue(source)
-                                    return
-                            case 'StartTime':
-                                if isarray(source, DINT, 2):
-                                    #TODO
-                                    pass
-                                if isinstance(source, (DT, LINT)):
-                                    #TODO
-                                    pass
-                            case 'Status':
-                                if isinstance(source, INT):
-                                    task.Status.setValue(source)
-                                    return
-                            case 'Watchdog':
-                                if isinstance(source, DINT):
-                                    task.Watchdog.setValue(source)
-                                    return
+                    match attribute:
+                        case 'DisableUpdateOutputs':
+                            if isinstance(source, DINT):
+                                task.DisableUpdateOutputs.setValue(source)
+                                return
+                        case 'EnableTimeOut':
+                            if isinstance(source, DINT):
+                                task.EnableTimeOut.setValue(source)
+                                return
+                        case 'InhibitTask':
+                            if isinstance(source, DINT):
+                                task.InhibitTask.setValue(source)
+                                return
+                        case 'LastScanTime':
+                            if isinstance(source, (DINT, TIME32)):
+                                task.LastScanTime.setValue(source)
+                                return
+                        case 'MaximumInterval':
+                            if isarray(source, DINT, 2) or isarray(source, TIME32, 2):
+                                #TODO
+                                pass
+                            if isinstance(source, TIME):
+                                #TODO
+                                pass
+                        case 'MaxScanTime':
+                            if isinstance(source, (DINT, TIME32)):
+                                task.MaxScanTime.setValue(source)
+                                return
+                        case 'MinimumInterval':
+                            if isarray(source, DINT, 2) or isarray(source, TIME32, 2):
+                                #TODO
+                                pass
+                            if isinstance(source, TIME):
+                                #TODO
+                                pass
+                        case 'OverlapCount':
+                            if isinstance(source, DINT):
+                                task.OverlapCount.setValue(source)
+                        case 'Priority':
+                            if isinstance(source, INT):
+                                task.Priority.setValue(source)
+                                return
+                        case 'Rate':
+                            if isinstance(source, DINT):
+                                task.Rate.setValue(source)
+                                return
+                        case 'StartTime':
+                            if isarray(source, DINT, 2):
+                                #TODO
+                                pass
+                            if isinstance(source, (DT, LINT)):
+                                #TODO
+                                pass
+                        case 'Status':
+                            if isinstance(source, INT):
+                                task.Status.setValue(source)
+                                return
+                        case 'Watchdog':
+                            if isinstance(source, DINT):
+                                task.Watchdog.setValue(source)
+                                return
                 case 'TimeSynchronize':
                     pass
                 case 'WallClockTime':

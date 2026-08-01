@@ -1,15 +1,16 @@
 from typing import Any
-import engine.context
+
 from core.memory.memory import Memory
 
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.array import Array
 from datatypes.custom.udt import UDT
 
+import engine.context
 from engine.fbd.block import FBDBlock
-from instructions.helper import getOperand
-
 from engine.scan import PreScan, PostScan
+
+from instructions.helper import getOperand
 
 class Instruction:
     args:list[str]
@@ -45,11 +46,13 @@ class Instruction:
             self._memory.set(path)
 
     async def ladder(self, ctx:"engine.context.ExecutionContext") -> None:
-        if ctx.Context.preScan:
-            with PreScan.scope(ctx.Context):
+        emulator = engine.context.EmulatorContext.get()
+
+        if emulator.preScan:
+            with PreScan.scope(emulator):
                 await self.ladder_preScan(ctx)
-        elif ctx.Context.postScan:
-            with PostScan.scope(ctx.Context):
+        elif emulator.postScan:
+            with PostScan.scope(emulator):
                 await self.ladder_postScan(ctx)
         else:
             await self.ladder_execute(ctx)
@@ -66,11 +69,12 @@ class Instruction:
     async def fbd(self, ctx:"engine.context.ExecutionContext", block:FBDBlock) -> None:
         value:UDT = getOperand(block)
 
-        if ctx.Context.preScan:
-            with PreScan.scope(ctx.Context):
+        emulator = engine.context.EmulatorContext.get()
+        if emulator.preScan:
+            with PreScan.scope(emulator):
                 await self.fbd_preScan(ctx, block)
-        elif ctx.Context.postScan:
-            with PostScan.scope(ctx.Context):
+        elif emulator.postScan:
+            with PostScan.scope(emulator):
                 await self.fbd_postScan(ctx, block)
         else:
             await self.fbd_execute(ctx, block)
@@ -90,21 +94,23 @@ class Instruction:
         self.postScan(block.Value, ctx)
 
     async def sfc(self, ctx:"engine.context.ExecutionContext") -> None:
-        if ctx.Context.preScan:
-            with PreScan.scope(ctx.Context):
+        emulator = engine.context.EmulatorContext.get()
+        if emulator.preScan:
+            with PreScan.scope(emulator):
                 await self.sfc_preScan(ctx)
-        elif ctx.Context.postScan:
-            with PostScan.scope(ctx.Context):
+        elif emulator.postScan:
+            with PostScan.scope(emulator):
                 await self.sfc_postScan(ctx)
         else:
             await self.sfc_execute(ctx)
 
     async def st(self, ctx:"engine.context.ExecutionContext") -> None:
-        if ctx.Context.preScan:
-            with PreScan.scope(ctx.Context):
+        emulator = engine.context.EmulatorContext.get()
+        if emulator.preScan:
+            with PreScan.scope(emulator):
                 await self.st_preScan(ctx)
-        elif ctx.Context.postScan:
-            with PostScan.scope(ctx.Context):
+        elif emulator.postScan:
+            with PostScan.scope(emulator):
                 await self.st_postScan(ctx)
         else:
             await self.st_execute(ctx)

@@ -30,3 +30,7 @@ class DataPythonTypesRegistry:
     def has(name:str) -> bool:
         name = name.upper()
         return name in DataPythonTypesRegistry._Types
+
+    @staticmethod
+    def clear() -> None:
+        DataPythonTypesRegistry._registry = {}    
