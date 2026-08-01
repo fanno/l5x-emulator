@@ -1,9 +1,6 @@
 import logging
-
 from typing import Mapping, Type, Dict
-
 from dataclasses import make_dataclass, field, fields, dataclass
-
 from asyncua import ua
 
 from core.registry.datatyperegistry import DataTypeRegistry
@@ -13,7 +10,6 @@ from opcua.helpers import getUAVariantType, getPythonVariantType
 
 from datatypes.custom.array import Array
 from datatypes.custom.datavariant import DataVariant
-
 from datatypes.custom.udt import UDT
 
 class UDTBase:
@@ -107,11 +103,11 @@ class DataTypes:
 
     @staticmethod
     def add(struct:Structure) -> None:
-        if not DataTypes.has(struct.name):
-            DataTypes._dataTypes[struct.name] = struct
+        #if not DataTypes.has(struct.name):
+        DataTypes._dataTypes[struct.name] = struct
 
         if not DataTypeRegistry.has(struct.name):
-            DataTypeRegistry.register(createClassFromStructure(struct))
+            DataTypeRegistry.register_local(createClassFromStructure(struct))
 
     @staticmethod
     def getAll() -> Mapping[str, Structure]:
@@ -126,3 +122,7 @@ class DataTypes:
     def has(name:str) -> bool:
         name = name.upper()
         return name in DataTypes._dataTypes
+
+    @staticmethod
+    def clear() -> None:
+        DataTypes._dataTypes = {}

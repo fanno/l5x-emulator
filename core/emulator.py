@@ -3,13 +3,7 @@ import copy
 import asyncio
 import threading
 import time
-
-import instructions
-import datatypes
-import modules
-
 from queue import Queue
-
 from typing import Dict, Union
 from xml.etree.ElementTree import Element, parse
 from queue import Empty
@@ -17,15 +11,15 @@ from asyncua.common.callback import CallbackType, ServerItemCallback, CallbackSe
 from asyncua import Server
 from asyncua.ua import WriteParameters
 
+import instructions
+import datatypes
+import modules
+
 from core.datatypes import get_ua_info, DataTypes
 from core.registry.datatyperegistry import DataTypeRegistry
 from core.memory.memory import Memory, PlcMemory
 from core.memory.safetymap import SafetyMap
 from core.events import LogEvent, StatusEvent, UpdateVariableEvent
-T = Union[StatusEvent, UpdateVariableEvent]
-
-from eventbus.eventbus import EventBus, EventListener, subscribe_event
-
 from core.system import PLCSYSTEM
 from core.constants import CONTROLLERTAGS
 from core.signal import updateSignal, updateMemory
@@ -35,17 +29,22 @@ from core.xml.datatypes import loadDataTypes
 from core.xml.programs import loadPrograms
 from core.xml.aoi import loadAoiDefinition
 from core.xml.task import loadTasks
-from core.servicelocator import ServiceLocator
 from core.library.libeary import initPyInstaller, load_all_hardware, get_paths
 from core.library.hwlogic import HWLogic
 from core.log import IndentedFormatter
+
+T = Union[StatusEvent, UpdateVariableEvent]
+
+from eventbus.eventbus import EventBus, EventListener, subscribe_event
+
 from engine.context import EmulatorContext
-from opcua.structure import Structure, StructureField
-from opcua.tag import OpcuaTag
-from opcua.mapping import Mapping
 from engine.program import Program
 from engine.task import Task
 from engine.errors import PLCFaultHandler
+
+from opcua.structure import Structure, StructureField
+from opcua.tag import OpcuaTag
+from opcua.mapping import Mapping
 
 from datatypes.custom.module import MODULE
 from datatypes.custom.string import STRING
@@ -88,13 +87,30 @@ class Emulator(threading.Thread):
     safetyMap:SafetyMap
 
     context:EmulatorContext
+
+    preScan:bool = False
+    postScan:bool = False
+
     eventlistenet: EventListener
 
     useOPCUA:bool = False
     
     def __init__(self, path:str, port:int=4840):
         super().__init__()
-        self.context = EmulatorContext(True)
+
+        DataTypes.clear()
+        from engine.aoi.aoi import AOIRegistry
+        AOIRegistry.clear()
+        from core.registry.instructionregistry import InstructionRegistry
+        InstructionRegistry.clear_local()
+        from core.registry.datatyperegistry import DataTypeRegistry
+        DataTypeRegistry.clear_local()
+        from core.registry.datauatypesregistry import DataUATypesRegistry
+        DataUATypesRegistry.clear()
+        from core.registry.datapythontypesregistry import DataPythonTypesRegistry
+        DataPythonTypesRegistry.clear()
+
+        self._is_running = False
 
         initPyInstaller()
 
@@ -108,6 +124,7 @@ class Emulator(threading.Thread):
         self._server = Server()
         self.safetyMap = SafetyMap()
         self.preScan = True
+        self.postScan = False
 
         self.eventlistenet = EventListener(self)
 
@@ -142,16 +159,11 @@ class Emulator(threading.Thread):
         self.memory = Memory(NAME=self.NAME)
         PlcMemory.addContainer(self.memory)
 
-    def __post_init__(self):
-        pass
-
     def setParameters(self):
         self.ProcessorType = STRING(self.controller.get("ProcessorType", ""))
         self.DeviceName = STRING(self.controller.get("Name", ""))
 
     def run(self):
-        ServiceLocator.register(self)
-
         self._loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self._loop)
 
@@ -163,11 +175,10 @@ class Emulator(threading.Thread):
             pass
 
     async def _main(self):
+        EmulatorContext.set(self)
         self._is_running = True
         await self.init()
-
         await self._server.start()
-
         logging.info("Application started")
         logging.info(f"Server running at: {self._endpoint}")
         difTimeMax:float = 0.0
@@ -210,8 +221,11 @@ class Emulator(threading.Thread):
                     if difTime < scanDelayTime:
                         await asyncio.sleep(scanDelayTime-difTime)
             except Exception as e:
+                await self._server.stop()
                 logging.exception(e)
                 break
+        self._is_running = False
+        await self._server.stop()
 
     async def init(self):
         self._server.set_endpoint(self._endpoint)
@@ -318,13 +332,13 @@ class Emulator(threading.Thread):
             setMemory(safety, getMemory(standart, OutputType.PLC))
 
         for tname, task in self.tasks.items():
-            await task.execute(programs=self.programs, context=self.context)
+            await task.execute(programs=self.programs)
 
-        if self.context.preScan:
-            self.context.preScan = False
+        if self.preScan:
+            self.preScan = False
             setMemory("S:FS", True)
-        elif self.context.postScan:
-            self.context.postScan = False
+        elif self.postScan:
+            self.postScan = False
         else:
             setMemory("S:FS", False)
 
@@ -351,3 +365,6 @@ class Emulator(threading.Thread):
 
     def stop(self):
         self._is_running = False
+
+    def shutdown(self):
+        self.stop()

@@ -1,8 +1,7 @@
-import logging
-
-from engine.context import ExecutionContext
-from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
+
+from engine.context import ExecutionContext, EmulatorContext
+from engine.instruction import Instruction
 
 @InstructionRegistry.register
 class JMP(Instruction):
@@ -88,7 +87,8 @@ class RET(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RLL.RungStatus:
-            if not ctx.Context.preScan and not ctx.Context.preScan :
+            emulator = EmulatorContext.get()
+            if not emulator.preScan and not emulator.preScan :
                 ctx.ReturnArgs = []
                 for i, key in enumerate(self.args):
                     ctx.ReturnArgs.append(self.getMemory(key))
@@ -138,8 +138,6 @@ class EVENT(Instruction):
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         name = self.args[0]
 
-        from core.emulator import Emulator
-        from core.servicelocator import ServiceLocator
-        emulator = ServiceLocator.get(Emulator)
+        emulator = EmulatorContext.get()
 
         await emulator.tasks[name].execute(programs=emulator.programs, instruction=True)

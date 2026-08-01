@@ -30,5 +30,5 @@ async def loadAoiDefinition(controller:Element, opcua:OpcuaTag):
 
         DataTypes.add(struct)
 
-        InstructionRegistry.register(AOI_CLASS, name)
+        InstructionRegistry.register_local(AOI_CLASS, name)
     await opcua.createDataTypes()

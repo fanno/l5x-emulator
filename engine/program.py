@@ -129,45 +129,43 @@ class Program():
             if self.MAXSCANTIME < diff:
                 self.MAXSCANTIME.setValue(diff)
 
-    async def execute(self, context:"engine.context.EmulatorContext" = None):
+    async def execute(self):
         with Hierarchy.scope(self.Name):
             with PLCFaultHandler.minor():
-                if context is None:
-                    context = engine.context.EmulatorContext()
                 if self.DisableFlag == 0:
                     if self.Type != 'EquipmentPhase':
                         if self.MainRoutineName in self.Routines:
-                            ctx = await self.run(self.MainRoutineName, context)
+                            ctx = await self.run(self.MainRoutineName)
                     else:
                         from instructions.phase import PhaseStates, changeState
 
                         if self.PreStateRoutineName:
-                            await self.run(self.PreStateRoutineName, context)
+                            await self.run(self.PreStateRoutineName)
 
                         PSC = PhaseStates.Unchanged
                         if not self.phase.Paused:
                             if self.phase.Resetting:
-                                ctx = await self.run('Resetting', context)
+                                ctx = await self.run('Resetting')
                                 if self.pcs('Resetting', ctx):
                                     PSC = PhaseStates.Idle
                             elif self.phase.Running:
-                                ctx = await self.run('Running', context)
+                                ctx = await self.run('Running')
                                 if self.pcs('Resetting', ctx):
                                     PSC = PhaseStates.Complete
                             elif self.phase.Holding:
-                                ctx = await self.run('Holding', context)
+                                ctx = await self.run('Holding')
                                 if self.pcs('Resetting', ctx):
                                     PSC = PhaseStates.Held
                             elif self.phase.Restarting:
-                                ctx = await self.run('Restarting', context)
+                                ctx = await self.run('Restarting')
                                 if self.pcs('Resetting', ctx):
                                     PSC = PhaseStates.Running
                             elif self.phase.Stopping:
-                                ctx = await self.run('Stopping', context)
+                                ctx = await self.run('Stopping')
                                 if self.pcs('Resetting', ctx):
                                     PSC = PhaseStates.Stopped
                             elif self.phase.Aborting:
-                                ctx = await self.run('Aborting', context)
+                                ctx = await self.run('Aborting')
                                 if self.pcs('Resetting', ctx):
                                     PSC = PhaseStates.Aborted
 
@@ -176,10 +174,10 @@ class Program():
                     self.LASTSCANTIME.setValue(0)
                     self.MAXSCANTIME.setValue(0)
 
-    async def run(self, name:str, context:"engine.context.EmulatorContext" = None) -> "engine.context.ExecutionContext":
+    async def run(self, name:str) -> "engine.context.ExecutionContext":
         async with self.program_context(), self.program_time():
             from engine.context import ExecutionContext
-            ctx = ExecutionContext(ProgramRef=self, Context=context)
+            ctx = ExecutionContext(ProgramRef=self)
             await self.Routines[name].execute(ctx=ctx)
             return ctx
 

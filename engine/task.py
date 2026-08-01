@@ -1,23 +1,18 @@
-import logging
-
-import time
+from typing import Dict
 
 from contextlib import asynccontextmanager
 
 from xml.etree.ElementTree import Element
 
-from typing import Dict
-
 from dataclasses import dataclass, field
 
-from engine.program import Program
+from core.timebase import getTimeMonotonic
 
+from engine.program import Program
 from engine.helper import CurrentTaskName
 from engine.hierarchy import Hierarchy
 from engine.errors import PLCFaultHandler
-
 from engine.context import EmulatorContext
-from core.timebase import getTimeMonotonic
 
 from datatypes.custom.numbers import DINT, INT
 from datatypes.custom.bool import BOOL
@@ -111,16 +106,19 @@ class Task():
             if self.MaxScanTime < diff:
                 self.MaxScanTime.setValue(diff)
 
-    async def execute(self, programs:Dict[str, Program], context:EmulatorContext = EmulatorContext(), instruction:bool = False):
+    async def execute(self, programs:Dict[str, Program], instruction:bool = False):
         with Hierarchy.scope(self.Name):
             with PLCFaultHandler.minor():
                 if self.InhibitTask == 0:
                     self.StartTime = DT()
 
                     run = False
-                    if context is not None and (context.preScan or context.postScan):
+                    emulator = EmulatorContext.get()
+                    
+                    if emulator.preScan or emulator.postScan:
                         run = True
-                    else:
+
+                    if not run:
                         if self.Type == "CONTINUOUS":
                             run = True
                         elif self.Type == "PERIODIC":
@@ -135,4 +133,4 @@ class Task():
                     if run:
                         async with self.task_context(), self.task_time():
                             for program in self._programs:
-                                await programs[program].execute(context=context)
+                                await programs[program].execute()

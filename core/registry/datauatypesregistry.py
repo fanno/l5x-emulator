@@ -34,3 +34,7 @@ class DataUATypesRegistry:
     def has(name:str) -> bool:
         name = name.upper()
         return name in DataUATypesRegistry._Types
+
+    @staticmethod
+    def clear() -> None:
+        DataUATypesRegistry._registry = {}    
