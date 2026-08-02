@@ -94,19 +94,6 @@ class Task():
         finally:
             CurrentTaskName.reset(token)
 
-    @asynccontextmanager
-    async def task_time(self):
-        start = getTimeMonotonic()
-        try:
-            yield
-        finally:
-            end = getTimeMonotonic()
-            diff = end - start
-            
-            self.LastScanTime.setValue(diff)
-            if self.MaxScanTime < diff:
-                self.MaxScanTime.setValue(diff)
-
     async def execute(self, programs:Dict[str, Program], instruction:bool = False):
         with Hierarchy.scope(self.Name):
             with PLCFaultHandler.minor():
@@ -134,7 +121,6 @@ class Task():
                     if run:
                         timer = ExecutionTimer()
                         with timer:
-                            #async with self.task_context(), self.task_time():
                             async with self.task_context():
                                 for program in self._programs:
                                     await programs[program].execute()
