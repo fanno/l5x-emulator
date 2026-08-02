@@ -19,7 +19,7 @@ from core.datatypes import get_ua_info, DataTypes
 from core.registry.datatyperegistry import DataTypeRegistry
 from core.memory.memory import Memory, PlcMemory
 from core.memory.safetymap import SafetyMap
-from core.events import LogEvent, StatusEvent, UpdateVariableEvent
+from core.events import LogEvent, StatusEvent, UpdateVariableEvent, StatusScan
 from core.system import PLCSYSTEM
 from core.constants import CONTROLLERTAGS
 from core.signal import updateSignal, updateMemory
@@ -41,6 +41,7 @@ from engine.context import EmulatorContext
 from engine.program import Program
 from engine.task import Task
 from engine.errors import PLCFaultHandler
+from engine.executiontimer import ExecutionTimer
 
 from opcua.structure import Structure, StructureField
 from opcua.tag import OpcuaTag
@@ -90,6 +91,7 @@ class Emulator(threading.Thread):
 
     preScan:bool = False
     postScan:bool = False
+    scanCount:int = 0
 
     eventlistenet: EventListener
 
@@ -183,22 +185,24 @@ class Emulator(threading.Thread):
         logging.info(f"Server running at: {self._endpoint}")
         difTimeMax:float = 0.0
         lastDrawUi:float = 0.0
-        scanCount:int = 0
+        scanDelayTime:float = 0.0
 
         while self._is_running:
             try:
                 with PLCFaultHandler.major():
-                    startTime = time.monotonic()
-                    await self.mainloop()
-                    scanCount += 1
-                    endTime = time.monotonic()
-                    difTime = endTime - startTime
+                    timer = ExecutionTimer()
+                    with timer:
+                        await self.mainloop()
+                        
+                    scanDelayTime = 0.0
 
-                    if (difTime > difTimeMax):
-                        difTimeMax = difTime
+                    if not self.preScan and not self.postScan:
+                        if (timer.elapsed > difTimeMax):
+                            difTimeMax = timer.elapsed
 
-                    scanDelayTime = difTimeMax * self._throttle
-                    if lastDrawUi < startTime:
+                        scanDelayTime = difTimeMax * self._throttle
+
+                    if lastDrawUi < timer.start:
                         data = {}
 
                         data[PLCSYSTEM.NAME] = copy.deepcopy(PLCSYSTEM.memory.getMemoryAll())
@@ -206,21 +210,24 @@ class Emulator(threading.Thread):
                         for pname, program in self.programs.items():
                             data[program.Name] = copy.deepcopy(program.memory.getMemoryAll())
 
+                        taskStatus:dict[str, StatusScan] = {}
+                        for tname, task in self.tasks.items():
+                            taskStatus[tname] = StatusScan(Max=task.MaxScanTime.getPLCValue()/1000000, Last=task.LastScanTime.getPLCValue()/1000000, Count=task.scanCount)
+
                         EventBus.get().dispatch(StatusEvent(Runing=True,
-                                                ScanCurrent=difTime,
+                                                Scan=StatusScan(Max=difTimeMax, Last=timer.elapsed, Count=self.scanCount),
+                                                Tasks=taskStatus,
                                                 ScanDelayed=scanDelayTime,
-                                                ScanMax=difTimeMax,
                                                 ControllerName=self.DeviceName.getPLCValue(),
                                                 ControllerType=self.ProcessorType.getPLCValue(),
                                                 EndPoint=self._endpoint,
-                                                ScanCount=scanCount,
                                                 Tags=data))
+                        lastDrawUi = timer.start + 1
 
-                        lastDrawUi = startTime + 1
-
-                    if difTime < scanDelayTime:
-                        await asyncio.sleep(scanDelayTime-difTime)
+                    if timer.elapsed < scanDelayTime:
+                        await asyncio.sleep(scanDelayTime-timer.elapsed)
             except Exception as e:
+                print(e)
                 await self._server.stop()
                 logging.exception(e)
                 break
@@ -340,6 +347,7 @@ class Emulator(threading.Thread):
         elif self.postScan:
             self.postScan = False
         else:
+            self.scanCount += 1
             setMemory("S:FS", False)
 
         for name, modulesLogic in self.modulesLogic.items():

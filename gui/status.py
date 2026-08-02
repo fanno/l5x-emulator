@@ -33,11 +33,18 @@ class StatusText(UpdatingScrolledText):
         update = super().updateContent()
         if update and self.winfo_viewable():
             if status.Runing:
-                text = f"Scan time current (Sec): {status.ScanCurrent:.3f} ({status.ScanDelayed:.3f})"
-                text += f"\nScan time longest (Sec): {status.ScanMax:.3f}"
-                text += f"\nScan count (number of plc scan): {status.ScanCount}"
-                text += f"\n\nMemory current (MB): {current:.2f}"
-                text += f"\nMemory max (MB): {self._peak:.2f}"
+                text = f"------------------ Total scan ------------------\n"
+                text += f"Time current (Sec): {status.Scan.Last:.4f} ({status.ScanDelayed:.4f})\n"
+                text += f"Time longest (Sec): {status.Scan.Max:.4f}\n"
+                text += f"Count (number of plc scan): {status.Scan.Count}\n"
+                for tname, task in status.Tasks.items():
+                    text += f"------------------ {tname} ------------------\n"
+                    text += f"Time current (Sec): {task.Last:.4f}\n"
+                    text += f"Time longest (Sec): {task.Max:.4f}\n"
+                    text += f"Count (number of plc scan): {task.Count}\n"
+                text += f"------------------------------------------------\n"
+                text += f"Memory current (MB): {current:.2f}\n"
+                text += f"Memory max (MB): {self._peak:.2f}\n"
             else:
                 text = f"Initializing OPC UA server..."
             

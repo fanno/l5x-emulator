@@ -13,6 +13,7 @@ from engine.helper import CurrentTaskName
 from engine.hierarchy import Hierarchy
 from engine.errors import PLCFaultHandler
 from engine.context import EmulatorContext
+from engine.executiontimer import ExecutionTimer
 
 from datatypes.custom.numbers import DINT, INT
 from datatypes.custom.bool import BOOL
@@ -53,7 +54,7 @@ class Task():
     StartTime:DT = field(init=False, default_factory=DT)
     Status:DINT = field(init=False, default_factory=DINT)
     Watchdog:DINT = field(init=False, default_factory=DINT)
-
+    scanCount:int = 0
     _lastRun:DT = field(init=False, default_factory=DT)
 
     EventInfo:"EventInfo" = field(init=False, default_factory=DINT)
@@ -131,6 +132,15 @@ class Task():
                         if run:
                             self._lastRun = self.StartTime
                     if run:
-                        async with self.task_context(), self.task_time():
-                            for program in self._programs:
-                                await programs[program].execute()
+                        timer = ExecutionTimer()
+                        with timer:
+                            #async with self.task_context(), self.task_time():
+                            async with self.task_context():
+                                for program in self._programs:
+                                    await programs[program].execute()
+                        diff = timer.getInt()
+                        self.LastScanTime.setValue(diff)
+                        if self.MaxScanTime < diff:
+                            self.MaxScanTime.setValue(diff)
+                        if not emulator.preScan and not emulator.postScan:
+                            self.scanCount += 1

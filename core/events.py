@@ -16,12 +16,17 @@ class UpdateVariableEvent():
     new_value: Any
 
 @dataclass
+class StatusScan():
+    Max:float = field(init=True, default=0.0)
+    Last:float = field(init=True, default=0.0)
+    Count:int = field(init=True, default=0)
+
+@dataclass
 class StatusEvent():
     EndPoint:float = field(init=True)
-
+    Scan:StatusScan = field(init=True, default_factory=StatusScan)
+    Tasks:dict[str, StatusScan] = field(init=True, default_factory=dict)
     Runing:bool = field(init=True, default=False)
-    ScanMax:float = field(init=True, default=0.0)
-    ScanCurrent:float = field(init=True, default=0.0)
     ScanDelayed:float = field(init=True, default=0.0)
     ControllerName:str = field(init=True, default="")
     ControllerType:bool = field(init=True, default="")
