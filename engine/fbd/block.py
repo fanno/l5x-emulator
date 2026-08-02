@@ -37,14 +37,15 @@ class FBDBlock:
     outParams: Dict[str, Wire] = field(init=False, default_factory=dict)
 
     def __post_init__(self):
-        self.ID = int(self._Element.get('ID', '-1'))
-        self.X = int(self._Element.get('X', '0'))
-        self.Y = int(self._Element.get('Y', '0'))
-        self.Function = self._Element.get('Type', None)
-        self.Operand = self._Element.get('Operand', None)
+        if isinstance(self._Element, Element):
+            self.ID = int(self._Element.get('ID', '-1'))
+            self.X = int(self._Element.get('X', '0'))
+            self.Y = int(self._Element.get('Y', '0'))
+            self.Function = self._Element.get('Type', None)
+            self.Operand = self._Element.get('Operand', None)
 
-        if self._Type in ('ICon', 'OCon'):
-            self.Signal = self._Element.get('Name', None)
+            if self._Type in ('ICon', 'OCon'):
+                self.Signal = self._Element.get('Name', None)
 
         from core.registry.instructionregistry import InstructionRegistry
 

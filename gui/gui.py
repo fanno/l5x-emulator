@@ -62,7 +62,6 @@ class Gui():
             from tkinter import messagebox
             import traceback
             messagebox.showerror("Error", traceback.format_exc())
-            logging.e
 
     def createMenu(self):
         self.menu_bar = MenuFrame(self._root)

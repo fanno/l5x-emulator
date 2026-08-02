@@ -26,7 +26,6 @@ def getHook(name):
 
 def setHook(name, value):
     from core.memory.helper import setMemory
-
     setMemory(name, value)
 
 def build_exec_env(ctx: "ExecutionContext") -> dict:

@@ -172,6 +172,8 @@ class Emulator(threading.Thread):
         try:
             self._loop.run_until_complete(self._main())
         except Exception as e:
+            import traceback
+            print(traceback.format_exc())
             logging.exception("An error occurred, in the server thread")
         finally:
             pass
@@ -227,7 +229,8 @@ class Emulator(threading.Thread):
                     if timer.elapsed < scanDelayTime:
                         await asyncio.sleep(scanDelayTime-timer.elapsed)
             except Exception as e:
-                print(e)
+                import traceback
+                print(traceback.format_exc())
                 await self._server.stop()
                 logging.exception(e)
                 break
@@ -331,7 +334,7 @@ class Emulator(threading.Thread):
 
     async def mainloop(self):
         from core.memory.helper import setMemory, getMemory, OutputType
-        await self.ReadOPCUA()
+        #await self.ReadOPCUA()
 
         self.processQueue()
 
@@ -353,7 +356,7 @@ class Emulator(threading.Thread):
         for name, modulesLogic in self.modulesLogic.items():
             modulesLogic.update(name, self.memory)
 
-        await self.UpdateOPCUA()
+        #await self.UpdateOPCUA()
 
     def CallbackTypePostWrite(self, event:ServerItemCallback, dispatcher:CallbackService):
         if event.is_external:

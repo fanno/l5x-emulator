@@ -80,8 +80,9 @@ class Program():
 
         self.opcua = OpcuaTag(NAME=self.Name, SERVER=self.server)
 
-        self.MainRoutineName = self._Element.get("MainRoutineName", None)
-        self.Class = self._Element.get("Class", None)
+        if isinstance(self._Element, Element):
+            self.MainRoutineName = self._Element.get("MainRoutineName", None)
+            self.Class = self._Element.get("Class", None)
 
     async def init(self):
         from engine.routine import Routine

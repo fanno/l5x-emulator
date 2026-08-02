@@ -26,15 +26,18 @@ class ST:
     def __post_init__(self):
         self.block_stack = []
         self.lines = []
-        for line in self._Element.findall("./Line"):
-            self.lines.append(line.text.strip())
+        if isinstance(self._Element, Element):
+            for line in self._Element.findall("./Line"):
+                self.lines.append(line.text.strip())
 
-    def getPython(self):
+    def getPython(self, isReturn:bool = False):
         try:
             from engine.st.hooks import make_async_st
 
             result = ST.normalizeST(self.lines)
             result = self.createPython(result)
+            if isReturn:
+                result = "return " + result
             return make_async_st(result)
         except Exception as e:
             raise AssertionError(f"Parsing Error: {self.Name}").with_traceback(e.__traceback__)

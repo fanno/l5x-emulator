@@ -28,7 +28,7 @@ class EventInfo():
     EventTrigger:STRING = field(init=False, default_factory=STRING)
     EnableTimeout:BOOL = field(init=False, default_factory=BOOL)
     def __post_init__(self):
-        if self._Element is not None:
+        if isinstance(self._Element, Element):
             self.EventTrigger = STRING(self._Element.get("EventTrigger", None))
             self.EnableTimeout = STRING(self._Element.get("EnableTimeout", None))
 

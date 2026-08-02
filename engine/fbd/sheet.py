@@ -23,7 +23,7 @@ class Sheet:
     execution_order:list[int] = field(init=False, default_factory=list)
 
     def __post_init__(self):
-        if self._Element:
+        if isinstance(self._Element, Element):
             self.Number = int(self._Element.get('Number', '0'))
 
             # Blocks
@@ -57,8 +57,8 @@ class Sheet:
             for elem in self._Element.findall('.//FeedbackWire'):
                 self.wires.append(Wire(elem))
 
-            for block in self.blocks.values():
-                block.bindWire(self.wires)
+        for block in self.blocks.values():
+            block.bindWire(self.wires)
 
         self.topological_sort()
 

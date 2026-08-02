@@ -166,7 +166,6 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
     
     if result is None:
         raise MemoryException("getMemory", pathRaw)
-    
     return result    
 
 def setMemory(path:list[str] | str, value):

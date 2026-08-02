@@ -19,10 +19,11 @@ class Wire:
     _idx: int = 1
 
     def __post_init__(self):
-        self.ID = Wire._idx
-        Wire._idx += 1
+        if isinstance(self._Element, Element):
+            self.ID = Wire._idx
+            Wire._idx += 1
 
-        self.FromID = int(self._Element.get('FromID', '-1'))
-        self.ToID = int(self._Element.get('ToID', '-1'))
-        self.ToParam = self._Element.get('ToParam', None)
-        self.FromParam = self._Element.get('FromParam', None)
+            self.FromID = int(self._Element.get('FromID', '-1'))
+            self.ToID = int(self._Element.get('ToID', '-1'))
+            self.ToParam = self._Element.get('ToParam', None)
+            self.FromParam = self._Element.get('FromParam', None)

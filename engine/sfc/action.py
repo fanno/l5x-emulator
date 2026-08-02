@@ -2,9 +2,7 @@ from xml.etree.ElementTree import Element
 
 from dataclasses import dataclass, field
 
-from datatypes.custom.datavariant import DataVariant
-from datatypes.custom.array import Array
-from datatypes.custom.udt import UDT
+from datatypes.sfc import SFC_ACTION
 
 from core.memory.helper import getMemory
 
@@ -17,13 +15,13 @@ class Action:
 
     ID: int = field(init=False, default=None)
     Operand: str = field(init=False, default=None)
-    Value:DataVariant|Array|UDT = field(init=False, default=None)
+    Value:SFC_ACTION = field(init=False, default=None)
     PresetUsesExpr: bool = field(init=False, default=False)
     IsBoolean: bool = field(init=False, default=False)
     Qualifier: str = field(init=False, default=None)
 
     def __post_init__(self):
-        if self._Element:
+        if isinstance(self._Element, Element):
             self.ID = int(self._Element.get('ID'))
             self.Operand = self._Element.get('Operand')
             self.Qualifier = self._Element.get('Qualifier')
@@ -38,9 +36,8 @@ class Action:
         if not self.Value:
             self.Value = getMemory(self.Operand)
 
-        #TODO: do action
         from engine.st.hooks import run_exec_env
 
-        await run_exec_env(self.ST, ctx, self.Name, False)
+        await run_exec_env(self.ST, ctx, f"Action: {self.ID}", False)
 
 

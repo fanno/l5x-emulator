@@ -45,38 +45,39 @@ class Routine:
     Signals:Optional[dict[str, DataVariant|Array|UDT]] = field(init=False, default_factory=lambda: {})
     
     def __post_init__(self):
-        self.Name = self._Element.get("Name", None)
-        self.Type = RoutineType[self._Element.get("Type", None)]
-        if self.Type == RoutineType.RLL:
-            line = 1
-            for rung in self._Element.findall("./RLLContent//Rung"):
-                text = rung.find("Text", None)
-                if text is not None:
-                    self.Rungs.append(Rung(Text=text.text, Line=line))
-                line  += 1
-        elif self.Type == RoutineType.ST:
-            content = self._Element.find("./STContent")
-            st = ST(content)
-            self.ST = st.getPython()
-        elif self.Type == RoutineType.FBD:
-            for sheet in self._Element.findall("./FBDContent//Sheet"):
-                self.Sheets.append(Sheet(sheet))
+        if isinstance(self._Element, Element):
+            self.Name = self._Element.get("Name", None)
+            self.Type = RoutineType[self._Element.get("Type", None)]
+            if self.Type == RoutineType.RLL:
+                line = 1
+                for rung in self._Element.findall("./RLLContent//Rung"):
+                    text = rung.find("Text", None)
+                    if text is not None:
+                        self.Rungs.append(Rung(Text=text.text, Line=line))
+                    line  += 1
+            elif self.Type == RoutineType.ST:
+                content = self._Element.find(".//STContent")
+                st = ST(content)
+                self.ST = st.getPython()
+            elif self.Type == RoutineType.FBD:
+                for sheet in self._Element.findall("./FBDContent//Sheet"):
+                    self.Sheets.append(Sheet(sheet))
 
-            for sheet in self.Sheets:
-                for idx, block in sheet.blocks.items():
-                    if block.Signal:
-                        self.Signals[block.Signal] = block
-        elif self.Type == RoutineType.SFC:
-            content = self._Element.find("./SFCContent")
+                for sheet in self.Sheets:
+                    for idx, block in sheet.blocks.items():
+                        if block.Signal:
+                            self.Signals[block.Signal] = block
+            elif self.Type == RoutineType.SFC:
+                content = self._Element.find(".//SFCContent")
 
-            self._SFC = SFC(content)
+                self._SFC = SFC(content)
 
     async def execute(self, ctx:"engine.context.ExecutionContext"):
         with Hierarchy.scope(self.Name):
             with PLCFaultHandler.minor():
                 ctx.RoutineRef = self
                 ctx.Type = self.Type
-                
+
                 match self.Type:
                     case RoutineType.RLL:
                         runRoutine = True
@@ -105,6 +106,6 @@ class Routine:
                         ctx.SFC.Paused = self.SFCPaused
                         ctx.SFC.Resuming = self.SFCResuming
                         ctx.SFC.Step = self.SFCStep
-
+                        
                         if ctx.SFC.Paused == 0:
-                            self._SFC.execute()
+                            await self._SFC.execute(ctx)

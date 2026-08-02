@@ -24,10 +24,11 @@ class MODULEPORT():
     Upstream:BOOL = field(init=False, default_factory=BOOL)
     
     def __post_init__(self):
-        self.Id = DINT(self._Element.get("Id", 0))
-        self.Address = STRING(self._Element.get("Address", ""))
-        self.Type = STRING(self._Element.get("Type", ""))
-        self.Upstream = BOOL(self._Element.get("Upstream", False))
+        if isinstance(self._Element, Element):
+            self.Id = DINT(self._Element.get("Id", 0))
+            self.Address = STRING(self._Element.get("Address", ""))
+            self.Type = STRING(self._Element.get("Type", ""))
+            self.Upstream = BOOL(self._Element.get("Upstream", False))
 
 @DataTypeRegistry.register
 @dataclass

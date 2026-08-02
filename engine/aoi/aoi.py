@@ -44,9 +44,10 @@ class Local():
     Dimensions:int = field(init=False)
 
     def __post_init__(self):
-        self.Name = self._Element.get("Name")
-        self.DataType = self._Element.get("DataType")
-        self.Dimensions = int(self._Element.get("Dimensions", "0"))
+        if isinstance(self._Element, Element):
+            self.Name = self._Element.get("Name")
+            self.DataType = self._Element.get("DataType")
+            self.Dimensions = int(self._Element.get("Dimensions", "0"))
 
     def getVariable(self) -> Any:
         cls = DataTypeRegistry.get(self.DataType)
