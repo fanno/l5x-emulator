@@ -1,5 +1,5 @@
 from datatypes.custom.datavariant import DataVariant
-from engine.context import ExecutionContext
+import engine.context
 from engine.hierarchy import Hierarchy
 from engine.errors import PLCFaultHandler
 
@@ -28,7 +28,7 @@ def setHook(name, value):
     from core.memory.helper import setMemory
     setMemory(name, value)
 
-def build_exec_env(ctx: "ExecutionContext") -> dict:
+def build_exec_env(ctx: "engine.context.ExecutionContext") -> dict:
     from core.registry.instructionregistry import InstructionRegistry
     from engine.instruction import Instruction
 
@@ -44,7 +44,7 @@ def build_exec_env(ctx: "ExecutionContext") -> dict:
         "call": callHook,
     }
 
-async def run_exec_env(expression:str, ctx: "ExecutionContext", error_tag:str, make_st:bool=True) -> Any:
+async def run_exec_env(expression:str, ctx: "engine.context.ExecutionContext", error_tag:str, make_st:bool=True) -> Any:
     original = expression
     exec_env = build_exec_env(ctx)   
     if make_st:           

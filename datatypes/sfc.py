@@ -11,17 +11,13 @@ from datatypes.custom.udt import UDT
 @DataTypeRegistry.register
 @dataclass
 class SFC_ACTION(UDT):
-    LEN: DINT = field(init=False, default_factory=DINT)
-    POS: DINT = field(init=False, default_factory=DINT)
-    ERROR: DINT = field(init=False, default_factory=DINT)
-    EN: BOOL = field(init=False, default_factory=BOOL)
-    EU: BOOL = field(init=False, default_factory=BOOL)
-    DN: BOOL = field(init=False, default_factory=BOOL)
-    EM: BOOL = field(init=False, default_factory=BOOL)
-    ER: BOOL = field(init=False, default_factory=BOOL)
-    UL: BOOL = field(init=False, default_factory=BOOL)
-    RN: BOOL = field(init=False, default_factory=BOOL)
-    FD: BOOL = field(init=False, default_factory=BOOL)
+    Status: DINT = field(init=False, default_factory=DINT)
+    A: BOOL = field(init=False, default_factory=BOOL)
+    Q: BOOL = field(init=False, default_factory=BOOL)
+    PauseTimer: BOOL = field(init=False, default_factory=BOOL)
+    PRE: DINT = field(init=False, default_factory=DINT)
+    T: DINT = field(init=False, default_factory=DINT)
+    Count: DINT = field(init=False, default_factory=DINT)
 
 @DataTypeRegistry.register
 @dataclass

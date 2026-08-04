@@ -38,7 +38,7 @@ class TON(Instruction):
             memory.LAST_TIME.setValue(0)
             timer.ACC.setValue(0)
         else:
-            now = ctx.Time.now()
+            now = ctx.Time.now_ms()
             if memory.LAST_TIME == 0:
                 memory.LAST_TIME = now
             elif timer.PRE > timer.ACC:
@@ -71,7 +71,7 @@ class TOF(Instruction):
             memory.LAST_TIME.setValue(0)
             timer.ACC.setValue(0)
         else:
-            now = ctx.Time.now()
+            now = ctx.Time.now_ms()
             if memory.LAST_TIME == 0:
                 memory.LAST_TIME = now
             elif timer.PRE > timer.ACC:
@@ -102,7 +102,7 @@ class RTO(Instruction):
             memory.LAST_TIME.setValue(0)
             timer.TT.setValue(False)
         else:
-            now = ctx.Time.now()
+            now = ctx.Time.now_ms()
             if memory.LAST_TIME == 0:
                 memory.LAST_TIME = now
             if now > memory.LAST_TIME:
@@ -132,7 +132,7 @@ class TONR(Instruction):
             timer.InstructFault.setValue(False)
             timer.PresetInv.setValue(False)
             if timer.EN:
-                now = ctx.Time.now()
+                now = ctx.Time.now_ms()
                 if memory.LAST_TIME == 0:
                     memory.LAST_TIME = now
                 elif timer.PRE > timer.ACC:
@@ -165,7 +165,7 @@ class TOFR(Instruction):
             timer.InstructFault.setValue(False) #TODO
             timer.PresetInv.setValue(False) #TODO
             if not timer.EN:
-                now = ctx.Time.now()
+                now = ctx.Time.now_ms()
                 if memory.LAST_TIME == 0:
                     memory.LAST_TIME = now
                 elif timer.PRE > timer.ACC:
@@ -200,7 +200,7 @@ class RTOR(Instruction):
             timer.InstructFault.setValue(False)
             timer.PresetInv.setValue(False)
             if timer.EN:
-                now = ctx.Time.now()
+                now = ctx.Time.now_ms()
                 if memory.LAST_TIME == 0:
                     memory.LAST_TIME = now
                 elif timer.PRE > timer.ACC:

@@ -84,7 +84,7 @@ class SFC:
                     await stop.notExecute(ctx)
 
             for idx, stop in self.stops.items():
-                if idx not in self.active_steps:
+                if idx in self.active_steps:
                     await stop.execute(ctx)
 
             if ctx.SFC.Paused == 0:
@@ -100,6 +100,10 @@ class SFC:
                     if new_steps:
                         to_remove.add(step_id)
                         to_add.update(new_steps)
+            else:
+                for step_id in sorted(self.active_steps):
+                    step = self.steps[step_id]
+                    await step.paused(ctx)
 
             self.active_steps -= to_remove
             self.active_steps |= to_add
