@@ -39,6 +39,7 @@ class Step:
     outgoing: list[Transition] = field(default_factory=list)
 
     last:DINT = field(init=False, default_factory=DINT)
+    stepEnded:bool = field(init=False, default=False)
 
     def __post_init__(self):
         if isinstance(self._Element, Element):
@@ -86,6 +87,7 @@ class Step:
             await action.paused(ctx)
 
     async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
+        self.stepEnded = True
         if self.PresetUsesExpr:
             value = await run_exec_env(self.PresetExpr, ctx, f"PresetExpr: {self.ID}", False)
             self.Value.PRE.setValue(value)
@@ -135,7 +137,7 @@ class Step:
         self.Value.LS.setValue(False)
 
         for action in self.actions:
-            await action.notExecute(ctx)        
+            await action.notExecute(ctx)
 
     def addConections(self, sfc:"engine.sfc.sfc.SFC"):
         for link in sfc.links.values():
