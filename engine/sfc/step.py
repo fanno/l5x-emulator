@@ -13,6 +13,7 @@ from engine.sfc.action import Action
 from engine.sfc.transition import Transition
 import engine.sfc.sfc
 from engine.st.st import ST
+from instructions.helper import update_bit
 
 from engine.st.hooks import run_exec_env
 
@@ -39,7 +40,6 @@ class Step:
     outgoing: list[Transition] = field(default_factory=list)
 
     last:DINT = field(init=False, default_factory=DINT)
-    stepEnded:bool = field(init=False, default=False)
 
     def __post_init__(self):
         if isinstance(self._Element, Element):
@@ -87,7 +87,6 @@ class Step:
             await action.paused(ctx)
 
     async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
-        self.stepEnded = True
         if self.PresetUsesExpr:
             value = await run_exec_env(self.PresetExpr, ctx, f"PresetExpr: {self.ID}", False)
             self.Value.PRE.setValue(value)
@@ -128,6 +127,29 @@ class Step:
 
         self.Value.X.setValue(self.Value.FS or self.Value.SA or self.Value.LS)
 
+        if self.Value.AlarmEn:
+            if self.Value.LimitLow > self.Value.T:
+                self.Value.AlarmLow.setValue(True)
+            if self.Value.LimitHigh > self.Value.T:
+                self.Value.AlarmHigh.setValue(True)
+
+        self.updateStatus()
+
+    def updateStatus(self) -> None:
+        value = 0
+        value = update_bit(value, 22, self.Value.Reset)
+        value = update_bit(value, 23, self.Value.AlarmHigh)
+        value = update_bit(value, 24, self.Value.AlarmLow)
+        value = update_bit(value, 25, self.Value.AlarmEn)
+        value = update_bit(value, 26, self.Value.OV)
+        value = update_bit(value, 27, self.Value.DN)
+        value = update_bit(value, 28, self.Value.LS)
+        value = update_bit(value, 29, self.Value.SA)
+        value = update_bit(value, 30, self.Value.FS)
+        value = update_bit(value, 31, self.Value.X)
+
+        self.Value.Status.setValue(value)
+
     async def notExecute(self, ctx:"engine.context.ExecutionContext") -> None:
         self.Value.DN.setValue(False)
 
@@ -138,6 +160,8 @@ class Step:
 
         for action in self.actions:
             await action.notExecute(ctx)
+
+        self.updateStatus()
 
     def addConections(self, sfc:"engine.sfc.sfc.SFC"):
         for link in sfc.links.values():
@@ -154,15 +178,12 @@ class Step:
         self.outgoing.sort(key=lambda t: (t.X, t.Y))
 
     async def try_advance(self, ctx) -> list[int]:
-        if not self.Value.DN:
-            return []
-        new_steps = []
         for transition in self.outgoing:
             if isinstance(transition, Transition):
                 results = await transition.execute(ctx)
                 if results:
+                    new_steps = []
                     for step in results:
                         new_steps.append(step.ID)
-                    break
-                    
-        return new_steps
+                    return new_steps
+        return []

@@ -80,3 +80,9 @@ def getOperand(block:FBDBlock) -> UDT:
                 attr = getattr(operand, name)
                 attr.setValue(parm.Value)
     return operand
+
+def update_bit(value: int, bit: int, state: bool) -> int:
+    if state:
+        return value | (1 << bit)
+    else:
+        return value & ~(1 << bit)

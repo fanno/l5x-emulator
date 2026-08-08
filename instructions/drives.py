@@ -11,6 +11,8 @@ from core.memory.identity import Identity
 from datatypes.misc import PULSE_MULTIPLIER, S_CURVE, PROP_INT
 from datatypes.custom.numbers import DINT, REAL
 
+from instructions.helper import update_bit
+
 @InstructionRegistry.register
 class PMUL(Instruction):
         
@@ -56,17 +58,11 @@ class PMUL(Instruction):
                     pm.Out.setValue(raw_result)
 
             status = 0
-            if pm.WordSizeInv:
-                status |= (1 << 2)
-            if pm.OutOverflow:
-                status |= (1 << 3)
-            if pm.LostPrecision:
-                status |= (1 << 4)
-            if pm.MultiplierInv:
-                status |= (1 << 5)
-
-            if status > 0:
-                status |= (1 << 1)
+            status = update_bit(status, 2, pm.WordSizeInv)
+            status = update_bit(status, 3, pm.OutOverflow)
+            status = update_bit(status, 4, pm.LostPrecision)
+            status = update_bit(status, 5, pm.MultiplierInv)
+            status = update_bit(status, 1, status > 0)
 
             pm.InstructFault.setValue(status > 0)
             pm.Status.setValue(status)
@@ -205,25 +201,16 @@ class SCRV(Instruction):
         memory.ELAPSED_TIME.setValue(elapsed + sc.DeltaT)
 
         status = 0
-        if sc.AccelRateInv:
-            status |= (1 << 2)
-        if sc.DecelRateInv:
-            status |= (1 << 3)
-        if sc.JerkRateInv:
-            status |= (1 << 4)
-        if sc.TimingModeInv:
-            status |= (1 << 27)
-        if sc.RTSMissed:
-            status |= (1 << 28)
-        if sc.RTSTimeInv:
-            status |= (1 << 29)
-        if sc.RTSTimeStampInv:
-            status |= (1 << 30)
-        if sc.DeltaTInv:
-            status |= (1 << 31)
 
-        if status > 0:
-            status |= (1 << 1)
+        status = update_bit(status, 2, sc.AccelRateInv)
+        status = update_bit(status, 3, sc.DecelRateInv)
+        status = update_bit(status, 4, sc.JerkRateInv)
+        status = update_bit(status, 27, sc.TimingModeInv)
+        status = update_bit(status, 28, sc.RTSMissed)
+        status = update_bit(status, 29, sc.RTSTimeInv)
+        status = update_bit(status, 30, sc.RTSTimeStampInv)
+        status = update_bit(status, 31, sc.DeltaTInv)
+        status = update_bit(status, 1, status > 0)
 
         sc.InstructFault.setValue(status > 0)
         
