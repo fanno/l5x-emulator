@@ -16,6 +16,7 @@ from engine.st.st import ST
 from instructions.helper import update_bit
 
 from engine.st.hooks import run_exec_env
+import engine.context
 
 @dataclass
 class Step:
@@ -80,11 +81,13 @@ class Step:
 
     async def paused(self, ctx:"engine.context.ExecutionContext") -> None:
         if self.Value.PauseTimer:
-            now = ctx.Time.now_ms()
-            self.last.setValue(now)
+            emulator = engine.context.EmulatorContext.get()
+            self.last.setValue(emulator.now)
 
         for action in self.actions:
             await action.paused(ctx)
+
+        self.updateStatus()
 
     async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
         if self.PresetUsesExpr:
@@ -104,17 +107,17 @@ class Step:
 
         self.Value.FS.setValue(not self.Value.X)
 
-        now = ctx.Time.now_ms()
+        emulator = engine.context.EmulatorContext.get()
         
         if self.Value.FS:
             self.Value.T.setValue(0)
         else:
-            self.Value.T.setValue(self.Value.T + (now - self.last))
+            self.Value.T.setValue(self.Value.T + (emulator.now - self.last))
 
         if self.Value.T > self.Value.TMax:
             self.Value.TMax.setValue(self.Value.T)
 
-        self.last.setValue(now)
+        self.last.setValue(emulator.now)
 
         self.Value.SA.setValue(True)
 
@@ -135,6 +138,19 @@ class Step:
 
         self.updateStatus()
 
+    async def notExecute(self, ctx:"engine.context.ExecutionContext") -> None:
+        self.Value.DN.setValue(False)
+
+        self.Value.X.setValue(False)
+        self.Value.FS.setValue(False)
+        self.Value.SA.setValue(False)
+        self.Value.LS.setValue(False)
+
+        for action in self.actions:
+            await action.notExecute(ctx)
+
+        self.updateStatus()
+
     def updateStatus(self) -> None:
         value = 0
         value = update_bit(value, 22, self.Value.Reset)
@@ -149,19 +165,6 @@ class Step:
         value = update_bit(value, 31, self.Value.X)
 
         self.Value.Status.setValue(value)
-
-    async def notExecute(self, ctx:"engine.context.ExecutionContext") -> None:
-        self.Value.DN.setValue(False)
-
-        self.Value.X.setValue(False)
-        self.Value.FS.setValue(False)
-        self.Value.SA.setValue(False)
-        self.Value.LS.setValue(False)
-
-        for action in self.actions:
-            await action.notExecute(ctx)
-
-        self.updateStatus()
 
     def addConections(self, sfc:"engine.sfc.sfc.SFC"):
         for link in sfc.links.values():

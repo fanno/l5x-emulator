@@ -49,6 +49,7 @@ from opcua.mapping import Mapping
 
 from datatypes.custom.module import MODULE
 from datatypes.custom.string import STRING
+from datatypes.custom.numbers import DINT
 
 class EmulatorLogHandler(logging.Handler):
     def __init__(self, level = 0):
@@ -96,6 +97,8 @@ class Emulator(threading.Thread):
     eventlistenet: EventListener
 
     useOPCUA:bool = False
+
+    now:DINT
     
     def __init__(self, path:str, port:int=4840):
         super().__init__()
@@ -127,6 +130,7 @@ class Emulator(threading.Thread):
         self.safetyMap = SafetyMap()
         self.preScan = True
         self.postScan = False
+        self.now = DINT()
 
         self.eventlistenet = EventListener(self)
 
@@ -192,6 +196,7 @@ class Emulator(threading.Thread):
         while self._is_running:
             try:
                 with PLCFaultHandler.major():
+                    self.now.setValue(ExecutionTimer.get_ms())
                     timer = ExecutionTimer()
                     with timer:
                         await self.mainloop()
@@ -213,12 +218,20 @@ class Emulator(threading.Thread):
                             data[program.Name] = copy.deepcopy(program.memory.getMemoryAll())
 
                         taskStatus:dict[str, StatusScan] = {}
+                        programStatus:dict[str, dict[str, StatusScan]] = {}
                         for tname, task in self.tasks.items():
-                            taskStatus[tname] = StatusScan(Max=task.MaxScanTime.getPLCValue()/1000000, Last=task.LastScanTime.getPLCValue()/1000000, Count=task.scanCount)
+                            taskStatus[tname] = StatusScan(Max=task.MaxScanTime.getPLCValue()/10000000, Last=task.LastScanTime.getPLCValue()/10000000, Count=task.scanCount)
+
+                            programStatus[tname] = {}
+
+                            for pname in task._programs:
+                                program = self.programs[pname]
+                                programStatus[tname][pname] = StatusScan(Max=program.MAXSCANTIME.getPLCValue()/10000000, Last=program.LASTSCANTIME.getPLCValue()/10000000, Count=0)
 
                         EventBus.get().dispatch(StatusEvent(Runing=True,
                                                 Scan=StatusScan(Max=difTimeMax, Last=timer.elapsed, Count=self.scanCount),
                                                 Tasks=taskStatus,
+                                                Programs=programStatus,
                                                 ScanDelayed=scanDelayTime,
                                                 ControllerName=self.DeviceName.getPLCValue(),
                                                 ControllerType=self.ProcessorType.getPLCValue(),

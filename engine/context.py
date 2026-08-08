@@ -4,7 +4,6 @@ from contextvars import ContextVar
 from dataclasses import dataclass, field
 
 import core.emulator
-from core.timebase import TimeBase
 
 from engine.program import Program
 from engine.routine import Routine, RoutineType
@@ -82,7 +81,6 @@ class RLLContext:
 class ExecutionContext:
     ProgramRef:Program = field(init=True, default=None)
     RoutineRef:Routine = field(init=False, default=None)
-    Time:TimeBase = field(init=False, default_factory=TimeBase)
     Type:RoutineType = field(init=True, default=RoutineType.RLL)
     InputArgs:list = field(init=True, default_factory=list)
     ReturnArgs:list = field(init=True, default_factory=list)

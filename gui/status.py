@@ -42,6 +42,12 @@ class StatusText(UpdatingScrolledText):
                     text += f"Time current (Sec): {task.Last:.4f}\n"
                     text += f"Time longest (Sec): {task.Max:.4f}\n"
                     text += f"Count (number of plc scan): {task.Count}\n"
+
+                    for pname, program in status.Programs[tname].items():
+                        text += f"----------------------- {tname} -> {pname} ------------------\n"
+                        text += f"    Time current (Sec): {program.Last:.4f}\n"
+                        text += f"    Time longest (Sec): {program.Max:.4f}\n"
+
                 text += f"------------------------------------------------\n"
                 text += f"Memory current (MB): {current:.2f}\n"
                 text += f"Memory max (MB): {self._peak:.2f}\n"

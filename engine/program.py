@@ -19,7 +19,9 @@ from engine.routine import Routine
 from engine.errors import PLCFaultHandler
 
 from core.xml.tags import loadTags
-from core.timebase import getTimeMonotonic
+
+from engine.executiontimer import ExecutionTimer
+
 import engine.context
 
 from opcua.tag import OpcuaTag
@@ -117,66 +119,60 @@ class Program():
         finally:
             CurrentProgramName.reset(token)
 
-    @asynccontextmanager
-    async def program_time(self):
-        start = getTimeMonotonic()
-        try:
-            yield
-        finally:
-            end = getTimeMonotonic()
-            diff = end-start
-            self.LASTSCANTIME.setValue(diff)
-
-            if self.MAXSCANTIME < diff:
-                self.MAXSCANTIME.setValue(diff)
-
     async def execute(self):
         with Hierarchy.scope(self.Name):
             with PLCFaultHandler.minor():
                 if self.DisableFlag == 0:
-                    if self.Type != 'EquipmentPhase':
-                        if self.MainRoutineName in self.Routines:
-                            ctx = await self.run(self.MainRoutineName)
-                    else:
-                        from instructions.phase import PhaseStates, changeState
+                    timer = ExecutionTimer()
+                    with timer:
+                        if self.Type != 'EquipmentPhase':
+                            if self.MainRoutineName in self.Routines:
+                                ctx = await self.run(self.MainRoutineName)
+                        else:
+                            from instructions.phase import PhaseStates, changeState
 
-                        if self.PreStateRoutineName:
-                            await self.run(self.PreStateRoutineName)
+                            if self.PreStateRoutineName:
+                                await self.run(self.PreStateRoutineName)
 
-                        PSC = PhaseStates.Unchanged
-                        if not self.phase.Paused:
-                            if self.phase.Resetting:
-                                ctx = await self.run('Resetting')
-                                if self.pcs('Resetting', ctx):
-                                    PSC = PhaseStates.Idle
-                            elif self.phase.Running:
-                                ctx = await self.run('Running')
-                                if self.pcs('Resetting', ctx):
-                                    PSC = PhaseStates.Complete
-                            elif self.phase.Holding:
-                                ctx = await self.run('Holding')
-                                if self.pcs('Resetting', ctx):
-                                    PSC = PhaseStates.Held
-                            elif self.phase.Restarting:
-                                ctx = await self.run('Restarting')
-                                if self.pcs('Resetting', ctx):
-                                    PSC = PhaseStates.Running
-                            elif self.phase.Stopping:
-                                ctx = await self.run('Stopping')
-                                if self.pcs('Resetting', ctx):
-                                    PSC = PhaseStates.Stopped
-                            elif self.phase.Aborting:
-                                ctx = await self.run('Aborting')
-                                if self.pcs('Resetting', ctx):
-                                    PSC = PhaseStates.Aborted
+                            PSC = PhaseStates.Unchanged
+                            if not self.phase.Paused:
+                                if self.phase.Resetting:
+                                    ctx = await self.run('Resetting')
+                                    if self.pcs('Resetting', ctx):
+                                        PSC = PhaseStates.Idle
+                                elif self.phase.Running:
+                                    ctx = await self.run('Running')
+                                    if self.pcs('Resetting', ctx):
+                                        PSC = PhaseStates.Complete
+                                elif self.phase.Holding:
+                                    ctx = await self.run('Holding')
+                                    if self.pcs('Resetting', ctx):
+                                        PSC = PhaseStates.Held
+                                elif self.phase.Restarting:
+                                    ctx = await self.run('Restarting')
+                                    if self.pcs('Resetting', ctx):
+                                        PSC = PhaseStates.Running
+                                elif self.phase.Stopping:
+                                    ctx = await self.run('Stopping')
+                                    if self.pcs('Resetting', ctx):
+                                        PSC = PhaseStates.Stopped
+                                elif self.phase.Aborting:
+                                    ctx = await self.run('Aborting')
+                                    if self.pcs('Resetting', ctx):
+                                        PSC = PhaseStates.Aborted
 
-                            changeState(self.phase, self.InitialStepIndex, PSC)
+                                changeState(self.phase, self.InitialStepIndex, PSC)
+
+                    self.LASTSCANTIME.setValue(timer.μs)
+
+                    if self.MAXSCANTIME < timer.μs:
+                        self.MAXSCANTIME.setValue(timer.μs)
                 else:
                     self.LASTSCANTIME.setValue(0)
                     self.MAXSCANTIME.setValue(0)
 
     async def run(self, name:str) -> "engine.context.ExecutionContext":
-        async with self.program_context(), self.program_time():
+        async with self.program_context():
             from engine.context import ExecutionContext
             ctx = ExecutionContext(ProgramRef=self)
 

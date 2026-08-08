@@ -12,6 +12,8 @@ import engine.context
 
 from engine.st.hooks import run_exec_env
 
+import engine.context
+
 @dataclass
 class Action:
     _Element: Element = field(init=True, default=None)
@@ -59,14 +61,15 @@ class Action:
 
     async def paused(self, ctx:"engine.context.ExecutionContext") -> None:
         if self.Value.PauseTimer:
-            now = ctx.Time.now_ms()
-            self.last.setValue(now)
+            emulator = engine.context.EmulatorContext.get()
+            self.last.setValue(emulator.now)
 
     async def notExecute(self, ctx:"engine.context.ExecutionContext") -> None:
         if self.Qualifier == "Reset":
             return
 
-        now = ctx.Time.now_ms()
+        emulator = engine.context.EmulatorContext.get()
+        now = emulator.now
 
         await self.preset(ctx)
 
@@ -136,22 +139,23 @@ class Action:
 
         self.FallEdge = True
 
-        now = ctx.Time.now_ms()
+        emulator = engine.context.EmulatorContext.get()
+
         if self.RaiseEdge:
-            self.last.setValue(now)
+            self.last.setValue(emulator.now)
             self.Value.T.setValue(0)
 
         self.Value.A.setValue(False)
         match self.Qualifier:
             case "NonStored": #N
-                self.updateTimer(now)
+                self.updateTimer()
 
                 await self.run(ctx)
             case "PulseRisingEdge": #P1
                 if self.RaiseEdge:
                     await self.run(ctx)
             case "TimeLimited": #L
-                self.updateTimer(now)
+                self.updateTimer()
 
                 if self.Value.PRE > self.Value.T:
                     await self.run(ctx)
@@ -159,7 +163,7 @@ class Action:
                 self.keepRunning = True
                 await self.run(ctx)
             case "StoredTimeLimited": #SL
-                self.updateTimer(now)
+                self.updateTimer()
 
                 if self.Value.PRE >= self.Value.T:
                     self.keepRunning = True
@@ -167,7 +171,7 @@ class Action:
                 else:
                     self.keepRunning = False
             case "TimeDelayed": #D
-                self.updateTimer(now)
+                self.updateTimer()
                 
                 if self.Value.PRE <= self.Value.T:
                     self.keepRunning = True
@@ -175,7 +179,7 @@ class Action:
             case "TimeDelayedStored": #DS
                 raise NotImplementedError(f"FCS Action, {Action}, Qualifier, {self.Qualifier} not implemented yet")
             case "StoredTimeDelayed": #SD
-                self.updateTimer(now)
+                self.updateTimer()
 
                 self.keepRunning = True
                 if self.Value.PRE <= self.Value.T:
@@ -191,7 +195,7 @@ class Action:
 
         self.RaiseEdge = False
         self.FallEdge = True
-        self.last.setValue(now)
+        self.last.setValue(emulator.now)
 
     async def run(self, ctx:"engine.context.ExecutionContext") -> None:
         self.Value.A.setValue(True)
@@ -211,9 +215,11 @@ class Action:
     async def reset(self, ctx:"engine.context.ExecutionContext") -> None:
         self.keepRunning = False
 
-    def updateTimer(self, now:DINT) -> None:
+    def updateTimer(self) -> None:
+        emulator = engine.context.EmulatorContext.get()
+
         if self.Value.PRE > self.Value.T:
             if self.last > 0:
-                self.Value.T.setValue(self.Value.T + (now - self.last))
+                self.Value.T.setValue(self.Value.T + (emulator.now - self.last))
 
-        self.last.setValue(now)
+        self.last.setValue(emulator.now)

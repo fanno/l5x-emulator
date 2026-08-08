@@ -6,8 +6,6 @@ from xml.etree.ElementTree import Element
 
 from dataclasses import dataclass, field
 
-from core.timebase import getTimeMonotonic
-
 from engine.program import Program
 from engine.helper import CurrentTaskName
 from engine.hierarchy import Hierarchy
@@ -124,9 +122,9 @@ class Task():
                             async with self.task_context():
                                 for program in self._programs:
                                     await programs[program].execute()
-                        diff = timer.getInt()
-                        self.LastScanTime.setValue(diff)
-                        if self.MaxScanTime < diff:
-                            self.MaxScanTime.setValue(diff)
+
+                        self.LastScanTime.setValue(timer.μs)
+                        if self.MaxScanTime < timer.μs:
+                            self.MaxScanTime.setValue(timer.μs)
                         if not emulator.preScan and not emulator.postScan:
                             self.scanCount += 1

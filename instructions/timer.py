@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
+from engine.context import EmulatorContext
 from core.registry.instructionregistry import InstructionRegistry
 from core.objectregistry import ObjectRegistry
 from core.memory.identity import Identity
@@ -38,11 +39,12 @@ class TON(Instruction):
             memory.LAST_TIME.setValue(0)
             timer.ACC.setValue(0)
         else:
-            now = ctx.Time.now_ms()
+            emulator = EmulatorContext.get()
+
             if memory.LAST_TIME == 0:
-                memory.LAST_TIME = now
+                memory.LAST_TIME = emulator.now
             elif timer.PRE > timer.ACC:
-                timer.ACC.setValue(now - memory.LAST_TIME)
+                timer.ACC.setValue(emulator.now - memory.LAST_TIME)
 
         timer.TT.setValue((timer.ACC <= timer.PRE) and timer.EN)
         timer.DN.setValue((timer.ACC >= timer.PRE) and timer.EN)
@@ -71,11 +73,12 @@ class TOF(Instruction):
             memory.LAST_TIME.setValue(0)
             timer.ACC.setValue(0)
         else:
-            now = ctx.Time.now_ms()
+            emulator = EmulatorContext.get()
+
             if memory.LAST_TIME == 0:
-                memory.LAST_TIME = now
+                memory.LAST_TIME.setValue(emulator.now)
             elif timer.PRE > timer.ACC:
-                timer.ACC.setValue(now - memory.LAST_TIME)
+                timer.ACC.setValue(emulator.now - memory.LAST_TIME)
         
         timer.TT.setValue((timer.ACC <= timer.PRE) and not timer.EN)
         timer.DN.setValue((timer.ACC <= timer.PRE) and not timer.EN)
@@ -102,13 +105,14 @@ class RTO(Instruction):
             memory.LAST_TIME.setValue(0)
             timer.TT.setValue(False)
         else:
-            now = ctx.Time.now_ms()
+            emulator = EmulatorContext.get()
+
             if memory.LAST_TIME == 0:
-                memory.LAST_TIME = now
-            if now > memory.LAST_TIME:
+                memory.LAST_TIME.setValue(emulator.now)
+            if emulator.now > memory.LAST_TIME:
                 if not timer.DN:
-                    timer.ACC += now - memory.LAST_TIME
-                    memory.LAST_TIME = now
+                    timer.ACC += emulator.now - memory.LAST_TIME
+                    memory.LAST_TIME = emulator.now
 
         timer.DN.setValue((timer.ACC >= timer.PRE) and timer.ACC > 0)
         timer.TT.setValue((not timer.DN) and timer.EN)
@@ -132,12 +136,12 @@ class TONR(Instruction):
             timer.InstructFault.setValue(False)
             timer.PresetInv.setValue(False)
             if timer.EN:
-                now = ctx.Time.now_ms()
+                emulator = EmulatorContext.get()
                 if memory.LAST_TIME == 0:
-                    memory.LAST_TIME = now
+                    memory.LAST_TIME.setValue(emulator.now)
                 elif timer.PRE > timer.ACC:
-                    timer.ACC += (now - memory.LAST_TIME)
-                    memory.LAST_TIME = now
+                    timer.ACC += (emulator.now - memory.LAST_TIME)
+                    memory.LAST_TIME.setValue(emulator.now)
 
             if not timer.EN or timer.Reset:
                 memory.LAST_TIME.setValue(0)
@@ -165,13 +169,13 @@ class TOFR(Instruction):
             timer.InstructFault.setValue(False) #TODO
             timer.PresetInv.setValue(False) #TODO
             if not timer.EN:
-                now = ctx.Time.now_ms()
+                emulator = EmulatorContext.get()
                 if memory.LAST_TIME == 0:
-                    memory.LAST_TIME = now
+                    memory.LAST_TIME.setValue(emulator.now)
                 elif timer.PRE > timer.ACC:
-                    timer.ACC += (now - memory.LAST_TIME)
-                    timer.ACC.setValue(timer.ACC + (now - memory.LAST_TIME))
-                    memory.LAST_TIME = now
+                    timer.ACC += (emulator.now - memory.LAST_TIME)
+                    timer.ACC.setValue(timer.ACC + (emulator.now - memory.LAST_TIME))
+                    memory.LAST_TIME.setValue(emulator.now)
 
             if timer.EN or timer.Reset:
                 memory.LAST_TIME.setValue(0)
@@ -200,12 +204,12 @@ class RTOR(Instruction):
             timer.InstructFault.setValue(False)
             timer.PresetInv.setValue(False)
             if timer.EN:
-                now = ctx.Time.now_ms()
+                emulator = EmulatorContext.get()
                 if memory.LAST_TIME == 0:
-                    memory.LAST_TIME = now
+                    memory.LAST_TIME.setValue(emulator.now)
                 elif timer.PRE > timer.ACC:
-                    timer.ACC += (now - memory.LAST_TIME)
-                    memory.LAST_TIME = now
+                    timer.ACC += (emulator.now - memory.LAST_TIME)
+                    memory.LAST_TIME.setValue(emulator.now)
             else:
                 memory.LAST_TIME.setValue(0)
 
