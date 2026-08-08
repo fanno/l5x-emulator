@@ -19,7 +19,7 @@ from datatypes.custom.array import Array
 from datatypes.custom.helper import getVariantValue
 
 from core.signal import Signal
-from core.memory.memory import Memory
+from core.memory.memory import Memory, OpcUaAccess
 from core.datatypes import DataTypes, DataTypeRegistry
 
 async def create_struct(struct:Structure, server:Server, id):
@@ -75,10 +75,13 @@ class OpcuaTag:
             ot = await parent.add_variable(self.getIDX(), tag.Name, tag.Variant)
         await ot.set_writable()
         return ot
-    
-    async def createNodes(self, memory:Memory, mapping: Mapping):
-        for k,v in memory.getMemoryAll().items():
-            await self.createNode(k, v, mapping)
+
+    async def createNodes(self, memory:Memory, mapping: Mapping, forceOpcua:bool = False):
+        for k, v in memory.getMemoryAll().items():
+            medatata = memory.get_metadata(k)
+            if medatata:
+                if medatata.OpcUa_Access != OpcUaAccess.NONE or forceOpcua:
+                    await self.createNode(k, v, mapping)
 
     async def createNode(self, name:str, value: Any, mapping: Mapping, path:list = [], parent:Node = None):
         if parent is None:

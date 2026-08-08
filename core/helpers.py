@@ -32,8 +32,6 @@ async def createMemory(tag: Tag, opcua:OpcuaTag, memory:"Memory", mapping:Mappin
     else:
         result = tag.Variant.Value
 
-    memory.set(current_path, result)
-
     node = await opcua.createTag(tag, parent)
 
     signal = Signal(PATH=current_path,
@@ -53,10 +51,8 @@ async def createMemory(tag: Tag, opcua:OpcuaTag, memory:"Memory", mapping:Mappin
     memory.set(current_path, result)
 
     if isinstance(result, DataVariant):
-        #result.fromVariant(tag.Variant)
         await node.write_value(result.toVariant())
     else:
         await node.write_value(ua.Variant(result, variant_type))
 
     return result
-

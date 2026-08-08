@@ -33,13 +33,15 @@ class Gui():
     eventlistenet: EventListener
     _content:ContentTabs = None
     opc_thread = None
+    forceOpcua = None
 
-    def __init__(self, root:Tk, path:str, port:int):
+    def __init__(self, root:Tk, path:str, port:int, forceOpcua:bool):
         super().__init__()
 
         self._root = root
         self._path = path
         self._port = port
+        self.forceOpcua = forceOpcua
 
         self.queue = Queue()
         self.eventlistenet = EventListener(self)
@@ -55,7 +57,7 @@ class Gui():
 
         #for development only
         try:
-            self.create(self._path, self._port)
+            self.create(self._path, self._port, self.forceOpcua)
 
             self._createUI()
         except Exception as e:
@@ -72,18 +74,23 @@ class Gui():
         ])
 
     def open_emulator(self):
-        dialog = EmulatorDialog(self._root)
+        dialog = EmulatorDialog(self._root, self._path, self._port, self.forceOpcua)
         self._root.wait_window(dialog)
 
         try:
             if dialog.file_path:
                 path = dialog.file_path
                 port = int(dialog.port_var.get())
+                forceOpcua = bool(dialog.force_opcua_var.get())
 
                 if path and port > 0:
                     port = int(dialog.port_var.get())
 
-                    self.create(path, port)
+                    self._path = path
+                    self._port = port
+                    self.forceOpcua = forceOpcua
+
+                    self.create(self._path, self._port, self.forceOpcua)
 
                     self._createUI()
         except Exception as e:
@@ -102,10 +109,10 @@ class Gui():
         finally:
             pass
 
-    def create(self, path:str, port:int):
+    def create(self, path:str, port:int, forceOpcua:bool):
         self.close()
         
-        self.opc_thread = Emulator(path, port)
+        self.opc_thread = Emulator(path, port, forceOpcua)
         self.opc_thread.start()
 
     def close(self):

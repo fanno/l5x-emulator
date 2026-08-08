@@ -96,11 +96,11 @@ class Emulator(threading.Thread):
 
     eventlistenet: EventListener
 
-    useOPCUA:bool = False
+    forceOpcua:bool = False
 
     now:DINT
     
-    def __init__(self, path:str, port:int=4840):
+    def __init__(self, path:str, port:int=4840, forceOpcua:bool=True):
         super().__init__()
 
         DataTypes.clear()
@@ -131,6 +131,7 @@ class Emulator(threading.Thread):
         self.preScan = True
         self.postScan = False
         self.now = DINT()
+        self.forceOpcua = forceOpcua
 
         self.eventlistenet = EventListener(self)
 
@@ -285,7 +286,7 @@ class Emulator(threading.Thread):
 
         self.safetyMap = SafetyMap(self.controller.find("./SafetyInfo/SafetyTagMap"))
 
-        await self.opcua.createNodes(self.memory, self.mapping)
+        await self.opcua.createNodes(self.memory, self.mapping, self.forceOpcua)
 
         loadTasks(self.controller, self.tasks)
         await PLCSYSTEM.init(self._server)
@@ -317,15 +318,16 @@ class Emulator(threading.Thread):
                 await updateSignal(signal, program.memory)
 
     async def ReadOPCUA(self):
+        
         for signal in self.mapping:
-            updateMemory(signal, self.memory)
+            updateMemory(signal, self.memory, self.forceOpcua)
 
         for signal in PLCSYSTEM.mapping:
-            updateMemory(signal, self.memory)
+            updateMemory(signal, self.memory, self.forceOpcua)
 
         for pname, program in self.programs.items():
             for signal in program.mapping:
-                updateMemory(signal, program.memory)
+                updateMemory(signal, program.memory, self.forceOpcua)
 
     @subscribe_event(UpdateVariableEvent)
     def on_eventbus(self, event):
@@ -347,7 +349,7 @@ class Emulator(threading.Thread):
 
     async def mainloop(self):
         from core.memory.helper import setMemory, getMemory, OutputType
-        #await self.ReadOPCUA()
+        await self.ReadOPCUA()
 
         self.processQueue()
 
@@ -369,7 +371,7 @@ class Emulator(threading.Thread):
         for name, modulesLogic in self.modulesLogic.items():
             modulesLogic.update(name, self.memory)
 
-        #await self.UpdateOPCUA()
+        await self.UpdateOPCUA()
 
     def CallbackTypePostWrite(self, event:ServerItemCallback, dispatcher:CallbackService):
         if event.is_external:

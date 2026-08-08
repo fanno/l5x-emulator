@@ -5,7 +5,7 @@ from asyncua import Node, ua
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.helper import getVariantValue
 
-from core.memory.memory import Memory
+from core.memory.memory import Memory, OpcUaAccess
 
 from opcua.helpers import createVariant
 
@@ -33,11 +33,14 @@ async def updateSignal(signal:Signal, memory:Memory):
                     case _:
                         await signal.NODE.write_value(createVariant(value, variant_type))
 
-def updateMemory(signal: Signal, memory:Memory):
+def updateMemory(signal: Signal, memory:Memory, forceOpcua:bool=False):
     if isinstance(signal.LAST_VALUE, ua.Variant):
-        curentValue = memory.get(signal.PATH)
-        if isinstance(curentValue, DataVariant):
-            curentValue.fromVariant(signal.LAST_VALUE)
-        else:
-            memory.set(signal.PATH, signal.LAST_VALUE.Value)
+        metadata = memory.get_metadata(signal.PATH)
+        if metadata:
+            if metadata.OpcUa_Access == OpcUaAccess.READ_WRITE or forceOpcua:
+                curentValue = memory.get(signal.PATH)
+                if isinstance(curentValue, DataVariant):
+                    curentValue.fromVariant(signal.LAST_VALUE)
+                else:
+                    memory.set(signal.PATH, signal.LAST_VALUE.Value)
         signal.LAST_VALUE = None

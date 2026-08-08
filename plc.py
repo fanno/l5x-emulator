@@ -6,12 +6,33 @@ EventBus.get()
 
 from core.log import IndentedFormatter
 
+def valid_port(value):
+    port = int(value)
+    if not 1 <= port <= 65535:
+        raise argparse.ArgumentTypeError(
+            "port must be between 1 and 65535"
+        )
+    return port
+
+def parse_bool(value):
+    value = value.lower()
+
+    if value in ("y", "yes", "true", "1", "on"):
+        return True
+    if value in ("n", "no", "false", "0", "off"):
+        return False
+
+    raise argparse.ArgumentTypeError(
+        "expected yes/no, true/false, 1/0, or on/off"
+    )
+
 if __name__ == "__main__":
     defaultFile = "Alarm_Test.L5X"
     defaultFile = "Plc_emulator.L5X"
     
     defaultPort = 4840
-    defaultLog = "app.log"    
+    defaultLog = "app.log"
+    defaultForceOpcua = False
 
     parser = argparse.ArgumentParser(description="PLC Emulator GUI")
     parser.add_argument(
@@ -22,9 +43,15 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--port", "-p",
-        type=int,
+        type=valid_port,
         default=defaultPort,
         help=f"Port (default: {defaultPort})"
+    )
+    parser.add_argument(
+        "--forceOpcua", "-force",
+        type=parse_bool,
+        default=defaultForceOpcua,
+        help=f"Opcua Tags (default: {defaultForceOpcua})"
     )
     parser.add_argument(
         "--log", "-l",
@@ -93,7 +120,7 @@ if __name__ == "__main__":
                     logger.log(level, msg)
 
             stop_event = threading.Event()
-            emulator = Emulator(args.file, args.port)
+            emulator = Emulator(args.file, args.port, args.forceOpcua)
 
             def signal_handler(sig, frame):
                 if not stop_event.set():
@@ -130,6 +157,6 @@ if __name__ == "__main__":
         from gui.gui import Gui
 
         root = Tk()
-        app = Gui(root, args.file, args.port)
+        app = Gui(root, args.file, args.port, args.forceOpcua)
 
         root.mainloop()

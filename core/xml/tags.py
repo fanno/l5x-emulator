@@ -7,6 +7,9 @@ from opcua.mapping import Mapping
 
 if TYPE_CHECKING:    
     from core.memory.memory import Memory
+
+import core.memory.memory
+
 from core.helpers import createMemory
 from core.registry.datatyperegistry import DataTypeRegistry
 from core.errors import UnhandeledTag, ParseTagException
@@ -102,11 +105,15 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
             if element is not None:
                 val = parseStructure(element)
                 memory.set(name, val)
+                medatata = core.memory.memory.TagMetadata(OpcUa_Access=core.memory.memory.OpcUaAccess.from_string(tag.get("OpcUaAccess")))
+                memory.set_metadata(name, medatata)
                 break
         if element is None:
             array = decorated.find('Array')
             if array is not None:
                 memory.set(name, parseArray(array))
+                medatata = core.memory.memory.TagMetadata(OpcUa_Access=core.memory.memory.OpcUaAccess.from_string(tag.get("OpcUaAccess")))
+                memory.set_metadata(name, medatata)
             else:
                 raise UnhandeledTag(name, decorated, element)
     else:
@@ -128,6 +135,9 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
                     else:
                         raise UnhandeledTag(k, v, params)
         memory.set(name, value)
+
+        medatata = core.memory.memory.TagMetadata(OpcUa_Access=core.memory.memory.OpcUaAccess.from_string(tag.get("OpcUaAccess")))
+        memory.set_metadata(name, medatata)
 
 async def createTagsMemory(opcua:OpcuaTag, memory:"Memory", mapping:Mapping):
     for name, tag in opcua.tags.items():

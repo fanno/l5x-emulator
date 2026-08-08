@@ -4,11 +4,38 @@ from dataclasses import dataclass, field
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.array import Array
 
+from enum import Enum
+
+class OpcUaAccess(Enum):
+    NONE = "None"
+    READ = "Read Only"
+    READ_WRITE = "Read/Write"
+
+    @classmethod
+    def from_string(cls, value: str | None) -> "OpcUaAccess":
+        if value is None:
+            return cls.NONE
+
+        #value = value.upper()
+
+        if value == "Read Only":
+            return cls.READ
+
+        if value == "Read/Write":
+            return cls.READ_WRITE
+
+        return cls.NONE
+
+@dataclass
+class TagMetadata:
+    OpcUa_Access: OpcUaAccess = OpcUaAccess.NONE
+
 @dataclass
 class Memory:
     NAME:str = field(init=True)
     _memory: Dict[str, Type] = field(init=False, default_factory=dict)
     _changed: Dict[str, bool] = field(init=False, default_factory=dict)
+    _metadata: Dict[str, TagMetadata] = field(init=False, default_factory=dict)
 
     def __getContainer(self, keys):
         from core.memory.helper import resolveKey
@@ -148,6 +175,19 @@ class Memory:
 
     def size(self) -> int:
         return len(self._memory)
+
+    def set_metadata(self, keys: str | list | tuple, metadata: TagMetadata ) -> None:
+        from core.memory.helper import resolvePath
+        keys = resolvePath(keys)
+        key = ".".join(str(k) for k in keys)
+        self._metadata[key] = metadata
+
+    def get_metadata(self, keys: str | list | tuple) -> TagMetadata | None:
+        from core.memory.helper import resolvePath
+        keys = resolvePath(keys)
+        key = ".".join(str(k) for k in keys)
+
+        return self._metadata.get(key)
 
 class PlcMemory:
     _container: Dict[str, Memory] = {}

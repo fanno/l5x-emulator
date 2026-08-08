@@ -4,7 +4,7 @@ from tkinter import messagebox, filedialog
 class EmulatorDialog(tk.Toplevel):
     file_path:str = None
 
-    def __init__(self, parent):
+    def __init__(self, parent, path, port:int = 4840, forceOpcua:bool = False):
         super().__init__(parent)
         self.withdraw()
 
@@ -22,7 +22,7 @@ class EmulatorDialog(tk.Toplevel):
         
         tk.Label(file_frame, text="File:").pack(side=tk.LEFT)
         
-        self.file_var = tk.StringVar()
+        self.file_var = tk.StringVar(value=path)
         tk.Entry(file_frame, textvariable=self.file_var, width=40).pack(side=tk.LEFT, padx=5)
         
         tk.Button(file_frame, text="Browse...", command=self.browse_file).pack(side=tk.LEFT)
@@ -32,8 +32,16 @@ class EmulatorDialog(tk.Toplevel):
         
         tk.Label(port_frame, text="Port:").pack(side=tk.LEFT)
         
-        self.port_var = tk.StringVar(value="4840")
+        self.port_var = tk.StringVar(value=str(port))
         tk.Entry(port_frame, textvariable=self.port_var, width=10).pack(side=tk.LEFT, padx=5)
+
+        self.force_opcua_var = tk.BooleanVar(value=forceOpcua)
+
+        tk.Checkbutton(
+            self,
+            text="Force OPC UA",
+            variable=self.force_opcua_var
+        ).pack(anchor=tk.W, padx=10, pady=5)
         
         btn_frame = tk.Frame(self)
         btn_frame.pack(pady=10)
@@ -63,8 +71,22 @@ class EmulatorDialog(tk.Toplevel):
     
     def ok(self):
         if not self.file_path:
+            path = self.file_var.get()
+            path = path.strip()
+            if path:
+                self.file_path = path
+
+        if self.file_path:
+            try:
+                from xml.etree.ElementTree import parse
+                parse(self.file_path)
+            except Exception:
+                self.file_path = None
+
+        if not self.file_path:
             messagebox.showerror("Error", "Please select a file first.")
             return
+
         try:
             port = int(self.port_var.get())
             if port < 1 or port > 65535:
