@@ -150,7 +150,8 @@ class Step:
                     for legs in branch.legs:
                         transition = sfc.transitions[sfc.links[legs].ToID]
                         self.outgoing.append(transition)
-                break
+
+        self.outgoing.sort(key=lambda t: (t.X, t.Y))
 
     async def try_advance(self, ctx) -> list[int]:
         if not self.Value.DN:
@@ -159,7 +160,9 @@ class Step:
         for transition in self.outgoing:
             if isinstance(transition, Transition):
                 results = await transition.execute(ctx)
-                for step in results:
-                    new_steps.append(step.ID)
+                if results:
+                    for step in results:
+                        new_steps.append(step.ID)
+                    break
                     
         return new_steps

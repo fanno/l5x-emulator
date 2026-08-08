@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="37.00" TargetName="PLC_Emulator" TargetType="Controller" ContainsContext="false" ExportDate="Wed Aug 05 18:47:30 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
-<Controller Use="Target" Name="PLC_Emulator" ProcessorType="5069-L330ERMS2" MajorRev="37" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Wed Aug 05 18:47:21 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="37.00" TargetName="PLC_Emulator" TargetType="Controller" ContainsContext="false" ExportDate="Sat Aug 08 01:28:03 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Target" Name="PLC_Emulator" ProcessorType="5069-L330ERMS2" MajorRev="37" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Sat Aug 08 01:27:55 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
  MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false" EtherNetIPMode="A1/A2: Linear/DLR" AutoDiagsEnabled="true" WebServerEnabled="true" DataExchangeId="{F1F5254F-1BE4-45A7-9417-99212A9FD63C}"
 >
 <RedundancyInfo Enabled="false" KeepTestEditsOnSwitchOver="false"/>
@@ -3951,7 +3951,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="Step_002" TagType="Base" DataType="SFC_STEP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Tag Name="Step_004" TagType="Base" DataType="SFC_STEP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[2097152,0,0,0,0,0,0]]]>
 </Data>
@@ -3978,7 +3978,7 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="Step_003" TagType="Base" DataType="SFC_STEP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Tag Name="Step_005" TagType="Base" DataType="SFC_STEP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[[2097152,0,0,0,0,0,0]]]>
 </Data>
@@ -4018,15 +4018,20 @@
 </Structure>
 </Data>
 </Tag>
-<Tag Name="Tran_000" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Tag Name="Stop_001" TagType="Base" DataType="SFC_STOP" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
-<![CDATA[0]]>
+<![CDATA[[0,0,0,0,0]]]>
 </Data>
 <Data Format="Decorated">
-<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+<Structure DataType="SFC_STOP">
+<DataValueMember Name="Status" DataType="DINT" Radix="Hex" Value="16#0000_0000"/>
+<DataValueMember Name="X" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Count" DataType="DINT" Radix="Decimal" Value="0"/>
+</Structure>
 </Data>
 </Tag>
-<Tag Name="Tran_001" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Tag Name="Tran_000" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -4059,6 +4064,14 @@
 </Data>
 </Tag>
 <Tag Name="Tran_005" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="Tran_006" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
@@ -4189,7 +4202,7 @@
 </STContent>
 </Body>
 </Action>
-<Action ID="7" Operand="Action_012" Qualifier="TimeDelayedStored" IsBoolean="false" PresetUsesExpr="true">
+<Action ID="7" Operand="Action_011" Qualifier="StoredTimeDelayed" IsBoolean="false" PresetUsesExpr="true">
 <Preset>
 <STContent>
 <Line Number="0">
@@ -4205,7 +4218,7 @@
 </STContent>
 </Body>
 </Action>
-<Action ID="8" Operand="Action_011" Qualifier="StoredTimeDelayed" IsBoolean="false" PresetUsesExpr="true">
+<Action ID="8" Operand="Action_007" Qualifier="Pulse" IsBoolean="false" PresetUsesExpr="true">
 <Preset>
 <STContent>
 <Line Number="0">
@@ -4221,39 +4234,7 @@
 </STContent>
 </Body>
 </Action>
-<Action ID="9" Operand="Action_007" Qualifier="Pulse" IsBoolean="false" PresetUsesExpr="true">
-<Preset>
-<STContent>
-<Line Number="0">
-<![CDATA[55555]]>
-</Line>
-</STContent>
-</Preset>
-<Body>
-<STContent>
-<Line Number="0">
-<![CDATA[]]>
-</Line>
-</STContent>
-</Body>
-</Action>
-<Action ID="10" Operand="Action_009" Qualifier="PulseFallingEdge" IsBoolean="false" PresetUsesExpr="true">
-<Preset>
-<STContent>
-<Line Number="0">
-<![CDATA[55555]]>
-</Line>
-</STContent>
-</Preset>
-<Body>
-<STContent>
-<Line Number="0">
-<![CDATA[]]>
-</Line>
-</STContent>
-</Body>
-</Action>
-<Action ID="11" Operand="Action_003" Qualifier="Reset" IsBoolean="false" PresetUsesExpr="true">
+<Action ID="9" Operand="Action_009" Qualifier="PulseFallingEdge" IsBoolean="false" PresetUsesExpr="true">
 <Preset>
 <STContent>
 <Line Number="0">
@@ -4270,9 +4251,9 @@
 </Body>
 </Action>
 </Step>
-<Step ID="12" X="420" Y="720" Operand="Step_001" HideDesc="false" DescX="460" DescY="700" DescWidth="0" InitialStep="false" PresetUsesExpr="false" LimitHighUsesExpr="false"
+<Step ID="10" X="440" Y="880" Operand="Step_001" HideDesc="false" DescX="480" DescY="860" DescWidth="0" InitialStep="false" PresetUsesExpr="false" LimitHighUsesExpr="false"
  LimitLowUsesExpr="false" ShowActions="true">
-<Action ID="13" Operand="Action_000" Qualifier="NonStored" IsBoolean="false" PresetUsesExpr="false">
+<Action ID="11" Operand="Action_000" Qualifier="NonStored" IsBoolean="false" PresetUsesExpr="false">
 <Body>
 <STContent>
 <Line Number="0">
@@ -4281,7 +4262,7 @@
 </STContent>
 </Body>
 </Action>
-<Action ID="14" Operand="Action_002" Qualifier="NonStored" IsBoolean="false" PresetUsesExpr="false">
+<Action ID="12" Operand="Action_011" Qualifier="Reset" IsBoolean="false" PresetUsesExpr="false">
 <Body>
 <STContent>
 <Line Number="0">
@@ -4291,11 +4272,11 @@
 </Body>
 </Action>
 </Step>
-<Step ID="15" X="840" Y="1240" Operand="Step_002" HideDesc="false" DescX="880" DescY="1220" DescWidth="0" InitialStep="false" PresetUsesExpr="false" LimitHighUsesExpr="false"
+<Step ID="13" X="540" Y="1200" Operand="Step_004" HideDesc="false" DescX="580" DescY="1180" DescWidth="0" InitialStep="false" PresetUsesExpr="false" LimitHighUsesExpr="false"
  LimitLowUsesExpr="false" ShowActions="true"/>
-<Step ID="16" X="440" Y="1240" Operand="Step_003" HideDesc="false" DescX="480" DescY="1220" DescWidth="0" InitialStep="false" PresetUsesExpr="false" LimitHighUsesExpr="false"
+<Step ID="14" X="960" Y="1200" Operand="Step_005" HideDesc="false" DescX="1000" DescY="1180" DescWidth="0" InitialStep="false" PresetUsesExpr="false" LimitHighUsesExpr="false"
  LimitLowUsesExpr="false" ShowActions="true"/>
-<Transition ID="17" X="500" Y="520" Operand="Tran_000" HideDesc="false" DescX="560" DescY="500" DescWidth="0">
+<Transition ID="16" X="820" Y="980" Operand="Tran_003" HideDesc="false" DescX="880" DescY="960" DescWidth="0">
 <Condition>
 <STContent>
 <Line Number="0">
@@ -4304,7 +4285,7 @@
 </STContent>
 </Condition>
 </Transition>
-<Transition ID="18" X="400" Y="980" Operand="Tran_001" HideDesc="false" DescX="460" DescY="960" DescWidth="0">
+<Transition ID="17" X="440" Y="1580" Operand="Tran_004" HideDesc="false" DescX="500" DescY="1560" DescWidth="0">
 <Condition>
 <STContent>
 <Line Number="0">
@@ -4313,25 +4294,7 @@
 </STContent>
 </Condition>
 </Transition>
-<Transition ID="19" X="1180" Y="1480" Operand="Tran_003" HideDesc="false" DescX="1240" DescY="1460" DescWidth="0">
-<Condition>
-<STContent>
-<Line Number="0">
-<![CDATA[sfc_test_value]]>
-</Line>
-</STContent>
-</Condition>
-</Transition>
-<Transition ID="20" X="440" Y="1500" Operand="Tran_004" HideDesc="false" DescX="500" DescY="1480" DescWidth="0">
-<Condition>
-<STContent>
-<Line Number="0">
-<![CDATA[sfc_test_value]]>
-</Line>
-</STContent>
-</Condition>
-</Transition>
-<Transition ID="21" X="920" Y="500" Operand="Tran_005" HideDesc="false" DescX="980" DescY="478" DescWidth="0">
+<Transition ID="18" X="520" Y="620" Operand="Tran_005" HideDesc="false" DescX="1100" DescY="598" DescWidth="0">
 <Condition>
 <STContent>
 <Line Number="0">
@@ -4340,33 +4303,47 @@
 </STContent>
 </Condition>
 </Transition>
-<Branch ID="22" Y="452" BranchType="Selection" BranchFlow="Diverge" Priority="Default">
-<Leg ID="23"/>
+<Transition ID="15" X="1040" Y="620" Operand="Tran_000" HideDesc="false" DescX="580" DescY="600" DescWidth="0">
+<Condition>
+<STContent>
+<Line Number="0">
+<![CDATA[sfc_test_value]]>
+</Line>
+</STContent>
+</Condition>
+</Transition>
+<Transition ID="19" X="860" Y="1440" Operand="Tran_006" HideDesc="false" DescX="920" DescY="1418" DescWidth="0">
+<Condition>
+<STContent>
+<Line Number="0">
+<![CDATA[not sfc_test_value]]>
+</Line>
+</STContent>
+</Condition>
+</Transition>
+<Branch ID="20" Y="560" BranchType="Selection" BranchFlow="Diverge" Priority="Default">
+<Leg ID="21"/>
+<Leg ID="22"/>
+</Branch>
+<Branch ID="23" Y="1100" BranchType="Simultaneous" BranchFlow="Diverge">
 <Leg ID="24"/>
+<Leg ID="25"/>
 </Branch>
-<Branch ID="25" Y="1180" BranchType="Simultaneous" BranchFlow="Diverge">
-<Leg ID="26"/>
-<Leg ID="27"/>
-</Branch>
-<Branch ID="28" Y="1658" BranchType="Selection" BranchFlow="Converge">
-<Leg ID="29"/>
-<Leg ID="30"/>
-</Branch>
-<Stop ID="31" X="980" Y="800" Operand="Stop_000" HideDesc="false" DescX="1060" DescY="780" DescWidth="0"/>
-<DirectedLink FromID="0" ToID="22" Show="true"/>
-<DirectedLink FromID="12" ToID="18" Show="true"/>
-<DirectedLink FromID="15" ToID="19" Show="true"/>
-<DirectedLink FromID="16" ToID="20" Show="true"/>
-<DirectedLink FromID="17" ToID="12" Show="true"/>
-<DirectedLink FromID="18" ToID="25" Show="true"/>
-<DirectedLink FromID="19" ToID="30" Show="true"/>
-<DirectedLink FromID="20" ToID="29" Show="true"/>
-<DirectedLink FromID="21" ToID="31" Show="true"/>
-<DirectedLink FromID="23" ToID="17" Show="true"/>
-<DirectedLink FromID="24" ToID="21" Show="true"/>
-<DirectedLink FromID="26" ToID="16" Show="true"/>
-<DirectedLink FromID="27" ToID="15" Show="true"/>
-<DirectedLink FromID="28" ToID="0" Show="true"/>
+<Stop ID="26" X="980" Y="800" Operand="Stop_000" HideDesc="false" DescX="1060" DescY="780" DescWidth="0"/>
+<Stop ID="27" X="800" Y="1620" Operand="Stop_001" HideDesc="false" DescX="1860" DescY="2400" DescWidth="0"/>
+<DirectedLink FromID="0" ToID="20" Show="true"/>
+<DirectedLink FromID="10" ToID="16" Show="true"/>
+<DirectedLink FromID="13" ToID="17" Show="true"/>
+<DirectedLink FromID="14" ToID="19" Show="true"/>
+<DirectedLink FromID="15" ToID="10" Show="true"/>
+<DirectedLink FromID="16" ToID="23" Show="true"/>
+<DirectedLink FromID="17" ToID="0" Show="true"/>
+<DirectedLink FromID="18" ToID="26" Show="true"/>
+<DirectedLink FromID="19" ToID="27" Show="true"/>
+<DirectedLink FromID="21" ToID="15" Show="true"/>
+<DirectedLink FromID="22" ToID="18" Show="true"/>
+<DirectedLink FromID="24" ToID="14" Show="true"/>
+<DirectedLink FromID="25" ToID="13" Show="true"/>
 </SFCContent>
 </Routine>
 </Routines>
