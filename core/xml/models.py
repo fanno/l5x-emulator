@@ -3,7 +3,7 @@ from xml.etree.ElementTree import Element
 from typing import Dict
 
 from core.datatypes import DataTypes
-from core.memory.memory import Memory
+from core.memory.memory import Memory, TagMetadata, OpcUaAccess
 from core.xml.tags import parseStructure
 
 from opcua.structure import Structure, StructureField, sanitizeName
@@ -26,21 +26,26 @@ async def loadModules(root:Element, opcua:OpcuaTag, modules:Dict[str, MODULE], m
             if communications:
                 configTag = communications.find("./ConfigTag")
                 if configTag:
+                    medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(configTag.get("OpcUaAccess")))
+
                     data = configTag.find(f"./Data[@Format='Decorated']")
                     if data:
-                        await loadModule(moduleName, "C", data, opcua, memory, mapping)
+                        await loadModule(moduleName, "C", data, opcua, memory, mapping, medatata)
 
                 connections = communications.findall("./Connections//Connection")
                 for connection in connections:
                     if connection:
                         for child in ["InputTag", "OutputTag"]:
                             suffix = connection.get(f"{child}Suffix", None)
-                            
-                            data = connection.find(f"./{child}/Data[@Format='Decorated']")
-                            if data:
-                                await loadModule(moduleName, suffix, data, opcua, memory, mapping)
+                            tag = connection.find(f"./{child}")
+                            if tag:
+                                medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")))
 
-async def loadModule(name:str, suffix:str, element:Element, opcua:OpcuaTag, memory:Memory, mapping:Mapping):
+                                data = tag.find(f"./Data[@Format='Decorated']")
+                                if data:
+                                    await loadModule(moduleName, suffix, data, opcua, memory, mapping, medatata)
+
+async def loadModule(name:str, suffix:str, element:Element, opcua:OpcuaTag, memory:Memory, mapping:Mapping, medatata:TagMetadata = TagMetadata()):
     structure = element.find(f"./Structure")
     if structure:
         dataTypeName = structure.get("DataType", None)
@@ -49,7 +54,11 @@ async def loadModule(name:str, suffix:str, element:Element, opcua:OpcuaTag, memo
 
         struct = await loadModuleDatatype(dataTypeName, structure, opcua)
 
-        memory.set(f"{name}:{suffix}", parseStructure(structure, struct.name))
+        path = f"{name}:{suffix}"
+        value = parseStructure(structure, struct.name)
+
+        memory.set(path, value)
+        memory.set_metadata(path, medatata)
 
 async def loadModuleDatatype(name:str, tag:Element, opcua:OpcuaTag) -> Structure:
     struct = Structure(name)
