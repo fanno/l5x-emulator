@@ -30,26 +30,31 @@ class StatusText(UpdatingScrolledText):
         if current > self._peak:
             self._peak = current
 
+        dummy:str = ""
         update = super().updateContent()
         if update and self.winfo_viewable():
             if status.Runing:
-                text = f"------------------ Total scan ------------------\n"
-                text += f"Time current/longest (S): {status.Scan.Last:.4f} ({status.ScanDelayed:.4f}) / {status.Scan.Max:.4f}\n"
-                text += f"Count (number of plc scan): {status.Scan.Count}\n"
-                for tname, task in status.Tasks.items():
-                    text += f"\n------------------ {tname} ------------------\n"
-                    text += f"Time current/longest (S): {task.Last:.4f} / {task.Max:.4f} / {task.Max:.4f}\n"
-                    text += f"Count (number of plc scan): {task.Count}\n"
-                    for pname, program in status.Programs[tname].items():
-                        text += f"    {pname}: Time current/longest (S): {program.Last:.4f} / {program.Max:.4f}\n"
-
-                text += f"\n------------------ OPC UA Read ------------------\n"
-                text += f"Time current/longest (S): {status.OpcUaRead.Last:.4f} / {status.OpcUaRead.Max:.4f}\n"
-                text += f"\n------------------ OPC UA Write ------------------\n"
-                text += f"Time current/longest (S): {status.OpcUaWrite.Last:.4f} / {status.OpcUaWrite.Max:.4f}\n"
-
-                text += f"\n------------------------------------------------\n"
+                total = "Total"
+                text = f"------- {total:^30} -------  last (delayed) / max (S)\n"
+                text += f"    {dummy:42} {status.Scan.Last:.4f} ({status.ScanDelayed:.4f}) / {status.Scan.Max:.4f}\n"
                 text += f"Memory current/max (MB): {current:.2f} / {self._peak:.2f}\n"
+                text += f"Count (number of plc scan): {status.Scan.Count}\n"
+
+                for tname, task in status.Tasks.items():
+                    text += f"\n------- {tname:^30} -------   last / max (S)\n"
+                    text += f"    {dummy:42} {task.Last:.4f} / {task.Max:.4f}\n"
+                    text += f"Count (number of plc scan): {task.Count}\n"
+
+                    for pname, program in status.Programs[tname].items():
+                        text += f"    {pname:42} {program.Last:.4f} / {program.Max:.4f}\n"
+
+                opcua = "OPC UA"
+                read = "Read"
+                Write = "Write"
+                text += f"\n------- {opcua:^30} -------   last / max (S)\n"
+                text += f"    {read:42} {status.OpcUaRead.Last:.4f} / {status.OpcUaRead.Max:.4f}\n"
+                text += f"    {Write:42} {status.OpcUaWrite.Last:.4f} / {status.OpcUaWrite.Max:.4f}\n"
+                text += f"--------------------------------------------------------------"
             else:
                 text = f"Initializing OPC UA server..."
             

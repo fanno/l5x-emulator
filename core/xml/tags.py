@@ -98,6 +98,8 @@ async def loadTags(controller:Element, opcua:OpcuaTag, memory:"Memory", mapping:
 async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping):
     name = tag.get('Name')
 
+    from core.memory.memory import TagMetadata, OpcUaAccess
+
     decorated = tag.find("Data[@Format='Decorated']")
     if decorated is not None:
         passStructures = ['Structure', 'DataValue']
@@ -107,14 +109,14 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
             if element is not None:
                 val = parseStructure(element)
                 memory.set(name, val)
-                medatata = core.memory.memory.TagMetadata(OpcUa_Access=core.memory.memory.OpcUaAccess.from_string(tag.get("OpcUaAccess")))
+                medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")))
                 memory.set_metadata(name, medatata)
                 break
         if element is None:
             array = decorated.find('Array')
             if array is not None:
                 memory.set(name, parseArray(array))
-                medatata = core.memory.memory.TagMetadata(OpcUa_Access=core.memory.memory.OpcUaAccess.from_string(tag.get("OpcUaAccess")))
+                medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")))
                 memory.set_metadata(name, medatata)
             else:
                 raise UnhandeledTag(name, decorated, element)
@@ -138,7 +140,7 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
                         raise UnhandeledTag(k, v, params)
         memory.set(name, value)
 
-        medatata = core.memory.memory.TagMetadata(OpcUa_Access=core.memory.memory.OpcUaAccess.from_string(tag.get("OpcUaAccess")))
+        medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")))
         memory.set_metadata(name, medatata)
 
 async def createTagsMemory(opcua:OpcuaTag, memory:"Memory", mapping:Mapping):
