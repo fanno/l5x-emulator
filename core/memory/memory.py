@@ -1,10 +1,11 @@
+from enum import Enum
 from typing import Dict, Any, Type
 from dataclasses import dataclass, field
 
-from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.array import Array
 
-from enum import Enum
+from protocols.memory import SupportsGetPLCValue, SupportsSetValue
+from utils.isplcinstance import isPLCInstance
 
 class OpcUaAccess(Enum):
     NONE = "None"
@@ -77,7 +78,7 @@ class Memory:
             else:
                 value = getattr(container, key)
 
-            if isinstance(value, DataVariant):
+            if isPLCInstance(value, SupportsGetPLCValue):
                 value = value.getPLCValue()
 
             new_int = (value & ~mask) | (bit_value << bit_index)
@@ -100,8 +101,8 @@ class Memory:
         elif hasattr(container, key):
             current = getattr(container, key)
 
-        if isinstance(current, DataVariant):
-            if isinstance(newValue, DataVariant):
+        if isPLCInstance(current, SupportsSetValue):
+            if isPLCInstance(newValue, SupportsGetPLCValue):
                 current.setValue(newValue.getPLCValue())
             else:
                 current.setValue(newValue)
@@ -123,7 +124,7 @@ class Memory:
         if isBitIndex(keys):
             container = self.__getContainer(keys[:-2])
             value = getValue(container, keys[-2])
-            if isinstance(value, DataVariant):
+            if isPLCInstance(value, SupportsGetPLCValue):
                 value = value.getPLCValue()
             return isBitSet(value, int(keys[-1]))
         else:

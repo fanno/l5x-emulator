@@ -5,6 +5,10 @@ from asyncua import ua
 
 from datatypes.custom.datavariant import DataVariant
 
+from protocols.memory import SupportsSetValue
+
+from utils.isplcinstance import isPLCInstance
+
 from datatypes.custom.helper import getVariantValue
 
 class DataClassMarker(Protocol):
@@ -24,14 +28,10 @@ class Array(Generic[T], DataVariant):
             raise TypeError(f"{self._cls!r} must be a PLCElement or a dataclass")
 
         if init:
-            self.extend(init)
+            self._extend(init)
 
-        if issubclass(self._cls, DataVariant):
-            self._ua_variant = self._cls._ua_variant
-            self._py_variant = self._cls._py_variant
-        else: 
-            self._ua_variant = ua.VariantType.ExtensionObject
-            self._py_variant = self._cls
+        self._ua_variant = getattr(self._cls, "_ua_variant", ua.VariantType.ExtensionObject)
+        self._py_variant = getattr(self._cls, "_py_variant", self._cls)
 
     @staticmethod
     def create(dtype: Generic[T], count: int) -> 'Array[T]':
@@ -39,19 +39,18 @@ class Array(Generic[T], DataVariant):
         initial_data = [dtype() for _ in range(count)]
         return Array(dtype, initial_data)
 
-    def setValue(self, value:Any):
-        self._data.clear()
-        if isinstance(value, DataVariant):
-            if value._ua_variant == self._ua_variant and value._py_variant == self._py_variant:
-                self._data = value
+    def setValue(self, value:"Array"):
+        if not isinstance(value, Array):
+            raise TypeError(f"Expected Array, got {type(value).__name__}")
+
+        if self.getDim() != value.getDim():
+            raise ValueError(f"Array dimensions do not match: {self.getDim()} != {value.getDim()}")
+
+        for idx, item in enumerate(value):
+            if isPLCInstance(item, SupportsSetValue):
+                self[idx].setValue(item)
             else:
-                raise TypeError(f"{self._ua_variant}, {self._ua_variant}, {value._py_variant}, {self._py_variant}, variants do not match")
-        else:
-            if isinstance(value, (list, tuple)):
-                for item in value:
-                    self.append(item)
-            else:
-                self.append(value)
+                raise TypeError(f"Expected UDT or DataVariant, got {type(item).__name__}")
 
     def getPLCValue(self) -> List[Any]:
         return self._data
@@ -87,19 +86,17 @@ class Array(Generic[T], DataVariant):
     def _coerce(self, value: Any) -> T:
         if isinstance(value, self._cls):
             return value
+        
         if hasattr(self._cls, '__dataclass_fields__'):
             if isinstance(value, dict):
                 return self._cls(value)
             if isinstance(value, (list, tuple)):
-                return Array[self._cls](self._cls, value)
+                return Array(self._cls, value)
         return self._cls(value)
 
-    def append(self, value: Any) -> None:
-        self._data.append(self._coerce(value))
-
-    def extend(self, values: Iterable[Any]) -> None:
+    def _extend(self, values: Iterable[Any]) -> None:
         for v in values:
-            self.append(v)
+            self._data.append(self._coerce(v))
 
     def getType(self):
         lst = self._data
@@ -117,10 +114,13 @@ class Array(Generic[T], DataVariant):
         return f"{self._cls.__name__}[{dim}]"
 
     def __setitem__(self, index: int, value: T) -> None:
+        self._data[index].setValue(value)
+        '''
         if isinstance(value, self._cls):
             self._data[index] = value
         else:
             self._data[index].setValue(value)
+        '''
 
     def __getitem__(self, i) -> T:
         return self._data[i]
@@ -137,10 +137,10 @@ class Array(Generic[T], DataVariant):
     def __contains__(self, key:int):
         return 0 <= key < len(self._data)
 
-class HasSetValue(Protocol):
-    def setValue(self, value: Any) -> None: ...
+    def __iter__(self):
+        return iter(self._data)    
 
-def isarray(obj: Any, expected_elem_type: type, min_len=0) -> TypeGuard[HasSetValue]:
+def isarray(obj: Any, expected_elem_type: type, min_len=0) -> TypeGuard[SupportsSetValue]:
     if not isinstance(obj, Array):
         return False
 
@@ -166,8 +166,8 @@ def isarray(obj: Any, expected_elem_type: type, min_len=0) -> TypeGuard[HasSetVa
                 return False
         except Exception:
             return False
-        
-    if not hasattr(obj, 'setValue'):
-        return False
+
+    #if not hasattr(obj, 'setValue'):
+    #    return False
     
     return True        

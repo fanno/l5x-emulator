@@ -1,15 +1,16 @@
 from typing import Any, Tuple, List, Union
-from datatypes.custom.datavariant import DataVariant
 
 from datatypes.custom.numbers import INTIGER
-from datatypes.custom.array import Array
 from datatypes.custom.udt import UDT
 from engine.fbd.block import FBDBlock
 
 from core.memory.helper import getMemory
 
-def split_to_dint(value: int|DataVariant) -> list[int]:
-    if isinstance(value, DataVariant):
+from protocols.memory import SupportsGetPLCValue
+from utils.isplcinstance import isPLCInstance
+
+def split_to_dint(value: int|SupportsGetPLCValue) -> list[int]:
+    if isPLCInstance(value, SupportsGetPLCValue):
         value = value.getPLCValue()
 
     low_mask = 0xFFFFFFFF
@@ -45,7 +46,7 @@ def _NOT(a: int, width: int = 32) -> int:
     return (~a) & _mask(width)
 
 def getPLCValue(source) -> Any:
-    if isinstance(source, (DataVariant|Array)):
+    if isPLCInstance(source, SupportsGetPLCValue):
         return source.getPLCValue()
     return source
 

@@ -22,6 +22,10 @@ from core.signal import Signal
 from core.memory.memory import Memory, OpcUaAccess
 from core.datatypes import DataTypes, DataTypeRegistry
 
+from protocols.memory import SupportsSetValue, isVariant
+
+from utils.isplcinstance import isPLCInstance
+
 async def create_struct(struct:Structure, server:Server, id):
     newFields:list[StructureField] = []
     
@@ -98,7 +102,8 @@ class OpcuaTag:
             logging.debug(f"created Node: {current_path} ({type(value).__name__})")
 
             signal = Signal(PATH=current_path,
-                            NODE=node)
+                            NODE=node,
+                            MEMORY=value)
             mapping.add(signal)
 
             if not isinstance(value, DataVariant):
@@ -114,7 +119,7 @@ class OpcuaTag:
                         )
         
     async def _createVariantNode(self, parent: Node, name: str, value: Any) -> Optional[Node]:
-        if isinstance(value, DataVariant):
+        if isPLCInstance(value, isVariant):
             return await parent.add_variable(self.getIDX(), name, value.toVariant())
         
         if is_dataclass(value):
@@ -262,7 +267,7 @@ def createTag(element: Element, Name:str = None, DataType:str = None, Dimensions
 
             if DataTypeRegistry.has(tag.DataType):
                 value = DataTypeRegistry.get(tag.DataType)()
-                if isinstance(value, DataVariant):
+                if isPLCInstance(value, SupportsSetValue):
                     value.setValue(e.get("Value"))
             else:
                 value = getUAValue(e.get("Value"), tag.DataType)
@@ -283,13 +288,12 @@ def createTag(element: Element, Name:str = None, DataType:str = None, Dimensions
             else:
                 v = getUAValue(e.get("Value"), tag.DataType)
 
-            #setArray(data, i, getUAValue(e.get("Value"), tag.DataType))
             setArray(data, i, v)
             setArray(dataData, i, DataTypeRegistry.get(tag.DataType)())
 
             if DataTypeRegistry.has(tag.DataType):
                 value = DataTypeRegistry.get(tag.DataType)()
-                if isinstance(value, DataVariant):
+                if isPLCInstance(value, SupportsSetValue):
                     value.setValue(e.get("Value"))
             else:
                 value = getUAValue(e.get("Value"), tag.DataType)

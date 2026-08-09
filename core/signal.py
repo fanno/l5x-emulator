@@ -1,18 +1,23 @@
 from dataclasses import dataclass, field
+from typing import Type
 
 from asyncua import Node, ua
 
-from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.helper import getVariantValue
 
 from core.memory.memory import Memory, OpcUaAccess
 
 from opcua.helpers import createVariant
 
+from protocols.memory import isVariant
+
+from utils.isplcinstance import isPLCInstance
+
 @dataclass
 class Signal:
     PATH:str = field(init=True)
     NODE:Node = field(init=True)
+    MEMORY:Type = field(init=True)
     LAST_VALUE:ua.Variant = field(init=False, default=None)
 
     def __post_init__(self):
@@ -23,7 +28,7 @@ async def updateSignal(signal:Signal, memory:Memory):
     if memory.needMemoryUpdate(signal.PATH):
         value = memory.get(signal.PATH)
         if value is not None:
-            if isinstance(value, DataVariant):
+            if isPLCInstance(value, isVariant):
                 await signal.NODE.write_value(value.toVariant())
             else:
                 variant_type = await signal.NODE.read_data_type_as_variant_type()
@@ -39,7 +44,7 @@ def updateMemory(signal: Signal, memory:Memory, forceOpcua:bool=False):
         if metadata:
             if metadata.OpcUa_Access == OpcUaAccess.READ_WRITE or forceOpcua:
                 curentValue = memory.get(signal.PATH)
-                if isinstance(curentValue, DataVariant):
+                if isPLCInstance(curentValue, isVariant):
                     curentValue.fromVariant(signal.LAST_VALUE)
                 else:
                     memory.set(signal.PATH, signal.LAST_VALUE.Value)

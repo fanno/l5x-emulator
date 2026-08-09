@@ -6,10 +6,12 @@ from datetime import datetime
 
 from asyncua import ua
 
-from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.numbers import REAL, LREAL, INTIGER
 from datatypes.custom.bool import BOOL
 from datatypes.custom.dt import DT
+
+from protocols.memory import SupportsGetPLCValue
+from utils.isplcinstance import isPLCInstance
 
 TYPE_MAP = {
     "SINT": ua.VariantType.SByte,
@@ -27,7 +29,7 @@ TYPE_MAP = {
 }
 
 def getPLCValue(value: Any) -> Any:
-    if isinstance(value, DataVariant):
+    if isPLCInstance(value, SupportsGetPLCValue):
         return value.getPLCValue()
     
     if isinstance(value, list):

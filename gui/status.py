@@ -34,23 +34,22 @@ class StatusText(UpdatingScrolledText):
         if update and self.winfo_viewable():
             if status.Runing:
                 text = f"------------------ Total scan ------------------\n"
-                text += f"Time current (Sec): {status.Scan.Last:.4f} ({status.ScanDelayed:.4f})\n"
-                text += f"Time longest (Sec): {status.Scan.Max:.4f}\n"
+                text += f"Time current/longest (S): {status.Scan.Last:.4f} ({status.ScanDelayed:.4f}) / {status.Scan.Max:.4f}\n"
                 text += f"Count (number of plc scan): {status.Scan.Count}\n"
                 for tname, task in status.Tasks.items():
-                    text += f"------------------ {tname} ------------------\n"
-                    text += f"Time current (Sec): {task.Last:.4f}\n"
-                    text += f"Time longest (Sec): {task.Max:.4f}\n"
+                    text += f"\n------------------ {tname} ------------------\n"
+                    text += f"Time current/longest (S): {task.Last:.4f} / {task.Max:.4f} / {task.Max:.4f}\n"
                     text += f"Count (number of plc scan): {task.Count}\n"
-
                     for pname, program in status.Programs[tname].items():
-                        text += f"----------------------- {tname} -> {pname} ------------------\n"
-                        text += f"    Time current (Sec): {program.Last:.4f}\n"
-                        text += f"    Time longest (Sec): {program.Max:.4f}\n"
+                        text += f"    {pname}: Time current/longest (S): {program.Last:.4f} / {program.Max:.4f}\n"
 
-                text += f"------------------------------------------------\n"
-                text += f"Memory current (MB): {current:.2f}\n"
-                text += f"Memory max (MB): {self._peak:.2f}\n"
+                text += f"\n------------------ OPC UA Read ------------------\n"
+                text += f"Time current/longest (S): {status.OpcUaRead.Last:.4f} / {status.OpcUaRead.Max:.4f}\n"
+                text += f"\n------------------ OPC UA Write ------------------\n"
+                text += f"Time current/longest (S): {status.OpcUaWrite.Last:.4f} / {status.OpcUaWrite.Max:.4f}\n"
+
+                text += f"\n------------------------------------------------\n"
+                text += f"Memory current/max (MB): {current:.2f} / {self._peak:.2f}\n"
             else:
                 text = f"Initializing OPC UA server..."
             

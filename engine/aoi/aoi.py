@@ -22,6 +22,10 @@ from datatypes.custom.numbers import LINT, DINT
 from datatypes.custom.string import STRING
 from datatypes.custom.array import Array
 
+from protocols.memory import HasEnable
+
+from utils.isplcinstance import isPLCInstance
+
 TT = TypeVar("TT", bound=type)
 
 @dataclass
@@ -55,11 +59,6 @@ class Local():
             return cls()
         else:
             return Array[cls](cls, [cls()] * self.Dimensions)
-
-@runtime_checkable
-class HasEnable(Protocol):
-    EnableIn:BOOL
-    EnableOut:BOOL
 
 @dataclass
 class AOI():
@@ -163,7 +162,7 @@ class AOIRegistry:
 
                     aoiData = getMemory(instance)
 
-                    if isinstance(aoiData, HasEnable):
+                    if isPLCInstance(aoiData, HasEnable):
                         aoiData.EnableIn.setValue(ctx.RLL.RungEnabled)
                     else:
                         raise TypeError("Returned AOI does not implement EnableIn/EnableOut")

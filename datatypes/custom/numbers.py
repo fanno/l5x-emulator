@@ -9,6 +9,10 @@ from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.math import MATH
 from datatypes.custom.compare import COMPARE
 
+from protocols.memory import SupportsGetPLCValue
+
+from utils.isplcinstance import isPLCInstance
+
 from ctypes import (
     c_int8, c_uint8,
     c_int16, c_uint16,
@@ -133,7 +137,7 @@ class REAL(COMPARE, MATH, DataVariant):
         if value is None:
             value = 0.0
 
-        if isinstance(value, DataVariant): 
+        if isPLCInstance(value, SupportsGetPLCValue):
             value = value.getPLCValue()
 
         if isinstance(value, str):

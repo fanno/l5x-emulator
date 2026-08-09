@@ -1,8 +1,12 @@
 import copy
 
 from dataclasses import dataclass, field
-from typing import Any, Self
+from typing import Any, Self, Any
 from asyncua import ua
+
+from  utils.isplcinstance import isPLCInstance
+
+from protocols.memory import SupportsGetPLCValue
 
 @dataclass
 class DataVariant:
@@ -35,7 +39,7 @@ class DataVariant:
                 return default_type()
             return None
         else:
-            if isinstance(value, DataVariant):
+            if isPLCInstance(value, SupportsGetPLCValue):
                 value = value.getPLCValue()
             return value
 

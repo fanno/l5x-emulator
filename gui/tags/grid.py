@@ -12,7 +12,7 @@ import time
 
 from numbers import Number
 
-from utils.biindexmap import BiIndexMap
+from utils.indexmap import IndexMap
 
 from datatypes.custom.string import STRING
 from datatypes.custom.datavariant import DataVariant
@@ -25,6 +25,10 @@ from collections.abc import Mapping, Sequence, Set
 
 from eventbus.eventbus import EventBus
 from core.events import UpdateVariableEvent
+
+from protocols.memory import SupportsSetValue, SupportsGetPLCValue, SupportsToString
+
+from utils.isplcinstance import isPLCInstance
 
 @dataclass
 class DataPair:
@@ -41,19 +45,18 @@ class DataPair:
                 path.append(part)
             self.PATH = ".".join(path)
 
-class MappingData(BiIndexMap[DataPair]):
+class MappingData(IndexMap[DataPair]):
     def __init__(self):
-        super().__init__(
-            key1_func=lambda s: s.PATH,
-            key2_func=lambda s: s.IID,
-            expected_type=DataPair
-        )
+        super().__init__(expected_type=DataPair)
+
+        self.IDX_PATH = self._addIndex(lambda s: s.PATH)
+        self.IDX_IID = self._addIndex(lambda s: s.IID)
 
     def getByPath(self, path: str) -> Optional[DataPair]:
-        return self._get_by_first(path)
+        return self.get(self.IDX_PATH, path)
 
     def getById(self, id: str) -> Optional[DataPair]:
-        return self._get_by_second(id)
+        return self.get(self.IDX_IID, id)
 
 class Grid(Treeview):
     PADDING = 5
@@ -267,11 +270,11 @@ class Grid(Treeview):
         return True
 
     def getRowValue(self, value):
-        if isinstance(value, (STRING, DT)):
+        if isPLCInstance(value, SupportsToString):
             return (value.__class__.__name__, value.toString())
         elif isinstance(value, Array):
             return (value.getType(), '')
-        elif isinstance(value, (DataVariant)):
+        elif isPLCInstance(value, (SupportsGetPLCValue)):
             return (value.__class__.__name__, value.getPLCValue())
         elif (not isinstance(value, int) and not isinstance(value, float) and not isinstance(value, bool)):
             return (value.__class__.__name__, '')
@@ -290,9 +293,7 @@ class Grid(Treeview):
                 if variable.DATA == rawValue and not send and not path:
                     return
                 try:
-                    if type(variable.DATA) == type(rawValue):
-                        variable.DATA = rawValue
-                    elif isinstance(variable.DATA, DataVariant) and not isinstance(rawValue, DataVariant):
+                    if isinstance(variable.DATA, SupportsSetValue) and not isinstance(rawValue, DataVariant):
                         variable.DATA.setValue(rawValue)
                     else:
                         variable.DATA = rawValue

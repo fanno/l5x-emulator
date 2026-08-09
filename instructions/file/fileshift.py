@@ -6,11 +6,12 @@ from core.registry.instructionregistry import InstructionRegistry
 
 from datatypes.misc import CONTROL
 from datatypes.custom.array import Array
-from datatypes.custom.numbers import DINT
 
 from datatypes.custom.datavariant import DataVariant
 
-from datatypes.custom.udt import Resettable
+from protocols.memory import Resettable
+
+from utils.isplcinstance import isPLCInstance
 
 @InstructionRegistry.register
 class BSL(Instruction):
@@ -160,7 +161,7 @@ class FFU(Instruction):
                         control.EM.setValue(True)
 
                     if control.POS < 1:
-                        if isinstance(dest, Resettable):
+                        if isPLCInstance(dest, Resettable):
                             dest._reset()
                     else:
                         if control.POS > control.LEN:
@@ -175,7 +176,7 @@ class FFU(Instruction):
 
                             for i in range(control.POS.getPLCValue(), control.LEN + 1):
                                 fifo[i] = fifo[i+1]
-                            if isinstance(fifo[control.LEN - 1], Resettable):
+                            if isPLCInstance(fifo[control.LEN - 1], Resettable):
                                 fifo[control.LEN - 1]._reset()
                 else:
                     if control.POS == 0:
@@ -303,7 +304,7 @@ class LFU(Instruction):
                         control.EM.setValue(True)
 
                     if control.POS < 1:
-                        if isinstance(dest, Resettable):
+                        if isPLCInstance(dest, Resettable):
                             dest._reset()
                     else:
                         if control.POS > control.LEN:
@@ -314,7 +315,7 @@ class LFU(Instruction):
                         else:
                             dest.setValue(fifo[control.POS].copy())
 
-                            if isinstance(fifo[control.POS], Resettable):
+                            if isPLCInstance(fifo[control.POS], Resettable):
                                 fifo[control.POS]._reset()
 
                         control.POS -= 1

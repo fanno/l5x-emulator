@@ -99,6 +99,11 @@ class Emulator(threading.Thread):
     forceOpcua:bool = False
 
     now:DINT
+
+    OpcUaWriteTime:int
+    OpcUaWriteTimeMax:int
+    OpcUaReadTime:int
+    OpcUaReadTimeMax:int
     
     def __init__(self, path:str, port:int=4840, forceOpcua:bool=True):
         super().__init__()
@@ -132,6 +137,11 @@ class Emulator(threading.Thread):
         self.postScan = False
         self.now = DINT()
         self.forceOpcua = forceOpcua
+
+        self.OpcUaWriteTime = 0
+        self.OpcUaWriteTimeMax = 0
+        self.OpcUaReadTime = 0
+        self.OpcUaReadTimeMax = 0 
 
         self.eventlistenet = EventListener(self)
 
@@ -227,10 +237,12 @@ class Emulator(threading.Thread):
 
                             for pname in task._programs:
                                 program = self.programs[pname]
-                                programStatus[tname][pname] = StatusScan(Max=program.MAXSCANTIME.getPLCValue()/10000000, Last=program.LASTSCANTIME.getPLCValue()/10000000, Count=0)
+                                programStatus[tname][pname] = StatusScan(Max=program.MAXSCANTIME.getPLCValue()/10000000, Last=program.LASTSCANTIME.getPLCValue()/10000000)
 
                         EventBus.get().dispatch(StatusEvent(Runing=True,
                                                 Scan=StatusScan(Max=difTimeMax, Last=timer.elapsed, Count=self.scanCount),
+                                                OpcUaRead=StatusScan(Max=self.OpcUaReadTimeMax/10000000, Last=self.OpcUaReadTime/10000000),
+                                                OpcUaWrite=StatusScan(Max=self.OpcUaWriteTimeMax/10000000, Last=self.OpcUaWriteTime/10000000),
                                                 Tasks=taskStatus,
                                                 Programs=programStatus,
                                                 ScanDelayed=scanDelayTime,
@@ -307,27 +319,38 @@ class Emulator(threading.Thread):
             DataTypes.add(struct)
 
     async def UpdateOPCUA(self):
-        for signal in self.mapping:
-            await updateSignal(signal, self.memory)
-       
-        for signal in PLCSYSTEM.mapping:
-            await updateSignal(signal, self.memory)
+        timer = ExecutionTimer()
+        with timer:        
+            for signal in self.mapping:
+                await updateSignal(signal, self.memory)
+        
+            for signal in PLCSYSTEM.mapping:
+                await updateSignal(signal, self.memory)
 
-        for name, program in self.programs.items():
-            for signal in program.mapping:
-                await updateSignal(signal, program.memory)
+            for name, program in self.programs.items():
+                for signal in program.mapping:
+                    await updateSignal(signal, program.memory)
+
+        self.OpcUaWriteTime = timer.μs
+        if self.OpcUaWriteTime > self.OpcUaWriteTimeMax:
+            self.OpcUaWriteTimeMax = self.OpcUaWriteTime
 
     async def ReadOPCUA(self):
-        
-        for signal in self.mapping:
-            updateMemory(signal, self.memory, self.forceOpcua)
+        timer = ExecutionTimer()
+        with timer:
+            for signal in self.mapping:
+                updateMemory(signal, self.memory, self.forceOpcua)
 
-        for signal in PLCSYSTEM.mapping:
-            updateMemory(signal, self.memory, self.forceOpcua)
+            for signal in PLCSYSTEM.mapping:
+                updateMemory(signal, self.memory, self.forceOpcua)
 
-        for pname, program in self.programs.items():
-            for signal in program.mapping:
-                updateMemory(signal, program.memory, self.forceOpcua)
+            for pname, program in self.programs.items():
+                for signal in program.mapping:
+                    updateMemory(signal, program.memory, self.forceOpcua)
+
+        self.OpcUaReadTime = timer.μs
+        if self.OpcUaReadTime > self.OpcUaReadTimeMax:
+            self.OpcUaReadTimeMax = self.OpcUaReadTime
 
     @subscribe_event(UpdateVariableEvent)
     def on_eventbus(self, event):

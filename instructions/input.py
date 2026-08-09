@@ -16,7 +16,9 @@ from datatypes.custom.array import isarray
 from datatypes.custom.string import STRING
 from datatypes.custom.bool import BOOL
 from datatypes.custom.time import TIME32, TIME
-from datatypes.custom.datavariant import DataVariant
+
+from protocols.memory import SupportsGetPLCValue, SupportsSetValue
+from utils.isplcinstance import isPLCInstance
 
 from instructions.helper import split_to_dint
 
@@ -56,7 +58,7 @@ class GSV(Instruction):
                     
                     v = getattr(aoi, attribute)
 
-                    if isinstance(v, DataVariant):
+                    if isinstance(v, SupportsGetPLCValue):
                         dest.setValue(v.getPLCValue())
                         return
 
@@ -632,15 +634,14 @@ class SSV(Instruction):
             source = self.getMemory(self.args[3])
             match Class:
                 case 'AddOnInstructionDefinition':
-                    if isinstance(source, DataVariant):
-                        aoi = AOIRegistry.get(instance)
+                    aoi = AOIRegistry.get(instance)
 
-                        dest = getattr(aoi, attribute)
+                    dest = getattr(aoi, attribute)
 
-                        if isinstance(dest, DataVariant):
-                            if type(source) == type(dest):
-                                dest.setValue(source)
-                                return
+                    if isPLCInstance(dest, SupportsSetValue):
+                        if type(source) == type(dest):
+                            dest.setValue(source)
+                            return
                 case 'Axis':
                     pass
                 case 'Controller':

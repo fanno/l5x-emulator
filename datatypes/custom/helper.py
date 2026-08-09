@@ -1,10 +1,12 @@
 from typing import Any
 from asyncua import ua
 from dataclasses import is_dataclass, fields
-from datatypes.custom.datavariant import DataVariant
+
+from protocols.memory import SupportsGetPLCValue
+from  utils.isplcinstance import isPLCInstance
 
 def getVariantValue(value:Any) -> Any:
-    if isinstance(value, DataVariant):
+    if isPLCInstance(value, SupportsGetPLCValue):
         return value.getUAValue()
     elif is_dataclass(value):
         dt_name = value.__class__.__name__

@@ -25,6 +25,8 @@ class StatusScan():
 class StatusEvent():
     EndPoint:float = field(init=True)
     Scan:StatusScan = field(init=True, default_factory=StatusScan)
+    OpcUaRead:StatusScan = field(init=True, default_factory=StatusScan)
+    OpcUaWrite:StatusScan = field(init=True, default_factory=StatusScan)
     Tasks:dict[str, StatusScan] = field(init=True, default_factory=dict)
     Programs:dict[str, dict[str, StatusScan]] = field(init=True, default_factory=dict)
     Runing:bool = field(init=True, default=False)

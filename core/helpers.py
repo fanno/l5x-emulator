@@ -6,7 +6,9 @@ from opcua.mapping import Mapping
 from opcua.tag import OpcuaTag, Tag
 from opcua.helpers import *
 
-from datatypes.custom.datavariant import DataVariant
+from protocols.memory import isVariant
+
+from utils.isplcinstance import isPLCInstance
 
 from core.registry.datatyperegistry import DataTypeRegistry
 from core.signal import Signal
@@ -34,10 +36,6 @@ async def createMemory(tag: Tag, opcua:OpcuaTag, memory:"Memory", mapping:Mappin
 
     node = await opcua.createTag(tag, parent)
 
-    signal = Signal(PATH=current_path,
-                    NODE=node)
-    mapping.add(signal)
-
     for t in tag.Children:
         att = await createMemory(tag=t,
                                  opcua=opcua,
@@ -50,7 +48,13 @@ async def createMemory(tag: Tag, opcua:OpcuaTag, memory:"Memory", mapping:Mappin
 
     memory.set(current_path, result)
 
-    if isinstance(result, DataVariant):
+    signal = Signal(PATH=current_path,
+                    NODE=node,
+                    MEMORY=result)
+    
+    mapping.add(signal)
+
+    if isPLCInstance(result, isVariant):
         await node.write_value(result.toVariant())
     else:
         await node.write_value(ua.Variant(result, variant_type))

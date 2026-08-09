@@ -1,9 +1,11 @@
-from datatypes.custom.datavariant import DataVariant
 import engine.context
 from engine.hierarchy import Hierarchy
 from engine.errors import PLCFaultHandler
 
 from typing import Any
+
+from protocols.memory import SupportsGetPLCValue
+from utils.isplcinstance import isPLCInstance
 
 def make_async_st(st_source: str) -> str:
     indented = indent(st_source, "    ")
@@ -20,7 +22,7 @@ def indent(code: str, prefix: str) -> str:
 def getHook(name):
     from core.memory.helper import getMemory
     result = getMemory(name)
-    if isinstance(result, DataVariant):
+    if isPLCInstance(result, SupportsGetPLCValue):
         result = result.getPLCValue()
     return result
 

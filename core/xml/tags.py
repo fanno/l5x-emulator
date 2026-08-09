@@ -16,7 +16,9 @@ from core.errors import UnhandeledTag, ParseTagException
 
 from datatypes.custom.array import Array
 from datatypes.custom.string import STRING
-from datatypes.custom.datavariant import DataVariant
+
+from protocols.memory import SupportsSetValue
+from utils.isplcinstance import isPLCInstance
 
 def parseStructure(struct_elem: Element, dataType:str = None):
     if dataType is None:
@@ -128,7 +130,7 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
                 for k,v in params.attrib.items():
                     if hasattr(value, k):
                         attr = getattr(value, k)
-                        if isinstance(attr , DataVariant):
+                        if isPLCInstance(attr , SupportsSetValue):
                             attr.setValue(v)
                         else:
                             raise UnhandeledTag(k, v, params)

@@ -6,12 +6,14 @@ from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
 from instructions.helper import _AND, _OR, _XOR, _NOT
 
-from datatypes.custom.udt import Resettable
-
 from  instructions.helper import getPLCValue
 from datatypes.fdb import FBD_LOGICAL, FBD_CONVERT, FBD_BOOLEAN_AND, FBD_BOOLEAN_NOT, FBD_BOOLEAN_XOR, FBD_BOOLEAN_OR
 from typing import Any
 from engine.fbd.block import FBDBlock
+
+from protocols.memory import Resettable
+
+from utils.isplcinstance import isPLCInstance
 
 @InstructionRegistry.register
 class MOV(Instruction):
@@ -219,7 +221,7 @@ class CLR(Instruction):
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RLL.RungStatus:
             dest = self.getMemory(self.args[0])
-            if isinstance(dest, Resettable):
+            if isPLCInstance(dest, Resettable):
                 dest._reset()
 
 @InstructionRegistry.register

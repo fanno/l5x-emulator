@@ -16,10 +16,7 @@ class DataUATypesRegistry:
 
             instance = cls()
             
-            if hasattr(instance, "_ua_variant"):
-                DataUATypesRegistry._Types[name] = getattr(instance, "_ua_variant")
-            else:
-                DataUATypesRegistry._Types[name] = ua.VariantType.ExtensionObject
+            DataUATypesRegistry._Types[name] = getattr(instance, "_ua_variant", ua.VariantType.ExtensionObject)
 
     @staticmethod
     def getAll() -> Dict[str, ua.VariantType]:

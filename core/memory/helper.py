@@ -6,19 +6,21 @@ import hashlib
 from typing import Any
 from enum import Enum, auto
 
-from core.errors import MemoryException
-
 from dataclasses import is_dataclass, fields
 
+from core.errors import MemoryException
+from core.constants import SYSTEMTAGS, CONTROLLERTAGS
+
 from engine.helper import CurrentProgramName
-from datatypes.custom.datavariant import DataVariant
+from engine.scan import PreScan, PostScan
+
 from datatypes.custom.array import Array
 from datatypes.custom.string import STRING
 from datatypes.custom.numbers import REAL, LINT
 
-from core.constants import SYSTEMTAGS, CONTROLLERTAGS
+from protocols.memory import isVariant
 
-from engine.scan import PreScan, PostScan
+from utils.isplcinstance import isPLCInstance
 
 #BASE_OR_DEC_PATTERN = re.compile(
 #    r"""^
@@ -155,7 +157,7 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
                                 result = memory.get(path)
 
         raw = result
-        if isinstance(result, DataVariant):
+        if isPLCInstance(result, isVariant):
             match dataVariant:
                 case OutputType.PLC:
                     result = result.getPLCValue()

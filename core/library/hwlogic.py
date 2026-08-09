@@ -9,7 +9,9 @@ from simpleeval import SimpleEval
 
 from core.memory.memory import Memory
 from core.memory.helper import getMemory, setMemory
-from datatypes.custom.datavariant import DataVariant
+
+from protocols.memory import SupportsGetPLCValue
+from utils.isplcinstance import isPLCInstance
 
 class HWLogic:
     def __init__(self, yaml_data:Dict):
@@ -113,7 +115,7 @@ def create_evaluator(name, namespace):
         if isinstance(path_str, str):
             value = getMemory(f"{name}:{path_str}")
 
-            if isinstance(value, DataVariant):
+            if isPLCInstance(value, SupportsGetPLCValue):
                 value.getPLCValue()
         else:
             value = path_str

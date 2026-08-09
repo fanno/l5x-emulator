@@ -6,11 +6,13 @@ from asyncua import ua
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from opcua.structure import Structure
-from opcua.helpers import getUAVariantType, getPythonVariantType
+from opcua.helpers import getPythonVariantType
 
 from datatypes.custom.array import Array
-from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.udt import UDT
+
+from protocols.memory import isVariant
+from utils.isplcinstance import isPLCInstance
 
 class UDTBase:
     def __repr__(self):
@@ -39,10 +41,7 @@ def get_ua_info(cls) -> Dict[str, UAInfo]:
             obj = f.default_factory()
             dataType = f.default_factory.__name__
 
-            if isinstance(obj, DataVariant):
-                uatype = obj._ua_variant
-            else:
-                uatype = ua.VariantType.ExtensionObject
+            uatype = getattr(obj, "_ua_variant", ua.VariantType.ExtensionObject)
 
             dim = []
             if isinstance(obj, Array):
