@@ -90,7 +90,6 @@ class Array(Generic[T], DataVariant):
                 def traverse(data, coords: list[int] = [], depth: int = 0):
                     if depth == len(dimensions):
                         index_str = self._index_to_string(coords)
-                        print(index_str)
                         e = element.find(f'./Element[@Index="{index_str}"]')
                         if isinstance(e, Element):
                             if isPLCInstance(data, SupportsToL5X):
