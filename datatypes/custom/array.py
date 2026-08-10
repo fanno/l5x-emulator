@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field, InitVar
 from typing import Any, Protocol, List, Iterable, Generic, Union, TypeVar, Optional, get_args, get_origin, TypeGuard, Protocol
-
+from xml.etree.ElementTree import Element
 from asyncua import ua
 
 from datatypes.custom.datavariant import DataVariant
 
-from protocols.memory import SupportsSetValue
+from protocols.memory import SupportsSetValue, SupportsToL5X
 
 from utils.isplcinstance import isPLCInstance
 
@@ -73,6 +73,36 @@ class Array(Generic[T], DataVariant):
             else:
                 break
         return dim
+
+    def _index_to_string(self, coords: list[int]) -> str:
+        return "[" + ",".join(map(str, coords)) + "]"
+
+    def toL5X(self, element:Element) -> None:
+        if isinstance(element, Element):
+            dimensions_str = element.get("Dimensions", "0")
+            dimensions = [int(d) for d in dimensions_str.split(",") if d.strip()]
+            
+            if dimensions:
+                total_elements = 1
+                for d in dimensions:
+                    total_elements *= d
+                
+                def traverse(data, coords: list[int] = [], depth: int = 0):
+                    if depth == len(dimensions):
+                        index_str = self._index_to_string(coords)
+                        print(index_str)
+                        e = element.find(f'./Element[@Index="{index_str}"]')
+                        if isinstance(e, Element):
+                            if isPLCInstance(data, SupportsToL5X):
+                                container = e.find("./Structure") or e.find("./Array") or e
+                                data.toL5X(container)
+                        return
+                    
+                    for i in range(dimensions[depth]):
+                        if i < len(data):
+                            traverse(data[i], coords + [i], depth + 1)
+                
+                traverse(self._data)
 
     def toVariant(self) -> ua.Variant:
         return ua.Variant(Value=self.getUAValue(),

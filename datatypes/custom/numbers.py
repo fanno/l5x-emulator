@@ -72,10 +72,11 @@ class INTIGER(COMPARE, MATH, DataVariant):
                 raise NotImplementedError(f"{self.__class__.__name__}.toL5X radix={radix!r} not implemented")
 
     def toL5X(self, element:Element) -> None:
-        radix = element.get("Radix", None)
-        if radix is not None:
-            formatted = self._format_radix_value(self._value, radix)
-            element.set("Value", formatted)
+        if isinstance(element, Element):
+            radix = element.get("Radix", None)
+            if radix is not None:
+                formatted = self._format_radix_value(self._value, radix)
+                element.set("Value", formatted)
 
     @classmethod
     def toValue(cls, value: int, type_name: str):
@@ -159,7 +160,8 @@ class REAL(COMPARE, MATH, DataVariant):
         return self._value
 
     def toL5X(self, element:Element) -> None:
-        element.set("Value", str(self._value))
+        if isinstance(element, Element):
+            element.set("Value", str(self._value))
 
     @staticmethod
     def toValue(value:str|int|float):

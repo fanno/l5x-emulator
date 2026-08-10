@@ -31,10 +31,11 @@ class BOOL(COMPARE, DataVariant):
         return self._value
 
     def toL5X(self, element:Element) -> None:
-        if self._value:
-            element.set("Value", "1")
-        else:
-            element.set("Value", "0")
+        if isinstance(element, Element):
+            if self._value:
+                element.set("Value", "1")
+            else:
+                element.set("Value", "0")
 
     @classmethod
     def toValue(cls, value:str|int|bool) -> bool:
