@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Any
 
+from xml.etree.ElementTree import Element
+
 from asyncua import ua
 
 from core.registry.datatyperegistry import DataTypeRegistry
@@ -27,6 +29,12 @@ class BOOL(COMPARE, DataVariant):
     
     def __bool__(self) -> bool:
         return self._value
+
+    def toL5X(self, element:Element) -> None:
+        if self._value:
+            element.set("Value", "1")
+        else:
+            element.set("Value", "0")
 
     @classmethod
     def toValue(cls, value:str|int|bool) -> bool:

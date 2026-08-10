@@ -109,14 +109,14 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
             if element is not None:
                 val = parseStructure(element)
                 memory.set(name, val)
-                medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")))
+                medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")), XMlElement=element)
                 memory.set_metadata(name, medatata)
                 break
         if element is None:
             array = decorated.find('Array')
             if array is not None:
                 memory.set(name, parseArray(array))
-                medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")))
+                medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")), XMlElement=array)
                 memory.set_metadata(name, medatata)
             else:
                 raise UnhandeledTag(name, decorated, element)
@@ -140,7 +140,7 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
                         raise UnhandeledTag(k, v, params)
         memory.set(name, value)
 
-        medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")))
+        medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")), XMlElement=data)
         memory.set_metadata(name, medatata)
 
 async def createTagsMemory(opcua:OpcuaTag, memory:"Memory", mapping:Mapping):

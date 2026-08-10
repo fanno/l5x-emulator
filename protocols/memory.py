@@ -1,5 +1,6 @@
 from typing import Any, Self, Protocol, Any, runtime_checkable , TYPE_CHECKING
 from asyncua import ua
+from xml.etree.ElementTree import Element
 
 if TYPE_CHECKING:
     from datatypes.custom.bool import BOOL
@@ -24,6 +25,10 @@ class SupportsToString(Protocol):
     def toString(self) -> str:
         ...
 
+@runtime_checkable
+class SupportsToL5X(Protocol):
+    def toL5X(self, element:Element) -> None:
+        ...
 
 @runtime_checkable
 class isVariant(SupportsGetPLCValue, Protocol):

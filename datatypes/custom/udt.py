@@ -1,10 +1,7 @@
-from typing import Protocol, runtime_checkable
-
-
-from protocols.memory import SupportsSetValue
+from protocols.memory import SupportsSetValue, Resettable, SupportsToL5X
 from  utils.isplcinstance import isPLCInstance
 
-from protocols.memory import Resettable
+from xml.etree.ElementTree import Element
 
 class UDT:
     def _reset(self):
@@ -12,6 +9,15 @@ class UDT:
             current = getattr(self, f.name, None)
             if isPLCInstance(current, Resettable):
                 current._reset()
+
+    def toL5X(self, element:Element) -> None:
+        if isinstance(element , Element):
+            for f in self.__dataclass_fields__.values():
+                current = getattr(self, f.name, None)
+
+                if isPLCInstance(current, SupportsToL5X):
+                    e = element.find(f'./*[@Name="{f.name}"]')
+                    current.toL5X(e)
 
     def setValue(self, value:"UDT"):
         if type(value) is not type(self):

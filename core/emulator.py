@@ -414,6 +414,27 @@ class Emulator(threading.Thread):
 
     def stop(self):
         self._is_running = False
+        self.save()
 
     def shutdown(self):
         self.stop()
+
+    def save(self):
+        from xml.etree.ElementTree import ElementTree
+
+        from utils.isplcinstance import isPLCInstance
+        from protocols.memory import SupportsToL5X
+
+        all = self.memory.getMemoryAll()
+        
+        for key, value in all.items():
+            metadata = self.memory.get_metadata(key)
+            if metadata:
+                element = metadata.XMlElement
+                if isinstance(element , Element):
+                    value = self.memory.get(key)
+                    if isPLCInstance(value, SupportsToL5X):
+                        xmmlValue:str = value.toL5X(element)
+
+        tree = ElementTree(self.root)
+        tree.write("saved.l5x", encoding="utf-8", xml_declaration=True)

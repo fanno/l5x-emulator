@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 
 from datatypes.custom.array import Array
 
+from xml.etree.ElementTree import Element
+
 from protocols.memory import SupportsGetPLCValue, SupportsSetValue
 from utils.isplcinstance import isPLCInstance
 
@@ -29,7 +31,8 @@ class OpcUaAccess(Enum):
 
 @dataclass
 class TagMetadata:
-    OpcUa_Access: OpcUaAccess = OpcUaAccess.NONE
+    OpcUa_Access: OpcUaAccess = field(init=True, default=OpcUaAccess.NONE)
+    XMlElement: Element = field(init=True, default=None)
 
 @dataclass
 class Memory:

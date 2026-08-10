@@ -2,6 +2,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from xml.etree.ElementTree import Element
+
 from asyncua import ua
 
 from core.registry.datatyperegistry import DataTypeRegistry
@@ -12,7 +14,7 @@ from datatypes.custom.compare import COMPARE
 from protocols.memory import SupportsGetPLCValue
 
 from utils.isplcinstance import isPLCInstance
-
+from ctypes import sizeof
 from ctypes import (
     c_int8, c_uint8,
     c_int16, c_uint16,
@@ -49,8 +51,32 @@ class INTIGER(COMPARE, MATH, DataVariant):
         return self._value
     
     def getBitSize(self) -> int:
-        PLC_TYPE_MAP[self.__class__.__name__].size * 8
-    
+        return sizeof(PLC_TYPE_MAP[self.__class__.__name__]) * 8
+
+    def _format_radix_value(self, value, radix: str) -> str:
+        bit_size = self.getBitSize()
+        mask = (1 << bit_size) - 1
+        masked_value = value & mask
+        
+        match radix:
+            case "Binary":
+                binary = format(masked_value, f'0{bit_size}b')
+                chunks = [binary[i:i+4] for i in range(0, len(binary), 4)]
+                return f"2#" + "_".join(chunks)
+            case "Hex":
+                hex_chars = bit_size // 4
+                return f"16#{format(masked_value, f'0{hex_chars}X')}"
+            case "Decimal":
+                return str(masked_value)
+            case _:
+                raise NotImplementedError(f"{self.__class__.__name__}.toL5X radix={radix!r} not implemented")
+
+    def toL5X(self, element:Element) -> None:
+        radix = element.get("Radix", None)
+        if radix is not None:
+            formatted = self._format_radix_value(self._value, radix)
+            element.set("Value", formatted)
+
     @classmethod
     def toValue(cls, value: int, type_name: str):
         value = super().toValue(value)
@@ -131,6 +157,9 @@ class REAL(COMPARE, MATH, DataVariant):
 
     def getUAValue(self) -> float:
         return self._value
+
+    def toL5X(self, element:Element) -> None:
+        element.set("Value", str(self._value))
 
     @staticmethod
     def toValue(value:str|int|float):
