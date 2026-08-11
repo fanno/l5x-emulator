@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
+from datetime import datetime, timezone
 
 from xml.etree.ElementTree import Element
 
@@ -57,17 +58,31 @@ class INTIGER(COMPARE, MATH, DataVariant):
         bit_size = self.getBitSize()
         mask = (1 << bit_size) - 1
         masked_value = value & mask
-        
+
         match radix:
             case "Binary":
                 binary = format(masked_value, f'0{bit_size}b')
                 chunks = [binary[i:i+4] for i in range(0, len(binary), 4)]
+                chunks.reverse()  # ← ADD THIS FOR LITTLE-ENDIAN
                 return f"2#" + "_".join(chunks)
             case "Hex":
                 hex_chars = bit_size // 4
-                return f"16#{format(masked_value, f'0{hex_chars}X')}"
+                hex_str = format(masked_value, f'0{hex_chars}X')
+                # Reverse the chunks (little-endian)
+                chunks = [hex_str[i:i+4] for i in range(0, len(hex_str), 4)]
+                chunks.reverse()  # ← ADD THIS FOR LITTLE-ENDIAN
+                return f"16#" + "_".join(chunks)
             case "Decimal":
                 return str(masked_value)
+            case "Date/Time":
+                dt = datetime.fromtimestamp(masked_value, tz=timezone.utc)
+                micros_formatted = f"{dt.microsecond // 1000:03d}_{dt.microsecond % 1000:03d}"
+                return f"DT#{dt.strftime('%Y-%m-%d-%H:%M:%S')}.{micros_formatted}Z"
+            case "ASCII":
+                num_bytes = bit_size // 8
+                byte_data = masked_value.to_bytes(num_bytes, byteorder='big')
+                hex_parts = [f"${b:02X}" for b in byte_data]
+                return "'" + "".join(hex_parts) + "'"
             case _:
                 raise NotImplementedError(f"{self.__class__.__name__}.toL5X radix={radix!r} not implemented")
 
@@ -81,6 +96,7 @@ class INTIGER(COMPARE, MATH, DataVariant):
     @classmethod
     def toValue(cls, value: int, type_name: str):
         value = super().toValue(value)
+
         if value is None:
             value = 0
         if isinstance(value, str):

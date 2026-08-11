@@ -2,6 +2,7 @@ import ast
 import operator
 import regex as re
 import hashlib
+from datetime import datetime, timezone
 
 from typing import Any
 from enum import Enum, auto
@@ -39,6 +40,14 @@ BASE_OR_DEC_PATTERN = re.compile(
     r"^(?:(?P<base>\d+)#(?P<val>[\w_]+)|(?P<sign>[+-]?)(?P<dec>\d+(?:\.\d+)?(?:[eE][+-]?\d+)?))$"
 )
 
+DT_PATTERN = re.compile(
+    r"^DT#(?P<dt>\d{4}-\d{2}-\d{2}-\d{2}:\d{2}:\d{2}\.\d+Z)$"
+)
+
+HEX_DOLLAR_PATTERN = re.compile(
+    r"^\$(?P<hex>[0-9a-fA-F]{2})(\$(?P<more>[0-9a-fA-F]{2}))*$"
+)
+
 class OutputType(Enum):
     Raw = auto()
     PLC = auto()
@@ -46,7 +55,26 @@ class OutputType(Enum):
 
 def strNumber(number:str) -> LINT | REAL:
     if isinstance(number, str):
+        number = number.strip("'")
         number = number.replace("_", "")
+
+        dt_match = DT_PATTERN.fullmatch(number)
+        if dt_match:
+            dt_str = dt_match.group('dt')
+            dt = datetime.strptime(dt_str, "%Y-%m-%d-%H:%M:%S.%fZ")
+            dt = dt.replace(tzinfo=timezone.utc)
+            return LINT(int(dt.timestamp()))
+
+        hex_match = HEX_DOLLAR_PATTERN.fullmatch(number)
+        if hex_match:
+            hex_bytes = number.split('$')[1:]
+            if len(hex_bytes) > 8:
+                raise ValueError(f"Value exceeds 64-bit limit: '{number}'")
+            
+            value = 0
+            for byte_hex in hex_bytes:
+                value = (value << 8) | int(byte_hex, 16)
+            return LINT(value)
 
         m = BASE_OR_DEC_PATTERN.fullmatch(number)
         if not m:
@@ -64,7 +92,7 @@ def strNumber(number:str) -> LINT | REAL:
             value = m.group('val')
 
             def _validate_digits_for_base(digits: str, base: int) -> bool:
-                allowed = "0123456789"[:base]
+                allowed = "0123456789abcdef"[:base]
                 allowed_set = set(allowed)
                 return all(ch.lower() in allowed_set for ch in digits)
 

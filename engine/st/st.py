@@ -40,7 +40,7 @@ class ST:
                 result = "return " + result
             return make_async_st(result)
         except Exception as e:
-            raise AssertionError(f"Parsing Error: {self.Name}").with_traceback(e.__traceback__)
+            raise AssertionError(f"Parsing Error: {result}").with_traceback(e.__traceback__)
 
     def addIndent(self, amount:int=1) -> None:
         self._indent += (self.INDENT_SIZE * amount)
@@ -56,7 +56,6 @@ class ST:
         self.out:list[str] = []
 
         for raw in code.splitlines():
-            
             line = raw.strip()
             if not line:
                 continue
@@ -99,7 +98,26 @@ class ST:
 
         in_block_comment = False
 
+        def check_terminator(line: str) -> bool:
+            line_clean = re.sub(r"'[^']*'", "''", line)
+
+            #r'\b:(?!=)(?!:)\b'
+            patterns = [
+                r';\b',
+                r':\b', # colon not followed by = or another :
+                r'\bTHEN\b',
+                r'\bDO\b',
+                r'\bOF\b',
+                r'\bELSE\b'
+            ]
+            
+            return any(re.search(p, line_clean) for p in patterns)
+
         for raw in lines:
+            raw = raw.lstrip()
+
+            raw = raw.replace(":=", "=")
+
             if in_block_comment:
                 match = re.search(r'\*\)', raw)
                 if match:
@@ -112,8 +130,8 @@ class ST:
             raw = re.sub(r'\(\*.*?\*\)', '', raw, flags=re.DOTALL)
 
             if '(*' in raw:
-                parts = raw.split('(*', 1)
-                raw = parts[0]
+                idx = raw.find('(*')
+                raw = raw[:idx]
                 in_block_comment = True
 
             line = raw.strip()
@@ -121,12 +139,11 @@ class ST:
             if not line:
                 continue
 
+
             buffer.append(line)
-
             joined = " ".join(buffer)
-            upper = joined.upper()
-
-            if any(upper.endswith(t) or t in upper for t in terminators):
+            
+            if check_terminator(joined):
                 statements.append(joined)
                 buffer = []
 
