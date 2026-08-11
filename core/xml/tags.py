@@ -1,4 +1,4 @@
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 from typing import TYPE_CHECKING
 
@@ -126,9 +126,9 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
         value = DataTypeRegistry.get(datatype)()
 
         data = tag.find('./Data')
-        if data:
+        if isinstance(data, Element):
             params = data.find('.*')
-            if params:
+            if isinstance(params, Element):
                 for k,v in params.attrib.items():
                     if hasattr(value, k):
                         attr = getattr(value, k)

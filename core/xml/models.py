@@ -1,4 +1,4 @@
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 from typing import Dict
 
@@ -23,31 +23,31 @@ async def loadModules(root:Element, opcua:OpcuaTag, modules:Dict[str, MODULE], m
 
         if moduleName:
             communications = module.find("./Communications")
-            if communications:
+            if isinstance(communications, Element):
                 configTag = communications.find("./ConfigTag")
-                if configTag:
+                if isinstance(configTag, Element):
                     medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(configTag.get("OpcUaAccess")))
 
                     data = configTag.find(f"./Data[@Format='Decorated']")
-                    if data:
+                    if isinstance(data, Element):
                         await loadModule(moduleName, "C", data, opcua, memory, mapping, medatata)
 
                 connections = communications.findall("./Connections//Connection")
                 for connection in connections:
-                    if connection:
+                    if isinstance(connection, Element):
                         for child in ["InputTag", "OutputTag"]:
                             suffix = connection.get(f"{child}Suffix", None)
                             tag = connection.find(f"./{child}")
-                            if tag:
+                            if isinstance(tag, Element):
                                 medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")))
 
                                 data = tag.find(f"./Data[@Format='Decorated']")
-                                if data:
+                                if isinstance(data, Element):
                                     await loadModule(moduleName, suffix, data, opcua, memory, mapping, medatata)
 
 async def loadModule(name:str, suffix:str, element:Element, opcua:OpcuaTag, memory:Memory, mapping:Mapping, medatata:TagMetadata = TagMetadata()):
     structure = element.find(f"./Structure")
-    if structure:
+    if isinstance(structure, Element):
         dataTypeName = structure.get("DataType", None)
         if suffix is None and ":" in dataTypeName:
             suffix = dataTypeName.split(":")[-2]
@@ -78,7 +78,7 @@ async def loadModuleDatatype(name:str, tag:Element, opcua:OpcuaTag) -> Structure
         struct.fields.append(field)
 
     ArrayMember = tag.find("ArrayMember")
-    if ArrayMember:
+    if isinstance(ArrayMember, Element):
         dataType = ArrayMember.get("DataType")
 
         field = StructureField(name=ArrayMember.get("Name"),

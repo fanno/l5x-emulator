@@ -2,11 +2,11 @@
 
 from dataclasses import dataclass, field
 
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 @dataclass
 class SafetyMap():
-    _Element: Element = field(init=True, repr=False, default_factory=lambda: Element(""))
+    _Element: Element = field(init=True, repr=False, default=None)
 
     Pairs:dict[str, str] = field(init=False, default_factory=dict)
     

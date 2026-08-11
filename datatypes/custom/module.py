@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 from dataclasses import dataclass, field
 
@@ -16,7 +16,7 @@ from datatypes.custom.array import Array
 @DataTypeRegistry.register
 @dataclass
 class MODULEPORT():
-    _Element: Element = field(init=True, repr=False, default_factory=lambda: Element(""))
+    _Element: Element = field(init=True, repr=False, default=None)
 
     Id:DINT = field(init=False, default_factory=DINT)
     Address:STRING = field(init=False, default_factory=STRING)
@@ -33,7 +33,7 @@ class MODULEPORT():
 @DataTypeRegistry.register
 @dataclass
 class MODULE():
-    _Element:Element = field(init=True, repr=False, default_factory=lambda: Element(""))
+    _Element:Element = field(init=True, repr=False, default=None)
 
     Name:STRING = field(init=False, default_factory=STRING)
     CatalogNumber:STRING = field(init=False, default_factory=STRING)
@@ -49,22 +49,23 @@ class MODULE():
     Ports:Array[MODULEPORT] = field(init=False, default_factory=lambda: Array.create(MODULEPORT, 2))
 
     def __post_init__(self):
-        self.Name = STRING(self._Element.get("Name", ""))
-        self.CatalogNumber = STRING(self._Element.get("CatalogNumber", ""))
-        self.Vendor = DINT(self._Element.get("Vendor", 0))
-        self.ProductType = DINT(self._Element.get("ProductType", 0))
-        self.Major = DINT(self._Element.get("Major", 0))
-        self.Minor = DINT(self._Element.get("Minor", 0))
-        self.ParentModule = STRING(self._Element.get("ParentModule", ""))
-        self.ParentModPortId = DINT(self._Element.get("ParentModPortId", 0))
-        self.Inhibited = BOOL(self._Element.get("Inhibited", False))
-        self.MajorFault = BOOL(self._Element.get("MajorFault", False))
+        if isinstance(self._Element, Element):
+            self.Name = STRING(self._Element.get("Name", ""))
+            self.CatalogNumber = STRING(self._Element.get("CatalogNumber", ""))
+            self.Vendor = DINT(self._Element.get("Vendor", 0))
+            self.ProductType = DINT(self._Element.get("ProductType", 0))
+            self.Major = DINT(self._Element.get("Major", 0))
+            self.Minor = DINT(self._Element.get("Minor", 0))
+            self.ParentModule = STRING(self._Element.get("ParentModule", ""))
+            self.ParentModPortId = DINT(self._Element.get("ParentModPortId", 0))
+            self.Inhibited = BOOL(self._Element.get("Inhibited", False))
+            self.MajorFault = BOOL(self._Element.get("MajorFault", False))
 
-        ports = []
-        for port in self._Element.findall("./Ports//Port"):
-            ports.append(MODULEPORT(port))
+            ports = []
+            for port in self._Element.findall("./Ports//Port"):
+                ports.append(MODULEPORT(port))
 
-        while(len(ports)<2):
-            ports.append(MODULEPORT())
+            while(len(ports)<2):
+                ports.append(MODULEPORT())
 
-        self.Ports = Array[MODULEPORT](MODULEPORT, ports)
+            self.Ports = Array[MODULEPORT](MODULEPORT, ports)

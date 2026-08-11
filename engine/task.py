@@ -2,7 +2,7 @@ from typing import Dict
 
 from contextlib import asynccontextmanager
 
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 from dataclasses import dataclass, field
 

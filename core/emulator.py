@@ -5,11 +5,14 @@ import threading
 import time
 from queue import Queue
 from typing import Dict, Union
-from xml.etree.ElementTree import Element, parse
 from queue import Empty
 from asyncua.common.callback import CallbackType, ServerItemCallback, CallbackService
 from asyncua import Server
 from asyncua.ua import WriteParameters
+from lxml import etree
+from lxml.etree import _ElementTree as ElementTree
+from lxml.etree import _Element as Element
+
 
 import instructions
 import datatypes
@@ -72,6 +75,7 @@ class Emulator(threading.Thread):
 
     memory:Memory
     mapping:Mapping
+    tree:ElementTree
     root:Element
     controller:Element
 
@@ -168,7 +172,14 @@ class Emulator(threading.Thread):
 
         EventBus.get().dispatch(StatusEvent(EndPoint=self._endpoint))
 
-        self.root = parse(self.PATH).getroot()
+        #self.root = parse(self.PATH).getroot()
+
+        self.tree = etree.parse(
+            self.PATH,
+            etree.XMLParser(strip_cdata=False)
+        )
+        self.root = self.tree.getroot()
+
         self.controller = self.root.find("./Controller")
 
         self.setParameters()
@@ -420,13 +431,10 @@ class Emulator(threading.Thread):
         self.stop()
 
     def save(self):
-        from xml.etree.ElementTree import ElementTree
-
         from utils.isplcinstance import isPLCInstance
         from protocols.memory import SupportsToL5X
 
         all = self.memory.getMemoryAll()
-        
         for key, value in all.items():
             metadata = self.memory.get_metadata(key)
             if metadata:
@@ -434,7 +442,11 @@ class Emulator(threading.Thread):
                 if isinstance(element , Element):
                     value = self.memory.get(key)
                     if isPLCInstance(value, SupportsToL5X):
-                        xmmlValue:str = value.toL5X(element)
+                        value.toL5X(element)
 
-        tree = ElementTree(self.root)
-        tree.write("saved.l5x", encoding="utf-8", xml_declaration=True)
+        self.tree.write(
+            "saved.L5X",
+            encoding="UTF-8",
+            xml_declaration=True,
+            pretty_print=True
+        )

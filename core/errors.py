@@ -1,4 +1,4 @@
-from xml.etree import ElementTree
+from lxml.etree import _ElementTree as ElementTree
 
 from typing import Any
 

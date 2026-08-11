@@ -1,6 +1,6 @@
 from typing import Any, Self, Protocol, Any, runtime_checkable , TYPE_CHECKING
 from asyncua import ua
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 if TYPE_CHECKING:
     from datatypes.custom.bool import BOOL

@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 from datatypes.custom.array import Array
 
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 from protocols.memory import SupportsGetPLCValue, SupportsSetValue
 from utils.isplcinstance import isPLCInstance

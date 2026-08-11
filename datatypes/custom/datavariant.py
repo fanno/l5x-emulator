@@ -3,7 +3,7 @@ import copy
 from dataclasses import dataclass, field
 from typing import Any, Self, Any
 from asyncua import ua
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 from  utils.isplcinstance import isPLCInstance
 

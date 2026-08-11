@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field, InitVar
 from typing import Any, Protocol, List, Iterable, Generic, Union, TypeVar, Optional, get_args, get_origin, TypeGuard, Protocol
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 from asyncua import ua
 
 from datatypes.custom.datavariant import DataVariant

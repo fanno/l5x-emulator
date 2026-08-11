@@ -1,7 +1,7 @@
 from protocols.memory import SupportsSetValue, Resettable, SupportsToL5X
 from  utils.isplcinstance import isPLCInstance
 
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 class UDT:
     def _reset(self):

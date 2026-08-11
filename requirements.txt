@@ -6,3 +6,5 @@ pyinstaller
 pyyaml
 simpleeval
 oauthlib
+lxml
+lxml-stubs

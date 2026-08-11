@@ -1,6 +1,6 @@
-from typing import TypeVar, Dict, ClassVar, Any, Protocol, runtime_checkable, Optional, Dict, TYPE_CHECKING
+from typing import TypeVar, Dict, ClassVar, Any, Optional, Dict, TYPE_CHECKING
 from contextlib import contextmanager
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 from dataclasses import dataclass, field
 
 from core.objectregistry import ObjectRegistry

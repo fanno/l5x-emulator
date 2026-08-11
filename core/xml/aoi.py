@@ -1,4 +1,4 @@
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 from opcua.structure import Structure, StructureField
 from opcua.helpers import getUAVariantType

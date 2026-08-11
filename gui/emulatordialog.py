@@ -78,8 +78,9 @@ class EmulatorDialog(tk.Toplevel):
 
         if self.file_path:
             try:
-                from xml.etree.ElementTree import parse
-                parse(self.file_path)
+                from lxml import etree
+                parser = etree.XMLParser(strip_cdata=False)
+                etree.parse(self.file_path, parser)
             except Exception:
                 self.file_path = None
 

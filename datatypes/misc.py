@@ -669,6 +669,9 @@ class HMIBC(UDT):
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     ButtonState: BOOL = field(init=False, default_factory=BOOL)
     Out: BOOL = field(init=False, default_factory=BOOL)
+    # sxtra not documented ?
+    BitIndex: DINT = field(init=False, default_factory=DINT)
+    TerminalCount: DINT = field(init=False, default_factory=DINT)
 
 @DataTypeRegistry.register
 @dataclass

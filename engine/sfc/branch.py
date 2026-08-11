@@ -1,6 +1,4 @@
-from typing import Any
-
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 from dataclasses import dataclass, field
 

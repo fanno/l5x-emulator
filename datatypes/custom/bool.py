@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any
 
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 from asyncua import ua
 

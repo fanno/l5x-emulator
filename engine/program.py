@@ -4,7 +4,7 @@ import engine.context
 
 from contextlib import asynccontextmanager
 from engine.hierarchy import Hierarchy
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 from typing import Optional, Dict, TYPE_CHECKING
 

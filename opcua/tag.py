@@ -5,7 +5,7 @@ from typing import Dict, Any
 
 from dataclasses import dataclass, field, is_dataclass, fields
 
-from xml.etree.ElementTree import Element
+from lxml.etree import _Element as Element
 
 from asyncua import Server, Node, ua
 from asyncua.common.structures104 import new_struct, new_struct_field
