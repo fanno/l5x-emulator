@@ -10,10 +10,13 @@ from core.registry.datatyperegistry import DataTypeRegistry
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.compare import COMPARE
 
+from core.memory.uimemory import UIMemoryPrimitive, DT
+
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class BOOL(COMPARE, DataVariant):
     _value:bool = field(repr=False, default=False)
+    _type:DT = field(init=False, repr=False, default=DT.BOOL)
 
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Boolean)
     _py_variant:Any = field(init=False, repr=False, default=bool)
@@ -53,4 +56,4 @@ class BOOL(COMPARE, DataVariant):
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class BIT(BOOL):
-    pass
+    _type:DT = field(init=False, repr=False, default=DT.BIT)

@@ -9,6 +9,9 @@ from opcua.structure import Structure, StructureField
 from opcua.tag import OpcuaTag
 from opcua.helpers import *
 
+from core.events import LoadingEvent
+from eventbus.eventbus import EventBus
+
 async def loadDataTypes(controller:Element, opcua:OpcuaTag):
     process = True
     while process:
@@ -17,6 +20,8 @@ async def loadDataTypes(controller:Element, opcua:OpcuaTag):
             name = tag.get("Name")
             if not DataTypes.has(name):
                 if _canCreateDataType(tag):
+                    EventBus.get().dispatch(LoadingEvent(f"DataType: {name}"))
+
                     struct = Structure(name=name)
                     if tag.get("Family") == "StringFamily":
                         struct.type = ua.VariantType.String

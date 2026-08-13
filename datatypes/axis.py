@@ -919,7 +919,7 @@ class AXIS_CIP_DRIVE(UDT):
     PositionUnwindNumerator: REAL = field(init=False, default_factory=REAL)
     PositionUnwindDenominator: REAL = field(init=False, default_factory=REAL)
     TravelRange: REAL = field(init=False, default_factory=REAL)
-    MotionResolution: REAL = field(init=False, default_factory=REAL)
+    MotionResolution: DINT = field(init=False, default_factory=DINT)
     MotionPolarity: STRING = field(init=False, default_factory=STRING)
     MotorTestResistance: REAL = field(init=False, default_factory=REAL)
     MotorTestInductance: REAL = field(init=False, default_factory=REAL)

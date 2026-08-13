@@ -5,11 +5,13 @@ from asyncua import ua
 
 from datatypes.custom.datavariant import DataVariant
 
-from protocols.memory import SupportsSetValue, SupportsToL5X
+from protocols.memory import SupportsSetValue, SupportsToL5X, SupportsToUi
 
 from utils.isplcinstance import isPLCInstance
 
 from datatypes.custom.helper import getVariantValue
+
+from core.memory.uimemory import UIMemoryObject, DT
 
 class DataClassMarker(Protocol):
     __dataclass_fields__: dict
@@ -19,6 +21,7 @@ T = TypeVar('T', bound=Union[DataVariant, DataClassMarker])
 @dataclass(repr=False)
 class Array(Generic[T], DataVariant):
     _cls: type[T] = field(repr=False)
+    _type:DT = field(init=False, repr=False, default=DT.ARRAY)
 
     init: InitVar[Optional[Iterable[Any]]] = None
     _data: List[T] = field(init=False, default_factory=list)
@@ -35,7 +38,6 @@ class Array(Generic[T], DataVariant):
 
     @staticmethod
     def create(dtype: Generic[T], count: int) -> 'Array[T]':
-        # Ensure we create distinct instances
         initial_data = [dtype() for _ in range(count)]
         return Array(dtype, initial_data)
 
@@ -77,6 +79,21 @@ class Array(Generic[T], DataVariant):
     def _index_to_string(self, coords: list[int]) -> str:
         return "[" + ",".join(map(str, coords)) + "]"
 
+    def toUI(self, name:str, path_filter: dict[str, dict] | None = None) -> UIMemoryObject:
+        elements = {}
+
+        for idx, elem in enumerate(self._data):
+            key = str(idx)
+            if path_filter is None or key in path_filter:
+                if isPLCInstance(elem, SupportsToUi):
+                    next = None
+                    if path_filter:
+                        next = path_filter[key]
+
+                    elements[key] = elem.toUI(key, next)
+
+        return UIMemoryObject(name, Datatype=self._type, Value=elements)
+
     def toL5X(self, element:Element) -> None:
         if isinstance(element, Element):
             dimensions_str = element.get("Dimensions", "0")
@@ -93,7 +110,11 @@ class Array(Generic[T], DataVariant):
                         e = element.find(f'./Element[@Index="{index_str}"]')
                         if isinstance(e, Element):
                             if isPLCInstance(data, SupportsToL5X):
-                                container = e.find("./Structure") or e.find("./Array") or e
+                                container = e.find("./Structure")
+                                if not isPLCInstance(container, Element):
+                                    container = e.find("./Array")
+                                    if not isPLCInstance(container, Element):
+                                        container = e
                                 data.toL5X(container)
                         return
                     

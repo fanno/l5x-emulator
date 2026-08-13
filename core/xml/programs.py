@@ -7,11 +7,16 @@ from typing import Dict, TYPE_CHECKING
 if TYPE_CHECKING:
     from engine.program import Program
 
+from core.events import LoadingEvent
+from eventbus.eventbus import EventBus
+
 async def loadPrograms(controller:Element, server:Server, programs:Dict[str, "Program"]):
     #for program in controller.findall("./Programs//Program[@Class='Standard']"):
     from engine.program import Program
 
     for program in controller.findall("./Programs//Program"):
+        EventBus.get().dispatch(LoadingEvent(f"Program: {program.get("Name")}"))
+
         p = Program(_Element=program,
                     server=server,
                     Name=program.get("Name"),

@@ -24,17 +24,20 @@ from datatypes.custom.dt import DT
 from collections.abc import Mapping, Sequence, Set
 
 from eventbus.eventbus import EventBus
-from core.events import UpdateVariableEvent
+from core.events import UpdateVariableEvent, StatusRequestEvent
+from core.registry.datatyperegistry import DataTypeRegistry
 
 from protocols.memory import SupportsSetValue, SupportsGetPLCValue, SupportsToString
 
 from utils.isplcinstance import isPLCInstance
 
+from core.memory.uimemory import UIMemoryObject, DT, UIMemoryPrimitive, MemoryType
+
 @dataclass
 class DataPair:
     PATH:str = field(init=True)
     IID:str = field(init=True)
-    DATA:Any = field(init=True)
+    DATA:MemoryType = field(init=True)
 
     def __post_init__(self):
         if isinstance(self.PATH, (list, tuple)):
@@ -64,7 +67,7 @@ class Grid(Treeview):
 
     createUI:bool
 
-    container:str = None
+    Container:str = None
 
     _edit_entry: tk.Entry = None
 
@@ -81,10 +84,10 @@ class Grid(Treeview):
         self.unchecked_img = PhotoImage(width=16, height=16)
         self.unchecked_img.put("gray", to=(0,0,15,15))
 
-        self.data = MappingData()
+        self.mapping = MappingData()
         
-        self.createUI = True
         self.skipUpdate = 0.0
+        self.Container = None
 
         self.heading('#0', text='Name')
         self.heading('type', text='Type')
@@ -145,22 +148,22 @@ class Grid(Treeview):
         self.yview(*args)
         self._on_view_changed()
 
-    def updateData(self, container:str, data):
+    def updateData(self, Container:str, data):
         self.visible_iids = self.get_visible_items()
-        self.container = container
-
+        
         self.rawData = data
-
-        if self.createUI:
+        if self.Container != Container:
             self.delete(*self.get_children())
-            self._populate(parent='', data=self.rawData, path=[])
+            self._populate(parent='', data=self.rawData[Container], path=[], create=True)
             self._update_stripes()
-        self.createUI = False
+        self.Container = Container
 
     def updateTask(self, event:Event = None):
         if time.monotonic() > self.skipUpdate+1:
-            if self.rawData and not self.createUI and self.winfo_viewable():
-                self._populate(parent='', data=self.rawData, path=[])
+            if self.rawData and self.winfo_viewable():
+                if self.Container:
+                    if self.Container in self.rawData:
+                        self._populate(parent='', data=self.rawData[self.Container], path=[])
 
                 self._update_stripes()
             self.after(1000, self.updateTask)
@@ -181,52 +184,55 @@ class Grid(Treeview):
         self._on_view_changed()
         return 'break'
 
-    def _populate(self, parent, data, path):
-        if is_dataclass(data):
-            if isinstance(data, Array):
-                for k, v in enumerate(data):
-                    self._populateRow(parent, str(k), v, path)
-            elif not isinstance(data, (INTIGER, REAL, BOOL)):
-                for f in fields(data):
-                    if f.repr:
-                        k = f.name
-                        v = getattr(data, k)
-                        self._populateRow(parent, k, v, path)
+    def _populate(self, parent:str, data:MemoryType|dict, path:list, create:bool=False):
+        if isinstance(data, MemoryType):
+            if isinstance (data, UIMemoryObject):
+                for k, v in data.Value.items():
+                    self._populateRow(parent=parent, key=k, value=v, path=path, create=create)
         else:
             if isinstance(data, dict):
                 for k, v in data.items():
-                    self._populateRow(parent, k, v, path)           
+                    self._populateRow(parent=parent, key=k, value=v, path=path, create=create)
 
-    def _populateRow(self, parent, key, value, path):
+    def _populateRow(self, parent:str, key:str, value:MemoryType, path:list, create:bool=False):
         cur_path = path + [key]
 
         isObject = self.isObjectLike(value)
 
-        if self.createUI:
+        if create:
             iid = self.insert(parent, tk.END, text=key, values=self.getRowValue(value), open=tk.FALSE)
 
             display = self._populateTypeRow(parent=iid, data=value, path=cur_path)
             if display and isObject:
-                self._populate(parent=iid, data=value, path=cur_path)
+                
+                self._populate(parent=iid, data=value, path=cur_path, create=create)
 
-            self.setItem(iid, value, path=cur_path)
+            self.setItem(iid, rawValue=value, path=cur_path)
         else:
-            display = self._populateTypeRow(parent=None, data=value, path=cur_path)
-            if display and isObject:
-                data = self.data.getByPath(cur_path)
-                if self.item(data.IID, "open"):
-                    self._populate(parent=None, data=value, path=cur_path)
-
-            data = self.data.getByPath(cur_path)
+            data = self.mapping.getByPath(cur_path)
             if data:
-                self.setItem(data.IID, value)
+                display = self._populateTypeRow(parent=None, data=value, path=cur_path)
+                if display and isObject:
+                    if self.item(data.IID, "open"):
+                        self._populate(parent=None, data=value, path=cur_path)
+
+                self.setItem(data.IID, rawValue=value)
 
     def _on_view_changed(self, event:Event=None):
         self.visible_iids = self.get_visible_items()
 
+        paths:list[str] = []
+
         for index, iid in enumerate(self.visible_iids):
             tag = "odd" if index % 2 else "even"
-            self.item(iid, tags=(tag,))        
+            self.item(iid, tags=(tag,))
+
+            data = self.mapping.getById(iid)
+            if data:
+                paths.append(data.PATH)
+
+        event = StatusRequestEvent(Container=self.Container, Paths=paths)
+        EventBus.get().dispatch(event)
 
     def get_visible_items(self):
         visible = []
@@ -260,16 +266,29 @@ class Grid(Treeview):
     def isVisible(self, iid):
         return iid in self.visible_iids
 
-    def _populateTypeRow(self, parent, data, path) -> bool:
-        if isinstance(data, STRING):
-            self._populate(parent, {'LEN': data.LEN}, path)
-            self._populate(parent, {'DATA': data.DATA}, path)
-            return False
-        if isinstance(data, DT):
-            return False
-        return True
+    def _populateTypeRow(self, parent, data:UIMemoryPrimitive, path) -> bool:
+        if isinstance(data, UIMemoryPrimitive):
+            if data.Datatype == DT.STRING:
+                return True
+                self._populate(parent, {'LEN': data.LEN}, path)
+                self._populate(parent, {'DATA': data.DATA}, path)
+                return False
+            if isinstance(data, DT):
+                return False
+            return True
+        else:
+            return True
 
-    def getRowValue(self, value):
+    def getRowValue(self, value:MemoryType):
+        if isinstance(value, UIMemoryPrimitive):
+            return (value.Datatype.value, value.Value)
+        if isinstance(value, UIMemoryObject):
+            if value.Class:
+                return (value.Class, "")
+            else:
+                return (value.Datatype.value, "")
+        return ("", "")
+
         if isPLCInstance(value, SupportsToString):
             return (value.__class__.__name__, value.toString())
         elif isinstance(value, Array):
@@ -279,24 +298,31 @@ class Grid(Treeview):
         elif (not isinstance(value, int) and not isinstance(value, float) and not isinstance(value, bool)):
             return (value.__class__.__name__, '')
         
-        return (value.__class__.__name__, value)
+        return (value.Datatype.value, value.Value)
 
-    def setItem(self, iid, rawValue, path=None, send=False):
-        if path:
-            self.data.add(DataPair(PATH=path,
+    def setItem(self, iid, rawValue:MemoryType=None, editValue=None, path=None, send=False):
+        if rawValue is None and editValue is None:
+            return
+
+        if path and rawValue:
+            self.mapping.add(DataPair(PATH=path,
                                    IID=iid,
                                    DATA=rawValue))
         if self.isVisible(iid) or send or path:
-            variable = self.data.getById(iid)
+            variable = self.mapping.getById(iid)
 
             if variable:
-                if variable.DATA == rawValue and not send and not path:
-                    return
+                if (rawValue is not None and variable.DATA.Value == rawValue.Value) or (editValue is not None and variable.DATA.Value == editValue):
+                    if not send and not path:
+                        return
                 try:
-                    if isinstance(variable.DATA, SupportsSetValue) and not isinstance(rawValue, DataVariant):
-                        variable.DATA.setValue(rawValue)
-                    else:
+                    if rawValue is not None:
                         variable.DATA = rawValue
+                    else:
+                        cls = DataTypeRegistry.get(variable.DATA.Datatype.value)
+                        val = cls(editValue)
+                        if isPLCInstance(val, SupportsGetPLCValue):
+                            variable.DATA.Value = val.getPLCValue()
 
                     if send:
                         self._item_changed(iid)
@@ -321,12 +347,12 @@ class Grid(Treeview):
             if region == "tree" or editable:
                 iid = self.identify_row(event.y)
                 if iid:
-                    data = self.data.getById(iid)
+                    data = self.mapping.getById(iid)
                     if data:
-                        if isinstance(data.DATA, BOOL):
-                            self.setItem(iid, not data.DATA.getPLCValue(), send=True)
+                        if isinstance(data.DATA.Value, bool):
+                            self.setItem(iid, editValue=not data.DATA.Value, send=True)
                         elif editable:
-                            if isinstance(data.DATA, (DataVariant)):
+                            if isinstance(data.DATA, UIMemoryPrimitive):
                                 self.edit_cell(iid, column)
 
     def init_edit_cell(self, iid, column):
@@ -352,23 +378,20 @@ class Grid(Treeview):
             def save(event=None):
                 new_text = self._edit_entry.get()
 
-                data = self.data.getById(iid)
+                data = self.mapping.getById(iid)
                 if data:
-                    old_value = data.DATA
-                    if isinstance(old_value, DataVariant):
-                        old_value = self.getRowValue(old_value)
+                    if isinstance(data.DATA, UIMemoryPrimitive):
+                        try:
+                            if isinstance(data.DATA.Value, int):
+                                new_val = int(new_text.strip())
+                            elif isinstance(data.DATA.Value, float):
+                                new_val = float(new_text.strip())
+                            else:
+                                new_val = new_text
+                        except ValueError:
+                            new_val = data.DATA.Value
 
-                    try:
-                        if isinstance(old_value, int):
-                            new_val = int(new_text.strip())
-                        elif isinstance(old_value, float):
-                            new_val = float(new_text.strip())
-                        else:
-                            new_val = new_text
-                    except ValueError:
-                        new_val = old_value
-                    
-                    self.setItem(iid, new_val, send=True)
+                        self.setItem(iid, editValue=new_val, send=True)
 
                 self.hideEdit()
 
@@ -376,21 +399,15 @@ class Grid(Treeview):
             self._edit_entry.bind("<FocusOut>", lambda e: self.hideEdit())
 
     def _item_changed(self, iid):
-            data = self.data.getById(iid)
+            data = self.mapping.getById(iid)
             if data:
                 EventBus.get().dispatch(UpdateVariableEvent(self.container,
                                                             data.PATH,
-                                                            data.DATA))
+                                                            data.DATA.Value))
 
     def isObjectLike(self, value):
-        if isinstance(value, (bool, int, float, complex)):
-            return False
-        if isinstance(value, (Mapping, Sequence, Set)):
-            if isinstance(value, (str, bytes, bytearray)):
-                return False
-            return True
-        if hasattr(value, "__dict__"):
-            return True
-        if isinstance(value, Number):
+        if isinstance(value, UIMemoryPrimitive):
+            if value.Datatype == DT.STRING:
+                return True
             return False
         return True

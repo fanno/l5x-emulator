@@ -3,6 +3,8 @@ from core.registry.instructionregistry import InstructionRegistry
 from engine.context import ExecutionContext, EmulatorContext
 from engine.instruction import Instruction
 
+from core.errors import TNDException
+
 @InstructionRegistry.register
 class JMP(Instruction):
 
@@ -21,6 +23,9 @@ class TND(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         ctx.RLL.TND = ctx.RLL.RungStatus
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        raise TNDException()
 
 @InstructionRegistry.register
 class MCR(Instruction):

@@ -32,6 +32,8 @@ def normalize_expr(expr: str) -> str:
     expr = re.sub(r"\bOR\b", "or", expr, flags=re.I)
     expr = re.sub(r"\bNOT\b", "not", expr, flags=re.I)
     expr = re.sub(r"(?<![<>=!])=(?!=)", "==", expr)
+    expr = re.sub(r"\(", " ( ", expr)
+    expr = re.sub(r"\)", " ) ", expr)
     return expr
 
 def hook_expression(expr: str) -> str:

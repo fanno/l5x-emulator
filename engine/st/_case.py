@@ -3,19 +3,22 @@ import re
 import engine.st.st
 from engine.st.helper import hook_expression, hook_assignment
 
-RE_CASE = re.compile(r"^case\s+(.*?)\s+of$", re.I)
+RE_CASE = re.compile(r"^case(\s*.*?\s*)of$", re.I)
 RE_CASE_ITEM = re.compile(r"^(.*?):$")
 RE_END_CASE = re.compile(r"^end_case\s*;?$", re.I)
 
 def CASE(line:str, st:"engine.st.st.ST") -> bool:
     m = RE_CASE.match(line)
     if m:
-        st.block_stack.append("case")
-        st.out.append(st.getIndent() + f"match {hook_expression(m.group(1))}:")
+        st.block_stack.append("CASE")
+        st.out.append(st.getIndent() + f"match {hook_expression(m.group(1).strip())}:")
         st.addIndent(2)
         return True
 
-    if st.block_stack and st.block_stack[-1] == "case":
+    if line.lower().startswith("case "):
+        raise SyntaxError(f"case not matched: {line}")
+
+    if st.block_stack and st.block_stack[-1] == "CASE":
         if line.lower() == "else" or line.lower().startswith("else "):
             rest = line[4:].strip() if len(line) > 4 else None
 
@@ -48,10 +51,13 @@ def CASE(line:str, st:"engine.st.st.ST") -> bool:
             return True
 
     if RE_END_CASE.match(line):
-        if not (st.block_stack and st.block_stack[-1] == "case"):
-            raise SyntaxError("end_case without matching case")
+        if not (st.block_stack and st.block_stack[-1] == "CASE"):
+            raise SyntaxError("end_case without matching CASE")
         st.removeIndent(2)
         st.block_stack.pop()
         return True
+
+    if line.lower().startswith("end_case "):
+        raise SyntaxError(f"end_case not matched: {line}")
     
     return False

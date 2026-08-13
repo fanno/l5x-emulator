@@ -15,17 +15,17 @@ class ContentTabs(Notebook):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
 
-        titel = "PLC Tags"
-        frame = Frame(self)
-        frame.pack(fill=tk.BOTH, expand=tk.TRUE)
-        self.add(frame, text=titel)
-        self.tagsTabs = TagsTabs(frame)
-
         titel = "PLC Status"
         frame = Frame(self)
         frame.pack(fill=tk.BOTH, expand=tk.TRUE)
         self.add(frame, text=titel)
         self.status = StatusText(frame, name=titel)
+
+        titel = "PLC Tags"
+        frame = Frame(self)
+        frame.pack(fill=tk.BOTH, expand=tk.TRUE)
+        self.add(frame, text=titel)
+        self.tagsTabs = TagsTabs(frame)
 
         titel = "Fault Logs"
         frame = Frame(self)

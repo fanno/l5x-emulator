@@ -1,7 +1,6 @@
 from typing import List
 
 from core.registry.instructionregistry import InstructionRegistry
-from core.system import PLCSYSTEM
 from core.controller import ProductCodes
 
 from engine.context import ExecutionContext
@@ -37,11 +36,11 @@ class GSV(Instruction):
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RLL.RungStatus:
             Class = self.args[0]
-            instance = self.args[1]
-            attribute = self.args[2]
 
             match Class:
                 case 'AddOnInstructionDefinition':
+                    instance = self.args[1]
+                    attribute = self.args[2]
                     dest = self.getMemory(self.args[3])
                     aoi = AOIRegistry.get(instance)
 
@@ -51,6 +50,8 @@ class GSV(Instruction):
                         dest.setValue(source)
                         return
                 case 'Axis':
+                    instance = self.args[1]
+                    attribute = self.args[2]
                     dest = self.getMemory(self.args[3])
                     from datatypes.axis import AXIS_CIP_DRIVE
 
@@ -73,7 +74,8 @@ class GSV(Instruction):
                     '''
                             
                 case 'Controller':
-                    dest = self.getMemory(self.args[3])
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                     match attribute:
                         case 'AuditValue':
                             if isinstance(dest, (LINT, ULINT)):
@@ -136,7 +138,8 @@ class GSV(Instruction):
                                 dest.setValue(10)
                                 return
                 case 'ControllerDevice':
-                    dest = self.getMemory(self.args[3])
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
 
                     emulator = EmulatorContext.get()
 
@@ -177,9 +180,16 @@ class GSV(Instruction):
                                 dest.setValue(1)
                                 return
                 case 'CoordinateSystem':
-                    pass
-                case 'CST':
+                    instance = self.args[1]
+                    attribute = self.args[2]
                     dest = self.getMemory(self.args[3])
+                case 'DataLog':
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
+                case 'CST':
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                     match attribute:
                         case 'CurrentStatus':
                             if isinstance(dest, (INT, UINT, DINT, UDINT, LINT, ULINT)):
@@ -192,7 +202,8 @@ class GSV(Instruction):
                 case 'DF1':
                     pass
                 case 'FaultLog':
-                    dest = self.getMemory(self.args[3])
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                     match attribute:
                         case 'MajorEvents':
                             if isinstance(dest, (INT, UINT, DINT, UDINT, LINT, ULINT)):
@@ -213,14 +224,19 @@ class GSV(Instruction):
                 case 'HardwareStatus':
                     pass
                 case 'Message':
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
                     pass
                 case 'Module':
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
                     from datatypes.custom.module import MODULE
                     module = self.getMemory(instance)
                     if isinstance(module, MODULE):
                         match attribute:
                             case 'EntryStatus':
-                                dest = self.getMemory(self.args[3])
                                 if isinstance(dest, (INT, UINT, DINT, UDINT, LINT, ULINT)):
                                     if not module.Inhibited:
                                         dest.setValue(int("4000", 16))
@@ -228,38 +244,31 @@ class GSV(Instruction):
                                         dest.setValue(int("6000", 16))
                                     return
                             case 'FaultCode':
-                                dest = self.getMemory(self.args[3])
                                 if isinstance(dest, (INT, UINT, DINT, UDINT, LINT, ULINT)):
                                     dest.setValue(0)
                                     return
                             case 'FaultInfo':
-                                dest = self.getMemory(self.args[3])
                                 if isinstance(dest, (DINT, UDINT, LINT, ULINT)):
                                     dest.setValue(0)
                                     return
                             case 'FirmwareSupervisorStatus':
-                                dest = self.getMemory(self.args[3])
                                 if isinstance(dest, (INT, UINT, DINT, UDINT, LINT, ULINT)):
                                     dest.setValue(0)
                                     return
                             case 'ForceStatus':
-                                dest = self.getMemory(self.args[3])
                                 if isinstance(dest, (INT, UINT, DINT, UDINT, LINT, ULINT)):
                                     dest.setValue(0)
                                     return
                             case 'INSTANCE':
-                                dest = self.getMemory(self.args[3])
                                 if isinstance(dest, (DINT, UDINT, LINT, ULINT)):
                                     dest.setValue(0)
                                     return
                             case 'LedStatus':
-                                dest = self.getMemory(self.args[3])
-                                if isinstance(dest, (INT, UINT, DINT, UDINT, LINT, ULINT)):
+                                 if isinstance(dest, (INT, UINT, DINT, UDINT, LINT, ULINT)):
                                     dest.setValue(3)
                                     return
                             case 'Mode':
-                                dest = self.getMemory(self.args[3])
-                                if isinstance(dest, (INT, UINT, DINT, UDINT, LINT, ULINT)):
+                                 if isinstance(dest, (INT, UINT, DINT, UDINT, LINT, ULINT)):
                                     if not module.Inhibited:
                                         dest.setValue(0)
                                     else:
@@ -292,6 +301,8 @@ class GSV(Instruction):
                                         dest.setValue(data)
                                         return
                 case 'MotionGroup':
+                    instance = self.args[1]
+                    attribute = self.args[2]
                     dest = self.getMemory(self.args[3])
                     match attribute:
                         case 'Alternate1UpdateMultiplier':
@@ -349,6 +360,8 @@ class GSV(Instruction):
                             # TIME32 DINT
                             pass
                 case 'Program':
+                    instance = self.args[1]
+                    attribute = self.args[2]
                     dest = self.getMemory(self.args[3])
 
                     emulator = EmulatorContext.get()
@@ -392,8 +405,11 @@ class GSV(Instruction):
                                 dest.setValue(emulator.programs[instance].Name)
                                 return
                 case 'Redundancy':
-                    pass
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                 case 'Routine':
+                    instance = self.args[1]
+                    attribute = self.args[2]
                     dest = self.getMemory(self.args[3])
                     if instance == 'THIS':
                         RoutineRef = ctx.RoutineRef
@@ -418,7 +434,8 @@ class GSV(Instruction):
                                 dest.setValue(RoutineRef.SFCResuming)
                                 return
                 case 'Safety':
-                    dest = self.getMemory(self.args[3])
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                     match attribute:
                         case 'SafetyLockedState':
                             if isinstance(dest, SINT):
@@ -474,6 +491,8 @@ class GSV(Instruction):
                     #TODO
                     pass
                 case 'Task':
+                    instance = self.args[1]
+                    attribute = self.args[2]
                     dest = self.getMemory(self.args[3])
 
                     emulator = EmulatorContext.get()
@@ -534,7 +553,9 @@ class GSV(Instruction):
                                 dest.setValue(task.Rate)
                                 return
                         case 'StartTime':
-                            dt = PLCSYSTEM.clock.utcnow()
+                            emulator = EmulatorContext.get()
+                            
+                            dt = emulator.clock.get_utc()
 
                             if isinstance(dest, (LINT, DT)):
                                 dest.setValue(task.StartTime)
@@ -551,16 +572,23 @@ class GSV(Instruction):
                                 dest.setValue(task.Watchdog)
                                 return
                 case 'TimeSynchronize':
-                    pass
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                 case 'WallClockTime':
-                    dest = self.getMemory(self.args[3])
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                     match attribute:
                         case 'ApplyDST':
                             if isinstance(dest, SINT):
-                                dest.setValue(PLCSYSTEM.clock.dst)
+                                emulator = EmulatorContext.get()
+                            
+                                dest.setValue(emulator.clock.dst())
                                 return
                         case 'CSTOffset':
-                            offset = PLCSYSTEM.clock.offset
+                            emulator = EmulatorContext.get()
+                            
+                            offset = emulator.clock.offset()
+
                             if isinstance(dest, LINT):
                                 dest.setValue(offset)
                                 return
@@ -569,8 +597,9 @@ class GSV(Instruction):
                                 dest.setValue(split_to_dint(offset))
                                 return
                         case 'CurrentValue':
-                            dt = PLCSYSTEM.clock.utcnow()
-
+                            emulator = EmulatorContext.get()
+                            
+                            dt = emulator.clock.get_utc()
                             if isinstance(dest, DT):
                                 dest.setValue(dt)
                                 return
@@ -583,7 +612,9 @@ class GSV(Instruction):
                                 return
                         case 'DateTime':
                             if isarray(dest, DINT, 7):
-                                dt = PLCSYSTEM.clock.utcnow()
+                                emulator = EmulatorContext.get()
+                            
+                                dt = emulator.clock.get_utc()
 
                                 data:List[DINT] = []
                                 data[0] = DINT(dt.year)
@@ -598,7 +629,9 @@ class GSV(Instruction):
                                 return
                         case 'LocalDateTime':
                             if isarray(dest, DINT, 7):
-                                dt = PLCSYSTEM.clock.now()
+                                emulator = EmulatorContext.get()
+                            
+                                dt = emulator.clock.get_local()
 
                                 data:List[DINT] = []
                                 data[0] = DINT(dt.year)
@@ -628,12 +661,14 @@ class SSV(Instruction):
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RLL.RungStatus:
             Class = self.args[0]
-            instance = self.args[1]
-            attribute = self.args[2]
 
             source = self.getMemory(self.args[3])
             match Class:
                 case 'AddOnInstructionDefinition':
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
+
                     aoi = AOIRegistry.get(instance)
 
                     dest = getattr(aoi, attribute)
@@ -643,8 +678,12 @@ class SSV(Instruction):
                             dest.setValue(source)
                             return
                 case 'Axis':
-                    pass
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
                 case 'Controller':
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                     match attribute:
                         case 'ChangesToDetect':
                             if isinstance(source, LINT):
@@ -684,13 +723,17 @@ class SSV(Instruction):
                 case 'ControllerDevice':
                     pass
                 case 'CoordinateSystem':
-                    pass
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
                 case 'CST':
                     pass
                 case 'DF1':
                     #TODO
                     pass
                 case 'FaultLog':
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                     match attribute:
                         case 'MajorEvents':
                             if isinstance(source, INT):
@@ -711,8 +754,13 @@ class SSV(Instruction):
                 case 'HardwareStatus':
                     pass
                 case 'Message':
-                    pass
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
                 case 'Module':
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
                     emulator = EmulatorContext.get()
                     match attribute:
                         case 'Mode':
@@ -723,6 +771,9 @@ class SSV(Instruction):
                                     emulator.modules[instance].Inhibited.setValue(False)
                                 return
                 case 'MotionGroup':
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
                     match attribute:
                         case 'AutoTagUpdate':
                             # SINT INT DINT
@@ -749,6 +800,9 @@ class SSV(Instruction):
                             #TODO
                             pass
                 case 'Program':
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
                     emulator = EmulatorContext.get()
 
                     if instance == 'THIS':
@@ -776,8 +830,12 @@ class SSV(Instruction):
                                 #TODO
                                 pass
                 case 'Redundancy':
-                    pass
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                 case 'Routine':
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
                     if instance == 'THIS':
                         RoutineRef = ctx.RoutineRef
                     else:
@@ -794,6 +852,9 @@ class SSV(Instruction):
                     #TODO
                     pass
                 case 'Task':
+                    instance = self.args[1]
+                    attribute = self.args[2]
+                    dest = self.getMemory(self.args[3])
                     emulator = EmulatorContext.get()
 
                     if instance == 'THIS':
@@ -863,15 +924,17 @@ class SSV(Instruction):
                                 task.Watchdog.setValue(source)
                                 return
                 case 'TimeSynchronize':
-                    pass
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                 case 'WallClockTime':
+                    attribute = self.args[1]
+                    dest = self.getMemory(self.args[2])
                     match attribute:
                         case 'ApplyDST':
+                            emulator = EmulatorContext.get()
+
                             if isinstance(source, SINT):
-                                if source == 0:
-                                    PLCSYSTEM.clock.dst = False
-                                else:
-                                    PLCSYSTEM.clock.dst = True
+                                emulator.clock.set_dst(source != 0)
                                 return
                         case 'CSTOffset':
                             if isarray(source, DINT, 2) or isarray(source, TIME32, 2):

@@ -898,6 +898,20 @@ class MESSAGE(UDT):
     ConnectionRate: DINT = field(init=False, default_factory=DINT)
     TimeoutMultiplier: SINT = field(init=False, default_factory=SINT)
 
+    # extra msg paramets to make emulator work
+    MessageType: STRING = field(init=False, default_factory=STRING)
+    RequestedLength: INT = field(init=False, default_factory=INT)
+    ConnectedFlag: INT = field(init=False, default_factory=INT)
+    ConnectionPath: STRING = field(init=False, default_factory=STRING)
+    CommTypeCode: INT = field(init=False, default_factory=INT)
+    ServiceCode: INT = field(init=False, default_factory=INT)
+    ObjectType: INT = field(init=False, default_factory=INT)
+    TargetObject: INT = field(init=False, default_factory=INT)
+    AttributeNumber: INT = field(init=False, default_factory=INT)
+    LocalIndex: INT = field(init=False, default_factory=INT)
+    LocalElement: STRING = field(init=False, default_factory=STRING)
+    DestinationTag: STRING = field(init=False, default_factory=STRING)
+    LargePacketUsage: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass

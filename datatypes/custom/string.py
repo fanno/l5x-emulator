@@ -10,11 +10,17 @@ from datatypes.custom.numbers import DINT, SINT
 from datatypes.custom.array import Array
 from datatypes.custom.compare import COMPARE
 
+from core.memory.uimemory import DT
+
+from protocols.memory import SupportsGetPLCValue
+from utils.isplcinstance import isPLCInstance
+
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class STRING(COMPARE, DataVariant):
     _init:Optional[str] = field(init=True, repr=False, default="")
     _maxlength:Optional[int] = field(init=False, repr=False, default=82)
+    _type:DT = field(init=False, repr=False, default=DT.STRING)
 
     LEN:DINT = field(init=False, repr=False, default_factory=DINT)
     DATA:Array[SINT] = field(init=False, repr=False, default_factory=lambda: Array.create(SINT, 82))
@@ -124,6 +130,8 @@ class STRING(COMPARE, DataVariant):
     def toValue(cls, value:str):
         if value is None:
             value = ""
+        if isPLCInstance(value, SupportsGetPLCValue):
+            value = value.getPLCValue()
 
         value = cls.hexToChar(value)
         return value

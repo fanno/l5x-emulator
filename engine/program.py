@@ -116,6 +116,7 @@ class Program():
             raise
         except Exception as e:
             logging.exception(e)
+            raise
         finally:
             CurrentProgramName.reset(token)
 

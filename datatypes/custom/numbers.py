@@ -8,6 +8,8 @@ from lxml.etree import _Element as Element
 from asyncua import ua
 
 from core.registry.datatyperegistry import DataTypeRegistry
+from core.memory.uimemory import DT
+
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.math import MATH
 from datatypes.custom.compare import COMPARE
@@ -120,41 +122,49 @@ class INTIGER(COMPARE, MATH, DataVariant):
 @dataclass(repr=False, eq=False)
 class ULINT(INTIGER):
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.UInt64)
+    _type:DT = field(init=False, repr=False, default=DT.ULINT)
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class LINT(INTIGER):
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Int64)
+    _type:DT = field(init=False, repr=False, default=DT.LINT)
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class UDINT(INTIGER):
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.UInt32)
+    _type:DT = field(init=False, repr=False, default=DT.UDINT)
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class DINT(INTIGER):
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Int32)
+    _type:DT = field(init=False, repr=False, default=DT.DINT)
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class UINT(INTIGER):
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.UInt16)
+    _type:DT = field(init=False, repr=False, default=DT.UINT)
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class INT(INTIGER):
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Int16)
+    _type:DT = field(init=False, repr=False, default=DT.INT)
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class USINT(INTIGER):
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Byte)
+    _type:DT = field(init=False, repr=False, default=DT.USINT)
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class SINT(INTIGER):
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.SByte)
+    _type:DT = field(init=False, repr=False, default=DT.SINT)
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
@@ -162,6 +172,7 @@ class REAL(COMPARE, MATH, DataVariant):
     _value:float = field(init=True, repr=False, default=0.0)
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Float)
     _py_variant:Any = field(init=False, repr=False, default=float)
+    _type:DT = field(init=False, repr=False, default=DT.REAL)
 
     def __post_init__(self):
         self.setValue(self._value)
@@ -208,3 +219,4 @@ class REAL(COMPARE, MATH, DataVariant):
 @dataclass(repr=False, eq=False)
 class LREAL(REAL):
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Double)
+    _type:DT = field(init=False, repr=False, default=DT.LREAL)

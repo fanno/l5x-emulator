@@ -20,6 +20,9 @@ from datatypes.custom.string import STRING
 from protocols.memory import SupportsSetValue
 from utils.isplcinstance import isPLCInstance
 
+from core.events import LoadingEvent
+from eventbus.eventbus import EventBus
+
 def parseStructure(struct_elem: Element, dataType:str = None):
     if dataType is None:
         dataType = struct_elem.get('DataType')
@@ -98,15 +101,17 @@ async def loadTags(controller:Element, opcua:OpcuaTag, memory:"Memory", mapping:
 async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping):
     name = tag.get('Name')
 
+    EventBus.get().dispatch(LoadingEvent(f"Tag: {name}"))
+
     from core.memory.memory import TagMetadata, OpcUaAccess
 
     decorated = tag.find("Data[@Format='Decorated']")
-    if decorated is not None:
+    if isinstance(decorated, Element):
         passStructures = ['Structure', 'DataValue']
 
         for s in passStructures:
             element = decorated.find(s)
-            if element is not None:
+            if isinstance(element, Element):
                 val = parseStructure(element)
                 memory.set(name, val)
                 medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")), XMlElement=element)
@@ -114,7 +119,7 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
                 break
         if element is None:
             array = decorated.find('Array')
-            if array is not None:
+            if isinstance(array, Element):
                 memory.set(name, parseArray(array))
                 medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")), XMlElement=array)
                 memory.set_metadata(name, medatata)

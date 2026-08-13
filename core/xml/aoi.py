@@ -11,12 +11,17 @@ from engine.aoi.aoi import AOI, AOIRegistry
 
 from engine.aoi.aoi import AOI_CLASS    
 
+from core.events import LoadingEvent
+from eventbus.eventbus import EventBus
+
 async def loadAoiDefinition(controller:Element, opcua:OpcuaTag):
 
     for instruction in controller.findall("./AddOnInstructionDefinitions//AddOnInstructionDefinition"):
         AOIRegistry.register(AOI(_Element=instruction))
 
         name = instruction.get("Name")
+        EventBus.get().dispatch(LoadingEvent(f"AOI: {name}"))
+
         parameters = instruction.findall("./Parameters//Parameter")
         
         struct = Structure(name)

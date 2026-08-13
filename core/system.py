@@ -13,7 +13,7 @@ from opcua.tag import OpcuaTag, Tag
 from opcua.mapping import Mapping
 from opcua.helpers import createVariant
 
-from engine.plcclock import PLCClock
+from core.plcclock import PLCClock
 
 @dataclass
 class System():

@@ -2,6 +2,8 @@ import time
 import logging
 from contextlib import contextmanager
 
+from core.errors import TNDException
+
 class EngineException(Exception):
     time:float
     hierarchy:str = ''
@@ -112,7 +114,10 @@ class PLCFaultHandler:
     def st(cls, error_tag, expression):
         try:
             yield
+        except TNDException as e:
+            return
         except SyntaxError as e:
             ste = STException(error_tag, expression, e)
             logging.error(f"STException:", exc_info=ste)
             #raise ste from e
+        

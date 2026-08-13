@@ -22,6 +22,8 @@ class TIME(DataVariant):
     _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.String)
     _py_variant:Any = field(init=False, repr=False, default=str)
 
+    ##TODO THIS IS NOT CORRECT
+
 @DataTypeRegistry.register
 @dataclass
 class TIME32(DataVariant):

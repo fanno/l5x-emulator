@@ -9,6 +9,8 @@ from lxml.etree import _Element as Element
 from protocols.memory import SupportsGetPLCValue, SupportsSetValue
 from utils.isplcinstance import isPLCInstance
 
+from datatypes.custom.types import DataType as DT
+
 class OpcUaAccess(Enum):
     NONE = "None"
     READ = "Read Only"
@@ -209,4 +211,3 @@ class PlcMemory:
     @staticmethod
     def getContainers() -> Dict[str, Memory]:
         return PlcMemory._container
-    

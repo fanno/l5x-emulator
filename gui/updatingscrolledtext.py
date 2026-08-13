@@ -17,7 +17,14 @@ class UpdatingScrolledText(ScrolledText):
         _, pos = self.yview()
         pos = float(pos)
         selected = bool(self.tag_ranges('sel'))
-        return self.focus_get() != self or (not selected and pos >= 1.0)
+
+        try:
+            focused = self.focus_get()
+            is_focused = focused == self
+        except KeyError:
+            is_focused = False
+        
+        return not is_focused or (not selected and pos >= 1.0)
     
     def updateContent(self) -> bool:
         canUpdate = self.canUpdate()

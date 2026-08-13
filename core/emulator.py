@@ -2,17 +2,14 @@ import logging
 import copy
 import asyncio
 import threading
-import time
-from queue import Queue
+from queue import Queue, Empty
 from typing import Dict, Union
-from queue import Empty
 from asyncua.common.callback import CallbackType, ServerItemCallback, CallbackService
 from asyncua import Server
 from asyncua.ua import WriteParameters
 from lxml import etree
 from lxml.etree import _ElementTree as ElementTree
 from lxml.etree import _Element as Element
-
 
 import instructions
 import datatypes
@@ -22,7 +19,7 @@ from core.datatypes import get_ua_info, DataTypes
 from core.registry.datatyperegistry import DataTypeRegistry
 from core.memory.memory import Memory, PlcMemory
 from core.memory.safetymap import SafetyMap
-from core.events import LogEvent, StatusEvent, UpdateVariableEvent, StatusScan
+from core.events import LogEvent, StatusEvent, UpdateVariableEvent, StatusScan, StatusRequestEvent
 from core.system import PLCSYSTEM
 from core.constants import CONTROLLERTAGS
 from core.signal import updateSignal, updateMemory
@@ -35,6 +32,7 @@ from core.xml.task import loadTasks
 from core.library.libeary import initPyInstaller, load_all_hardware, get_paths
 from core.library.hwlogic import HWLogic
 from core.log import IndentedFormatter
+from core.plcclock import PLCClock
 
 T = Union[StatusEvent, UpdateVariableEvent]
 
@@ -46,6 +44,7 @@ from engine.task import Task
 from engine.errors import PLCFaultHandler
 from engine.executiontimer import ExecutionTimer
 
+
 from opcua.structure import Structure, StructureField
 from opcua.tag import OpcuaTag
 from opcua.mapping import Mapping
@@ -53,6 +52,9 @@ from opcua.mapping import Mapping
 from datatypes.custom.module import MODULE
 from datatypes.custom.string import STRING
 from datatypes.custom.numbers import DINT
+
+from protocols.memory import SupportsToUi
+from utils.isplcinstance import isPLCInstance
 
 class EmulatorLogHandler(logging.Handler):
     def __init__(self, level = 0):
@@ -108,6 +110,10 @@ class Emulator(threading.Thread):
     OpcUaWriteTimeMax:int
     OpcUaReadTime:int
     OpcUaReadTimeMax:int
+
+    statusRequestEvent:StatusRequestEvent
+
+    clock:PLCClock
     
     def __init__(self, path:str, port:int=4840, forceOpcua:bool=True):
         super().__init__()
@@ -137,6 +143,7 @@ class Emulator(threading.Thread):
         self.mapping = Mapping()
         self._server = Server()
         self.safetyMap = SafetyMap()
+        self.clock = PLCClock()
         self.preScan = True
         self.postScan = False
         self.now = DINT()
@@ -148,9 +155,10 @@ class Emulator(threading.Thread):
         self.OpcUaReadTimeMax = 0 
 
         self.eventlistenet = EventListener(self)
+        self.statusRequestEvent = StatusRequestEvent(Initial=True)
 
         self._loop = None
-        self._throttle = 4
+        self._throttle = 2
 
         gui_handler = EmulatorLogHandler(logging.WARNING)
 
@@ -169,15 +177,11 @@ class Emulator(threading.Thread):
         self._endpoint = f"opc.tcp://127.0.0.1:{port}/plc"
         self.NAME = CONTROLLERTAGS
         self.PATH = path
+        self.statusRequestEvent = StatusRequestEvent(Initial=True)
 
         EventBus.get().dispatch(StatusEvent(EndPoint=self._endpoint))
 
-        #self.root = parse(self.PATH).getroot()
-
-        self.tree = etree.parse(
-            self.PATH,
-            etree.XMLParser(strip_cdata=False)
-        )
+        self.tree = etree.parse(self.PATH, etree.XMLParser(strip_cdata=False))
         self.root = self.tree.getroot()
 
         self.controller = self.root.find("./Controller")
@@ -215,6 +219,8 @@ class Emulator(threading.Thread):
         lastDrawUi:float = 0.0
         scanDelayTime:float = 0.0
 
+        average:float = 0.0
+
         while self._is_running:
             try:
                 with PLCFaultHandler.major():
@@ -229,15 +235,56 @@ class Emulator(threading.Thread):
                         if (timer.elapsed > difTimeMax):
                             difTimeMax = timer.elapsed
 
-                        scanDelayTime = difTimeMax * self._throttle
+                        if  self.scanCount > 0:
+                            if average == 0:
+                                average = timer.elapsed
+                            average = average * (self.scanCount - 1) / self.scanCount + timer.elapsed / self.scanCount
+
+                            scanDelayTime = average * self._throttle
 
                     if lastDrawUi < timer.start:
                         data = {}
 
-                        data[PLCSYSTEM.NAME] = copy.deepcopy(PLCSYSTEM.memory.getMemoryAll())
-                        data[self.NAME] = copy.deepcopy(self.memory.getMemoryAll())
-                        for pname, program in self.programs.items():
-                            data[program.Name] = copy.deepcopy(program.memory.getMemoryAll())
+                        if self.statusRequestEvent.Initial or True:
+                            data[PLCSYSTEM.NAME] = {}
+                            for key, variable in PLCSYSTEM.memory.getMemoryAll().items():
+                                if isPLCInstance(variable, SupportsToUi):
+                                    data[PLCSYSTEM.NAME][key] = variable.toUI(key)
+
+                            data[self.NAME] = {}
+                            for key, variable in self.memory.getMemoryAll().items():               
+                                if isPLCInstance(variable, SupportsToUi):
+                                    data[self.NAME][key] = variable.toUI(key)
+
+                            for pname, program in self.programs.items():
+                                data[program.Name] = {}
+                                for key, variable in program.memory.getMemoryAll().items():
+                                    if isPLCInstance(variable, SupportsToUi):
+                                        data[program.Name][key] = variable.toUI(key)
+                        else:
+                            data[PLCSYSTEM.NAME] = {}
+                            data[self.NAME] = {}
+                            for pname, program in self.programs.items():
+                                data[program.Name] = {}
+
+                            if self.statusRequestEvent.Container:
+                                container = None
+                                if self.statusRequestEvent.Container == PLCSYSTEM.NAME:
+                                    container = PLCSYSTEM.memory
+                                elif self.statusRequestEvent.Container == self.NAME:
+                                    container = self.memory
+                                else:
+                                    for pname, program in self.programs.items():
+                                        if self.statusRequestEvent.Container == pname:
+                                            container = program.memory
+                                            break
+                                    
+                                if container is not None:
+                                    for key, item in self.statusRequestEvent.Paths.items():
+                                        value = container.get(key)
+                                        if value is not None:
+                                            if isPLCInstance(variable, SupportsToUi):
+                                                data[self.statusRequestEvent.Container][key] = value.toUI(key, item)
 
                         taskStatus:dict[str, StatusScan] = {}
                         programStatus:dict[str, dict[str, StatusScan]] = {}
@@ -249,8 +296,9 @@ class Emulator(threading.Thread):
                             for pname in task._programs:
                                 program = self.programs[pname]
                                 programStatus[tname][pname] = StatusScan(Max=program.MAXSCANTIME.getPLCValue()/10000000, Last=program.LASTSCANTIME.getPLCValue()/10000000)
-
+                        
                         EventBus.get().dispatch(StatusEvent(Runing=True,
+                                                StatusRequest=self.statusRequestEvent,
                                                 Scan=StatusScan(Max=difTimeMax, Last=timer.elapsed, Count=self.scanCount),
                                                 OpcUaRead=StatusScan(Max=self.OpcUaReadTimeMax/10000000, Last=self.OpcUaReadTime/10000000),
                                                 OpcUaWrite=StatusScan(Max=self.OpcUaWriteTimeMax/10000000, Last=self.OpcUaWriteTime/10000000),
@@ -261,6 +309,7 @@ class Emulator(threading.Thread):
                                                 ControllerType=self.ProcessorType.getPLCValue(),
                                                 EndPoint=self._endpoint,
                                                 Tags=data))
+
                         lastDrawUi = timer.start + 1
 
                     if timer.elapsed < scanDelayTime:
@@ -363,7 +412,7 @@ class Emulator(threading.Thread):
         if self.OpcUaReadTime > self.OpcUaReadTimeMax:
             self.OpcUaReadTimeMax = self.OpcUaReadTime
 
-    @subscribe_event(UpdateVariableEvent)
+    @subscribe_event(UpdateVariableEvent, StatusRequestEvent)
     def on_eventbus(self, event):
         self.queue.put_nowait(event)
 
@@ -372,12 +421,14 @@ class Emulator(threading.Thread):
             while True:
                 event = self.queue.get_nowait()
                 if isinstance(event, UpdateVariableEvent):
-                    if event.container == self.NAME:
+                    if event.Container == self.NAME:
                         self.memory.set(event.path, event.new_value)
-                    elif event.container == PLCSYSTEM.NAME:
+                    elif event.Container == PLCSYSTEM.NAME:
                         PLCSYSTEM.memory.set(event.path, event.new_value)
-                    elif event.container in self.programs:
-                        self.programs[event.container].memory.set(event.path, event.new_value)
+                    elif event.Container in self.programs:
+                        self.programs[event.Container].memory.set(event.path, event.new_value)
+                elif isinstance(event, StatusRequestEvent):
+                    self.statusRequestEvent = event
         except Empty:
             pass
 
@@ -448,5 +499,6 @@ class Emulator(threading.Thread):
             "saved.L5X",
             encoding="UTF-8",
             xml_declaration=True,
-            pretty_print=True
+            pretty_print=True,
+            standalone=True
         )
