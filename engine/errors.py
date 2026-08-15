@@ -86,12 +86,8 @@ class PLCFaultHandler:
             from eventbus.eventbus import EventBus
             from core.events import MinorFaultEvent
 
-            EventBus.get().dispatch(
-                MinorFaultEvent(
-                    fault=e
-                )
-            )
-            logging.warning(f"MinorFault: {e.hierarchy}", exc_info=e)
+            EventBus.get().dispatch(MinorFaultEvent(fault=e))
+            #logging.warning(f"MinorFault: {e.hierarchy}", exc_info=e)
 
     @classmethod
     @contextmanager
@@ -102,12 +98,8 @@ class PLCFaultHandler:
             from eventbus.eventbus import EventBus
             from core.events import MajorFaultEvent
 
-            EventBus.get().dispatch(
-                MajorFaultEvent(
-                    fault=e
-                )
-            )
-            logging.error(f"MajorFault: {e.hierarchy}", exc_info=e)
+            EventBus.get().dispatch(MajorFaultEvent(fault=e))
+            #logging.error(f"MajorFault: {e.hierarchy}", exc_info=e)
 
     @classmethod
     @contextmanager

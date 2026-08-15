@@ -1,32 +1,30 @@
 import copy
 
 from dataclasses import dataclass, field
-from typing import Any, Self, Any
+from typing import Any, Self, Any, ClassVar, TYPE_CHECKING
 from asyncua import ua
 
 from  utils.isplcinstance import isPLCInstance
 
-from protocols.memory import SupportsGetPLCValue
-
 from core.memory.uimemory import UIMemoryPrimitive, DT
 
+if TYPE_CHECKING:
+    from core.signal import Signal
+    from core.memory.memory import Memory
+
+from opcua.updater import OPCUAU
+
 @dataclass
-class DataVariant:
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Null)
-    _py_variant:Any = field(init=False, repr=False, default=None)
+class DataVariant(OPCUAU):
     _value:Any = field(init=False, repr=False, default=None)
-    _type:DT = field(init=False, repr=False, default=DT.UNKNOWN)
-
-    def toVariant(self) -> ua.Variant:
-        return ua.Variant(Value=self.getUAValue(),
-                          VariantType=self._ua_variant)
-
-    def fromVariant(self, variant:ua.Variant) -> None:
-        if variant.VariantType == self._ua_variant:
-            self.setValue(variant.Value)
+    _type: ClassVar[DT] = DT.UNKNOWN
 
     def setValue(self, value:Any):
+        old = self._value
         self._value = self.toValue(value)
+
+        if old != self._value:
+            self._notify_change()
 
     def getPLCValue(self) -> Any:
         raise NotImplementedError(f"{__class__} getPLCValue not implemented yet")
@@ -45,6 +43,7 @@ class DataVariant:
                 return default_type()
             return None
         else:
+            from protocols.memory import SupportsGetPLCValue
             if isPLCInstance(value, SupportsGetPLCValue):
                 value = value.getPLCValue()
             return value

@@ -1,10 +1,8 @@
 from typing import Any, Self, Protocol, Any, runtime_checkable , TYPE_CHECKING
-from asyncua import ua
 from lxml.etree import _Element as Element
 
-from core.memory.uimemory import UIMemoryObject
-
 if TYPE_CHECKING:
+    from core.memory.uimemory import UIMemoryObject
     from datatypes.custom.bool import BOOL
 
 @runtime_checkable
@@ -39,23 +37,8 @@ class SupportsToUi(Protocol):
 
 @runtime_checkable
 class SupportsUpdate(Protocol):
-    def update(self, new:UIMemoryObject) -> None:
+    def update(self, new:"UIMemoryObject") -> None:
         ...
-
-@runtime_checkable
-class isVariant(SupportsGetPLCValue, Protocol):
-    #_ua_variant:ua.Variant
-    #_py_variant:Any
-
-    def toVariant(self) -> ua.Variant:
-        ...
-
-    def fromVariant(self, variant:ua.Variant) -> None:
-        ...
-    
-    def getUAValue(self) -> Any:
-        ...
-
 
 @runtime_checkable
 class Resettable(Protocol):

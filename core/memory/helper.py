@@ -19,7 +19,7 @@ from datatypes.custom.array import Array
 from datatypes.custom.string import STRING
 from datatypes.custom.numbers import REAL, LINT
 
-from protocols.memory import isVariant
+from protocols.opcua import SupportsVariant
 
 from utils.isplcinstance import isPLCInstance
 
@@ -120,9 +120,6 @@ def isBitSet(value: int, index: int) -> bool:
         raise ValueError("index must be between 0 and 63 inclusive")
     return (value >> index) & 1 == 1
 
-def isBitIndex(keys:list[str|int]) -> bool:
-    return bool(isinstance(keys[-1], str) and keys[-1].isdigit() and len(keys) > 1)
-
 def getValue(container:dict|list|int, key:str|int) -> Any:
     key = resolveKey(container, key)
     if isinstance(container, dict):
@@ -151,7 +148,7 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
 
         if result is None:
             path:list[str] = resolvePath(pathRaw)
-            
+ 
             from engine.aoi.memory import AOIMemory
             from engine.aoi.aoi import AOIContextMemory
             aoi = AOIContextMemory.get()
@@ -185,7 +182,7 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
                                 result = memory.get(path)
 
         raw = result
-        if isPLCInstance(result, isVariant):
+        if isPLCInstance(result, SupportsVariant):
             match dataVariant:
                 case OutputType.PLC:
                     result = result.getPLCValue()
@@ -321,6 +318,10 @@ def resolvePath(path: str) -> list[str|int|float]:
             out.append(resolveExpr(part.text))
         else:
             out.append(part)
+    out = [
+        int(x) if isinstance(x, str) and x.isdigit() else x
+        for x in out
+    ]
     return out
 
 def parsePath(s: str|list|tuple) -> list[str|int]:
@@ -346,7 +347,17 @@ def parsePath(s: str|list|tuple) -> list[str|int]:
                     elif s[i] == "]":
                         depth -= 1
                     i += 1
-                tokens.append(Expr(s[start:i-1]))
+                #tokens.append(Expr(s[start:i-1]))
+                
+                content = s[start:i - 1]
+                for part in content.split(","):
+                    part = part.strip()
+
+                    if part and all(c in "0123456789" for c in part):
+                        tokens.append(int(part))
+                    else:
+                        tokens.append(Expr(part))
+
             else:
                 raise SyntaxError(f"Unexpected char {s[i]}")
     else:

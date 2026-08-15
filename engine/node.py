@@ -7,7 +7,9 @@ from engine.errors import PLCFaultHandler
 
 def parse(text:str) -> Series:
     tokens = tokenize(text)
+    
     tree, _ = series(tokens)
+
     return tree
 
 def tokenize(text:str) -> list[str]:
@@ -96,11 +98,11 @@ def series(tokens, idx=0):
             break
         
         tok = split_instructions(tok)
-
+        
         for t in tok:
             nodes.append(InstructionNode(t))
         idx += 1
-
+    
     return Series(nodes), idx
 
 def instruction(token):
@@ -110,8 +112,28 @@ def instruction(token):
     if rest.endswith(")"):
         rest = rest[:-1]
 
-    args = [arg.strip() for arg in rest.split(",") if arg.strip()]
-    args = [arg for arg in args if arg != "?"]
+    args = []
+    current = []
+    depth = 0
+
+    for char in rest:
+        if char == "[":
+            depth += 1
+        elif char == "]":
+            depth -= 1
+
+        if char == "," and depth == 0:
+            arg = "".join(current).strip()
+            if arg and arg != "?":
+                args.append(arg)
+            current = []
+        else:
+            current.append(char)
+
+    # Last argument
+    arg = "".join(current).strip()
+    if arg and arg != "?":
+        args.append(arg)
 
     return name.strip(), args
 

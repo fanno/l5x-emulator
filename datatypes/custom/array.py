@@ -1,9 +1,10 @@
 from dataclasses import dataclass, field, InitVar
-from typing import Any, Protocol, List, Iterable, Generic, Union, TypeVar, Optional, get_args, get_origin, TypeGuard, Protocol
+from typing import Any, Protocol, List, Iterable, Generic, Union, TypeVar, Optional, get_args, get_origin, TypeGuard, Protocol, ClassVar, Callable
 from lxml.etree import _Element as Element
 from asyncua import ua
 
 from datatypes.custom.datavariant import DataVariant
+from datatypes.custom.udt import UDT
 
 from protocols.memory import SupportsSetValue, SupportsToL5X, SupportsToUi
 
@@ -21,20 +22,26 @@ T = TypeVar('T', bound=Union[DataVariant, DataClassMarker])
 @dataclass(repr=False)
 class Array(Generic[T], DataVariant):
     _cls: type[T] = field(repr=False)
-    _type:DT = field(init=False, repr=False, default=DT.ARRAY)
+    _type: ClassVar[DT] = DT.ARRAY
+
+    _ua_variant: ua.VariantType = field(init=False, repr=False)
+    _py_variant: Any = field(init=False, repr=False)    
 
     init: InitVar[Optional[Iterable[Any]]] = None
     _data: List[T] = field(init=False, default_factory=list)
 
     def __post_init__(self, init: Optional[Iterable[Any]]) -> None:
-        if not (issubclass(self._cls, DataVariant) or hasattr(self._cls, '__dataclass_fields__')):
-            raise TypeError(f"{self._cls!r} must be a PLCElement or a dataclass")
+        if not (issubclass(self._cls, DataVariant) or issubclass(self._cls, UDT)):
+            raise TypeError(f"{self._cls!r} must be a DataVariant or UDT")
 
         if init:
             self._extend(init)
 
         self._ua_variant = getattr(self._cls, "_ua_variant", ua.VariantType.ExtensionObject)
         self._py_variant = getattr(self._cls, "_py_variant", self._cls)
+        if self._py_variant is None:
+            self._py_variant = self._cls
+           
 
     @staticmethod
     def create(dtype: Generic[T], count: int) -> 'Array[T]':
@@ -54,10 +61,21 @@ class Array(Generic[T], DataVariant):
             else:
                 raise TypeError(f"Expected UDT or DataVariant, got {type(item).__name__}")
 
+    def setOnChange(self, on_change:Callable[[Any], None] | None):
+        if self._on_change is None:
+            self._on_change = on_change
+
+        for items in self._data:
+            items.setOnChange(self._child_changed)            
+
+    def _register_change(self):
+        for items in self._data:
+            items.setOnChange(self._child_changed)
+
     def getPLCValue(self) -> List[Any]:
         return self._data
         
-    def getUAValue(self) -> List[Any]:
+    def getUAValue(self) -> ua.Variant:
         result = []
         for value in self._data:
             result.append(getVariantValue(value))
@@ -141,7 +159,7 @@ class Array(Generic[T], DataVariant):
             if isinstance(value, dict):
                 return self._cls(value)
             if isinstance(value, (list, tuple)):
-                return Array(self._cls, value)
+                return Array[self._cls](self._cls, value)
         return self._cls(value)
 
     def _extend(self, values: Iterable[Any]) -> None:
@@ -190,7 +208,7 @@ class Array(Generic[T], DataVariant):
     def __iter__(self):
         return iter(self._data)    
 
-def isarray(obj: Any, expected_elem_type: type, min_len=0) -> TypeGuard[SupportsSetValue]:
+def isarray(obj: Any, expected_elem_type: type, min_len=0) -> TypeGuard[Array]:
     if not isinstance(obj, Array):
         return False
 

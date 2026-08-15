@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from engine.hierarchy import Hierarchy
 from lxml.etree import _Element as Element
 
-from typing import Optional, Dict, TYPE_CHECKING
+from typing import Optional, Dict, TYPE_CHECKING, Set
 
 from dataclasses import dataclass, field
 
@@ -38,12 +38,12 @@ class Program():
     _next_program_id: ClassVar[int] = 1
 
     _Element: Element = field(init=True)
-    Name:str = field(init=True)
     server:Server = field(init=True)
 
     ID:int = field(init=False)
     phase:PHASE = field(init=False, default_factory=PHASE)
 
+    Name:str = field(init=True, default=None)
     Type:str = field(init=True, default=None)
     PreStateRoutineName:str = field(init=True, default=None)
     FaultRoutineName:str = field(init=True, default=None)
@@ -73,6 +73,26 @@ class Program():
     MinorFaultRecord: Array[DINT] = field(init=False, default_factory=lambda: Array.create(DINT, 11))
 
     def __post_init__(self):
+        if isinstance(self._Element, Element):
+            self.Name = self._Element.get("Name")
+            self.MainRoutineName = self._Element.get("MainRoutineName", None)
+            self.Class = self._Element.get("Class", None)
+
+            self.Type=self._Element.get("Type"),
+            self.TestEdits=self._Element.get("TestEdits"),
+            self.PreStateRoutineName=self._Element.get("PreStateRoutineName"),
+            self.FaultRoutineName=self._Element.get("FaultRoutineName"),
+            self.InitialStepIndex=self._Element.get("InitialStepIndex"),
+            self.InitialState=self._Element.get("InitialState"),
+            self.CompleteStateIfNotImpl=self._Element.get("CompleteStateIfNotImpl"),
+            self.LossOfCommCmd=self._Element.get("LossOfCommCmd"),
+            self.ExternalRequestAction=self._Element.get("ExternalRequestAction"),
+            self.UseAsFolder=self._Element.get("ExterUseAsFoldernalRequestAction"),
+            self.AutoValueAssignStepToPhase=self._Element.get("AutoValueAssignStepToPhase"),
+            self.AutoValueAssignPhaseToStepOnComplete=self._Element.get("AutoValueAssignPhaseToStepOnComplete"),
+            self.AutoValueAssignPhaseToStepOnStopped=self._Element.get("AutoValueAssignPhaseToStepOnStopped"),
+            self.AutoValueAssignPhaseToStepOnAborted=self._Element.get("AutoValueAssignPhaseToStepOnAborted")
+
         self.ID = Program._next_program_id
         Program._next_program_id += 1
         from core.memory.memory import Memory, PlcMemory
@@ -80,11 +100,10 @@ class Program():
         self.memory = Memory(NAME=self.Name)
         PlcMemory.addContainer(self.memory)
 
-        self.opcua = OpcuaTag(NAME=self.Name, SERVER=self.server)
-
-        if isinstance(self._Element, Element):
-            self.MainRoutineName = self._Element.get("MainRoutineName", None)
-            self.Class = self._Element.get("Class", None)
+        self.opcua = OpcuaTag(NAME=self.Name,
+                              SERVER=self.server,
+                              memory=self.memory,
+                              mapping=self.mapping)
 
     async def init(self):
         from engine.routine import Routine
@@ -93,7 +112,7 @@ class Program():
 
         await loadTags(self._Element, self.opcua, self.memory, self.mapping)
 
-        await self.opcua.createNodes(self.memory, self.mapping)
+        await self.opcua.createNodes()
 
         for routine in self._Element.findall("./Routines//Routine"):
             r = Routine(routine)

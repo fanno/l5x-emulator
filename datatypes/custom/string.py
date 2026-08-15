@@ -2,7 +2,7 @@ from __future__ import annotations
 import re
 
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Optional, ClassVar
 from asyncua import ua
 from core.registry.datatyperegistry import DataTypeRegistry
 from datatypes.custom.datavariant import DataVariant
@@ -20,13 +20,13 @@ from utils.isplcinstance import isPLCInstance
 class STRING(COMPARE, DataVariant):
     _init:Optional[str] = field(init=True, repr=False, default="")
     _maxlength:Optional[int] = field(init=False, repr=False, default=82)
-    _type:DT = field(init=False, repr=False, default=DT.STRING)
+    _type:ClassVar[DT] = DT.STRING
 
     LEN:DINT = field(init=False, repr=False, default_factory=DINT)
     DATA:Array[SINT] = field(init=False, repr=False, default_factory=lambda: Array.create(SINT, 82))
 
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.String)
-    _py_variant:Any = field(init=False, repr=False, default=str)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.String
+    _py_variant: ClassVar[type] = str
 
     def __post_init__(self):
         self._maxlength = len(self.DATA)
@@ -63,8 +63,6 @@ class STRING(COMPARE, DataVariant):
                 len = self._maxlength
             data = self.DATA.getUAValue()
             value = bytes(data[:len]).decode('utf-8')
-
-        
         return value
     
     def getPLCValue(self) -> str:

@@ -26,6 +26,14 @@ class PLCClock:
         else:
             self._timezone = ZoneInfo(timezone_name)
 
+    def get_dst(self) -> int:
+        #TODO: CREATE DST
+        return 0
+
+    def set_dst(self, dst:int) -> None:
+        #TODO: CREATE DST
+        pass
+
     def get_utc(self) -> list[int]:
         return self._to_array(self._get_utc())
 
@@ -68,11 +76,11 @@ class PLCClock:
     @staticmethod
     def _to_array(value: datetime) -> list[int]:
         return [
-            DINT(value.year),
-            DINT(value.month),
-            DINT(value.day),
-            DINT(value.hour),
-            DINT(value.minute),
-            DINT(value.second),
-            DINT(value.microsecond),
+            value.year,
+            value.month,
+            value.day,
+            value.hour,
+            value.minute,
+            value.second,
+            value.microsecond
         ]

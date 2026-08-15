@@ -7,7 +7,7 @@ from datatypes.custom.array import Array
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.string import STRING
 
-from  instructions.helper import getPLCValue, getRootPath
+from  instructions.helper import getPLCValue, splitArrayPath
 
 @InstructionRegistry.register
 class FAL(Instruction):
@@ -58,8 +58,9 @@ class COP(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RLL.RungStatus:
-            src_path, src_dims = getRootPath(self.args[0])
-            dest_path, dest_dims = getRootPath(self.args[1])
+            src_path , src_dims = splitArrayPath(self.args[0])
+            dest_path , dest_dims = splitArrayPath(self.args[1])
+
             length = getPLCValue(self.getMemory(self.args[2]))
 
             if length > 0:
@@ -121,7 +122,7 @@ class FLL(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RLL.RungStatus:
-            dest_path, dest_dims = getRootPath(self.args[1])
+            dest_path , dest_dims = splitArrayPath(self.args[1])
             length = getPLCValue(self.getMemory(self.args[2]))
 
             if length > 0:
@@ -143,7 +144,7 @@ class FLL(Instruction):
                         for i in range(length):
                             d = dest[dest_start + i]
                             if type(source) != type(d):
-                                raise TypeError(f"{__class__} Source and dest not the same")
+                                raise TypeError(f"{__class__} Source and dest not the same, {type(source)}, {type(d)}")
 
                             d.setValue(source)
                     else:
@@ -168,8 +169,7 @@ class AVE(Instruction):
         control:CONTROL = self.getMemory(self.args[3])
 
         if ctx.RLL.RungStatus:
-
-            arrayName, dims = getRootPath(self.args[0])
+            arrayName , dims = splitArrayPath(self.args[0])
             array = self.getMemory(arrayName)
 
             if len(dims) > 1:
@@ -230,9 +230,9 @@ class SIZE(Instruction):
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RLL.RungStatus:
             dim = self.args[1]
-
-            source, dims = getRootPath(self.args[0])
+            source , dims = splitArrayPath(self.args[0])
             source = self.getMemory(source)
+            
             dim = getPLCValue(self.getMemory(self.args[1]))
             dest:DataVariant = self.getMemory(self.args[2])
 

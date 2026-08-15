@@ -2,7 +2,7 @@ from asyncua import Server
 
 from dataclasses import dataclass, field
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Set
 
 if TYPE_CHECKING:    
     from core.memory.memory import Memory
@@ -12,6 +12,7 @@ from core.constants import SYSTEMTAGS
 from opcua.tag import OpcuaTag, Tag
 from opcua.mapping import Mapping
 from opcua.helpers import createVariant
+from opcua.updater import OPCUAUpdater
 
 from core.plcclock import PLCClock
 
@@ -43,7 +44,9 @@ class System():
         self.server = server
 
         self.opcua = OpcuaTag(NAME=self.NAME,
-                              SERVER=self.server)
+                              SERVER=self.server,
+                              memory=self.memory,
+                              mapping=self.mapping)
         await self.opcua.registerNamespace("http://rockwell.plc")
         await self.opcua.createFolder(self.NAME)
 

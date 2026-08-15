@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any
+from typing import ClassVar
 
 from lxml.etree import _Element as Element
 
@@ -10,16 +10,17 @@ from core.registry.datatyperegistry import DataTypeRegistry
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.compare import COMPARE
 
-from core.memory.uimemory import UIMemoryPrimitive, DT
+from core.memory.uimemory import DT
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class BOOL(COMPARE, DataVariant):
     _value:bool = field(repr=False, default=False)
-    _type:DT = field(init=False, repr=False, default=DT.BOOL)
+    _type: ClassVar[DT] = DT.BOOL
 
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Boolean)
-    _py_variant:Any = field(init=False, repr=False, default=bool)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.Boolean
+
+    _py_variant: ClassVar[type] = bool
 
     def __post_init__(self):
         self.setValue(self._value)
@@ -56,4 +57,4 @@ class BOOL(COMPARE, DataVariant):
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class BIT(BOOL):
-    _type:DT = field(init=False, repr=False, default=DT.BIT)
+    _type: ClassVar[DT] = DT.BIT

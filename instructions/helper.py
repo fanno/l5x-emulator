@@ -45,33 +45,24 @@ def _XOR(a: int, b: int, width: int = 32) -> int:
 def _NOT(a: int, width: int = 32) -> int:
     return (~a) & _mask(width)
 
-def getPLCValue(source) -> Any:
+def getPLCValue(source:Any) -> Any:
     if isPLCInstance(source, SupportsGetPLCValue):
         return source.getPLCValue()
     return source
 
-def isArrayPath(address) -> Any:
+def isArrayPath(address:str) -> Any:
     return address[-1] == ']'
 
-def getRootPath(address) -> Tuple[str, List[Union[int]]]:
+def splitArrayPath(address:str) -> Any:
     if not isArrayPath(address):
-        return address, []
+        return (address, [0])
     
-    last_bracket_open = address.rfind('[')
+    key, _, values = address.rpartition("[")
+    values = values[:-1]
 
-    if last_bracket_open == -1:
-        return address, []
-    
-    index = address[last_bracket_open + 1:-1]
+    dims = [int(x.strip()) for x in values.split(",")]
 
-    dims = index.split(",")
-
-    for i in range(len(dims)):
-        dims[i] = getPLCValue(getMemory(dims[i]))
-    
-    path = address[:last_bracket_open]
-    
-    return path, dims
+    return (key, dims)
 
 def getOperand(block:FBDBlock) -> UDT:
     operand:UDT = block.Value

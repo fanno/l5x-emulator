@@ -1,6 +1,6 @@
 from datetime import datetime, timezone, timedelta
 from dataclasses import dataclass, field
-from typing import Any
+from typing import ClassVar
 
 from asyncua import ua
 import re
@@ -54,24 +54,26 @@ _DT_PATTERN = re.compile(
     re.VERBOSE,
 )
 
-@DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
-class DT(COMPARE, MATH, DataVariant):
+class ABSOLUTETIVETIME(COMPARE, MATH, DataVariant):
     _value:datetime = field(init=True, repr=False, default_factory=lambda: datetime.now(timezone.utc))
 
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.DateTime)
-    _py_variant:Any = field(init=False, repr=False, default=int)
-    
+    _py_variant: ClassVar[type] = int
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.DateTime
+
+    _units_per_second: ClassVar[int] = 1000000
+    _prefix: ClassVar[str] = ""
+
     def __post_init__(self):
         self.setValue(self._value)
 
     def getPLCValue(self) -> int:
         utc_dt = self._value.replace(tzinfo=timezone.utc)
-        return int(utc_dt.timestamp() * 1000000)
-    
+        return int(utc_dt.timestamp() * self._units_per_second)
+
     def getUAValue(self) -> datetime:
         return self._value
-    
+
     def toString(self):
         offset = self._value.utcoffset()
 
@@ -90,10 +92,22 @@ class DT(COMPARE, MATH, DataVariant):
 
         us = self._value.microsecond
         us_padded = f"{us:06d}"
-        us_formatted = f"{us_padded[:3]}_{us_padded[3:]}"
 
-        #return f"DT#{dt_str}.{us_formatted}Z"
-        return f"DT#{dt_str}.{us_formatted}({tz_str})"
+        fractions:list[str] = []
+        fractions.append(us_padded[:3])
+        fractions.append(us_padded[3:])
+
+        fraction = f"{us_padded[:3]}_{us_padded[3:]}"
+        if self._units_per_second == 1000000:
+            pass
+        elif self._units_per_second == 1000000000:
+            fractions.append("000")
+        else:
+            raise ValueError(
+                f"Unsupported time resolution: {self._units_per_second}"
+            )
+        fraction = "_".join(fractions)
+        return f"{self._prefix}#{dt_str}.{fraction}({tz_str})"
 
     @classmethod
     def toValue(cls, value:datetime|int|str):
@@ -116,7 +130,7 @@ class DT(COMPARE, MATH, DataVariant):
                 micros = m["micros"]
                 if micros is None:
                     micros = 0
-                microsecond = int(millis) * 1_000 + int(micros)
+                microsecond = (int(millis) * 1000) + int(micros)
 
                 if m["sign"]:
                     sign = 1 if m["sign"] == "+" else -1
@@ -136,26 +150,35 @@ class DT(COMPARE, MATH, DataVariant):
                 )
                 return result
         elif isinstance(value, float):
-            if value < 0:
-                value = abs(value)
+            value = abs(value)
             result = datetime.fromtimestamp(value)
-
             result = result.replace(tzinfo=timezone.utc)
             return result
         elif isinstance(value, int):
-            if value < 0:
-                value = abs(value)
-            seconds = value // 1_000_000
-            remainder = value % 1_000_000
+            value = abs(value)
                 
-            result = datetime.fromtimestamp(seconds).replace(microsecond=remainder)
-
-            result = result.replace(tzinfo=timezone.utc)
+            seconds = value // cls._units_per_second
+            remainder = value % cls._units_per_second
+                
+            result = datetime.fromtimestamp(seconds, tz=timezone.utc)
+            if cls._units_per_second == 1000000:
+                microsecond = remainder
+            elif cls._units_per_second == 1000000000:
+                microsecond = remainder // 1000
+            else:
+                raise ValueError(f"Unsupported time resolution: {cls._units_per_second}")
+            result = result.replace(microsecond=microsecond)
             return result
 
-        raise ValueError(f"value '{value}' is not a valid DateTime format")
+        raise ValueError(f"value '{value}' is not a valid DateTime format")    
+
+@DataTypeRegistry.register
+@dataclass(repr=False, eq=False)
+class DT(ABSOLUTETIVETIME):
+    _prefix: ClassVar[str] = "DT"
     
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
-class LDT(COMPARE, DataVariant):
-    pass
+class LDT(ABSOLUTETIVETIME):
+    _units_per_second: ClassVar[int] = 1000000000
+    _prefix: ClassVar[str] = "LDT"

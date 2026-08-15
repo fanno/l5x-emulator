@@ -1,7 +1,7 @@
 from __future__ import annotations
 import logging
 
-from typing import Dict, Any
+from typing import Dict, Any, Set
 
 from dataclasses import dataclass, field, is_dataclass, fields
 
@@ -10,19 +10,26 @@ from lxml.etree import _Element as Element
 from asyncua import Server, Node, ua
 from asyncua.common.structures104 import new_struct, new_struct_field
 
+
 from opcua.structure import Structure, StructureField, sanitizeName
 from opcua.helpers import *
 from opcua.mapping import Mapping
 
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.array import Array
+from datatypes.custom.udt import UDT
+
+
 from datatypes.custom.helper import getVariantValue
 
 from core.signal import Signal
 from core.memory.memory import Memory, OpcUaAccess
 from core.datatypes import DataTypes, DataTypeRegistry
 
-from protocols.memory import SupportsSetValue, isVariant
+from opcua.updater import OPCUAUpdater
+
+from protocols.memory import SupportsSetValue
+from protocols.opcua import SupportsVariant, SupportsOPCUA
 
 from utils.isplcinstance import isPLCInstance
 
@@ -47,6 +54,9 @@ async def create_struct(struct:Structure, server:Server, id):
 class OpcuaTag:
     SERVER:Server = field(init=True)
     NAME:str = field(init=True)
+    memory:Memory = field(init=True)
+    mapping:Mapping = field(init=True)
+    updater:Set[OPCUAUpdater] = field(init=False, default_factory=set)
 
     __folder:Node =  field(init=False, default=None)
     __idx: int =  field(init=False, default=None)
@@ -80,14 +90,14 @@ class OpcuaTag:
         await ot.set_writable()
         return ot
 
-    async def createNodes(self, memory:Memory, mapping: Mapping, forceOpcua:bool = False):
-        for k, v in memory.getMemoryAll().items():
-            medatata = memory.get_metadata(k)
+    async def createNodes(self, forceOpcua:bool = False):
+        for k, v in self.memory.getMemoryAll().items():
+            medatata = self.memory.get_metadata(k)
             if medatata:
                 if medatata.OpcUa_Access != OpcUaAccess.NONE or forceOpcua:
-                    await self.createNode(k, v, mapping)
+                    await self.createNode(k, v)
 
-    async def createNode(self, name:str, value: Any, mapping: Mapping, path:list = [], parent:Node = None):
+    async def createNode(self, name:str, value: Any, path:list = [], parent:Node = None):
         if parent is None:
             parent = self.getFolder()
         
@@ -104,7 +114,7 @@ class OpcuaTag:
             signal = Signal(PATH=current_path,
                             NODE=node,
                             MEMORY=value)
-            mapping.add(signal)
+            self.mapping.add(signal)
 
             if not isinstance(value, DataVariant):
                 for field in fields(value):
@@ -113,31 +123,42 @@ class OpcuaTag:
                         await self.createNode(
                             name=field_name,
                             value=getattr(value, field_name),
-                            mapping=mapping,
                             path=current_path,
                             parent=node
                         )
+
+            if isPLCInstance(value, SupportsOPCUA):
+                value.setOPCUAOUdater(self.updater, signal, self.memory)
         
     async def _createVariantNode(self, parent: Node, name: str, value: Any) -> Optional[Node]:
-        if isPLCInstance(value, isVariant):
-            return await parent.add_variable(self.getIDX(), name, value.toVariant())
-        
-        if is_dataclass(value):
-            dt_name = value.__class__.__name__
-
-            if hasattr(ua, dt_name) or hasattr(ua, dt_name.upper()):
-                variant_value = getVariantValue(value)
-
-                variant_type = ua.VariantType.ExtensionObject
-                return await parent.add_variable(
-                    self.getIDX(), 
-                    name,
-                    ua.Variant(variant_value, variant_type)
-                )
+        if isPLCInstance(value, SupportsVariant):
+            if isinstance(value, Array):
+                if value._ua_variant == ua.VariantType.ExtensionObject:
+                    dt_name = value._py_variant.__name__
+                    if hasattr(ua, dt_name) or hasattr(ua, dt_name.upper()):
+                        dt = DataTypes.get(dt_name)
+                        return await parent.add_variable(self.getIDX(),
+                                                         name,
+                                                         ua.Variant(value.toVariant(),
+                                                                    value._ua_variant,
+                                                                    Dimensions=value.getDim(),
+                                                                    is_array=True),
+                                                         datatype=dt.snode.nodeid)
+                else:
+                    var = ua.Variant(value.toVariant(), value._ua_variant, Dimensions=value.getDim(), is_array=True)
+                    return await parent.add_variable(self.getIDX(), name, var)
             else:
-                logging.warning(f"OPC UA type '{dt_name}' not found for dataclass '{name}'. Skipping tag creation.")
-                return None
-        
+                return await parent.add_variable(self.getIDX(), name, value.toVariant())
+        elif isinstance(value, UDT):
+            dt_name = value.__class__.__name__
+            if hasattr(ua, dt_name) or hasattr(ua, dt_name.upper()):
+                dt = DataTypes.get(dt_name)
+                return await parent.add_variable(self.getIDX(),
+                                                 name,
+                                                 ua.Variant(getVariantValue(value),
+                                                            ua.VariantType.ExtensionObject),
+                                                 datatype=dt.snode.nodeid)
+
         raise RuntimeError(
             f"Unsupported value type '{type(value).__name__}' for tag '{name}'. "
             f"Expected DataVariant or dataclass with matching UA type."

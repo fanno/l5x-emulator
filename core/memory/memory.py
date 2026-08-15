@@ -1,8 +1,11 @@
 from enum import Enum
-from typing import Dict, Any, Type
+from typing import Dict, Any, Type, TYPE_CHECKING
 from dataclasses import dataclass, field
 
 from datatypes.custom.array import Array
+
+from datatypes.custom.numbers import INTIGER
+from datatypes.custom.bool import BOOL, BIT
 
 from lxml.etree import _Element as Element
 
@@ -66,33 +69,38 @@ class Memory:
         return container
 
     def set(self, keys:str|list|tuple, v:Type, rawValue:bool=False) -> None:
-        from core.memory.helper import resolvePath, isBitIndex, resolveKey
+        from core.memory.helper import resolvePath, resolveKey
         keys:list[str|int] = resolvePath(keys)
 
-        if isBitIndex(keys):
-            container = self.__getContainer(keys[:-2])
-            key = resolveKey(container, keys[-2])
 
-            bit_index = int(keys[-1])
-            bit_value = int(v) & 1
+        lastKey = keys[-1]
+        container = self.__getContainer(keys[:-1])
+        if isinstance(lastKey, int):
+            if isinstance(container, (INTIGER, BOOL, BIT)):
+                container = self.__getContainer(keys[:-2])
+                key = resolveKey(container, keys[-2])
 
-            mask = 1 << bit_index
+                bit_index = lastKey
+                bit_value = int(v) & 1
 
-            if isinstance(container, (dict, list, Array)):
-                value = container[key]
-            else:
-                value = getattr(container, key)
+                mask = 1 << bit_index
 
-            if isPLCInstance(value, SupportsGetPLCValue):
-                value = value.getPLCValue()
+                if isinstance(container, (dict, list, Array)):
+                    value = container[key]
+                else:
+                    value = getattr(container, key)
 
-            new_int = (value & ~mask) | (bit_value << bit_index)
+                if isPLCInstance(value, SupportsGetPLCValue):
+                    value = value.getPLCValue()
 
-            self.__set(container, key, new_int, rawValue)
-        else:
-            container = self.__getContainer(keys[:-1])
-            key = resolveKey(container, keys[-1])
-            self.__set(container, key, v, rawValue)
+                new_int = (value & ~mask) | (bit_value << bit_index)
+
+                self.__set(container, key, new_int, rawValue)
+                return
+
+        key = resolveKey(container, lastKey)
+        self.__set(container, key, v, rawValue)
+        return
 
     def __set(self, container, key, newValue, rawValue:bool=False):
         if rawValue:
@@ -123,38 +131,40 @@ class Memory:
             setattr(container, key, value)
 
     def get(self, keys:str|list|tuple) -> Any:
-        from core.memory.helper import resolvePath, isBitIndex, isBitSet, getValue
+        from core.memory.helper import resolvePath, isBitSet, getValue
         keys:list[str|int] = resolvePath(keys)
 
-        if isBitIndex(keys):
-            container = self.__getContainer(keys[:-2])
-            value = getValue(container, keys[-2])
-            if isPLCInstance(value, SupportsGetPLCValue):
-                value = value.getPLCValue()
-            return isBitSet(value, int(keys[-1]))
-        else:
-            container = self.__getContainer(keys[:-1])
-            return getValue(container, keys[-1])
+        lastKey = keys[-1]
+        container = self.__getContainer(keys[:-1])
+        if isinstance(lastKey, int):
+            if isinstance(container, (INTIGER, BOOL, BIT)):
+                container = self.__getContainer(keys[:-2])
+                value = getValue(container, keys[-2])
+                if isPLCInstance(value, SupportsGetPLCValue):
+                    value = value.getPLCValue()
+                return isBitSet(value, lastKey)
+
+        container = self.__getContainer(keys[:-1])
+        return getValue(container, keys[-1])
 
     def has(self, keys:str|list|tuple) -> bool:
-        from core.memory.helper import resolvePath, isBitIndex, resolveKey
+        from core.memory.helper import resolvePath, resolveKey
         keys:list[str|int] = resolvePath(keys)
 
         try:
-            if isBitIndex(keys):
-                container = self.__getContainer(keys[:-2])
-                leaf_key = keys[-2]
-            else:
-                container = self.__getContainer(keys[:-1])
-                leaf_key = keys[-1]
+            lastKey = keys[-1]
+            container = self.__getContainer(keys[:-1])
+            if isinstance(lastKey, int):
+                if isinstance(container, (INTIGER, BOOL, BIT)):
+                    return True
 
-            leaf_key = resolveKey(container, leaf_key)
+            key = resolveKey(container, lastKey)
             if isinstance(container, dict):
-                return leaf_key in container
+                return key in container
             if isinstance(container, (list, Array)):
-                return (0 <= leaf_key and leaf_key < len(container))
+                return (0 <= key and key < len(container))
             else:
-                return hasattr(container, leaf_key)
+                return hasattr(container, key)
         except Exception:
             return False
     

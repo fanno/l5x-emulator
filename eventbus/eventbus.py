@@ -1,43 +1,37 @@
 import weakref
 import threading
 import logging
-from typing import Callable, Dict, List, Any, Optional, Type
+from typing import Callable, Dict, List, Any, Type, Protocol, runtime_checkable
 from uuid import uuid4
+import inspect
 
 def subscribe_event(*event_classes: Type):
     def decorator(func):
-        func._event_listener = True
+        if not inspect.isfunction(func):
+            raise TypeError("@subscribe_event can only be used on functions")
+        
         func._event_classes = event_classes if event_classes else None
         return func
     return decorator
 
 class EventBus:
-    _instance: Optional['EventBus'] = None
-    _lock = threading.Lock()
+    _lock:threading.Lock
+    _handlers: Dict[Type, List[tuple]]
+    _wildcard_handlers: List[tuple]
 
-    _handlers: Dict[Type, List[tuple]] = {}
-    _wildcard_handlers: List[tuple] = []
+    def __init__(self):
+        self._lock = threading.RLock()
+        self._handlers = {}
+        self._wildcard_handlers = []
 
-    def __new__(cls):
-        if cls._instance is None:
-            with cls._lock:
-                if cls._instance is None:
-                    cls._instance = super().__new__(cls)
-                    cls._instance._handlers = {}
-                    cls._instance._wildcard_handlers = []
-        return cls._instance
+    @staticmethod
+    def get() -> 'EventBus': 
+        return _BUS
 
-    @classmethod
-    def get(cls) -> 'EventBus':
-        return cls()
-
-    @classmethod
-    def reset(cls):
-        with cls._lock:
-            if cls._instance:
-                cls._instance._handlers.clear()
-                cls._instance._wildcard_handlers.clear()
-                cls._instance = None
+    def reset(self):
+        with self._lock:
+            self.handlers.clear()
+            self._wildcard_handlers.clear()
 
     def _normalize_handler(self, handler: Callable) -> Callable:
         if isinstance(handler, weakref.WeakMethod):
@@ -77,7 +71,6 @@ class EventBus:
 
     def dispatch(self, event_instance: Any):
         event_type = type(event_instance)
-        
         with self._lock:
             specific_handlers = self._handlers.get(event_type, [])[:]
             wildcard_handlers = self._wildcard_handlers[:]
@@ -117,6 +110,10 @@ class EventBus:
                 if not isinstance(h, weakref.WeakMethod) or h() is not None
             ]
 
+@runtime_checkable
+class IsEventListener(Protocol):
+    _event_classes: tuple[Type, ...] | None
+
 class EventListener:
     def __init__(self, owner=None):
         self._owner = self if owner is None else owner
@@ -130,13 +127,16 @@ class EventListener:
         for attr_name in dir(self._owner):
             attr = getattr(self._owner, attr_name)
 
-            if callable(attr) and hasattr(attr, '_event_listener'):
-                event_classes = attr._event_classes
+            if inspect.ismethod(attr):
+                if isinstance(attr.__func__, IsEventListener):
+                    event_classes = attr._event_classes
 
-                if event_classes is None:
-                    sub_id = self._event_bus.subscribe_wildcard(attr)
-                    self._subscriptions.append(sub_id)
-                else:
-                    for ec in event_classes:
-                        sub_id = self._event_bus.subscribe(ec, attr)
+                    if event_classes is None:
+                        sub_id = self._event_bus.subscribe_wildcard(attr)
                         self._subscriptions.append(sub_id)
+                    else:
+                        for ec in event_classes:
+                            sub_id = self._event_bus.subscribe(ec, attr)
+                            self._subscriptions.append(sub_id)
+
+_BUS = EventBus()

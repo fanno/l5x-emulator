@@ -21,3 +21,4 @@ class DataType(Enum):
     TIME32 = "TIME32"
     LTIME = "LTIME"
     ARRAY = "ARRAY"
+

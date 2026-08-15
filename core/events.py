@@ -2,6 +2,10 @@ from typing import Any, Dict, Optional, Type, Union
 
 from dataclasses import dataclass, field
 
+import datatypes.custom.udt
+import datatypes.custom.array
+import datatypes.custom.datavariant
+
 from engine.errors import MajorFault, MinorFault
 
 @dataclass
@@ -79,3 +83,7 @@ class MinorFaultEvent():
 @dataclass
 class MajorFaultEvent():
     fault: MajorFault
+
+@dataclass
+class MemoryChangeEvent():
+    Memory:datatypes.custom.udt.UDT|datatypes.custom.array.Array|datatypes.custom.datavariant.DataVariant = field(init=True, default=None)

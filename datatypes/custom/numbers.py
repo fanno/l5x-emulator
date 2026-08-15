@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import Any
+from typing import ClassVar
 from datetime import datetime, timezone
 
 from lxml.etree import _Element as Element
@@ -39,13 +39,17 @@ PLC_TYPE_MAP = {
 @dataclass(repr=False, eq=False)
 class INTIGER(COMPARE, MATH, DataVariant):
     _value:int = field(repr=False, default=0)
-    _py_variant:Any = field(init=False, repr=False, default=int)
+    _py_variant: ClassVar[type] = int
 
     def __post_init__(self):
         self.setValue(self._value)
 
     def setValue(self, value:str|int):
+        old = self._value
         self._value = self.toValue(value, self.__class__.__name__)
+
+        if old != self._value:
+            self._notify_change()
 
     def getPLCValue(self) -> int:
         return self._value
@@ -121,64 +125,61 @@ class INTIGER(COMPARE, MATH, DataVariant):
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class ULINT(INTIGER):
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.UInt64)
-    _type:DT = field(init=False, repr=False, default=DT.ULINT)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.UInt64
+    _type:ClassVar[DT] = DT.ULINT
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class LINT(INTIGER):
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Int64)
-    _type:DT = field(init=False, repr=False, default=DT.LINT)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.Int64
+    _type:ClassVar[DT] = DT.LINT
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class UDINT(INTIGER):
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.UInt32)
-    _type:DT = field(init=False, repr=False, default=DT.UDINT)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.UInt32
+    _type:ClassVar[DT] = DT.UDINT
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class DINT(INTIGER):
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Int32)
-    _type:DT = field(init=False, repr=False, default=DT.DINT)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.Int32
+    _type:ClassVar[DT] = DT.DINT
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class UINT(INTIGER):
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.UInt16)
-    _type:DT = field(init=False, repr=False, default=DT.UINT)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.UInt16
+    _type:ClassVar[DT] = DT.UINT
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class INT(INTIGER):
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Int16)
-    _type:DT = field(init=False, repr=False, default=DT.INT)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.Int16
+    _type:ClassVar[DT] = DT.INT
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class USINT(INTIGER):
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Byte)
-    _type:DT = field(init=False, repr=False, default=DT.USINT)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.Byte
+    _type:ClassVar[DT] = DT.USINT
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class SINT(INTIGER):
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.SByte)
-    _type:DT = field(init=False, repr=False, default=DT.SINT)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.SByte
+    _type:ClassVar[DT] = DT.SINT
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class REAL(COMPARE, MATH, DataVariant):
     _value:float = field(init=True, repr=False, default=0.0)
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Float)
-    _py_variant:Any = field(init=False, repr=False, default=float)
-    _type:DT = field(init=False, repr=False, default=DT.REAL)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.Float
+    _py_variant: ClassVar[type] = float
+    _type:ClassVar[DT] = DT.REAL
 
     def __post_init__(self):
         self.setValue(self._value)
-
-    def setValue(self, value:str|float):
-        self._value = self.toValue(value)
 
     def getPLCValue(self) -> float:
         return self._value
@@ -218,5 +219,5 @@ class REAL(COMPARE, MATH, DataVariant):
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class LREAL(REAL):
-    _ua_variant:ua.Variant = field(init=False, repr=False, default=ua.VariantType.Double)
-    _type:DT = field(init=False, repr=False, default=DT.LREAL)
+    _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.Double
+    _type:ClassVar[DT] = DT.LREAL

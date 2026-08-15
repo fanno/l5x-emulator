@@ -13,6 +13,9 @@ def WHILE(line:str, st:"engine.st.st.ST"):
         st.block_stack.append("WHILE")
         st.out.append(st.getIndent() + f"while {hook_expression(m.group(1).strip())}:")
         st.addIndent()
+        st.out.append(st.getIndent() + f"import asyncio")
+        st.out.append(st.getIndent() + f"await asyncio.sleep(0)")
+        
         return True
 
     if line.lower().startswith("while "):

@@ -6,7 +6,7 @@ from opcua.mapping import Mapping
 from opcua.tag import OpcuaTag, Tag
 from opcua.helpers import *
 
-from protocols.memory import isVariant
+from protocols.opcua import SupportsVariant
 
 from utils.isplcinstance import isPLCInstance
 
@@ -54,7 +54,7 @@ async def createMemory(tag: Tag, opcua:OpcuaTag, memory:"Memory", mapping:Mappin
     
     mapping.add(signal)
 
-    if isPLCInstance(result, isVariant):
+    if isPLCInstance(result, SupportsVariant):
         await node.write_value(result.toVariant())
     else:
         await node.write_value(ua.Variant(result, variant_type))

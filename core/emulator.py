@@ -1,9 +1,8 @@
 import logging
-import copy
 import asyncio
 import threading
 from queue import Queue, Empty
-from typing import Dict, Union
+from typing import Dict, Union, Set, Any
 from asyncua.common.callback import CallbackType, ServerItemCallback, CallbackService
 from asyncua import Server
 from asyncua.ua import WriteParameters
@@ -33,6 +32,7 @@ from core.library.libeary import initPyInstaller, load_all_hardware, get_paths
 from core.library.hwlogic import HWLogic
 from core.log import IndentedFormatter
 from core.plcclock import PLCClock
+from core.signal import Signal
 
 T = Union[StatusEvent, UpdateVariableEvent]
 
@@ -43,7 +43,6 @@ from engine.program import Program
 from engine.task import Task
 from engine.errors import PLCFaultHandler
 from engine.executiontimer import ExecutionTimer
-
 
 from opcua.structure import Structure, StructureField
 from opcua.tag import OpcuaTag
@@ -114,6 +113,10 @@ class Emulator(threading.Thread):
     statusRequestEvent:StatusRequestEvent
 
     clock:PLCClock
+
+    in_plc_scan:bool
+
+    _opcua_queue: Queue[tuple[Signal, Memory]]
     
     def __init__(self, path:str, port:int=4840, forceOpcua:bool=True):
         super().__init__()
@@ -132,9 +135,12 @@ class Emulator(threading.Thread):
 
         self._is_running = False
 
+        self.in_plc_scan = False
+
         initPyInstaller()
 
         self.queue = Queue()
+        self._opcua_queue = Queue()
 
         self.programs = {}
         self.tasks = {}
@@ -158,7 +164,7 @@ class Emulator(threading.Thread):
         self.statusRequestEvent = StatusRequestEvent(Initial=True)
 
         self._loop = None
-        self._throttle = 2
+        self._throttle = 20
 
         gui_handler = EmulatorLogHandler(logging.WARNING)
 
@@ -330,7 +336,10 @@ class Emulator(threading.Thread):
         self._server.subscribe_server_callback(CallbackType.PostWrite, self.CallbackTypePostWrite)
 
         self.opcua = OpcuaTag(NAME=self.NAME,
-                              SERVER=self._server)
+                              SERVER=self._server,
+                              memory=self.memory,
+                              mapping=self.mapping)
+
         await self.opcua.registerNamespace("http://rockwell.plc")
         await self.opcua.createFolder(CONTROLLERTAGS)
 
@@ -358,7 +367,7 @@ class Emulator(threading.Thread):
 
         self.safetyMap = SafetyMap(self.controller.find("./SafetyInfo/SafetyTagMap"))
 
-        await self.opcua.createNodes(self.memory, self.mapping, self.forceOpcua)
+        await self.opcua.createNodes(self.forceOpcua)
 
         loadTasks(self.controller, self.tasks)
         await PLCSYSTEM.init(self._server)
@@ -380,33 +389,33 @@ class Emulator(threading.Thread):
 
     async def UpdateOPCUA(self):
         timer = ExecutionTimer()
-        with timer:        
-            for signal in self.mapping:
-                await updateSignal(signal, self.memory)
-        
-            for signal in PLCSYSTEM.mapping:
-                await updateSignal(signal, self.memory)
+        with timer:
+            for update in self.opcua.updater:
+                await updateSignal(update.signal, update.memory)
+            self.opcua.updater.clear()
+
+            for update in PLCSYSTEM.opcua.updater:
+                await updateSignal(update.signal, update.memory)
+            PLCSYSTEM.opcua.updater.clear()
 
             for name, program in self.programs.items():
-                for signal in program.mapping:
-                    await updateSignal(signal, program.memory)
+                for update in program.opcua.updater:
+                    await updateSignal(update.signal, update.memory)
+                program.opcua.updater.clear()
 
         self.OpcUaWriteTime = timer.μs
         if self.OpcUaWriteTime > self.OpcUaWriteTimeMax:
             self.OpcUaWriteTimeMax = self.OpcUaWriteTime
 
-    async def ReadOPCUA(self):
+    def ReadOPCUA(self):
         timer = ExecutionTimer()
         with timer:
-            for signal in self.mapping:
-                updateMemory(signal, self.memory, self.forceOpcua)
-
-            for signal in PLCSYSTEM.mapping:
-                updateMemory(signal, self.memory, self.forceOpcua)
-
-            for pname, program in self.programs.items():
-                for signal in program.mapping:
-                    updateMemory(signal, program.memory, self.forceOpcua)
+            try:
+                while True:
+                    signal, memory = self._opcua_queue.get_nowait()
+                    updateMemory(signal, memory, self.forceOpcua)
+            except Empty:
+                pass
 
         self.OpcUaReadTime = timer.μs
         if self.OpcUaReadTime > self.OpcUaReadTimeMax:
@@ -434,16 +443,16 @@ class Emulator(threading.Thread):
 
     async def mainloop(self):
         from core.memory.helper import setMemory, getMemory, OutputType
-        await self.ReadOPCUA()
+        self.ReadOPCUA()
 
         self.processQueue()
-
+        self.in_plc_scan = True
         for standart, safety in self.safetyMap.Pairs.items():
             setMemory(safety, getMemory(standart, OutputType.PLC))
 
         for tname, task in self.tasks.items():
             await task.execute(programs=self.programs)
-
+        self.in_plc_scan = False
         if self.preScan:
             self.preScan = False
             setMemory("S:FS", True)
@@ -464,15 +473,18 @@ class Emulator(threading.Thread):
             if isinstance(params, WriteParameters):
                 for node in params.NodesToWrite:
                     signal = self.mapping.getById(node.NodeId.Identifier)
-                    if signal is not None:
+                    if isinstance(signal, Signal):
                         signal.LAST_VALUE = node.Value.Value
-                        self.mapping.add(signal)
+
+                        self._opcua_queue.put((signal, self.memory))
+                        #self.mapping.add(signal)
                     else:
                         for pname, program in self.programs.items():
                             signal = program.mapping.getById(node.NodeId.Identifier)
-                            if signal is not None:
+                            if isinstance(signal, Signal): 
                                 signal.LAST_VALUE = node.Value.Value
-                                program.mapping.add(signal)
+                                self._opcua_queue.put((signal, program.memory))
+                                #program.mapping.add(signal)
 
     def stop(self):
         self._is_running = False

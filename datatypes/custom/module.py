@@ -4,18 +4,17 @@ from lxml.etree import _Element as Element
 
 from dataclasses import dataclass, field
 
-from asyncua import ua
-
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT
 from datatypes.custom.bool import BOOL
 from datatypes.custom.string import STRING
 from datatypes.custom.array import Array
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
-class MODULEPORT():
+class MODULEPORT(UDT):
     _Element: Element = field(init=True, repr=False, default=None)
 
     Id:DINT = field(init=False, default_factory=DINT)
@@ -30,9 +29,15 @@ class MODULEPORT():
             self.Type = STRING(self._Element.get("Type", ""))
             self.Upstream = BOOL(self._Element.get("Upstream", False))
 
+    def toL5X(self, element:Element) -> None:
+        pass
+
+    def setValue(self, value:"UDT"):
+        pass
+
 @DataTypeRegistry.register
 @dataclass
-class MODULE():
+class MODULE(UDT):
     _Element:Element = field(init=True, repr=False, default=None)
 
     Name:STRING = field(init=False, default_factory=STRING)
@@ -69,3 +74,6 @@ class MODULE():
                 ports.append(MODULEPORT())
 
             self.Ports = Array[MODULEPORT](MODULEPORT, ports)
+
+    def toL5X(self, element:Element) -> None:
+        pass

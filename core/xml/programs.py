@@ -2,10 +2,12 @@ from lxml.etree import _Element as Element
 
 from asyncua import Server
 
-from typing import Dict, TYPE_CHECKING
+from typing import Dict, TYPE_CHECKING, Set
 
 if TYPE_CHECKING:
     from engine.program import Program
+
+from opcua.updater import OPCUAUpdater
 
 from core.events import LoadingEvent
 from eventbus.eventbus import EventBus
@@ -18,22 +20,7 @@ async def loadPrograms(controller:Element, server:Server, programs:Dict[str, "Pr
         EventBus.get().dispatch(LoadingEvent(f"Program: {program.get("Name")}"))
 
         p = Program(_Element=program,
-                    server=server,
-                    Name=program.get("Name"),
-                    Type=program.get("Type"),
-                    TestEdits=program.get("TestEdits"),
-                    PreStateRoutineName=program.get("PreStateRoutineName"),
-                    FaultRoutineName=program.get("FaultRoutineName"),
-                    InitialStepIndex=program.get("InitialStepIndex"),
-                    InitialState=program.get("InitialState"),
-                    CompleteStateIfNotImpl=program.get("CompleteStateIfNotImpl"),
-                    LossOfCommCmd=program.get("LossOfCommCmd"),
-                    ExternalRequestAction=program.get("ExternalRequestAction"),
-                    UseAsFolder=program.get("ExterUseAsFoldernalRequestAction"),
-                    AutoValueAssignStepToPhase=program.get("AutoValueAssignStepToPhase"),
-                    AutoValueAssignPhaseToStepOnComplete=program.get("AutoValueAssignPhaseToStepOnComplete"),
-                    AutoValueAssignPhaseToStepOnStopped=program.get("AutoValueAssignPhaseToStepOnStopped"),
-                    AutoValueAssignPhaseToStepOnAborted=program.get("AutoValueAssignPhaseToStepOnAborted"))
+                    server=server)
         
         await p.init()
         programs[p.Name] = p

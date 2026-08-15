@@ -1,33 +1,24 @@
 import logging
-
-from tkinter.ttk import Treeview, Scrollbar
-from tkinter import Event, PhotoImage
-import tkinter as tk
-
-from typing import Any, Optional
-
-from dataclasses import is_dataclass, fields, dataclass, field
-
 import time
 
-from numbers import Number
+import tkinter as tk
+from tkinter.ttk import Treeview, Scrollbar
+from tkinter import Event, PhotoImage
+
+from typing import Optional
+
+from dataclasses import dataclass, field
 
 from utils.indexmap import IndexMap
 
-from datatypes.custom.string import STRING
-from datatypes.custom.datavariant import DataVariant
-from datatypes.custom.numbers import INTIGER, REAL
-from datatypes.custom.bool import BOOL
 from datatypes.custom.array import Array
 from datatypes.custom.dt import DT
-
-from collections.abc import Mapping, Sequence, Set
 
 from eventbus.eventbus import EventBus
 from core.events import UpdateVariableEvent, StatusRequestEvent
 from core.registry.datatyperegistry import DataTypeRegistry
 
-from protocols.memory import SupportsSetValue, SupportsGetPLCValue, SupportsToString
+from protocols.memory import SupportsGetPLCValue, SupportsToString
 
 from utils.isplcinstance import isPLCInstance
 
@@ -312,9 +303,11 @@ class Grid(Treeview):
             variable = self.mapping.getById(iid)
 
             if variable:
+                
                 if (rawValue is not None and variable.DATA.Value == rawValue.Value) or (editValue is not None and variable.DATA.Value == editValue):
                     if not send and not path:
                         return
+               
                 try:
                     if rawValue is not None:
                         variable.DATA = rawValue
@@ -339,6 +332,7 @@ class Grid(Treeview):
                     logging.error(e)
 
     def _on_click(self, event:Event):
+        
         hidden = self.hideEdit()
         if not hidden:
             region = self.identify_region(event.x, event.y)
@@ -401,7 +395,7 @@ class Grid(Treeview):
     def _item_changed(self, iid):
             data = self.mapping.getById(iid)
             if data:
-                EventBus.get().dispatch(UpdateVariableEvent(self.container,
+                EventBus.get().dispatch(UpdateVariableEvent(self.Container,
                                                             data.PATH,
                                                             data.DATA.Value))
 

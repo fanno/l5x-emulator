@@ -11,7 +11,7 @@ from opcua.helpers import getPythonVariantType
 from datatypes.custom.array import Array
 from datatypes.custom.udt import UDT
 
-from protocols.memory import isVariant
+from protocols.opcua import SupportsVariant
 from utils.isplcinstance import isPLCInstance
 
 class UDTBase:
