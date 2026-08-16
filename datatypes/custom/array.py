@@ -176,12 +176,6 @@ class Array(Generic[T], DataVariant):
 
     def __setitem__(self, index: int, value: T) -> None:
         self._data[index].setValue(value)
-        '''
-        if isinstance(value, self._cls):
-            self._data[index] = value
-        else:
-            self._data[index].setValue(value)
-        '''
 
     def __getitem__(self, i) -> T:
         return self._data[i]

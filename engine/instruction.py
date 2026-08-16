@@ -116,22 +116,22 @@ class Instruction:
             await self.st_execute(ctx)
 
     async def st_execute(self, ctx:"engine.context.ExecutionContext") -> None:
-        self.execute(self.getMemory(self.args[0]), ctx)
+        await self.ladder_execute(ctx)
 
     async def st_preScan(self, ctx:"engine.context.ExecutionContext") -> None:
-        self.preScan(self.getMemory(self.args[0]), ctx)
+        await self.ladder_preScan(ctx)
     
     async def st_postScan(self, ctx:"engine.context.ExecutionContext") -> None:
-       self.postScan(self.getMemory(self.args[0]), ctx)
+        await self.ladder_postScan(ctx)
 
-    def postScan(self, timer:UDT, ctx:"engine.context.ExecutionContext") -> None:
+    def postScan(self, udt:UDT, ctx:"engine.context.ExecutionContext") -> None:
         pass
 
-    def preScan(self, timer:UDT, ctx:"engine.context.ExecutionContext") -> None:
+    def preScan(self, udt:UDT, ctx:"engine.context.ExecutionContext") -> None:
         pass
 
-    def execute(self, timer:UDT, ctx:"engine.context.ExecutionContext") -> Any:
+    def execute(self, udt:UDT, ctx:"engine.context.ExecutionContext") -> Any:
         self.raiseNotImplementedError(ctx)
 
     def raiseNotImplementedError(self, ctx:"engine.context.ExecutionContext"):
-        raise NotImplementedError(f"{__class__}, {self.name}, ARGS: {self.args} not implemented yet")
+        raise NotImplementedError(f"{self.name}, ARGS: {self.args} not implemented yet")

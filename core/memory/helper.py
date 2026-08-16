@@ -120,24 +120,14 @@ def isBitSet(value: int, index: int) -> bool:
         raise ValueError("index must be between 0 and 63 inclusive")
     return (value >> index) & 1 == 1
 
-def getValue(container:dict|list|int, key:str|int) -> Any:
-    key = resolveKey(container, key)
-    if isinstance(container, dict):
-        if key is None or key not in container:
-            raise KeyError(f"Missing dict key: {key} {container}")
-        return container[key]
-    elif isinstance(container, (list, Array)):
-        if key is None:
-            raise IndexError("Leaf key is None for list access")
-        return container[key]
-    else:
-        if key is None or not hasattr(container, key):
-            raise AttributeError(f"Missing attribute: {key} {container}")
-        return getattr(container, key)
+
 
 def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
     result = None
     try:
+        if isinstance(pathRaw, int|float):
+            return pathRaw
+        
         if isinstance(pathRaw, str):
             if pathRaw.startswith("\'"):
                 return STRING(pathRaw[1:-1])
@@ -148,7 +138,7 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
 
         if result is None:
             path:list[str] = resolvePath(pathRaw)
- 
+            
             from engine.aoi.memory import AOIMemory
             from engine.aoi.aoi import AOIContextMemory
             aoi = AOIContextMemory.get()
@@ -189,10 +179,10 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
                 case OutputType.UA:
                     result = result.getUAValue()
     except Exception as e:
-        raise MemoryException("getMemory", pathRaw).with_traceback(e.__traceback__)
+        raise MemoryException("getMemory1", pathRaw).with_traceback(e.__traceback__)
     
     if result is None:
-        raise MemoryException("getMemory", pathRaw)
+        raise MemoryException("getMemory2", pathRaw)
     return result    
 
 def setMemory(path:list[str] | str, value):

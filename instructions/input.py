@@ -331,6 +331,10 @@ class GSV(Instruction):
                                         else:
                                             data.append(SINT(0))
                                             data.append(SINT(0))
+
+                                        while len(data) < len(dest):
+                                            data.append(SINT(0))
+
                                         dest.setValue(data)
                                         return
                 case 'MotionGroup':

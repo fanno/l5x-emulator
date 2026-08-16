@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from datatypes.custom.array import Array
 
 from datatypes.custom.numbers import INTIGER
-from datatypes.custom.bool import BOOL, BIT
+from datatypes.custom.udt import UDT
 
 from lxml.etree import _Element as Element
 
@@ -70,32 +70,15 @@ class Memory:
         from core.memory.helper import resolvePath, resolveKey
         keys:list[str|int] = resolvePath(keys)
 
-
         lastKey = keys[-1]
-        container = self.__getContainer(keys[:-1])
         if isinstance(lastKey, int):
-            if isinstance(container, (INTIGER, BOOL, BIT)):
-                container = self.__getContainer(keys[:-2])
-                key = resolveKey(container, keys[-2])
-
-                bit_index = lastKey
-                bit_value = int(v) & 1
-
-                mask = 1 << bit_index
-
-                if isinstance(container, (dict, list, Array)):
-                    value = container[key]
-                else:
-                    value = getattr(container, key)
-
-                if isPLCInstance(value, SupportsGetPLCValue):
-                    value = value.getPLCValue()
-
-                new_int = (value & ~mask) | (bit_value << bit_index)
-
-                self.__set(container, key, new_int, rawValue)
+            container = self.__getContainer(keys[:-1])
+            if isinstance(container, INTIGER):
+                bit = container[lastKey]
+                bit.setValue(v)
                 return
-
+            
+        container = self.__getContainer(keys[:-1])
         key = resolveKey(container, lastKey)
         self.__set(container, key, v, rawValue)
         return
@@ -129,21 +112,38 @@ class Memory:
             setattr(container, key, value)
 
     def get(self, keys:str|list|tuple) -> Any:
-        from core.memory.helper import resolvePath, isBitSet, getValue
+        from core.memory.helper import resolvePath, resolveKey
         keys:list[str|int] = resolvePath(keys)
 
         lastKey = keys[-1]
-        container = self.__getContainer(keys[:-1])
         if isinstance(lastKey, int):
-            if isinstance(container, (INTIGER, BOOL, BIT)):
-                container = self.__getContainer(keys[:-2])
-                value = getValue(container, keys[-2])
-                if isPLCInstance(value, SupportsGetPLCValue):
-                    value = value.getPLCValue()
-                return isBitSet(value, lastKey)
+            container = self.__getContainer(keys[:-1])
+            if isinstance(container, INTIGER):
+                return container[lastKey]
 
         container = self.__getContainer(keys[:-1])
-        return getValue(container, keys[-1])
+        key = resolveKey(container, lastKey)
+        return self._get(container, key)
+
+    def _get(self, container:dict|list|int, key:str|int) -> Any:
+        from core.memory.helper import resolveKey
+        key = resolveKey(container, key)
+        if isinstance(container, dict):
+            if key is None or key not in container:
+                raise KeyError(f"Missing dict key: {key} {container}")
+            return container[key]
+        elif isinstance(container, UDT):
+            if not hasattr(container, key):
+                raise KeyError(f"Missing UDT key: {key} {container}")
+            return getattr(container, key)
+        elif isinstance(container, (list, Array)):
+            if key is None:
+                raise IndexError("Leaf key is None for list access")
+            return container[key]
+        else:
+            if key is None or not hasattr(container, key):
+                raise AttributeError(f"Missing attribute: {key} {container}")
+            return getattr(container, key)
 
     def has(self, keys:str|list|tuple) -> bool:
         from core.memory.helper import resolvePath, resolveKey
@@ -153,7 +153,7 @@ class Memory:
             lastKey = keys[-1]
             container = self.__getContainer(keys[:-1])
             if isinstance(lastKey, int):
-                if isinstance(container, (INTIGER, BOOL, BIT)):
+                if isinstance(container, INTIGER):
                     return True
 
             key = resolveKey(container, lastKey)

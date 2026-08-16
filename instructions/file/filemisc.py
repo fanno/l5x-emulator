@@ -9,6 +9,9 @@ from datatypes.custom.string import STRING
 
 from  instructions.helper import getPLCValue, splitArrayPath
 
+from protocols.memory import SupportsSetValue
+from utils.isplcinstance import isPLCInstance
+
 @InstructionRegistry.register
 class FAL(Instruction):
 
@@ -58,59 +61,59 @@ class COP(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RLL.RungStatus:
-            src_path , src_dims = splitArrayPath(self.args[0])
-            dest_path , dest_dims = splitArrayPath(self.args[1])
-
             length = getPLCValue(self.getMemory(self.args[2]))
 
             if length > 0:
-                source = self.getMemory(src_path)
+                src_path , src_dims = splitArrayPath(self.args[0])
+                dest_path , dest_dims = splitArrayPath(self.args[1])
+
+
                 dest = self.getMemory(dest_path)
 
                 if len(src_dims)  > 1 or len(dest_dims) > 1:
                     raise NotImplementedError(f"{__class__} Multi-dimensional arrays not yet implemented")
-            
-                if not src_dims and not dest_dims:
-                    dest.setValue(source)
+
+                if length == 1:
+                    source = self.getMemory(self.args[0])
+                    dest = self.getMemory(self.args[1])
+                    if type(source) == type(dest):
+                        dest.setValue(source)
+                        return
                 else:
-                    if src_dims and dest_dims:
-                        src_start = src_dims[0]
-                        dest_start = dest_dims[0]
+                    source = self.getMemory(src_path)
+                    for item in src_dims[:-1]:
+                        source = source[item]
+                    if not isinstance(source, Array):
+                        return
+                
+                    src_start = src_dims[-1]
+                    src_end = src_start + (length -1)
 
-                        if src_start + length > len(source):
-                            raise IndexError(f"{__class__} Source array overflow: {src_start} + {length}")
-                        if dest_start + length > len(dest):
-                            raise IndexError(f"{__class__} Destination array overflow: {dest_start} + {length}")
+                    if len(source) <= src_end:
+                        raise IndexError(f"{__class__} Source array overflow: {length} {src_start} -> {src_end}")
 
-                        for i in range(length):
-                            s = source[src_start + i]
-                            d = dest[dest_start + i]
-                            if type(s) != type(d):
-                                raise TypeError(f"{__class__} Source and dest not the same")
+                    dest = self.getMemory(dest_path)
+                    for item in dest_dims[:-1]:
+                        dest = dest[item]
 
-                            d.setValue(s)
-                    elif src_dims and not dest_dims:
-                        if length != 1:
-                            raise ValueError(f"{__class__} Array→scalar requires length=1, got {length}")
-                        
-                        src_start = src_dims[0]
+                    if not isinstance(dest, Array):
+                        return
 
-                        s = source[src_start + i]
+                    dest_start = dest_dims[-1]
+                    dest_end = dest_start + (length -1)
+                    if len(dest) <= dest_end:
+                        raise IndexError(f"{__class__} Source array overflow: {length} {dest_start} -> {dest_end}")                    
 
-                        if type(s) != type(dest):
-                            raise TypeError(f"{__class__} Source and dest not the same")
-                        
-                        dest.setValue(s)
-                    elif not src_dims and dest_dims:
-                        if length != 1:
-                            raise ValueError(f"{__class__} Scalar→array requires length=1, got {length}")
-                        dest_start = dest_dims[0]
+                    for idx in range(length):
+                        if isinstance(source, Array):
+                            s = source[src_start+idx]
+                            d = dest[dest_start+idx]
+                            if type(s) == type(d):
+                                if isPLCInstance(d, SupportsSetValue):
+                                    d.setValue(s)
+                    return
 
-                        d = dest[dest_start]
-                        if type(source) != type(d):
-                            raise TypeError(f"{__class__} Source and dest not the same")
-
-                        d.setValue(source)
+                raise NotImplementedError(f"{__class__} Case not implemented {self.args}")
 
 @InstructionRegistry.register
 class CPS(COP):

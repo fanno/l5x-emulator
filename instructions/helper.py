@@ -55,12 +55,17 @@ def isArrayPath(address:str) -> Any:
 
 def splitArrayPath(address:str) -> Any:
     if not isArrayPath(address):
-        return (address, [0])
+        return (address, [])
     
     key, _, values = address.rpartition("[")
     values = values[:-1]
 
-    dims = [int(x.strip()) for x in values.split(",")]
+    dims = []
+    for x in values.split(","):
+        try:
+            dims.append(int(x.strip()))
+        except Exception as e:
+            dims.append(x.strip())
 
     return (key, dims)
 

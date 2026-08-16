@@ -152,6 +152,14 @@ class TONR(Instruction):
 
         timer.EnableOut.setValue(timer.EnableIn)
 
+    async def st_preScan(self, ctx:"ExecutionContext") -> None:
+        timer:FBD_TIMER = self.getMemory(self.args[0])
+        self.preScan(timer, ctx)
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        timer:FBD_TIMER = self.getMemory(self.args[0])
+        self.execute(timer, ctx)
+
 @InstructionRegistry.register
 class TOFR(Instruction):
 
@@ -186,6 +194,15 @@ class TOFR(Instruction):
 
         timer.EnableOut.setValue(timer.EnableIn)
         return timer
+
+    async def st_preScan(self, ctx:"ExecutionContext") -> None:
+        timer:FBD_TIMER = self.getMemory(self.args[0])
+        self.preScan(timer, ctx)
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        timer:FBD_TIMER = self.getMemory(self.args[0])
+        self.execute(timer, ctx)
+
 
 @InstructionRegistry.register
 class RTOR(Instruction):
@@ -225,6 +242,15 @@ class RTOR(Instruction):
         timer.EnableOut.setValue(timer.EnableIn)
 
         return timer
+    
+    async def st_preScan(self, ctx:"ExecutionContext") -> None:
+        timer:FBD_TIMER = self.getMemory(self.args[0])
+        self.preScan(timer, ctx)
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        timer:FBD_TIMER = self.getMemory(self.args[0])
+        self.execute(timer, ctx)
+           
 
 @InstructionRegistry.register
 class RES(Instruction):

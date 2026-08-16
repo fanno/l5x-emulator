@@ -13,6 +13,7 @@ from core.memory.uimemory import DT
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.math import MATH
 from datatypes.custom.compare import COMPARE
+from datatypes.custom.bool import BOOL
 
 from protocols.memory import SupportsGetPLCValue
 
@@ -121,6 +122,59 @@ class INTIGER(COMPARE, MATH, DataVariant):
     
     def __int__(self) -> int:
         return self._value
+
+    def __getitem__(self, bit: int) -> INTIGER_BIT:
+        if not isinstance(bit, int):
+            raise TypeError("Bit index must be an integer")
+
+        if bit < 0 or bit >= self.getBitSize():
+            raise IndexError(f"Bit index {bit} out of range")
+
+        return INTIGER_BIT(self, bit)
+
+    def __setitem__(self, bit: int, value: bool):
+        if not isinstance(bit, int):
+            raise TypeError("Bit index must be an integer")
+
+        if bit < 0 or bit >= self.getBitSize():
+            raise IndexError(f"Bit index {bit} out of range")
+
+        current = self.getPLCValue()
+        value = BOOL.toValue(value)
+        if value:
+            old |= 1 << bit
+        else:
+            old &= ~(1 << bit)
+
+        self.setValue(current)
+
+@dataclass(repr=False, eq=False)
+class INTIGER_BIT(BOOL):
+    _value:INTIGER = field(init=True, repr=False)
+    _bit: int = field(init=True, repr=False)
+
+    def getPLCValue(self) -> bool:
+        current = self._value.getPLCValue()
+        return bool(current & (1 << self._bit))
+
+    def getUAValue(self) -> bool:
+        return self.getPLCValue()
+
+    def __bool__(self) -> bool:
+        return self.getPLCValue()
+
+    def setValue(self, value: str | int | bool):
+        current = self._value.getPLCValue()
+
+        if self.toValue(value):
+            current |= 1 << self._bit
+        else:
+            current &= ~(1 << self._bit)
+
+        self._value.setValue(current)
+
+    def __repr__(self):
+        return repr(self.getPLCValue())
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)

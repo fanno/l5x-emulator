@@ -164,7 +164,7 @@ class Emulator(threading.Thread):
         self.statusRequestEvent = StatusRequestEvent(Initial=True)
 
         self._loop = None
-        self._throttle = 20
+        self._throttle = 4
 
         gui_handler = EmulatorLogHandler(logging.WARNING)
 
@@ -452,6 +452,10 @@ class Emulator(threading.Thread):
 
         for tname, task in self.tasks.items():
             await task.execute(programs=self.programs)
+
+        for name, modulesLogic in self.modulesLogic.items():
+            modulesLogic.update(name, self.memory)
+
         self.in_plc_scan = False
         if self.preScan:
             self.preScan = False
@@ -461,9 +465,6 @@ class Emulator(threading.Thread):
         else:
             self.scanCount += 1
             setMemory("S:FS", False)
-
-        for name, modulesLogic in self.modulesLogic.items():
-            modulesLogic.update(name, self.memory)
 
         await self.UpdateOPCUA()
 
