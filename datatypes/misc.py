@@ -1,7 +1,5 @@
 from dataclasses import dataclass, field
 
-from asyncua import ua
-
 from core.registry.datatyperegistry import DataTypeRegistry
 from datatypes.custom.string import STRING
 
@@ -891,9 +889,9 @@ class MESSAGE(UDT):
     Rack: SINT = field(init=False, default_factory=SINT)
     Group: SINT = field(init=False, default_factory=SINT)
     Slot: SINT = field(init=False, default_factory=SINT)
-    Path: ua.VariantType.ExtensionObject = field(init=False, default_factory=STRING)
+    Path: STRING = field(init=False, default_factory=STRING)
     RemoteIndex: DINT = field(init=False, default_factory=DINT)
-    RemoteElement: ua.VariantType.ExtensionObject = field(init=False, default_factory=STRING)
+    RemoteElement: STRING = field(init=False, default_factory=STRING)
     UnconnectedTimeout: DINT = field(init=False, default_factory=DINT)
     ConnectionRate: DINT = field(init=False, default_factory=DINT)
     TimeoutMultiplier: SINT = field(init=False, default_factory=SINT)

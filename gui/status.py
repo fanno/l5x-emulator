@@ -7,7 +7,7 @@ from core.events import StatusEvent, LoadingEvent
 
 from gui.updatingscrolledtext import UpdatingScrolledText
 
-from eventbus.eventbus import EventBus, EventListener, subscribe_event
+from eventbus.eventbus import EventListener, subscribe_event
 
 class StatusText(UpdatingScrolledText):
     _process:psutil.Process

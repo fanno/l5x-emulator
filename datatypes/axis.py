@@ -1,10 +1,8 @@
-from asyncua import ua
-
 from dataclasses import dataclass, field
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
-from datatypes.custom.numbers import DINT, UDINT, REAL, INT, SINT, LINT, UINT, USINT, ULINT
+from datatypes.custom.numbers import DINT, UDINT, REAL, INT, LINT, UINT, USINT, ULINT
 from datatypes.custom.bool import BOOL
 from datatypes.custom.string import STRING
 from datatypes.custom.udt import UDT

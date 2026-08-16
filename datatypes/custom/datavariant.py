@@ -8,10 +8,6 @@ from  utils.isplcinstance import isPLCInstance
 
 from core.memory.uimemory import UIMemoryPrimitive, DT
 
-if TYPE_CHECKING:
-    from core.signal import Signal
-    from core.memory.memory import Memory
-
 from opcua.updater import OPCUAU
 
 @dataclass

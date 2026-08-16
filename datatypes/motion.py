@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from asyncua import ua
 from core.registry.datatyperegistry import DataTypeRegistry
 from datatypes.custom.numbers import DINT, REAL, INT, SINT
 from datatypes.custom.bool import BOOL

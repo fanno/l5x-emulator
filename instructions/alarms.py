@@ -9,7 +9,7 @@ from core.memory.memory import Memory
 from core.memory.identity import Identity
 from core.objectregistry import ObjectRegistry
 
-from datatypes.alarm import ALARM_DIGITAL, ALARM_ANALOG, ALARM_SET_CONTROL, ALARM_SET
+from datatypes.alarm import ALARM_DIGITAL, ALARM_SET_CONTROL, ALARM_SET
 from datatypes.custom.numbers import DINT, REAL, INTIGER
 from datatypes.custom.bool import BOOL
 from datatypes.misc import TIMER

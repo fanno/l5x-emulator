@@ -1,13 +1,10 @@
-from asyncua.common import Node
-from asyncua import ua
-
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
 from instructions.helper import _AND, _OR, _XOR, _NOT
 
 from  instructions.helper import getPLCValue
-from datatypes.fdb import FBD_LOGICAL, FBD_CONVERT, FBD_BOOLEAN_AND, FBD_BOOLEAN_NOT, FBD_BOOLEAN_XOR, FBD_BOOLEAN_OR
+from datatypes.fdb import FBD_LOGICAL, FBD_BOOLEAN_AND, FBD_BOOLEAN_NOT, FBD_BOOLEAN_XOR, FBD_BOOLEAN_OR
 from typing import Any
 from engine.fbd.block import FBDBlock
 

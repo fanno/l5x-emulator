@@ -2,7 +2,7 @@ import logging
 import asyncio
 import threading
 from queue import Queue, Empty
-from typing import Dict, Union, Set, Any
+from typing import Dict, Union
 from asyncua.common.callback import CallbackType, ServerItemCallback, CallbackService
 from asyncua import Server
 from asyncua.ua import WriteParameters
@@ -445,8 +445,8 @@ class Emulator(threading.Thread):
         from core.memory.helper import setMemory, getMemory, OutputType
         self.ReadOPCUA()
 
-        self.processQueue()
         self.in_plc_scan = True
+        self.processQueue()
         for standart, safety in self.safetyMap.Pairs.items():
             setMemory(safety, getMemory(standart, OutputType.PLC))
 

@@ -6,7 +6,7 @@ from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
 from core.objectregistry import ObjectRegistry
 from core.memory.identity import Identity
-from datatypes.motion import MOVING_AVERAGE, MOVING_STD_DEV
+from datatypes.motion import MOVING_AVERAGE
 from datatypes.capture import MINIMUM_CAPTURE, MAXIMUM_CAPTURE
 from datatypes.custom.numbers import REAL
 from datatypes.custom.array import Array

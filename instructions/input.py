@@ -16,7 +16,7 @@ from datatypes.custom.string import STRING
 from datatypes.custom.bool import BOOL
 from datatypes.custom.time import TIME32, TIME
 
-from protocols.memory import SupportsGetPLCValue, SupportsSetValue
+from protocols.memory import SupportsGetPLCValue
 from utils.isplcinstance import isPLCInstance
 
 from instructions.helper import split_to_dint, splitArrayPath
@@ -59,7 +59,7 @@ class GSV(Instruction):
                     
                     v = getattr(aoi, attribute)
 
-                    if isinstance(v, SupportsGetPLCValue):
+                    if isPLCInstance(v, SupportsGetPLCValue):
                         dest.setValue(v.getPLCValue())
                         return
 

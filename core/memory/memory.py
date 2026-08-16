@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, Any, Type, TYPE_CHECKING
+from typing import Dict, Any, Type
 from dataclasses import dataclass, field
 
 from datatypes.custom.array import Array
@@ -11,8 +11,6 @@ from lxml.etree import _Element as Element
 
 from protocols.memory import SupportsGetPLCValue, SupportsSetValue
 from utils.isplcinstance import isPLCInstance
-
-from datatypes.custom.types import DataType as DT
 
 class OpcUaAccess(Enum):
     NONE = "None"

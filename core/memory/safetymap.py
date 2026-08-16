@@ -1,5 +1,3 @@
-
-
 from dataclasses import dataclass, field
 
 from lxml.etree import _Element as Element

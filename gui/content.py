@@ -7,7 +7,6 @@ from gui.fault.faults import FaultTabs
 
 from gui.status import StatusText
 from core.events import StatusEvent
-from gui.fault.log import Logger
 
 class ContentTabs(Notebook):
     tabs:dict[str, Grid]
