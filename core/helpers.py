@@ -43,20 +43,18 @@ async def createMemory(tag: Tag, opcua:OpcuaTag, memory:"Memory", mapping:Mappin
                                  mapping=mapping,
                                  parentPath=current_path,
                                  parent=node)
-
-        setattr(result, t.Name, att)
-
-    memory.set(current_path, result)
-
-    signal = Signal(PATH=current_path,
-                    NODE=node,
-                    MEMORY=result)
-    
-    mapping.add(signal)
+        if att is not None:
+            setattr(result, t.Name, att)
 
     if isPLCInstance(result, SupportsVariant):
+        memory.set(current_path, result)
+
+        signal = Signal(PATH=current_path,
+                        NODE=node,
+                        MEMORY=result)
+        
+        mapping.add(signal)
+
         await node.write_value(result.toVariant())
-    else:
-        await node.write_value(ua.Variant(result, variant_type))
 
     return result

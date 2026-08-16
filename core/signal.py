@@ -3,8 +3,6 @@ from typing import Type, TYPE_CHECKING
 
 from asyncua import Node, ua
 
-from datatypes.custom.helper import getVariantValue
-
 if TYPE_CHECKING:
     from core.memory.memory import Memory
 
@@ -28,16 +26,8 @@ class Signal:
 async def updateSignal(signal:Signal, memory:"Memory"):
     if memory.needMemoryUpdate(signal.PATH):
         value = memory.get(signal.PATH)
-        if value is not None:
-            if isPLCInstance(value, SupportsVariant):
-                await signal.NODE.write_value(value.toVariant())
-            else:
-                variant_type = await signal.NODE.read_data_type_as_variant_type()
-                match variant_type:
-                    case ua.VariantType.ExtensionObject:
-                        await signal.NODE.write_value(ua.Variant(Value=getVariantValue(value), VariantType=ua.VariantType.ExtensionObject))
-                    case _:
-                        await signal.NODE.write_value(createVariant(value, variant_type))
+        if isPLCInstance(value, SupportsVariant):
+            await signal.NODE.write_value(value.toVariant())
 
 def updateMemory(signal: Signal, memory:"Memory", forceOpcua:bool=False):
     if isinstance(signal.LAST_VALUE, ua.Variant):
@@ -48,6 +38,4 @@ def updateMemory(signal: Signal, memory:"Memory", forceOpcua:bool=False):
                 curentValue = memory.get(signal.PATH)
                 if isPLCInstance(curentValue, SupportsVariant):
                     curentValue.fromVariant(signal.LAST_VALUE)
-                else:
-                    memory.set(signal.PATH, signal.LAST_VALUE.Value)
-        signal.LAST_VALUE = None
+    signal.LAST_VALUE = None

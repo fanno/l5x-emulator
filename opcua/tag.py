@@ -3,7 +3,7 @@ import logging
 
 from typing import Dict, Any, Set
 
-from dataclasses import dataclass, field, is_dataclass, fields
+from dataclasses import dataclass, field, fields
 
 from lxml.etree import _Element as Element
 
@@ -17,10 +17,6 @@ from opcua.mapping import Mapping
 
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.array import Array
-from datatypes.custom.udt import UDT
-
-
-from datatypes.custom.helper import getVariantValue
 
 from core.signal import Signal
 from core.memory.memory import Memory, OpcUaAccess
@@ -98,6 +94,9 @@ class OpcuaTag:
                     await self.createNode(k, v)
 
     async def createNode(self, name:str, value: Any, path:list = [], parent:Node = None):
+        if parent is not None:
+            # TODO should we only have root node ?
+            return
         if parent is None:
             parent = self.getFolder()
         
@@ -132,37 +131,15 @@ class OpcuaTag:
         
     async def _createVariantNode(self, parent: Node, name: str, value: Any) -> Optional[Node]:
         if isPLCInstance(value, SupportsVariant):
-            if isinstance(value, Array):
-                if value._ua_variant == ua.VariantType.ExtensionObject:
-                    dt_name = value._py_variant.__name__
-                    if hasattr(ua, dt_name) or hasattr(ua, dt_name.upper()):
-                        dt = DataTypes.get(dt_name)
-                        return await parent.add_variable(self.getIDX(),
-                                                         name,
-                                                         ua.Variant(value.toVariant(),
-                                                                    value._ua_variant,
-                                                                    Dimensions=value.getDim(),
-                                                                    is_array=True),
-                                                         datatype=dt.snode.nodeid)
-                else:
-                    var = ua.Variant(value.toVariant(), value._ua_variant, Dimensions=value.getDim(), is_array=True)
-                    return await parent.add_variable(self.getIDX(), name, var)
-            else:
-                return await parent.add_variable(self.getIDX(), name, value.toVariant())
-        elif isinstance(value, UDT):
-            dt_name = value.__class__.__name__
-            if hasattr(ua, dt_name) or hasattr(ua, dt_name.upper()):
-                dt = DataTypes.get(dt_name)
-                return await parent.add_variable(self.getIDX(),
-                                                 name,
-                                                 ua.Variant(getVariantValue(value),
-                                                            ua.VariantType.ExtensionObject),
-                                                 datatype=dt.snode.nodeid)
+            dataNode = None
+            if value._ua_variant == ua.VariantType.ExtensionObject:
+                dt_name = value.__class__.__name__
+                if hasattr(ua, dt_name) or hasattr(ua, dt_name.upper()):
+                    dt = DataTypes.get(dt_name)
+                    dataNode = dt.snode.nodeid
+            return await parent.add_variable(self.getIDX(), name, value.toVariant(), datatype=dataNode)
 
-        raise RuntimeError(
-            f"Unsupported value type '{type(value).__name__}' for tag '{name}'. "
-            f"Expected DataVariant or dataclass with matching UA type."
-        )
+        raise RuntimeError(f"Unsupported value type '{type(value).__name__}' for tag '{name}' Expected SupportsVariant")
 
     async def createDataType(self, struct:Structure) -> None:
         await create_struct(struct, self.SERVER, self.getIDX())

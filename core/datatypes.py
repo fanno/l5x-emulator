@@ -114,13 +114,11 @@ class DataTypes:
     
     @staticmethod
     def get(name:str) -> Structure:
-        name = name.upper()
-        return DataTypes._dataTypes[name]
+        return DataTypes._dataTypes.get(name.upper())
 
     @staticmethod
     def has(name:str) -> bool:
-        name = name.upper()
-        return name in DataTypes._dataTypes
+        return name.upper() in DataTypes._dataTypes
 
     @staticmethod
     def clear() -> None:

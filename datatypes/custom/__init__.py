@@ -3,7 +3,6 @@ from . import bool
 from . import compare
 from . import datavariant
 from . import dt
-from . import helper
 from . import math
 from . import module
 from . import numbers

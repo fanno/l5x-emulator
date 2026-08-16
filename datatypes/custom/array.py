@@ -6,11 +6,9 @@ from asyncua import ua
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.udt import UDT
 
-from protocols.memory import SupportsSetValue, SupportsToL5X, SupportsToUi
+from protocols.memory import SupportsToL5X, SupportsToUi
 
 from utils.isplcinstance import isPLCInstance
-
-from datatypes.custom.helper import getVariantValue
 
 from core.memory.uimemory import UIMemoryObject, DT
 
@@ -38,10 +36,7 @@ class Array(Generic[T], DataVariant):
             self._extend(init)
 
         self._ua_variant = getattr(self._cls, "_ua_variant", ua.VariantType.ExtensionObject)
-        self._py_variant = getattr(self._cls, "_py_variant", self._cls)
-        if self._py_variant is None:
-            self._py_variant = self._cls
-           
+        self._py_variant = self._cls
 
     @staticmethod
     def create(dtype: Generic[T], count: int) -> 'Array[T]':
@@ -49,17 +44,14 @@ class Array(Generic[T], DataVariant):
         return Array(dtype, initial_data)
 
     def setValue(self, value:"Array"):
-        if not isinstance(value, Array):
+        if not isinstance(value, Array|list):
             raise TypeError(f"Expected Array, got {type(value).__name__}")
 
-        if self.getDim() != value.getDim():
-            raise ValueError(f"Array dimensions do not match: {self.getDim()} != {value.getDim()}")
+        if len(self) != len(value):
+            raise ValueError(f"Array dimensions do not match: {len(self)} != {len(value)}")
 
         for idx, item in enumerate(value):
-            if isPLCInstance(item, SupportsSetValue):
-                self[idx].setValue(item)
-            else:
-                raise TypeError(f"Expected UDT or DataVariant, got {type(item).__name__}")
+            self[idx].setValue(item)
 
     def setOnChange(self, on_change:Callable[[Any], None] | None):
         if self._on_change is None:
@@ -78,7 +70,7 @@ class Array(Generic[T], DataVariant):
     def getUAValue(self) -> ua.Variant:
         result = []
         for value in self._data:
-            result.append(getVariantValue(value))
+            result.append(value.getUAValue())
         return result
 
     def getDim(self) -> List[int]:
@@ -145,7 +137,8 @@ class Array(Generic[T], DataVariant):
     def toVariant(self) -> ua.Variant:
         return ua.Variant(Value=self.getUAValue(),
                           VariantType=self._ua_variant,
-                          Dimensions=self.getDim())
+                          Dimensions=self.getDim(),
+                          is_array=True)
     
     def fromVariant(self, variant:ua.Variant) -> None:
         if variant.VariantType == self._ua_variant:
@@ -238,4 +231,4 @@ def isarray(obj: Any, expected_elem_type: type, min_len=0) -> TypeGuard[Array]:
     #if not hasattr(obj, 'setValue'):
     #    return False
     
-    return True        
+    return True

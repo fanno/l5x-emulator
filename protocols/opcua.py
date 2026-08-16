@@ -5,7 +5,6 @@ if TYPE_CHECKING:
     from core.signal import Signal
     from core.memory.memory import Memory
 
-from protocols.memory import SupportsGetPLCValue
 from opcua.updater import OPCUAUpdater
 
 @runtime_checkable
@@ -17,7 +16,7 @@ class SupportsOPCUA(Protocol):
         ...
 
 @runtime_checkable
-class SupportsVariant(SupportsGetPLCValue, Protocol):
+class SupportsVariant(Protocol):
     def toVariant(self) -> ua.Variant:
         ...
 
