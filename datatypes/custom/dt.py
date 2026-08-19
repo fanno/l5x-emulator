@@ -1,15 +1,17 @@
 from datetime import datetime, timezone, timedelta
-from dataclasses import dataclass, field
-from typing import ClassVar
+from dataclasses import dataclass, field, InitVar
+from typing import ClassVar, Any
 
 from asyncua import ua
 import re
 
 from core.registry.datatyperegistry import DataTypeRegistry
+from core.l5k.l5kreader import L5KReader
+
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.compare import COMPARE
-
 from datatypes.custom.math import MATH
+
 
 _DT_PATTERN = re.compile(
     r"""
@@ -56,7 +58,8 @@ _DT_PATTERN = re.compile(
 
 @dataclass(repr=False, eq=False)
 class ABSOLUTETIVETIME(COMPARE, MATH, DataVariant):
-    _value:datetime = field(init=True, repr=False, default_factory=lambda: datetime.now(timezone.utc))
+    init: InitVar[datetime|int|str] = None
+    _value:datetime = field(init=False, repr=False, default_factory=lambda: datetime.now(timezone.utc))
 
     _py_variant: ClassVar[type] = int
     _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.DateTime
@@ -64,8 +67,8 @@ class ABSOLUTETIVETIME(COMPARE, MATH, DataVariant):
     _units_per_second: ClassVar[int] = 1000000
     _prefix: ClassVar[str] = ""
 
-    def __post_init__(self):
-        self.setValue(self._value)
+    def __post_init__(self, init:Any = None) -> None:
+        self.setValue(init)
 
     def getPLCValue(self) -> int:
         utc_dt = self._value.replace(tzinfo=timezone.utc)
@@ -170,7 +173,7 @@ class ABSOLUTETIVETIME(COMPARE, MATH, DataVariant):
             result = result.replace(microsecond=microsecond)
             return result
 
-        raise ValueError(f"value '{value}' is not a valid DateTime format")    
+        raise ValueError(f"value '{value}', type '{type(value)}' is not a valid DateTime format")    
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)

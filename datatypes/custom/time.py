@@ -32,7 +32,7 @@ class RELATIVETIME(DataVariant):
     _py_variant: ClassVar[type] = int
     _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.UInt64
 
-    _value:LINT = field(init=True, repr=False, default_factory=LINT)
+    _value:LINT = field(init=False, repr=False, default_factory=LINT)
     
     def toString(self):
         value = self._value.getPLCValue()
@@ -152,7 +152,7 @@ class TIME(RELATIVETIME):
 @DataTypeRegistry.register
 @dataclass
 class TIME32(RELATIVETIME):
-    _value:DINT = field(init=True, repr=False, default_factory=DINT)
+    _value:DINT = field(init=False, repr=False, default_factory=DINT)
     _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.UInt32
     _prefix: ClassVar[str] = "T32"
 

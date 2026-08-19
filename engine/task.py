@@ -1,10 +1,10 @@
-from typing import Dict
+from typing import Dict, Any
 
 from contextlib import asynccontextmanager
 
 from lxml.etree import _Element as Element
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 from engine.program import Program
 from engine.helper import CurrentTaskName
@@ -32,7 +32,8 @@ class EventInfo():
 
 @dataclass
 class Task():
-    _Element: Element = field(init=True)
+    element: InitVar[Element | None]
+
     Name:str = field(init=False, default="")
     Class:str = field(init=False, default="")
 
@@ -58,31 +59,32 @@ class Task():
     EventInfo:"EventInfo" = field(init=False, default_factory=DINT)
 
     RateDT:DT = None
-    def __post_init__(self):
-        self.Name = self._Element.get("Name", None)
-        self.Class = self._Element.get("Class", None)
-        self.Type = self._Element.get("Type", None)
+    def __post_init__(self, element: Element):
+        if isinstance(element, Element):
+            self.Name = element.get("Name", None)
+            self.Class = element.get("Class", None)
+            self.Type = element.get("Type", None)
 
-        self.Rate = DINT(self._Element.get("Rate", 0)) * 1000
-        self.RateDT = DT(self.Rate.getPLCValue())
+            self.Rate = DINT(element.get("Rate", 0)) * 1000
+            self.RateDT = DT(self.Rate.getPLCValue())
 
-        self.Priority = DINT(self._Element.get("Priority", 0))
-        self.Watchdog = DINT(self._Element.get("Watchdog", 0)) * 1000
+            self.Priority = DINT(element.get("Priority", 0))
+            self.Watchdog = DINT(element.get("Watchdog", 0)) * 1000
 
-        if BOOL(self._Element.get("DisableUpdateOutputs", False)):
-            self.DisableUpdateOutputs.setValue(1)
-        else:
-            self.DisableUpdateOutputs.setValue(0)
+            if BOOL(element.get("DisableUpdateOutputs", False)):
+                self.DisableUpdateOutputs.setValue(1)
+            else:
+                self.DisableUpdateOutputs.setValue(0)
 
-        if BOOL(self._Element.get("InhibitTask", False)):
-            self.InhibitTask.setValue(1)
-        else:
-            self.InhibitTask.setValue(0)
+            if BOOL(element.get("InhibitTask", False)):
+                self.InhibitTask.setValue(1)
+            else:
+                self.InhibitTask.setValue(0)
 
-        for program in self._Element.findall("./ScheduledPrograms//ScheduledProgram"):
-            self._programs.append(program.get("Name", None))
+            for program in element.findall("./ScheduledPrograms//ScheduledProgram"):
+                self._programs.append(program.get("Name", None))
 
-        self.EventInfo = EventInfo(self._Element.find("./EventInfo"))
+            self.EventInfo = EventInfo(element.find("./EventInfo"))
 
     @asynccontextmanager
     async def task_context(self):

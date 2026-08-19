@@ -9,6 +9,7 @@ from engine.st._if import IF
 from engine.st._for import FOR
 from engine.st._case import CASE
 from engine.st._call import CALL
+from engine.st._break import BREAK
 
 from engine.st.helper import hook_assignment, hook_expression
 
@@ -33,8 +34,12 @@ class ST:
     def getPython(self, isReturn:bool = False):
         try:
             from engine.st.hooks import make_async_st
-
             result = ST.normalizeST(self.lines)
+
+            if result.find("iSaveErrorcode") > -1:
+                print("-3-----------------------------------------------------------------------------------------------------------")
+                print(result)
+
             # for debugging
             #print("------------")
             #print("normalizeST:", result)
@@ -43,6 +48,11 @@ class ST:
             #print("------------")
             if isReturn:
                 result = "return " + result
+
+            if result.find("iSaveErrorcode") > -1:
+                print("-4-----------------------------------------------------------------------------------------------------------")
+                print(result)
+
             return make_async_st(result)
         except Exception as e:
             raise AssertionError(f"Parsing Error: {result}").with_traceback(e.__traceback__)
@@ -67,6 +77,9 @@ class ST:
                 continue
 
             lineNum += 1
+            if BREAK(line, self):
+                continue
+
             if CASE(line, self):
                 continue
 
@@ -93,12 +106,28 @@ class ST:
 
         return "\n".join(self.out)
 
+
+
+    @staticmethod
+    def normalize_radix(match: re.Match) -> str:
+        base = int(match.group(1))
+        value = match.group(2).replace("_", "")
+
+        if base == 2:
+            return f"0b{value}"
+        if base == 8:
+            return f"0o{value}"
+        if base == 16:
+            return f"0x{value}"
+
+        raise ValueError(f"Unsupported radix: {base}")
+
     @staticmethod
     def normalizeST(lines:list[str]):
         clean   = []
         for raw in lines:
-            raw = raw.lstrip()
-
+            raw = re.sub(r'[\r\n\t]', ' ', raw)
+            raw = raw.strip()
             clean.append(raw)
 
         full_text = "\n".join(clean)
@@ -107,6 +136,7 @@ class ST:
         in_string = False
         comment_type = None
 
+        #remove comments
         i = 0
         n = len(full_text)
         while i < n:
@@ -152,24 +182,55 @@ class ST:
                 i += 2
                 continue
 
+            output.append(ch)
+            i += 1
+
+        full_text = "".join(output)
+
+        RADIX_RE = re.compile(
+            r'\b(2|8|16)#([0-9A-Fa-f_]+)\b',
+            re.I
+        )
+
+        full_text = RADIX_RE.sub(ST.normalize_radix, full_text)
+        full_text = re.sub(r"\bXOR\b", "^", full_text, flags=re.I)
+
+        if full_text.find("iSaveErrorcode") > -1:
+            print("-1-----------------------------------------------------------------------------------------------------------")
+            print(full_text)
+
+        full_text = re.sub(r'[\r\n\t]', ' ', full_text)
+
+        if full_text.find("iSaveErrorcode") > -1:
+            print("-2-----------------------------------------------------------------------------------------------------------")
+            print(full_text)
+
+        output = []
+        i = 0
+        n = len(full_text)
+        while i < n:
+            ch = full_text[i]
+
             skip = False
             rest = full_text[i:]
 
             #r'(?<!\w)if(?!\w).*?(?<![\w0-9])then(?!\w)',
             #r'(?<!\w)case(?!\w).*?[\s)\]]+(?!\w)',
+            #r'^if(?!\w).*?[\s)\]0-9]+then\b',
             patterns = [
-                r'(?<!\w);(?!\w)',
-                r'(?<!\w):(?![:=\w])',
-                r'(?<!\w)end_while.*?[;](?!\w)',
-                r'(?<!\w)end_case.*?[;](?!\w)',
-                r'(?<!\w)end_for.*?[;](?!\w)',
-                r'(?<!\w)end_if.*?[;](?!\w)',
-                r'(?<!\w)if(?!\w).*?[\s)\]0-9]+then(?!\w)',
-                r'(?<!\w)elsif(?!\w).*?[\s)\]0-9]+then(?!\w)',
-                r'(?<!\w)else(?!\w)',
-                r'(?<!\w)case(?!\w).*?[\s)\]]+of(?!\w)',
-                r'(?<!\w)while(?!\w).*?[\s)\]0-9]+do(?!\w)',
-                r'(?<!\w)for(?!\w).*?[\s)\]0-9]+do(?!\w)'
+                r'^[\s]*?exit\s*[;](?!\w)',
+                r'^[\s]*?end_while\s*[;](?!\w)',
+                r'^[\s]*?end_case\s*[;](?!\w)',
+                r'^[\s]*?end_for\s*[;](?!\w)',
+                r'^[\s]*?end_if\s*[;](?!\w)',
+                r'^[\s]*?elsif(?!\w).*?[\s)\]0-9]+then\b',
+                r'^[\s]*?if[\s\(].*?[\s\)\]0-9]+then\b',
+                r'^[\s]*?else(?!\w)',
+                r'^[\s]*?case(?!\w).*?[\s)\]]+of\b',
+                r'^[\s]*?while(?!\w).*?[\s)\]0-9]+do\b',
+                r'^[\s]*?for(?!\w).*?[\s)\]0-9]+do\b',
+                r'^[0-9#abcdefxo\.\,\s]*?:(?![:=])',
+                r'^.*?;'
             ]
             
             for pattern in patterns:
@@ -177,8 +238,7 @@ class ST:
                 if match:
                     add = full_text[i:i + match.end()].strip()
                     add = add.replace(":=", " =")
-                    add = add.replace("\n", " ")
-                    #add = add.replace("\t", " ")
+                    add = re.sub(r'[\r\n\t]', ' ', add)
                     add = add.strip()
                     output.append(f"{add}\n")
                     i += match.end() + 1

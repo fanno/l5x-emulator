@@ -217,7 +217,6 @@ class AOI_CLASS(Instruction):
 
     def __init__(self, name:str, args:list[str]):
         super().__init__(name, args)
-
         self.aoiName = self.args[0]
         self.args = self.args[1:]
 
@@ -249,10 +248,8 @@ class AOI_CLASS(Instruction):
                     for p in self.aoiObject.Parameters:
                         if p.Required or p.Usage == 'InOut':
                             value = getMemory(self.args[i])
-                            
                             aoi.memory.set(p.Name, value)
                             i += 1
-
                     with AOIContextMemory.scope(aoi):
                         await self.aoiObject.execute(self.args, ctx)
                 except Exception as e:

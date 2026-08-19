@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from typing import ClassVar
+from dataclasses import dataclass, field, InitVar
+from typing import ClassVar, Any
 
 from lxml.etree import _Element as Element
 
@@ -11,19 +11,19 @@ from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.compare import COMPARE
 
 from core.memory.uimemory import DT
+from core.l5k.l5kreader import L5KReader
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class BOOL(COMPARE, DataVariant):
-    _value:bool = field(repr=False, default=False)
+    init: InitVar[Any] = None
+    _value:bool = field(init=False, repr=False, default=False)
     _type: ClassVar[DT] = DT.BOOL
-
     _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.Boolean
-
     _py_variant: ClassVar[type] = bool
 
-    def __post_init__(self):
-        self.setValue(self._value)
+    def __post_init__(self, init:Any=None) -> None:
+        self.setValue(init)
 
     def getPLCValue(self) -> bool:
         return self._value

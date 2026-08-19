@@ -9,6 +9,6 @@ from eventbus.eventbus import EventBus
 
 def loadTasks(controller:Element, tasks:Dict[str, Task]):
     for task in controller.findall("./Tasks//Task"):
-        p = Task(_Element=task)
+        p = Task(element=task)
         EventBus.get().dispatch(LoadingEvent(f"Task: {p.Name}"))
         tasks[p.Name] = p

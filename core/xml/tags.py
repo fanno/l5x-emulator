@@ -13,9 +13,11 @@ import core.memory.memory
 from core.helpers import createMemory
 from core.registry.datatyperegistry import DataTypeRegistry
 from core.errors import UnhandeledTag, ParseTagException
+from core.l5k.l5kreader import L5KReader
 
 from datatypes.custom.array import Array
 from datatypes.custom.string import STRING
+from datatypes.custom.bool import BOOL
 
 from protocols.memory import SupportsSetValue
 from utils.isplcinstance import isPLCInstance
@@ -27,14 +29,16 @@ def parseStructure(struct_elem: Element, dataType:str = None):
     if dataType is None:
         dataType = struct_elem.get('DataType')
 
-    var = DataTypeRegistry.get(dataType)()
-    if isinstance(var, STRING):
+    cls = DataTypeRegistry.get(dataType)
+    if issubclass(cls, STRING):
         data = struct_elem.find("./DataValueMember[@Name='DATA']")
         if data is None:
             data = struct_elem.find("./Structure/DataValueMember[@Name='DATA']")
-
-        var.setValue(data.text.strip())
+        data = data.text.strip()
+        var = cls(data)
+        return var
     else:
+        var = cls()
         for child in struct_elem:
             name = child.get('Name')
 
@@ -52,7 +56,11 @@ def parseStructure(struct_elem: Element, dataType:str = None):
                 setattr(var, name, parseArray(child))
             else:
                 raise ParseTagException(child.tag, child)
-    return var
+        val = struct_elem.get("Value", None)
+        if val is not None:
+            if isPLCInstance(var, SupportsSetValue):
+                var.setValue(val)
+        return var
 
 def parseValue(member_elem: Element):
     data_type = member_elem.get('DataType')
@@ -104,6 +112,32 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
     EventBus.get().dispatch(LoadingEvent(f"Tag: {name}"))
 
     from core.memory.memory import TagMetadata, OpcUaAccess
+
+    '''
+    l5k = tag.find("Data[@Format='L5K']")
+    if isinstance(l5k, Element):
+        dataType = tag.get('DataType')
+        dimensions = tag.get('Dimensions', None)
+        text = l5k.text.strip()
+        print(name, dataType, text)
+        if dataType:
+            cls = DataTypeRegistry.get(dataType)
+            if dimensions is None:
+                if issubclass(cls, BOOL):
+                    value = cls(text)
+                else:
+                    value = cls()
+                    print(name, dataType, value, text)
+                    value.fromL5K(text)
+            else:
+                dimensions = dimensions.split(" ")
+                dims = []
+                for dim in dimensions:
+                    dims.append(int(dim))
+                value = Array.create(cls, dims)
+                print(text)
+                value.fromL5K(text)
+    '''
 
     decorated = tag.find("Data[@Format='Decorated']")
     if isinstance(decorated, Element):

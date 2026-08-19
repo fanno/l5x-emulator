@@ -1,7 +1,7 @@
 from __future__ import annotations
 import re
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar, fields
 from typing import Optional, ClassVar
 from asyncua import ua
 from core.registry.datatyperegistry import DataTypeRegistry
@@ -9,8 +9,10 @@ from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.numbers import DINT, SINT
 from datatypes.custom.array import Array
 from datatypes.custom.compare import COMPARE
+from datatypes.custom.bool import BOOL
 
 from core.memory.uimemory import DT
+from core.l5k.l5kreader import L5KReader
 
 from protocols.memory import SupportsGetPLCValue
 from utils.isplcinstance import isPLCInstance
@@ -18,7 +20,8 @@ from utils.isplcinstance import isPLCInstance
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class STRING(COMPARE, DataVariant):
-    _init:Optional[str] = field(init=True, repr=False, default="")
+    init: InitVar[str] = ""
+
     _maxlength:Optional[int] = field(init=False, repr=False, default=82)
     _type:ClassVar[DT] = DT.STRING
 
@@ -28,9 +31,9 @@ class STRING(COMPARE, DataVariant):
     _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.String
     _py_variant: ClassVar[type] = str
 
-    def __post_init__(self):
+    def __post_init__(self, init:str):
         self._maxlength = len(self.DATA)
-        self.setValue(self._init)
+        self.setValue(init)
 
     def setValue(self, value:str):
         value = self.toValue(value)
@@ -39,19 +42,28 @@ class STRING(COMPARE, DataVariant):
 
         raw = bytearray(value, 'utf-8')
         length = len(value)
-
         if length < self._maxlength:
              raw.extend([0] * (self._maxlength - length))
 
-        data:list[int] = []
-        for char in raw:
-            data.append(char)
-
-        while len(data) < self._maxlength:
-            data.append(0)
+        for idx, char in enumerate(raw):
+            if self._maxlength > idx:
+                self.DATA[idx].setValue(char)
+            else:
+                break
         
-        self.DATA = Array[SINT](SINT, data)
         self.LEN.setValue(length)
+
+    def _l5k(self, reader:L5KReader):
+        for field in fields(self):
+            if not field.repr:
+                continue
+
+            value = getattr(self, field.name)
+            
+            if isinstance(value, BOOL):
+                value.setValue(reader.nextBool())
+            else:
+                value.setValue(reader.nextRaw())
 
     def getUAValue(self) -> str:
         len = self.LEN.getPLCValue()
@@ -69,6 +81,9 @@ class STRING(COMPARE, DataVariant):
         return self.getUAValue()
     
     def toString(self) -> str:
+        return self.getPLCValue()
+
+    def __repr__(self):
         return self.getPLCValue()
 
     '''
@@ -94,9 +109,7 @@ class STRING(COMPARE, DataVariant):
         if index >= self._maxlength or index < 0:
             raise IndexError(f"{index}, out of range")
         
-        if isinstance(value, SINT):
-            self.DATA[index] = value
-        elif isinstance(value, int):
+        if isinstance(value, (SINT|int)):
             self.DATA[index].setValue(value)
         else:
             raise TypeError(f"{value}, invalid type")

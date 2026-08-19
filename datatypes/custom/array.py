@@ -5,12 +5,14 @@ from asyncua import ua
 
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.udt import UDT
+from datatypes.custom.bool import BOOL
 
 from protocols.memory import SupportsToL5X, SupportsToUi
 
 from utils.isplcinstance import isPLCInstance
 
 from core.memory.uimemory import UIMemoryObject, DT
+from core.l5k.l5kreader import L5KReader
 
 class DataClassMarker(Protocol):
     __dataclass_fields__: dict
@@ -19,16 +21,18 @@ T = TypeVar('T', bound=Union[DataVariant, DataClassMarker])
 
 @dataclass(repr=False)
 class Array(Generic[T], DataVariant):
-    _cls: type[T] = field(repr=False)
     _type: ClassVar[DT] = DT.ARRAY
+    #_cls: type[T] = field(repr=False)
+    cls: InitVar[type[T]]
+    init: InitVar[Iterable[Any]]
 
     _ua_variant: ua.VariantType = field(init=False, repr=False)
     _py_variant: Any = field(init=False, repr=False)    
 
-    init: InitVar[Optional[Iterable[Any]]] = None
     _data: List[T] = field(init=False, default_factory=list)
 
-    def __post_init__(self, init: Optional[Iterable[Any]]) -> None:
+    def __post_init__(self, cls: type[T], init: Iterable[Any]) -> None:
+        self._cls = cls
         if not (issubclass(self._cls, DataVariant) or issubclass(self._cls, UDT)):
             raise TypeError(f"{self._cls!r} must be a DataVariant or UDT")
 
@@ -39,8 +43,20 @@ class Array(Generic[T], DataVariant):
         self._py_variant = self._cls
 
     @staticmethod
-    def create(dtype: Generic[T], count: int) -> 'Array[T]':
-        initial_data = [dtype() for _ in range(count)]
+    def create(dtype: Generic[T], count: int|list) -> 'Array[T]':
+        def create_dimension(dimensions: list[int]) -> list:
+            if len(dimensions) == 1:
+                return [dtype() for _ in range(dimensions[0])]
+
+            return [
+                create_dimension(dimensions[1:])
+                for _ in range(dimensions[0])
+            ]
+
+        if isinstance(count, int):
+            initial_data = [dtype() for _ in range(count)]
+        else:
+            initial_data = create_dimension(count)
         return Array(dtype, initial_data)
 
     def setValue(self, value:"Array"):
@@ -144,6 +160,19 @@ class Array(Generic[T], DataVariant):
         if variant.VariantType == self._ua_variant:
             self.setValue(variant.Value)
 
+    def fromL5K(self, data:L5KReader|str|list|None) -> Any:
+        reader = self.getReader(data)
+
+        for value in self._data:
+            if isinstance(value, BOOL):
+                value.setValue(reader.nextBool())
+            elif isinstance(value, Array):
+                value.fromL5K(reader)
+            elif isinstance(value, UDT):
+                value.fromL5K(reader.nextRaw())
+            else:
+                value.setValue(reader.nextRaw())
+
     def _coerce(self, value: Any) -> T:
         if isinstance(value, self._cls):
             return value
@@ -178,6 +207,7 @@ class Array(Generic[T], DataVariant):
         self._data[index].setValue(value)
 
     def __getitem__(self, i) -> T:
+
         return self._data[i]
 
     def __len__(self) -> int:

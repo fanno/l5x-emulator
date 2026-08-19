@@ -19,10 +19,11 @@ from eventbus.eventbus import EventBus
 async def loadModules(root:Element, opcua:OpcuaTag, modules:Dict[str, MODULE], memory:Memory, mapping:Mapping):
     for module in root.findall("./Modules//Module"):
         moduleName = module.get("Name")
+        SafetyEnabled = BOOL.toValue(module.get("SafetyEnabled"))
 
         EventBus.get().dispatch(LoadingEvent(f"Module: {moduleName}"))
 
-        mod = MODULE(module)
+        mod = MODULE(element=module)
         address:str = None
 
         for port in mod.Ports:
@@ -35,7 +36,6 @@ async def loadModules(root:Element, opcua:OpcuaTag, modules:Dict[str, MODULE], m
         modules[moduleName] = mod
 
         memory.set(moduleName, modules[moduleName])
-
         if moduleName:
             if parent != "Local":
                 moduleName = parent
@@ -58,17 +58,19 @@ async def loadModules(root:Element, opcua:OpcuaTag, modules:Dict[str, MODULE], m
                     if isinstance(rackConnection, Element):
                         inAliasTag = rackConnection.find("./InAliasTag")
                         if isinstance(inAliasTag, Element):
-                            path = modulePath(moduleName, address, "I")
-                            memPath = f'{modulePath(moduleName, None, "I")}.Data'
-                            data = memory.get(memPath)
-                            memory.set(path, data[int(address)])
+                            if address:
+                                path = modulePath(moduleName, address, "I")
+                                memPath = f'{modulePath(moduleName, None, "I")}.Data'
+                                data = memory.get(memPath)
+                                memory.set(path, data[int(address)])
 
                         outAliasTag = rackConnection.find("./OutAliasTag")
                         if isinstance(outAliasTag, Element):
-                            path = modulePath(moduleName, address, "O")
-                            memPath = f'{modulePath(moduleName, None, "O")}.Data'
-                            data = memory.get(memPath)
-                            memory.set(path, data[int(address)])
+                            if address:
+                                path = modulePath(moduleName, address, "O")
+                                memPath = f'{modulePath(moduleName, None, "O")}.Data'
+                                data = memory.get(memPath)
+                                memory.set(path, data[int(address)])
 
                     allConnection = connections.findall(".//Connection")
                     for connection in allConnection:
@@ -76,7 +78,9 @@ async def loadModules(root:Element, opcua:OpcuaTag, modules:Dict[str, MODULE], m
                             for child in ["InputTag", "OutputTag"]:
                                 suffix = connection.get(f"{child}Suffix", None)
                                 if suffix is None:
-                                    if child == "InputTag":
+                                    if SafetyEnabled:
+                                        suffix = "S"
+                                    elif child == "InputTag":
                                         suffix = "I"
                                     else:
                                         suffix = "O"

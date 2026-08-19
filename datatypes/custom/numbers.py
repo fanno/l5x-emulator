@@ -1,6 +1,6 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
-from typing import ClassVar
+from dataclasses import dataclass, field, InitVar
+from typing import ClassVar, Any
 from datetime import datetime, timezone
 
 from lxml.etree import _Element as Element
@@ -9,6 +9,7 @@ from asyncua import ua
 
 from core.registry.datatyperegistry import DataTypeRegistry
 from core.memory.uimemory import DT
+from core.l5k.l5kreader import L5KReader
 
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.math import MATH
@@ -39,11 +40,13 @@ PLC_TYPE_MAP = {
 
 @dataclass(repr=False, eq=False)
 class INTIGER(COMPARE, MATH, DataVariant):
-    _value:int = field(repr=False, default=0)
+    init: InitVar[Any] = None
+
+    _value:int = field(init=False, repr=False, default=0)
     _py_variant: ClassVar[type] = int
 
-    def __post_init__(self):
-        self.setValue(self._value)
+    def __post_init__(self, init:Any=None) -> None:
+        self.setValue(init)
 
     def setValue(self, value:str|int):
         old = self._value
@@ -149,12 +152,19 @@ class INTIGER(COMPARE, MATH, DataVariant):
         self.setValue(current)
 
 @dataclass(repr=False, eq=False)
-class INTIGER_BIT(BOOL):
-    _value:INTIGER = field(init=True, repr=False)
-    _bit: int = field(init=True, repr=False)
+class INTIGER_BIT:
+    parent:InitVar[INTIGER]
+    bit:InitVar[int]
+
+    _parent:INTIGER = field(init=False, repr=False, default=None)
+    _bit:int = field(init=False, repr=False, default=None)
+
+    def __post_init__(self, parent:INTIGER, bit:int) -> None:
+        self._parent = parent
+        self._bit = bit
 
     def getPLCValue(self) -> bool:
-        current = self._value.getPLCValue()
+        current = self._parent.getPLCValue()
         return bool(current & (1 << self._bit))
 
     def getUAValue(self) -> bool:
@@ -164,14 +174,14 @@ class INTIGER_BIT(BOOL):
         return self.getPLCValue()
 
     def setValue(self, value: str | int | bool):
-        current = self._value.getPLCValue()
+        current = self._parent.getPLCValue()
 
-        if self.toValue(value):
+        if BOOL.toValue(value):
             current |= 1 << self._bit
         else:
             current &= ~(1 << self._bit)
 
-        self._value.setValue(current)
+        self._parent.setValue(current)
 
     def __repr__(self):
         return repr(self.getPLCValue())
@@ -227,13 +237,15 @@ class SINT(INTIGER):
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class REAL(COMPARE, MATH, DataVariant):
-    _value:float = field(init=True, repr=False, default=0.0)
+    init: InitVar[Any] = None
+
+    _value:float = field(init=False, repr=False, default=0.0)
     _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.Float
     _py_variant: ClassVar[type] = float
     _type:ClassVar[DT] = DT.REAL
 
-    def __post_init__(self):
-        self.setValue(self._value)
+    def __post_init__(self, init:Any=None) -> None:
+        self.setValue(init)
 
     def getPLCValue(self) -> float:
         return self._value

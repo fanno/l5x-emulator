@@ -66,6 +66,14 @@ class StatusText(UpdatingScrolledText):
                 text += f"    {dummy:42} {status.Scan.Last:.4f} ({status.ScanDelayed:.4f}) / {status.Scan.Max:.4f}\n"
                 text += f"Memory current/max (MB): {current:.2f} / {self._peak:.2f}\n"
                 text += f"Count (number of plc scan): {status.Scan.Count}\n"
+                text += f"--------------------------------------------------------------"
+                opcua = "OPC UA"
+                read = "Read"
+                Write = "Write"
+                text += f"\n------- {opcua:^30} -------   last / max (S)\n"
+                text += f"    {read:42} {status.OpcUaRead.Last:.4f} / {status.OpcUaRead.Max:.4f}\n"
+                text += f"    {Write:42} {status.OpcUaWrite.Last:.4f} / {status.OpcUaWrite.Max:.4f}\n"
+                text += f"--------------------------------------------------------------"
 
                 for tname, task in status.Tasks.items():
                     text += f"\n------- {tname:^30} -------   last / max (S)\n"
@@ -74,13 +82,6 @@ class StatusText(UpdatingScrolledText):
 
                     for pname, program in status.Programs[tname].items():
                         text += f"    {pname:42} {program.Last:.4f} / {program.Max:.4f}\n"
-
-                opcua = "OPC UA"
-                read = "Read"
-                Write = "Write"
-                text += f"\n------- {opcua:^30} -------   last / max (S)\n"
-                text += f"    {read:42} {status.OpcUaRead.Last:.4f} / {status.OpcUaRead.Max:.4f}\n"
-                text += f"    {Write:42} {status.OpcUaWrite.Last:.4f} / {status.OpcUaWrite.Max:.4f}\n"
                 text += f"--------------------------------------------------------------"
             else:
                 text = f"Loading:\n"

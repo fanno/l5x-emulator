@@ -30,8 +30,5 @@ class MemoryException(CoreException):
         super().__init__(f"{text}: {self.path}, {self.value}")
 
 class TNDException(CoreException):
-    def __init__(self, text:str , path:str, value:Any=None):
-        self.path = path
-        self.value = value
-
-        super().__init__(f"{text}: {self.path}, {self.value}")
+    def __init__(self, text:str):
+        super().__init__(text)

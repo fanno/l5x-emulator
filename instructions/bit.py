@@ -11,6 +11,8 @@ from core.registry.instructionregistry import InstructionRegistry
 from core.memory.identity import Identity
 from typing import Any
 
+from engine.fbd.block import FBDBlock
+
 @dataclass
 class ONSMemory(Identity):
     ONS:BOOL = field(init=False, default_factory=BOOL)
@@ -38,6 +40,14 @@ class OSRI(Instruction):
             memory.ONS.setValue(ons.InputBit)
         
         ons.EnableOut.setValue(ons.EnableIn)
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        ons:FBD_ONESHOT = self.getMemory(self.args[0])
+        return await self.execute(ons, ctx)
+
+    async def st_preScan(self, ctx:"ExecutionContext") -> None:
+        ons:FBD_ONESHOT = self.getMemory(self.args[0])
+        return await self.preScan(ons, ctx)
     
 @InstructionRegistry.register
 class OSFI(Instruction):
@@ -64,6 +74,14 @@ class OSFI(Instruction):
             memory.ONS.setValue(ons.InputBit)
 
         ons.EnableOut.setValue(ons.EnableIn)
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        ons:FBD_ONESHOT = self.getMemory(self.args[0])
+        return await self.execute(ons, ctx)
+
+    async def st_preScan(self, ctx:"ExecutionContext") -> None:
+        ons:FBD_ONESHOT = self.getMemory(self.args[0])
+        return await self.preScan(ons, ctx)
 
 @InstructionRegistry.register
 class XIC(Instruction):

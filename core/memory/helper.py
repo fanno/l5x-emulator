@@ -125,59 +125,60 @@ def isBitSet(value: int, index: int) -> bool:
 def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
     result = None
     try:
-        if isinstance(pathRaw, int|float):
-            return pathRaw
-        
-        if isinstance(pathRaw, str):
-            if pathRaw.startswith("\'"):
-                return STRING(pathRaw[1:-1])
-            elif pathRaw[0].isdigit():
-                return strNumber(pathRaw)
-            elif any(c in pathRaw for c in ['+','-','/','*','%',]):
-                result = resolveMathExpr(pathRaw)
-
-        if result is None:
-            path:list[str] = resolvePath(pathRaw)
+        if pathRaw is not None:
+            if isinstance(pathRaw, int|float):
+                return pathRaw
             
-            from engine.aoi.memory import AOIMemory
-            from engine.aoi.aoi import AOIContextMemory
-            aoi = AOIContextMemory.get()
-            if isinstance(aoi, AOIMemory):
-                if aoi.memory.has(path):
-                    result = aoi.memory.get(path)
-                else:
-                    from core.memory.memory import PlcMemory
-                    memory = PlcMemory.getContainer(SYSTEMTAGS)
-                    if memory.has(path):
-                        result = memory.get(path)
-            else:
-                from core.memory.memory import PlcMemory
-                if path[0].startswith("\\"):
-                    program = path[0].lstrip("\\")
-                    path.pop(0)
-                    memory = PlcMemory.getContainer(program)
-                    result = memory.get(path)
-                else:
-                    name = CurrentProgramName.get()
-                    memory = PlcMemory.getContainer(name)
-                    if memory and memory.has(path):
-                        result = memory.get(path)
+            if isinstance(pathRaw, str):
+                if pathRaw.startswith("\'"):
+                    return STRING(pathRaw[1:-1])
+                elif pathRaw[0].isdigit():
+                    return strNumber(pathRaw)
+                elif any(c in pathRaw for c in ['+','-','/','*','%',]):
+                    result = resolveMathExpr(pathRaw)
+
+            if result is None:
+                path:list[str] = resolvePath(pathRaw)
+                
+                from engine.aoi.memory import AOIMemory
+                from engine.aoi.aoi import AOIContextMemory
+                aoi = AOIContextMemory.get()
+                if isinstance(aoi, AOIMemory):
+                    if aoi.memory.has(path):
+                        result = aoi.memory.get(path)
                     else:
-                        memory = PlcMemory.getContainer(CONTROLLERTAGS)
+                        from core.memory.memory import PlcMemory
+                        memory = PlcMemory.getContainer(SYSTEMTAGS)
                         if memory.has(path):
                             result = memory.get(path)
+                else:
+                    from core.memory.memory import PlcMemory
+                    if path[0].startswith("\\"):
+                        program = path[0].lstrip("\\")
+                        path.pop(0)
+                        memory = PlcMemory.getContainer(program)
+                        result = memory.get(path)
+                    else:
+                        name = CurrentProgramName.get()
+                        memory = PlcMemory.getContainer(name)
+                        if memory and memory.has(path):
+                            result = memory.get(path)
                         else:
-                            memory = PlcMemory.getContainer(SYSTEMTAGS)
+                            memory = PlcMemory.getContainer(CONTROLLERTAGS)
                             if memory.has(path):
                                 result = memory.get(path)
+                            else:
+                                memory = PlcMemory.getContainer(SYSTEMTAGS)
+                                if memory.has(path):
+                                    result = memory.get(path)
 
-        raw = result
-        if isPLCInstance(result, SupportsVariant):
-            match dataVariant:
-                case OutputType.PLC:
-                    result = result.getPLCValue()
-                case OutputType.UA:
-                    result = result.getUAValue()
+            raw = result
+            if isPLCInstance(result, SupportsVariant):
+                match dataVariant:
+                    case OutputType.PLC:
+                        result = result.getPLCValue()
+                    case OutputType.UA:
+                        result = result.getUAValue()
     except Exception as e:
         raise MemoryException("getMemory1", pathRaw).with_traceback(e.__traceback__)
     
@@ -188,44 +189,46 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
 def setMemory(path:list[str] | str, value):
     if PreScan.isActive() or PostScan.isActive():
         return
-
-    path = resolvePath(path)
-    if value is None:
-        raise MemoryException("setMemory", path)
-    try:
-        if isinstance(path, list):
-            from engine.aoi.memory import AOIMemory
-            from engine.aoi.aoi import AOIContextMemory
-            aoi = AOIContextMemory.get()
-            if isinstance(aoi, AOIMemory):
-                if aoi.memory.has(path):
-                    aoi.memory.set(path, value)
+    if path is not None:
+        path = resolvePath(path)
+        if value is None:
+            raise MemoryException("setMemory", path)
+        try:
+            if isinstance(path, list):
+                from engine.aoi.memory import AOIMemory
+                from engine.aoi.aoi import AOIContextMemory
+                aoi = AOIContextMemory.get()
+                if isinstance(aoi, AOIMemory):
+                    if aoi.memory.has(path):
+                        aoi.memory.set(path, value)
+                    else:
+                        from core.memory.memory import PlcMemory
+                        memory = PlcMemory.getContainer(SYSTEMTAGS)
+                        if memory.has(path):
+                            memory.set(path, value)
                 else:
                     from core.memory.memory import PlcMemory
-                    memory = PlcMemory.getContainer(SYSTEMTAGS)
-                    if memory.has(path):
-                        memory.set(path, value)
-            else:
-                from core.memory.memory import PlcMemory
-                memory = None
-                if path[0].startswith("\\"):
-                    program = path[0].lstrip("\\")
-                    path.pop(0)
-                    memory = PlcMemory.getContainer(program)
-                else:
-                    name = CurrentProgramName.get()
-                    memory = PlcMemory.getContainer(name) if name else None
-
-                    if memory is None or not memory.has(path):
-                        memory = PlcMemory.getContainer(CONTROLLERTAGS)
+                    memory = None
+                    if path[0].startswith("\\"):
+                        program = path[0].lstrip("\\")
+                        path.pop(0)
+                        memory = PlcMemory.getContainer(program)
+                    else:
+                        name = CurrentProgramName.get()
+                        memory = PlcMemory.getContainer(name) if name else None
 
                         if memory is None or not memory.has(path):
-                            memory = PlcMemory.getContainer(SYSTEMTAGS)
+                            memory = PlcMemory.getContainer(CONTROLLERTAGS)
 
-                if memory is not None:
-                    memory.set(path, value)
-    except Exception as e:
-        raise MemoryException("setMemory", path, value).with_traceback(e.__traceback__)
+                            if memory is None or not memory.has(path):
+                                memory = PlcMemory.getContainer(SYSTEMTAGS)
+
+                    if memory is not None:
+                        memory.set(path, value)
+        except Exception as e:
+            raise MemoryException("setMemory", path, value).with_traceback(e.__traceback__)
+    else:
+        raise MemoryException("setMemory", path, value)
 
 def resolveKey(container, key:str|int):
     if isinstance(key, int):

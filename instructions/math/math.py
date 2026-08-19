@@ -210,6 +210,10 @@ class SQR(Instruction):
             math.Dest.setValue(self.execute(math.Source))
         math.EnableOut.setValue(math.EnableIn)
 
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        Source = self.getMemory(self.args[0])
+        return self.execute(Source)
+
 @InstructionRegistry.register
 class SQR__F(SQR):
 
@@ -245,10 +249,13 @@ class ABS(Instruction):
 
     async def fbd_execute(self, ctx:"ExecutionContext", block:FBDBlock) -> None:
         math:FBD_MATH_ADVANCED = block.Value
-
         if math.EnableIn:
             math.Dest.setValue(self.execute(math.Source))
         math.EnableOut.setValue(math.EnableIn)
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        Source = self.getMemory(self.args[0])
+        return self.execute(Source)
 
 @InstructionRegistry.register
 class ABS__F(ABS):

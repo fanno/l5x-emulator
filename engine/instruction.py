@@ -113,7 +113,7 @@ class Instruction:
             with PostScan.scope(emulator):
                 await self.st_postScan(ctx)
         else:
-            await self.st_execute(ctx)
+            return await self.st_execute(ctx)
 
     async def st_execute(self, ctx:"engine.context.ExecutionContext") -> None:
         await self.ladder_execute(ctx)

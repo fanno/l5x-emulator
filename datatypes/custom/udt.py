@@ -11,8 +11,12 @@ from core.memory.uimemory import UIMemoryObject, DT
 
 from opcua.updater import OPCUAU
 
+from datatypes.custom.l5k import L5K
+from datatypes.custom.bool import BOOL
+
+
 @dataclass
-class UDT(OPCUAU):
+class UDT(OPCUAU, L5K):
     _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.ExtensionObject
     _type:ClassVar[DT] = DT.UDT
 
@@ -98,3 +102,28 @@ class UDT(OPCUAU):
                 current = getattr(self, f.name, None)
                 if isPLCInstance(current, SupportsOPCUA):
                     current.setOnChange(self._child_changed)
+
+    def fromL5K(self, data):
+        from datatypes.custom.array import Array
+        from datatypes.custom.string import STRING
+        reader = self.getReader(data)
+
+        for field in fields(self):
+            if not field.repr:
+                continue
+
+            value = getattr(self, field.name)
+
+            if isinstance(value, BOOL):
+                print("UDT:", field.name , value, reader)
+                print("UDT:reader", reader.index, reader.bit_index, reader.data)
+                value.setValue(reader.nextBool())
+            elif isinstance(value, Array):
+                value.fromL5K(reader.nextRaw())
+            elif isinstance(value, STRING):
+                len , string = reader.nextRaw()
+                value.setValue(string)
+            elif isinstance(value, UDT):
+                value.fromL5K(reader.nextRaw())
+            else:
+                value.setValue(reader.nextRaw())

@@ -33,6 +33,10 @@ class LN(Instruction):
             math.Dest.setValue(self.execute(math.Source))
         math.EnableOut.setValue(math.EnableIn)
 
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        Source = self.getMemory(self.args[0])
+        return self.execute(Source)        
+
 @InstructionRegistry.register
 class LN__F(LN):
 
@@ -64,6 +68,10 @@ class LOG(Instruction):
         if math.EnableIn:
             math.Dest.setValue(self.execute(math.Source))
         math.EnableOut.setValue(math.EnableIn)
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        Source = self.getMemory(self.args[0])
+        return self.execute(Source)
 
 @InstructionRegistry.register
 class LOG__F(LOG):

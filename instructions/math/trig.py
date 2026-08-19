@@ -32,8 +32,9 @@ class SIN(Instruction):
             math.Dest.setValue(self.execute(math.Source))
         math.EnableOut.setValue(math.EnableIn)
 
-
-
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        Source = self.getMemory(self.args[0])
+        return self.execute(Source)
 
 @InstructionRegistry.register
 class SIN__F(SIN):
@@ -65,6 +66,10 @@ class COS(Instruction):
             math.Dest.setValue(self.execute(math.Source))
         math.EnableOut.setValue(math.EnableIn)
 
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        Source = self.getMemory(self.args[0])
+        return self.execute(Source)
+
 @InstructionRegistry.register
 class COS__F(COS):
 
@@ -95,6 +100,10 @@ class TAN(Instruction):
             math.Dest.setValue(self.execute(math.Source))
         math.EnableOut.setValue(math.EnableIn)
 
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        Source = self.getMemory(self.args[0])
+        return self.execute(Source)
+
 @InstructionRegistry.register
 class TAN__F(TAN):
 
@@ -124,6 +133,10 @@ class ASN(Instruction):
         if math.EnableIn:
             math.Dest.setValue(self.execute(math.Source))
         math.EnableOut.setValue(math.EnableIn)
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        Source = self.getMemory(self.args[0])
+        return self.execute(Source)
 
 @InstructionRegistry.register
 class ASN__F(ASN):
@@ -168,6 +181,10 @@ class ACS(Instruction):
             math.Dest.setValue(self.execute(math.Source))
         math.EnableOut.setValue(math.EnableIn)
 
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        Source = self.getMemory(self.args[0])
+        return self.execute(Source)        
+
 @InstructionRegistry.register
 class ACS__F(ACS):
 
@@ -211,6 +228,10 @@ class ATN(Instruction):
             math.Dest.setValue(self.execute(math.Source))
         math.EnableOut.setValue(math.EnableIn)
 
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        Source = self.getMemory(self.args[0])
+        return self.execute(Source)
+
 @InstructionRegistry.register
 class ATN__F(ATN):
 
@@ -247,6 +268,11 @@ class ATAN2(Instruction):
 
             result = self.execute(SourceY, SourceX)
             Dest.setValue(result)
+
+    async def st_execute(self, ctx:"ExecutionContext") -> None:
+        SourceY = self.getMemory(self.args[0])
+        SourceX = self.getMemory(self.args[1])
+        return self.execute(SourceY, SourceX)
 
 @InstructionRegistry.register
 class ATAN2__F(ATAN2):

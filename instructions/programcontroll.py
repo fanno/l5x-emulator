@@ -25,7 +25,7 @@ class TND(Instruction):
         ctx.RLL.TND = ctx.RLL.RungStatus
 
     async def st_execute(self, ctx:"ExecutionContext") -> None:
-        raise TNDException()
+        raise TNDException("TND Instruction")
 
 @InstructionRegistry.register
 class MCR(Instruction):

@@ -1,17 +1,18 @@
 import copy
 
 from dataclasses import dataclass, field
-from typing import Any, Self, Any, ClassVar, TYPE_CHECKING
-from asyncua import ua
+from typing import Any, Self,  ClassVar
 
 from  utils.isplcinstance import isPLCInstance
 
 from core.memory.uimemory import UIMemoryPrimitive, DT
+from core.l5k.l5kreader import L5KReader
 
 from opcua.updater import OPCUAU
+from datatypes.custom.l5k import L5K
 
 @dataclass
-class DataVariant(OPCUAU):
+class DataVariant(OPCUAU, L5K):
     _value:Any = field(init=False, repr=False, default=None)
     _type: ClassVar[DT] = DT.UNKNOWN
 
@@ -43,6 +44,10 @@ class DataVariant(OPCUAU):
             if isPLCInstance(value, SupportsGetPLCValue):
                 value = value.getPLCValue()
             return value
+
+    def fromL5K(self, data:L5KReader|str|list|None) -> Any:
+        reader = self.getReader(data)
+        self.setValue(reader.nextRaw())
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.getPLCValue()})"
