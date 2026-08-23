@@ -108,12 +108,6 @@ class UDT(OPCUAU, L5K):
         from datatypes.custom.string import STRING
         
         reader = self.getReader(data)
-        #reader.debugging["test"] = self.__class__.__name__ in ("TGRAVITYBOTTOMCONVEYOR")
-        #reader.debugging["test"] = self.__class__.__name__ in ("TG040_G03_GRAVITYCONVEYOR")
-        #reader.debugging["test"] = self.__class__.__name__ in ("AOI_CYL2POS")
-
-        if reader.debugging.get("test"):
-            print("fromL5K:UDT:root", type(self))
 
         if isinstance(self, (ROCKWELL_UDT, AOI_UDT)):
             reader.setBitRules(self._l5k_bool_bit, self._l5k_bool_step, self._l5k_bool_end)
@@ -123,9 +117,6 @@ class UDT(OPCUAU, L5K):
                 continue
             
             value = getattr(self, field.name)
-            if reader.debugging.get("test"):
-                print("fromL5K:UDT:root", field.name, type(value), isinstance(value, STRING), isinstance(value, BOOL))
-                print("fromL5K:UDT:root", reader.data)
 
             if isinstance(value, BOOL):
                 value.setValue(reader.nextBool())
@@ -133,20 +124,11 @@ class UDT(OPCUAU, L5K):
                 value.fromL5K(reader.nextRaw())
             elif isinstance(value, STRING):
                 string = reader.nextRaw()
-                if field.name == "GROUP":
-                    if reader.debugging.get("test"):
-                        print("fromL5K:UDT:->>", field.name, string)
                 value.fromL5K(string)
-                if field.name == "GROUP":
-                    if reader.debugging.get("test"):
-                        print("fromL5K:UDT:->>DONE", field.name)
             elif isinstance(value, UDT):
                 value.fromL5K(reader.nextRaw())
             else:
-                if reader.debugging.get("test"):
-                    print("fromL5K:OTHER:->>", field.name)    
                 value.setValue(reader.nextRaw())
-        reader.debugging["test"] = False
 
 @dataclass
 class ROCKWELL_UDT(UDT):

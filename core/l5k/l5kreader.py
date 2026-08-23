@@ -39,18 +39,12 @@ class L5KReader:
 
     def _resetBit(self):
         self.bit_index = self.bit_start - self.bit_step
-        if self.debugging.get("test"):
-            print("_resetBit", self.bit_index)
         self.bool = False
 
     def _next(self):
         self.index += 1
         self._resetBit()
         next = self._current()
-        if self.debugging.get("test"):
-            print("index", self.index)
-            print("bit_index", self.bit_index)
-            print("self.next", next)
         return next
 
     def _current(self):
@@ -81,10 +75,5 @@ class L5KReader:
         self.bool = True
 
         curent = self._current()
-        
-        if self.debugging.get("test"):
-            print("nextBool:index", self.index)
-            print("nextBool:bit_index", self.bit_index)
-            print("nextBool", curent)
         
         return bool(curent & (1 << self.bit_index))

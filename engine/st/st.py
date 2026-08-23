@@ -49,7 +49,7 @@ class ST:
             if isReturn:
                 result = "return " + result
 
-            if result.find('D1Names') > -1:
+            if result.find('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx') > -1:
                 print("-4-----------------------------------------------------------------------------------------------------------")
                 print(result)
 
