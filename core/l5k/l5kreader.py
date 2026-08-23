@@ -2,6 +2,8 @@ import ast
 import re
 
 class L5KReader:
+    debugging = {}
+
     def __init__(self, data: str|list):
         if isinstance(data, str):
             self.data = self._parse(data)
@@ -11,9 +13,17 @@ class L5KReader:
             self.data = data
         else:
             raise TypeError(f"data must be str or list, not {type(data).__name__}")
-
+        
         self.index = -1
-        self.bit_index = 0
+        self.setBitRules(0, 1, 7)
+
+    def setBitRules(self, start:int, step:int, end:int):
+        if step == 0:
+            raise ValueError("Bit rule step cannot be 0")
+        self.bit_step = step
+        self.bit_start = start
+        self.bit_end = end
+        self._resetBit()
 
     @staticmethod
     def _parse(data: str) -> list:
@@ -27,10 +37,21 @@ class L5KReader:
         value = ast.literal_eval(data)
         return value
 
+    def _resetBit(self):
+        self.bit_index = self.bit_start - self.bit_step
+        if self.debugging.get("test"):
+            print("_resetBit", self.bit_index)
+        self.bool = False
+
     def _next(self):
         self.index += 1
-        self.bit_index = 0
-        return self._current()
+        self._resetBit()
+        next = self._current()
+        if self.debugging.get("test"):
+            print("index", self.index)
+            print("bit_index", self.bit_index)
+            print("self.next", next)
+        return next
 
     def _current(self):
         if isinstance(self.data , list):
@@ -42,14 +63,28 @@ class L5KReader:
         return self._next()
 
     def nextBool(self):
-        if self.index < 0:
+        if not self.bool:
             self.index += 1
-        if self.bit_index >= 32:
-            self.index += 1
-            self.bit_index = 0
-        print("nextBool", self._current())
-        value = bool(self._current() & (1 << self.bit_index))
-        self.bit_index += 1
+        
+        self.bit_index += self.bit_step
 
-        return value
+        if self.bit_step > 0:
+            if self.bit_index > self.bit_end:
+                if self.bool:
+                    self.index += 1
+                self.bit_index = self.bit_start
+        else:
+            if self.bit_index < self.bit_end:
+                if self.bool:
+                    self.index += 1
+                self.bit_index = self.bit_start
+        self.bool = True
 
+        curent = self._current()
+        
+        if self.debugging.get("test"):
+            print("nextBool:index", self.index)
+            print("nextBool:bit_index", self.bit_index)
+            print("nextBool", curent)
+        
+        return bool(curent & (1 << self.bit_index))

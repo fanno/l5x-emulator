@@ -14,6 +14,7 @@ def IF(line:str, st:"engine.st.st.ST") -> bool:
         st.block_stack.append("IF")
         st.out.append(st.getIndent() + f"if {hook_expression(m.group(1).strip())}:")
         st.addIndent()
+        st.out.append(st.getIndent() + f"pass")
         return True
 
     if line.lower().startswith("if "):
@@ -24,6 +25,7 @@ def IF(line:str, st:"engine.st.st.ST") -> bool:
         st.removeIndent()
         st.out.append(st.getIndent() + f"elif {hook_expression(m.group(1).strip())}:")
         st.addIndent()
+        st.out.append(st.getIndent() + f"pass")
         return True
 
     if line.lower().startswith("elsif "):
@@ -33,6 +35,7 @@ def IF(line:str, st:"engine.st.st.ST") -> bool:
         st.removeIndent()
         st.out.append(st.getIndent() + "else:")
         st.addIndent()
+        st.out.append(st.getIndent() + f"pass")
         return True
 
     if RE_END_IF.match(line):

@@ -24,6 +24,7 @@ class DataVariant(OPCUAU, L5K):
             self._notify_change()
 
     def getPLCValue(self) -> Any:
+        return self._value
         raise NotImplementedError(f"{__class__} getPLCValue not implemented yet")
 
     def getUAValue(self) -> Any:

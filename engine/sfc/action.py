@@ -1,6 +1,6 @@
 from lxml.etree import _Element as Element
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 from datatypes.sfc import SFC_ACTION
 from datatypes.custom.numbers import DINT
@@ -16,7 +16,7 @@ import engine.context
 
 @dataclass
 class Action:
-    _Element: Element = field(init=True, default=None)
+    element: InitVar[Element]
 
     ID: int = field(init=False, default=None)
     Operand: str = field(init=False, default=None)
@@ -36,19 +36,19 @@ class Action:
     lastState:int = field(init=False, default=0)
     StoredTimeDelayed:bool = field(init=False, default=False)
 
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
-            self.ID = int(self._Element.get('ID'))
-            self.Operand = self._Element.get('Operand')
-            self.Qualifier = self._Element.get('Qualifier')
-            self.PresetUsesExpr = bool(self._Element.get('PresetUsesExpr'))
-            self.IsBoolean = bool(self._Element.get('IsBoolean'))
+    def __post_init__(self, element:Element):
+        if isinstance(element, Element):
+            self.ID = int(element.get('ID'))
+            self.Operand = element.get('Operand')
+            self.Qualifier = element.get('Qualifier')
+            self.PresetUsesExpr = bool(element.get('PresetUsesExpr'))
+            self.IsBoolean = bool(element.get('IsBoolean'))
 
             if self.PresetUsesExpr:
-                st = ST(self._Element.find('./Preset/STContent'))
+                st = ST(element.find('./Preset/STContent'))
                 self.PresetExpr = st.getPython(True)
 
-            content = self._Element.find('./Body/STContent')
+            content = element.find('./Body/STContent')
             st = ST(content)
             self.ST = st.getPython(self.IsBoolean)
 
@@ -199,7 +199,7 @@ class Action:
 
     async def run(self, ctx:"engine.context.ExecutionContext") -> None:
         self.Value.A.setValue(True)
-        result = await run_exec_env(self.ST, ctx, f"Action->{self.Qualifier}: {self.ID}", False)
+        result = await run_exec_env(self.ST, ctx, f"Action->{self.Qualifier}: {self.ID}")
         if self.IsBoolean:
             self.Value.Q.setValue(result)
 
@@ -209,7 +209,7 @@ class Action:
 
     async def preset(self, ctx:"engine.context.ExecutionContext") -> None:
         if self.PresetUsesExpr:
-            value = await run_exec_env(self.PresetExpr, ctx, f"Action->preset->PresetExpr: {self.ID}", False)
+            value = await run_exec_env(self.PresetExpr, ctx, f"Action->preset->PresetExpr: {self.ID}")
             self.Value.PRE.setValue(value)
 
     async def reset(self, ctx:"engine.context.ExecutionContext") -> None:

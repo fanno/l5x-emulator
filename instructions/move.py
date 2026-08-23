@@ -17,7 +17,8 @@ class MOV(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RLL.RungStatus:
-            result = getPLCValue(self.getMemory(self.args[0]))
+            source = self.getMemory(self.args[0])
+            result = getPLCValue(source)
             dest = self.getMemory(self.args[1])
 
             dest.setValue(result)
@@ -25,7 +26,7 @@ class MOV(Instruction):
 @InstructionRegistry.register
 class MOVE(MOV):
     pass
-            
+
 @InstructionRegistry.register
 class MVM(Instruction):
 

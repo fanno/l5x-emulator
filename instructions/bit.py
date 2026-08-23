@@ -11,8 +11,6 @@ from core.registry.instructionregistry import InstructionRegistry
 from core.memory.identity import Identity
 from typing import Any
 
-from engine.fbd.block import FBDBlock
-
 @dataclass
 class ONSMemory(Identity):
     ONS:BOOL = field(init=False, default_factory=BOOL)
@@ -88,6 +86,8 @@ class XIC(Instruction):
 
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RLL.RungStatus:
+            result = self.getMemory(self.args[0])
+            
             ctx.RLL.RungStatus &= bool(self.getMemory(self.args[0]))
 
 @InstructionRegistry.register

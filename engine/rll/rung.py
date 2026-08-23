@@ -3,7 +3,7 @@ from typing import Optional
 from dataclasses import dataclass, field
 
 import engine.context
-from engine.node import parse, InstructionNode
+from engine.node import parse, Series
 from engine.hierarchy import Hierarchy
 from engine.errors import PLCFaultHandler
 
@@ -11,7 +11,7 @@ from engine.errors import PLCFaultHandler
 class Rung:
     Text:str = field(init=True)
     Line:int = field(init=True)
-    Tree:Optional[InstructionNode] = field(init=False, default=None)
+    Tree:Optional[Series] = field(init=False, default=None)
     Label: Optional[str] = field(init=False, default=None)
 
     def __post_init__(self):

@@ -1,3 +1,4 @@
+from dataclasses import fields
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
 from core.registry.instructionregistry import InstructionRegistry
@@ -6,6 +7,11 @@ from datatypes.misc import CONTROL
 from datatypes.custom.array import Array
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.string import STRING
+from datatypes.custom.numbers import INTIGER
+from datatypes.custom.bool import BOOL, MEMORY_BIT
+from datatypes.custom.udt import UDT
+
+from datatypes.custom.dt import ABSOLUTETIVETIME
 
 from  instructions.helper import getPLCValue, splitArrayPath
 
@@ -64,56 +70,87 @@ class COP(Instruction):
             length = getPLCValue(self.getMemory(self.args[2]))
 
             if length > 0:
-                src_path , src_dims = splitArrayPath(self.args[0])
-                dest_path , dest_dims = splitArrayPath(self.args[1])
-
-
-                dest = self.getMemory(dest_path)
-
-                if len(src_dims)  > 1 or len(dest_dims) > 1:
-                    raise NotImplementedError(f"{__class__} Multi-dimensional arrays not yet implemented")
-
                 if length == 1:
                     source = self.getMemory(self.args[0])
                     dest = self.getMemory(self.args[1])
-                    if type(source) == type(dest):
-                        dest.setValue(source)
-                        return
+                    self.copy(source, dest)
+
+                    return
                 else:
+                    src_path , src_dims = splitArrayPath(self.args[0])
                     source = self.getMemory(src_path)
                     for item in src_dims[:-1]:
                         source = source[item]
                     if not isinstance(source, Array):
                         return
-                
                     src_start = src_dims[-1]
-                    src_end = src_start + (length -1)
 
-                    if len(source) <= src_end:
-                        raise IndexError(f"{__class__} Source array overflow: {length} {src_start} -> {src_end}")
-
+                    dest_path , dest_dims = splitArrayPath(self.args[1])
                     dest = self.getMemory(dest_path)
                     for item in dest_dims[:-1]:
                         dest = dest[item]
-
                     if not isinstance(dest, Array):
                         return
-
                     dest_start = dest_dims[-1]
-                    dest_end = dest_start + (length -1)
-                    if len(dest) <= dest_end:
-                        raise IndexError(f"{__class__} Source array overflow: {length} {dest_start} -> {dest_end}")                    
 
                     for idx in range(length):
                         if isinstance(source, Array):
                             s = source[src_start+idx]
                             d = dest[dest_start+idx]
-                            if type(s) == type(d):
-                                if isPLCInstance(d, SupportsSetValue):
-                                    d.setValue(s)
+                            self.copy(s, d)
                     return
 
                 raise NotImplementedError(f"{__class__} Case not implemented {self.args}")
+
+    def extractBits(self, source:DataVariant|UDT , stopAt:int=None) -> list[BOOL|MEMORY_BIT]:
+        bits:list[BOOL|MEMORY_BIT] = []
+        if isinstance(source, (INTIGER, STRING, ABSOLUTETIVETIME)):
+            for bit in source:
+                bits.append(bit)
+                if stopAt is not None:
+                    if len(bits) >= stopAt:
+                        break
+        elif isinstance(source, Array):
+            for s in source:
+                stopNext = None
+                if stopAt is not None:
+                    stopNext = stopAt - len(bits)
+                result = self.extractBits(s, stopNext)
+                bits.extend(result)
+                if stopAt is not None:
+                    if len(bits) >= stopAt:
+                        break
+        elif isinstance(source, UDT):
+            for field in fields(source):
+                if not field.repr:
+                    continue
+                stopNext = None
+
+                value = getattr(source, field.name)
+                if isinstance(value, BOOL):
+                    bits.append(value)
+                elif isinstance(value, (INTIGER, UDT, STRING, ABSOLUTETIVETIME, Array)):
+                    if stopAt is not None:
+                        stopNext = stopAt - len(bits)
+                    result = self.extractBits(value, stopNext)
+                    bits.extend(result)
+                else:
+                    raise NotImplementedError(f"Field '{field.name}' is {type(value)}, expected BOOL or BIT")
+                if stopAt is not None:
+                    if len(bits) >= stopAt:
+                        break
+        return bits
+
+    def copy(self, source, dest):
+        if type(source) == type(dest):
+            dest.setValue(source)
+            return
+
+        source_bits = self.extractBits(source)
+        dest_bits = self.extractBits(dest, len(source_bits))
+
+        for source_bit, dest_bit in zip(source_bits, dest_bits):
+            dest_bit.setValue(source_bit)
 
 @InstructionRegistry.register
 class CPS(COP):

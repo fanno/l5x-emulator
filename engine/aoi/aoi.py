@@ -1,7 +1,7 @@
 from typing import TypeVar, Dict, ClassVar, Any, Optional, Dict, TYPE_CHECKING
 from contextlib import contextmanager
 from lxml.etree import _Element as Element
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 from core.objectregistry import ObjectRegistry
 from core.registry.datatyperegistry import DataTypeRegistry
@@ -41,17 +41,17 @@ class Parameter():
 
 @dataclass
 class Local():
-    _Element: Element = field(init=True)
+    element: InitVar[Element]
 
     Name:str = field(init=False)
     DataType:str = field(init=False)
     Dimensions:int = field(init=False)
 
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
-            self.Name = self._Element.get("Name")
-            self.DataType = self._Element.get("DataType")
-            self.Dimensions = int(self._Element.get("Dimensions", "0"))
+    def __post_init__(self, element:Element):
+        if isinstance(element, Element):
+            self.Name = element.get("Name")
+            self.DataType = element.get("DataType")
+            self.Dimensions = int(element.get("Dimensions", "0"))
 
     def getVariable(self) -> Any:
         cls = DataTypeRegistry.get(self.DataType)
@@ -62,7 +62,7 @@ class Local():
 
 @dataclass
 class AOI():
-    _Element: Element = field(init=True)
+    element: InitVar[Element]
 
     Routines: Dict[str, "Routine"] = field(init=False, default_factory=lambda: {})
     Name:str = field(init=False)
@@ -79,34 +79,34 @@ class AOI():
     ExecutePostscan:BOOL = field(init=False, default_factory=BOOL)
     ExecuteEnableInFalse:BOOL = field(init=False, default_factory=BOOL)
 
-    def __post_init__(self):
+    def __post_init__(self, element:Element):
         from engine.routine import Routine
         
-        self.Name = self._Element.get("Name")
+        self.Name = element.get("Name")
 
-        dt = DT(self._Element.get("EditedDate"))
+        dt = DT(element.get("EditedDate"))
         self.LastEditDate:LINT = LINT(dt.getPLCValue())
 
-        Revision = self._Element.get("Revision").split('.')
+        Revision = element.get("Revision").split('.')
         self.MajorRevision.setValue(Revision[0])
         self.MinorRevision.setValue(Revision[1])
 
-        self.ExecutePrescan = BOOL(self._Element.get("ExecutePrescan", False))
-        self.ExecutePostscan = BOOL(self._Element.get("ExecutePostscan", False))
-        self.ExecuteEnableInFalse = BOOL(self._Element.get("ExecuteEnableInFalse", False))
+        self.ExecutePrescan = BOOL(element.get("ExecutePrescan", False))
+        self.ExecutePostscan = BOOL(element.get("ExecutePostscan", False))
+        self.ExecuteEnableInFalse = BOOL(element.get("ExecuteEnableInFalse", False))
 
-        for element in self._Element.findall("./LocalTags//LocalTag"):
-            p = Local(_Element=element)
+        for element in element.findall("./LocalTags//LocalTag"):
+            p = Local(element=element)
             self.Locals.append(p)
 
-        for parameter in self._Element.findall("./Parameters//Parameter"):
+        for parameter in element.findall("./Parameters//Parameter"):
             p = Parameter(Usage=parameter.get('Usage'),
                           DataType=parameter.get('DataType'),
                           Name=parameter.get('Name'),
                           Required=parameter.get('Required'),)
             self.Parameters.append(p)
 
-        for routine in self._Element.findall("./Routines//Routine"):
+        for routine in element.findall("./Routines//Routine"):
             r = Routine(routine)
             self.Routines[r.Name] = r
 

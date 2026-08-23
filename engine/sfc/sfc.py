@@ -1,6 +1,6 @@
 from lxml.etree import _Element as Element
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 from engine.sfc.step import Step
 from engine.sfc.stop import Stop
@@ -11,7 +11,7 @@ import engine.context
 
 @dataclass
 class SFC:
-    _Element: Element = field(init=True, default=None)
+    element: InitVar[Element]
 
     steps:dict[int, Step] = field(init=False, default_factory=dict)
     stops:dict[int, Stop] = field(init=False, default_factory=dict)
@@ -26,30 +26,30 @@ class SFC:
 
     active_steps:set[int] = field(init=False, default_factory=set)
 
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
-            self.StepName = self._Element.get('StepName')
-            self.TransitionName = self._Element.get('TransitionName')
-            self.ActionName = self._Element.get('ActionName')
-            self.StopName = self._Element.get('StopName')
+    def __post_init__(self, element:Element):
+        if isinstance(element, Element):
+            self.StepName = element.get('StepName')
+            self.TransitionName = element.get('TransitionName')
+            self.ActionName = element.get('ActionName')
+            self.StopName = element.get('StopName')
 
             # Steps
-            for step in self._Element.findall('./Step'):
+            for step in element.findall('./Step'):
                 s = Step(step)
                 self.steps[s.ID] = s
 
-            for stop in self._Element.findall('./Stop'):
+            for stop in element.findall('./Stop'):
                 st = Stop(stop)
                 self.stops[st.ID] = st
 
-            for transition in self._Element.findall('./Transition'):
+            for transition in element.findall('./Transition'):
                 t = Transition(transition)
                 self.transitions[t.ID] = t
 
-            for link in self._Element.findall('./DirectedLink'):
+            for link in element.findall('./DirectedLink'):
                 l = DirectedLink(link)
                 self.links[l.FromID] = l
-            for branch in self._Element.findall('./Branch'):
+            for branch in element.findall('./Branch'):
                 b = Branch(branch)
                 self.branches[b.ID] = b
 

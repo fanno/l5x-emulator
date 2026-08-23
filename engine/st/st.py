@@ -2,7 +2,7 @@ import re
 
 from lxml.etree import _Element as Element
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 from engine.st._while import WHILE
 from engine.st._if import IF
@@ -15,7 +15,7 @@ from engine.st.helper import hook_assignment, hook_expression
 
 @dataclass
 class ST:
-    _Element:Element = field(init=True)
+    element: InitVar[Element]
 
     _indent:int = field(init=False, default=0)
     out:list[str] = field(init=False, default_factory=list)
@@ -24,19 +24,19 @@ class ST:
 
     INDENT_SIZE:int = 4
 
-    def __post_init__(self):
+    def __post_init__(self, element:Element):
         self.block_stack = []
         self.lines = []
-        if isinstance(self._Element, Element):
-            for line in self._Element.findall("./Line"):
+        if isinstance(element, Element):
+            for line in element.findall("./Line"):
                 self.lines.append(line.text.strip())
 
-    def getPython(self, isReturn:bool = False):
+    def getPython(self, isReturn:bool = False, doPrint=False):
         try:
             from engine.st.hooks import make_async_st
             result = ST.normalizeST(self.lines)
 
-            if result.find("iSaveErrorcode") > -1:
+            if result.find('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx') > -1:
                 print("-3-----------------------------------------------------------------------------------------------------------")
                 print(result)
 
@@ -49,11 +49,27 @@ class ST:
             if isReturn:
                 result = "return " + result
 
-            if result.find("iSaveErrorcode") > -1:
+            if result.find('D1Names') > -1:
                 print("-4-----------------------------------------------------------------------------------------------------------")
                 print(result)
 
-            return make_async_st(result)
+            #return make_async_st(result)
+
+
+
+            expression = make_async_st(result)
+
+            if doPrint:
+                print(expression)
+
+            # Compile to bytecode object (not just string)
+            compiled = compile(
+                expression,
+                filename=f"<ST>", 
+                mode='exec'
+            )
+            return compiled
+        
         except Exception as e:
             raise AssertionError(f"Parsing Error: {result}").with_traceback(e.__traceback__)
 
@@ -195,13 +211,13 @@ class ST:
         full_text = RADIX_RE.sub(ST.normalize_radix, full_text)
         full_text = re.sub(r"\bXOR\b", "^", full_text, flags=re.I)
 
-        if full_text.find("iSaveErrorcode") > -1:
+        if full_text.find('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx') > -1:
             print("-1-----------------------------------------------------------------------------------------------------------")
             print(full_text)
 
         full_text = re.sub(r'[\r\n\t]', ' ', full_text)
 
-        if full_text.find("iSaveErrorcode") > -1:
+        if full_text.find('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx') > -1:
             print("-2-----------------------------------------------------------------------------------------------------------")
             print(full_text)
 

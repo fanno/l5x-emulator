@@ -1,8 +1,10 @@
+import types
+import asyncio
+from typing import Any, Optional
+
 import engine.context
 from engine.hierarchy import Hierarchy
 from engine.errors import PLCFaultHandler
-
-from typing import Any
 
 from protocols.memory import SupportsGetPLCValue
 from utils.isplcinstance import isPLCInstance
@@ -46,27 +48,10 @@ def build_exec_env(ctx: "engine.context.ExecutionContext") -> dict:
         "call": callHook,
     }
 
-'''
-async def run_exec_env(expression:str, ctx: "engine.context.ExecutionContext", error_tag:str, make_st:bool=True) -> Any:
-    original = expression
-    exec_env = build_exec_env(ctx)   
-    if make_st:           
-        expression = make_async_st(expression)
-
-    with PLCFaultHandler.st(error_tag, expression):
-        with PLCFaultHandler.minor():
-            exec(expression, exec_env)
-            return await exec_env["__st_main__"]()
-'''
-
-import asyncio
-from typing import Optional
-
-async def run_exec_env(expression: str, ctx: "engine.context.ExecutionContext",  error_tag: str, make_st: bool = True, timeout: Optional[float] = 5.0) -> Any:
-    original = expression
-    exec_env = build_exec_env(ctx)   
+async def run_exec_env(expression: str, ctx: "engine.context.ExecutionContext",  error_tag: str, timeout: Optional[float] = 5.0) -> Any:
+    exec_env = build_exec_env(ctx)
     
-    if make_st:           
+    if not isinstance(expression, types.CodeType):
         expression = make_async_st(expression)
 
     with PLCFaultHandler.st(error_tag, expression):

@@ -4,15 +4,17 @@ from datatypes.custom.numbers import DINT, LINT
 
 class ExecutionTimer:
     start:float = 0
+    end:float = 0
     elapsed:float = 0
     ms:int = 0
     μs:int = 0
 
     def __init__(self):
         self.start = 0
+        self.end = 0
         self.elapsed = 0
         self.ms = 0
-        self.μs = 0        
+        self.μs = 0
 
     def __enter__(self):
         self._enter()
@@ -34,7 +36,8 @@ class ExecutionTimer:
         self.start = time.monotonic()
 
     def _exit(self):
-        self.elapsed = time.monotonic() - self.start
+        self.end = time.monotonic()
+        self.elapsed = self.end - self.start
         self.ms = int(self.elapsed * 1000)
         self.μs = int(self.elapsed * 1000000)
 

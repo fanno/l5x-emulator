@@ -6,11 +6,16 @@ KEYWORDS = {
     "if", "elif", "else", "and", "or", "not",
     "True", "False", "None", "check", "get", "set_"
 }
-
+'''
 VAR_PATTERN = re.compile(
     r"\b([a-zA-Z_][a-zA-Z0-9_:\.]*)"
     r"((?:\.[a-zA-Z_][a-zA-Z0-9_]*)|(?:\[[^\]]+\]))*"
 )
+'''
+
+#VAR_PATTERN = re.compile(r"\b([a-zA-Z_][a-zA-Z0-9_:\.]+)((?:\.[a-zA-Z_][a-zA-Z0-9_.]*|\[[^\]]+\])*)")
+
+VAR_PATTERN = re.compile(r"\b([a-zA-Z_][a-zA-Z0-9_:\.]*)((?:\.[a-zA-Z_\d][a-zA-Z0-9_\.]*|\[[^\]]+\])*)")
 
 def extract_strings(text: str):
     strings = []
@@ -42,14 +47,28 @@ def hook_expression(expr: str) -> str:
     expr = normalize_expr(expr)
 
     def repl(m:re.Match):
+        root = m.group(1)
+        accessors = m.group(2) or ""
+        if root in KEYWORDS:
+            return m.group(0)
+        
+        replaced = f'get("{root}{accessors}")'
+
+        '''
+        replaced = re.sub(
+            r"\[([^\]]+)\]",
+            lambda x: f"[{hook_expression(x.group(1))}]",
+            replaced
+        )
+        '''
+
+        return replaced
+    
+
         full:str = m.group(0)
         root:str = m.group(1)
 
-        if (
-            root in KEYWORDS
-            or root.isdigit()
-            or is_string_placeholder(root)
-        ):
+        if (root in KEYWORDS or root.isdigit() or is_string_placeholder(root)):
             return full
 
         replaced = full.replace(root, f'get("{root}")', 1)

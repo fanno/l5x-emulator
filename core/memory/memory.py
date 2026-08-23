@@ -9,7 +9,7 @@ from datatypes.custom.udt import UDT
 
 from lxml.etree import _Element as Element
 
-from protocols.memory import SupportsGetPLCValue, SupportsSetValue
+from protocols.memory import SupportsSetValue
 from utils.isplcinstance import isPLCInstance
 
 class OpcUaAccess(Enum):
@@ -44,6 +44,15 @@ class Memory:
     _changed: Dict[str, bool] = field(init=False, default_factory=dict)
     _metadata: Dict[str, TagMetadata] = field(init=False, default_factory=dict)
 
+    _has_cache:dict[tuple[str|int], bool] = None
+    _get_cache:dict[tuple[str|int], Any] = None
+    _set_cache:dict[tuple[str|int], SupportsSetValue] = None
+
+    def __post_init__(self):
+        self._has_cache = {}
+        self._get_cache = {}
+        self._set_cache = {}
+
     def __getContainer(self, keys):
         from core.memory.helper import resolveKey
 
@@ -68,7 +77,11 @@ class Memory:
 
     def set(self, keys:str|list|tuple, v:Type, rawValue:bool=False) -> None:
         from core.memory.helper import resolvePath, resolveKey
-        keys:list[str|int] = resolvePath(keys)
+        keys = resolvePath(keys)
+
+        if keys in self._set_cache:
+            self._set_cache[keys].setValue(v)
+            return
 
         lastKey = keys[-1]
         if isinstance(lastKey, int):
@@ -76,54 +89,49 @@ class Memory:
             if isinstance(container, INTIGER):
                 bit = container[lastKey]
                 bit.setValue(v)
+                self._get_cache[keys] = bit
                 return
             
         container = self.__getContainer(keys[:-1])
         key = resolveKey(container, lastKey)
-        self.__set(container, key, v, rawValue)
-        return
+        if not rawValue:
+            current = None
+            if isinstance(container, (dict, list, Array)):
+                if key in container:
+                    current = container[key]
+            elif hasattr(container, key):
+                current = getattr(container, key)
 
-    def __set(self, container, key, newValue, rawValue:bool=False):
-        if rawValue:
-            self.__assign(container, key, newValue)
-            return
+            if isPLCInstance(current, SupportsSetValue):
+                current.setValue(v)
+                self._get_cache[keys] = current
+                return
         
-        current = None
         if isinstance(container, (dict, list, Array)):
-            if key in container:
-                current = container[key]
-        elif hasattr(container, key):
-            current = getattr(container, key)
-
-        if isPLCInstance(current, SupportsSetValue):
-            if isPLCInstance(newValue, SupportsGetPLCValue):
-                current.setValue(newValue.getPLCValue())
-            else:
-                current.setValue(newValue)
-            return
-        
-        self.__assign(container, key, newValue)
-        
-    @staticmethod
-    def __assign(container, key, value):
-        if isinstance(container, (dict, list, Array)):
-            container[key] = value
+            container[key] = v
         else:
-            setattr(container, key, value)
+            setattr(container, key, v)
+        return
 
     def get(self, keys:str|list|tuple) -> Any:
         from core.memory.helper import resolvePath, resolveKey
-        keys:list[str|int] = resolvePath(keys)
+        keys:tuple[str|int] = resolvePath(keys)
 
+        if keys in self._get_cache:
+            return self._get_cache[keys]
+
+        result = None
         lastKey = keys[-1]
-        if isinstance(lastKey, int):
-            container = self.__getContainer(keys[:-1])
-            if isinstance(container, INTIGER):
-                return container[lastKey]
-
         container = self.__getContainer(keys[:-1])
-        key = resolveKey(container, lastKey)
-        return self._get(container, key)
+        if isinstance(lastKey, int):
+            if isinstance(container, INTIGER):
+                result = container[lastKey]
+        if result is None:
+            key = resolveKey(container, lastKey)
+            result = self._get(container, key)
+
+        self._get_cache[keys] = result
+        return result
 
     def _get(self, container:dict|list|int, key:str|int) -> Any:
         from core.memory.helper import resolveKey
@@ -149,22 +157,30 @@ class Memory:
         from core.memory.helper import resolvePath, resolveKey
         keys:list[str|int] = resolvePath(keys)
 
+        if keys in self._has_cache:
+            return self._has_cache[keys]
+
+        result = False
         try:
             lastKey = keys[-1]
             container = self.__getContainer(keys[:-1])
             if isinstance(lastKey, int):
                 if isinstance(container, INTIGER):
-                    return True
-
-            key = resolveKey(container, lastKey)
-            if isinstance(container, dict):
-                return key in container
-            if isinstance(container, (list, Array)):
-                return (0 <= key and key < len(container))
-            else:
-                return hasattr(container, key)
+                    result = True
+            if not result:
+                key = resolveKey(container, lastKey)
+                if isinstance(container, dict):
+                    result = key in container
+                elif isinstance(container, (list, Array)):
+                    result = (0 <= key and key < len(container))
+                else:
+                    result = hasattr(container, key)
         except Exception:
-            return False
+            result = False
+        finally:
+            if result:
+                self._has_cache[keys] = result
+            return result
     
     def needMemoryUpdate(self, keys:str|list|tuple) -> bool:
         from core.memory.helper import resolvePath, getHash

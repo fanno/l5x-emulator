@@ -2,7 +2,7 @@ from lxml.etree import _Element as Element
 
 from typing import Any, Dict, List, Set
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 import engine.context
 from engine.hierarchy import Hierarchy
@@ -14,7 +14,7 @@ from core.memory.helper import getMemory
 
 @dataclass
 class Sheet:
-    _Element: Element = field(init=True, default=None)
+    element: InitVar[Element] = None
 
     Number:int = field(init=False, default=0)
 
@@ -22,45 +22,45 @@ class Sheet:
     wires:list[Wire] = field(init=False, default_factory=list)
     execution_order:list[int] = field(init=False, default_factory=list)
 
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
-            self.Number = int(self._Element.get('Number', '0'))
+    def __post_init__(self, element:Element= None):
+        if isinstance(element, Element):
+            self.Number = int(element.get('Number', '0'))
 
             # Blocks
-            for elem in self._Element.findall('.//IRef'):
+            for elem in element.findall('.//IRef'):
                 block = FBDBlock('IRef', elem)
                 self.blocks[block.ID] = block
             
-            for elem in self._Element.findall('.//ORef'):
+            for elem in element.findall('.//ORef'):
                 block = FBDBlock('ORef', elem)
                 self.blocks[block.ID] = block
 
-            for elem in self._Element.findall('.//ICon'):
+            for elem in element.findall('.//ICon'):
                 block = FBDBlock('ICon', elem)
                 self.blocks[block.ID] = block
-            for elem in self._Element.findall('.//OCon'):
+            for elem in element.findall('.//OCon'):
                 block = FBDBlock('OCon', elem)
                 self.blocks[block.ID] = block
                 
-            for elem in self._Element.findall('.//Function'):
+            for elem in element.findall('.//Function'):
                 block = FBDBlock('Function', elem)
                 self.blocks[block.ID] = block
 
-            for elem in self._Element.findall('.//Block'):
+            for elem in element.findall('.//Block'):
                 block = FBDBlock('Block', elem)
                 self.blocks[block.ID] = block
 
             # Connections
-            for elem in self._Element.findall('.//Wire'):
+            for elem in element.findall('.//Wire'):
                 self.wires.append(Wire(elem))
 
-            for elem in self._Element.findall('.//FeedbackWire'):
+            for elem in element.findall('.//FeedbackWire'):
                 self.wires.append(Wire(elem))
 
-        for block in self.blocks.values():
-            block.bindWire(self.wires)
+            for block in self.blocks.values():
+                block.bindWire(self.wires)
 
-        self.topological_sort()
+            self.topological_sort()
 
     async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
         with Hierarchy.scope(f"Sheet[{str(self.Number)}]"):

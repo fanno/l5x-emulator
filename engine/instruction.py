@@ -16,6 +16,7 @@ class Instruction:
     args:list[str]
     name:str
     memory:Memory
+    cache:dict
 
     block:FBDBlock
 
@@ -28,22 +29,45 @@ class Instruction:
             self.args = []
         else:
             self.args = args
+
+        self.cache = {}
+
+        from core.memory.helper import resolvePath, getMemory
+        
+        for arg in self.args:
+            if isinstance(arg, str):
+                if not any(c in arg for c in ['[','+','-','/','*','%']):
+                    key = ".".join(map(str, resolvePath(arg)))
+                    if arg == key:
+                        self.cache[key] = None
+
         self._memory = memory
         self.wires = []
 
     def getMemory(self, path:list[str] | str) -> DataVariant|Array|UDT:
-        if self._memory is None:
-            from core.memory.helper import getMemory
-            return getMemory(path)
-        else:
+        if self._memory:
             return self._memory.get(path)
+        else:
+            if isinstance(path, str):
+                if path in self.cache:
+                    if self.cache[path] is not None:
+                        return self.cache[path]
+
+            from core.memory.helper import getMemory
+            result = getMemory(path)
+
+            if isinstance(path, str):
+                if path in self.cache:
+                    if self.cache[path] is None:
+                        self.cache[path] = result
+            return result
     
     def setMemory(self, path:list[str] | str, value):
-        if self._memory is None:
+        if self._memory:
+            self._memory.set(path)
+        else:
             from core.memory.helper import setMemory
             setMemory(path, value)
-        else:
-            self._memory.set(path)
 
     async def ladder(self, ctx:"engine.context.ExecutionContext") -> None:
         emulator = engine.context.EmulatorContext.get()

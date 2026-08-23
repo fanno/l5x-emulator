@@ -53,10 +53,10 @@ def get_ua_info(cls) -> Dict[str, UAInfo]:
 def createClassFromStructure(struct:Structure) -> Type:
     schema = []
 
-    def generate_nested_list(dims, default_val):
+    def generate_nested_list(dims, default_factory):
         if not dims:
-            return default_val
-        return [generate_nested_list(dims[1:], default_val) for _ in range(dims[0])]
+            return default_factory()
+        return [generate_nested_list(dims[1:], default_factory) for _ in range(dims[0])]
 
     for f in struct.fields:
         py_type = getPythonVariantType(f.dataType)
@@ -65,9 +65,14 @@ def createClassFromStructure(struct:Structure) -> Type:
             dim_copy = f.dimension
             val_copy = py_type()
 
-            dv = generate_nested_list(dim_copy, val_copy)
+            dv = generate_nested_list(dim_copy, py_type)
 
-            scalar_default = lambda pt=py_type, d=dv: Array[pt](pt, d)
+            def make_array_factory(pt=py_type, dims=dim_copy):
+                def generator():
+                    return Array[pt](pt, generate_nested_list(dims, lambda p=pt: p()))
+                return generator
+
+            scalar_default = make_array_factory()
         else:
             scalar_default = py_type
 

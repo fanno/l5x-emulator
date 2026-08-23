@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="37.00" TargetName="PLC_Emulator" TargetType="Controller" ContainsContext="false" ExportDate="Wed Aug 19 17:55:37 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
-<Controller Use="Target" Name="PLC_Emulator" ProcessorType="5069-L330ERMS2" MajorRev="37" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Wed Aug 19 17:55:29 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="37.00" TargetName="PLC_Emulator" TargetType="Controller" ContainsContext="false" ExportDate="Sat Aug 22 21:22:22 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Target" Name="PLC_Emulator" ProcessorType="5069-L330ERMS2" MajorRev="37" MinorRev="11" ProjectCreationDate="Mon May 06 09:12:07 2024" LastModifiedDate="Sat Aug 22 21:22:12 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#d09f_3103"
  MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false" EtherNetIPMode="A1/A2: Linear/DLR" AutoDiagsEnabled="true" WebServerEnabled="true" DataExchangeId="{F1F5254F-1BE4-45A7-9417-99212A9FD63C}"
 >
 <RedundancyInfo Enabled="false" KeepTestEditsOnSwitchOver="false"/>
@@ -79,9 +79,10 @@
 <Member Name="OSFStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="4" ExternalAccess="Read/Write"/>
 <Member Name="LogicAnd1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="5" ExternalAccess="Read/Write"/>
 <Member Name="LogicAnd2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="6" ExternalAccess="Read/Write"/>
-<Member Name="LogicOr1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="LogicAnd3" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest9" BitNumber="7" ExternalAccess="Read/Write"/>
 <Member Name="ZZZZZZZZZZTBitTest18" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
-<Member Name="LogicStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest18" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="LogicOr1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest18" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="LogicStatus" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTBitTest18" BitNumber="1" ExternalAccess="Read/Write"/>
 </Members>
 </DataType>
 <DataType Name="TCompareTest" Family="NoFamily" Class="User">
@@ -469,6 +470,39 @@
 <Members>
 <Member Name="ZZZZZZZZZZTUDT110" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
 <Member Name="Variable" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDT110" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="TUDTBITTEST" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZTUDTBITTES0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="disp0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="disp1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="disp2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES0" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="disp3" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES0" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="disp4" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES0" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="disp5" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES0" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="disp6" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES0" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="disp7" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES0" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTUDTBITTES9" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="disp1_0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES9" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="disp1_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES9" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="disp1_2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES9" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="disp1_3" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES9" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="disp1_4" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES9" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="disp1_5" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES9" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="disp1_6" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES9" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="disp1_7" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES9" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTUDTBITTES18" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="disp2_0" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES18" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="disp2_1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES18" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="disp2_2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES18" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="disp2_3" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES18" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="disp2_4" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES18" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="disp2_5" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES18" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="disp2_6" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES18" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="disp2_7" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES18" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZTUDTBITTES27" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="disp2_8" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZTUDTBITTES27" BitNumber="0" ExternalAccess="Read/Write"/>
 </Members>
 </DataType>
 </DataTypes>
@@ -970,15 +1004,39 @@
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
 </Data>
 </Tag>
+<Tag Name="cam" Class="Standard" TagType="Base" DataType="CAMSHAFT_MONITOR" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[5,2,3,1,4,5,6,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="CAMSHAFT_MONITOR">
+<DataValueMember Name="EnableIn" DataType="BOOL" Value="1"/>
+<DataValueMember Name="MotionRequest" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ChannelA" DataType="BOOL" Value="1"/>
+<DataValueMember Name="ChannelB" DataType="BOOL" Value="0"/>
+<DataValueMember Name="InputStatus" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="MechanicalDelayTime" DataType="DINT" Radix="Decimal" Value="2"/>
+<DataValueMember Name="MaxPulsePeriod" DataType="DINT" Radix="Decimal" Value="3"/>
+<DataValueMember Name="EnableOut" DataType="BOOL" Value="1"/>
+<DataValueMember Name="O1" DataType="BOOL" Value="0"/>
+<DataValueMember Name="FP" DataType="BOOL" Value="0"/>
+<DataValueMember Name="MeasuredStartTime" DataType="DINT" Radix="Decimal" Value="4"/>
+<DataValueMember Name="MeasuredStopTime" DataType="DINT" Radix="Decimal" Value="5"/>
+<DataValueMember Name="FaultCode" DataType="DINT" Radix="Decimal" Value="6"/>
+<DataValueMember Name="DiagnosticCode" DataType="DINT" Radix="Decimal" Value="7"/>
+</Structure>
+</Data>
+</Tag>
 <Tag Name="EquipmentPhase" Class="Standard" TagType="Base" DataType="PHASE" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
-<![CDATA[[0,0,0,0,0,0,0,0]]]>
+<![CDATA[[2,5,4,5,6,7,7,0]]]>
 </Data>
 <Data Format="Decorated">
 <Structure DataType="PHASE">
-<DataValueMember Name="State" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="State" DataType="DINT" Radix="Decimal" Value="2"/>
 <DataValueMember Name="Running" DataType="BOOL" Value="0"/>
-<DataValueMember Name="Holding" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Holding" DataType="BOOL" Value="1"/>
 <DataValueMember Name="Restarting" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Stopping" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Aborting" DataType="BOOL" Value="0"/>
@@ -988,18 +1046,18 @@
 <DataValueMember Name="Complete" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Stopped" DataType="BOOL" Value="0"/>
 <DataValueMember Name="Aborted" DataType="BOOL" Value="0"/>
-<DataValueMember Name="PauseControl" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="PauseEnabled" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PauseControl" DataType="DINT" Radix="Decimal" Value="5"/>
+<DataValueMember Name="PauseEnabled" DataType="BOOL" Value="1"/>
 <DataValueMember Name="Paused" DataType="BOOL" Value="0"/>
-<DataValueMember Name="AutoPauseEnabled" DataType="BOOL" Value="0"/>
-<DataValueMember Name="StepIndex" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="Failure" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="UnitID" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="Owner" DataType="DINT" Radix="Hex" Value="16#0000_0000"/>
-<DataValueMember Name="PendingRequest" DataType="DINT" Radix="Decimal" Value="0"/>
-<DataValueMember Name="DownloadInputParameters" DataType="BOOL" Value="0"/>
-<DataValueMember Name="DownloadInputParametersSubset" DataType="BOOL" Value="0"/>
-<DataValueMember Name="UploadOutputParameters" DataType="BOOL" Value="0"/>
+<DataValueMember Name="AutoPauseEnabled" DataType="BOOL" Value="1"/>
+<DataValueMember Name="StepIndex" DataType="DINT" Radix="Decimal" Value="4"/>
+<DataValueMember Name="Failure" DataType="DINT" Radix="Decimal" Value="5"/>
+<DataValueMember Name="UnitID" DataType="DINT" Radix="Decimal" Value="6"/>
+<DataValueMember Name="Owner" DataType="DINT" Radix="Hex" Value="16#0000_0007"/>
+<DataValueMember Name="PendingRequest" DataType="DINT" Radix="Decimal" Value="7"/>
+<DataValueMember Name="DownloadInputParameters" DataType="BOOL" Value="1"/>
+<DataValueMember Name="DownloadInputParametersSubset" DataType="BOOL" Value="1"/>
+<DataValueMember Name="UploadOutputParameters" DataType="BOOL" Value="1"/>
 <DataValueMember Name="UploadOutputParametersSubset" DataType="BOOL" Value="0"/>
 <DataValueMember Name="DownloadOutputParameterLimits" DataType="BOOL" Value="0"/>
 <DataValueMember Name="AcquireResources" DataType="BOOL" Value="0"/>
@@ -1076,6 +1134,89 @@
 </Structure>
 </Data>
 </Tag>
+<Tag Name="logicmove" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="longboolarray" Class="Standard" TagType="Base" DataType="BOOL" Dimensions="64" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0
+		,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0
+		,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0]]]>
+</Data>
+<Data Format="Decorated">
+<Array DataType="BOOL" Dimensions="64" Radix="Decimal">
+<Element Index="[0]" Value="0"/>
+<Element Index="[1]" Value="0"/>
+<Element Index="[2]" Value="0"/>
+<Element Index="[3]" Value="0"/>
+<Element Index="[4]" Value="0"/>
+<Element Index="[5]" Value="0"/>
+<Element Index="[6]" Value="0"/>
+<Element Index="[7]" Value="0"/>
+<Element Index="[8]" Value="0"/>
+<Element Index="[9]" Value="0"/>
+<Element Index="[10]" Value="0"/>
+<Element Index="[11]" Value="0"/>
+<Element Index="[12]" Value="0"/>
+<Element Index="[13]" Value="0"/>
+<Element Index="[14]" Value="0"/>
+<Element Index="[15]" Value="0"/>
+<Element Index="[16]" Value="0"/>
+<Element Index="[17]" Value="0"/>
+<Element Index="[18]" Value="0"/>
+<Element Index="[19]" Value="0"/>
+<Element Index="[20]" Value="0"/>
+<Element Index="[21]" Value="0"/>
+<Element Index="[22]" Value="0"/>
+<Element Index="[23]" Value="0"/>
+<Element Index="[24]" Value="0"/>
+<Element Index="[25]" Value="0"/>
+<Element Index="[26]" Value="0"/>
+<Element Index="[27]" Value="0"/>
+<Element Index="[28]" Value="0"/>
+<Element Index="[29]" Value="0"/>
+<Element Index="[30]" Value="0"/>
+<Element Index="[31]" Value="0"/>
+<Element Index="[32]" Value="0"/>
+<Element Index="[33]" Value="0"/>
+<Element Index="[34]" Value="0"/>
+<Element Index="[35]" Value="0"/>
+<Element Index="[36]" Value="0"/>
+<Element Index="[37]" Value="0"/>
+<Element Index="[38]" Value="0"/>
+<Element Index="[39]" Value="0"/>
+<Element Index="[40]" Value="0"/>
+<Element Index="[41]" Value="0"/>
+<Element Index="[42]" Value="0"/>
+<Element Index="[43]" Value="0"/>
+<Element Index="[44]" Value="0"/>
+<Element Index="[45]" Value="0"/>
+<Element Index="[46]" Value="0"/>
+<Element Index="[47]" Value="0"/>
+<Element Index="[48]" Value="0"/>
+<Element Index="[49]" Value="0"/>
+<Element Index="[50]" Value="0"/>
+<Element Index="[51]" Value="0"/>
+<Element Index="[52]" Value="0"/>
+<Element Index="[53]" Value="0"/>
+<Element Index="[54]" Value="0"/>
+<Element Index="[55]" Value="0"/>
+<Element Index="[56]" Value="0"/>
+<Element Index="[57]" Value="0"/>
+<Element Index="[58]" Value="0"/>
+<Element Index="[59]" Value="0"/>
+<Element Index="[60]" Value="0"/>
+<Element Index="[61]" Value="0"/>
+<Element Index="[62]" Value="0"/>
+<Element Index="[63]" Value="0"/>
+</Array>
+</Data>
+</Tag>
 <Tag Name="NOT_IMPLEMENTED" Class="Standard" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
 <Data Format="L5K">
 <![CDATA[0]]>
@@ -1090,6 +1231,48 @@
 </Data>
 <Data Format="Decorated">
 <DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="shortboolarray" Class="Standard" TagType="Base" DataType="BOOL" Dimensions="32" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0,2#0
+		,2#0,2#0,2#0,2#0,2#0]]]>
+</Data>
+<Data Format="Decorated">
+<Array DataType="BOOL" Dimensions="32" Radix="Decimal">
+<Element Index="[0]" Value="0"/>
+<Element Index="[1]" Value="0"/>
+<Element Index="[2]" Value="0"/>
+<Element Index="[3]" Value="0"/>
+<Element Index="[4]" Value="0"/>
+<Element Index="[5]" Value="0"/>
+<Element Index="[6]" Value="0"/>
+<Element Index="[7]" Value="0"/>
+<Element Index="[8]" Value="0"/>
+<Element Index="[9]" Value="0"/>
+<Element Index="[10]" Value="0"/>
+<Element Index="[11]" Value="0"/>
+<Element Index="[12]" Value="0"/>
+<Element Index="[13]" Value="0"/>
+<Element Index="[14]" Value="0"/>
+<Element Index="[15]" Value="0"/>
+<Element Index="[16]" Value="0"/>
+<Element Index="[17]" Value="0"/>
+<Element Index="[18]" Value="0"/>
+<Element Index="[19]" Value="0"/>
+<Element Index="[20]" Value="0"/>
+<Element Index="[21]" Value="0"/>
+<Element Index="[22]" Value="0"/>
+<Element Index="[23]" Value="0"/>
+<Element Index="[24]" Value="0"/>
+<Element Index="[25]" Value="0"/>
+<Element Index="[26]" Value="0"/>
+<Element Index="[27]" Value="0"/>
+<Element Index="[28]" Value="0"/>
+<Element Index="[29]" Value="0"/>
+<Element Index="[30]" Value="0"/>
+<Element Index="[31]" Value="0"/>
+</Array>
 </Data>
 </Tag>
 <Tag Name="sttimer" Class="Standard" TagType="Base" DataType="FBD_TIMER" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
@@ -1223,12 +1406,39 @@
 </Array>
 </Data>
 </Tag>
+<Tag Name="test5a31" Class="Standard" TagType="Base" DataType="LINT" Dimensions="2" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[5,6]]]>
+</Data>
+<Data Format="Decorated">
+<Array DataType="LINT" Dimensions="2" Radix="Decimal">
+<Element Index="[0]" Value="5"/>
+<Element Index="[1]" Value="6"/>
+</Array>
+</Data>
+</Tag>
 <Tag Name="testaoi_dint" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="Read/Write">
 <Data Format="L5K">
 <![CDATA[0]]>
 </Data>
 <Data Format="Decorated">
 <DataValue DataType="DINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="testObject" Class="Standard" TagType="Base" DataType="COUNTER" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[-2147483648,222,111]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="COUNTER">
+<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="222"/>
+<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="111"/>
+<DataValueMember Name="CU" DataType="BOOL" Value="1"/>
+<DataValueMember Name="CD" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="OV" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UN" DataType="BOOL" Value="0"/>
+</Structure>
 </Data>
 </Tag>
 <Tag Name="test_abs_in" Class="Standard" TagType="Base" DataType="DINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
@@ -1257,6 +1467,40 @@
 <DataValueMember Name="EnableOut" DataType="BOOL" Value="0"/>
 <DataValueMember Name="input" DataType="BOOL" Value="0"/>
 <DataValueMember Name="output" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="UDTBITTEST" Class="Standard" TagType="Base" DataType="TUDTBITTEST" Constant="false" ExternalAccess="Read/Write" OpcUaAccess="None">
+<Data Format="L5K">
+<![CDATA[[-127,3,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="TUDTBITTEST">
+<DataValueMember Name="disp0" DataType="BOOL" Value="1"/>
+<DataValueMember Name="disp1" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp2" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp3" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp4" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp5" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp6" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp7" DataType="BOOL" Value="1"/>
+<DataValueMember Name="disp1_0" DataType="BOOL" Value="1"/>
+<DataValueMember Name="disp1_1" DataType="BOOL" Value="1"/>
+<DataValueMember Name="disp1_2" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp1_3" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp1_4" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp1_5" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp1_6" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp1_7" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp2_0" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp2_1" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp2_2" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp2_3" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp2_4" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp2_5" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp2_6" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp2_7" DataType="BOOL" Value="0"/>
+<DataValueMember Name="disp2_8" DataType="BOOL" Value="0"/>
 </Structure>
 </Data>
 </Tag>
@@ -2140,6 +2384,7 @@
 <DataValueMember Name="OSFStatus" DataType="BOOL" Value="0"/>
 <DataValueMember Name="LogicAnd1" DataType="BOOL" Value="0"/>
 <DataValueMember Name="LogicAnd2" DataType="BOOL" Value="0"/>
+<DataValueMember Name="LogicAnd3" DataType="BOOL" Value="0"/>
 <DataValueMember Name="LogicOr1" DataType="BOOL" Value="0"/>
 <DataValueMember Name="LogicStatus" DataType="BOOL" Value="0"/>
 </Structure>
@@ -3186,7 +3431,7 @@
 </Rung>
 <Rung Number="5" Type="N">
 <Text>
-<![CDATA[[XIC(Bit.LogicAnd1) XIC(Bit.LogicAnd2) ,XIC(Bit.LogicOr1) ]OTE(Bit.LogicStatus);]]>
+<![CDATA[[XIC(Bit.LogicAnd1) XIC(Bit.LogicAnd2) ,XIC(Bit.LogicOr1) ]XIC(Bit.LogicAnd3)[OTE(Bit.LogicStatus) ,MOVE(2,logicmove) ]MOVE(4,logicmove);]]>
 </Text>
 </Rung>
 </RLLContent>
@@ -3386,110 +3631,115 @@
 <RLLContent>
 <Rung Number="0" Type="N">
 <Text>
-<![CDATA[JSR(Alarms,0);]]>
+<![CDATA[;]]>
 </Text>
 </Rung>
 <Rung Number="1" Type="N">
 <Text>
-<![CDATA[JSR(Bit,0);]]>
+<![CDATA[JSR(Alarms,0);]]>
 </Text>
 </Rung>
 <Rung Number="2" Type="N">
 <Text>
-<![CDATA[JSR(Timer_Counter,0);]]>
+<![CDATA[JSR(Bit,0);]]>
 </Text>
 </Rung>
 <Rung Number="3" Type="N">
 <Text>
-<![CDATA[JSR(Compare,0);]]>
+<![CDATA[JSR(Timer_Counter,0);]]>
 </Text>
 </Rung>
 <Rung Number="4" Type="N">
 <Text>
-<![CDATA[JSR(File_Misc,0);]]>
+<![CDATA[JSR(Compare,0);]]>
 </Text>
 </Rung>
 <Rung Number="5" Type="N">
 <Text>
-<![CDATA[JSR(File_Shift,0);]]>
+<![CDATA[JSR(File_Misc,0);]]>
 </Text>
 </Rung>
 <Rung Number="6" Type="N">
 <Text>
-<![CDATA[JSR(For_Break,0);]]>
+<![CDATA[JSR(File_Shift,0);]]>
 </Text>
 </Rung>
 <Rung Number="7" Type="N">
 <Text>
-<![CDATA[JSR(Math,0);]]>
+<![CDATA[JSR(For_Break,0);]]>
 </Text>
 </Rung>
 <Rung Number="8" Type="N">
 <Text>
-<![CDATA[JSR(Move_Logic,0);]]>
+<![CDATA[JSR(Math,0);]]>
 </Text>
 </Rung>
 <Rung Number="9" Type="N">
 <Text>
-<![CDATA[JSR(EquipmentPhase,0);]]>
+<![CDATA[JSR(Move_Logic,0);]]>
 </Text>
 </Rung>
 <Rung Number="10" Type="N">
 <Text>
-<![CDATA[JSR(Program_Control,0);]]>
+<![CDATA[JSR(EquipmentPhase,0);]]>
 </Text>
 </Rung>
 <Rung Number="11" Type="N">
 <Text>
-<![CDATA[JSR(Sequencer,0);]]>
+<![CDATA[JSR(Program_Control,0);]]>
 </Text>
 </Rung>
 <Rung Number="12" Type="N">
 <Text>
-<![CDATA[JSR(Special,0);]]>
+<![CDATA[JSR(Sequencer,0);]]>
 </Text>
 </Rung>
 <Rung Number="13" Type="N">
 <Text>
-<![CDATA[JSR(HMIBC,0);]]>
+<![CDATA[JSR(Special,0);]]>
 </Text>
 </Rung>
 <Rung Number="14" Type="N">
 <Text>
-<![CDATA[JSR(InputOutput,0);]]>
+<![CDATA[JSR(HMIBC,0);]]>
 </Text>
 </Rung>
 <Rung Number="15" Type="N">
 <Text>
-<![CDATA[JSR(Trigonometry,0);]]>
+<![CDATA[JSR(InputOutput,0);]]>
 </Text>
 </Rung>
 <Rung Number="16" Type="N">
 <Text>
-<![CDATA[JSR(Math_Conversions,0);]]>
+<![CDATA[JSR(Trigonometry,0);]]>
 </Text>
 </Rung>
 <Rung Number="17" Type="N">
 <Text>
-<![CDATA[JSR(Motion,0);]]>
+<![CDATA[JSR(Math_Conversions,0);]]>
 </Text>
 </Rung>
 <Rung Number="18" Type="N">
 <Text>
-<![CDATA[JSR(ASCII_String,0);]]>
+<![CDATA[JSR(Motion,0);]]>
 </Text>
 </Rung>
 <Rung Number="19" Type="N">
 <Text>
-<![CDATA[JSR(ASCII_Conversions,0);]]>
+<![CDATA[JSR(ASCII_String,0);]]>
 </Text>
 </Rung>
 <Rung Number="20" Type="N">
 <Text>
-<![CDATA[JSR(Licence,0);]]>
+<![CDATA[JSR(ASCII_Conversions,0);]]>
 </Text>
 </Rung>
 <Rung Number="21" Type="N">
+<Text>
+<![CDATA[JSR(Licence,0);]]>
+</Text>
+</Rung>
+<Rung Number="22" Type="N">
 <Text>
 <![CDATA[JSR(OPCUA,0);]]>
 </Text>

@@ -2,7 +2,7 @@ from lxml.etree import _Element as Element
 
 from typing import Optional, Dict, List
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 import engine.instruction
 import engine.context
@@ -18,12 +18,13 @@ from core.memory.helper import getMemory, setMemory
 
 @dataclass
 class FBDBlock:
-    _Type:str = field(init=True)
-    _Element:Element = field(init=True)
+    type: InitVar[str]
+    element: InitVar[Element]
 
     ID:int = field(init=False, default=None)
     X:int = field(init=False, default=None)
     Y:int = field(init=False, default=None)
+    Type:str = field(init=False, default=None)
 
     Function:Optional[str] = field(init=False, default=None)
     Operand:Optional[str] = field(init=False, default=None)
@@ -36,16 +37,18 @@ class FBDBlock:
     inParams: Dict[str, Wire] = field(init=False, default_factory=dict)
     outParams: Dict[str, Wire] = field(init=False, default_factory=dict)
 
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
-            self.ID = int(self._Element.get('ID', '-1'))
-            self.X = int(self._Element.get('X', '0'))
-            self.Y = int(self._Element.get('Y', '0'))
-            self.Function = self._Element.get('Type', None)
-            self.Operand = self._Element.get('Operand', None)
+    def __post_init__(self, type:str, element:Element):
+        if isinstance(element, Element):
+            self.Type = type
 
-            if self._Type in ('ICon', 'OCon'):
-                self.Signal = self._Element.get('Name', None)
+            self.ID = int(element.get('ID', '-1'))
+            self.X = int(element.get('X', '0'))
+            self.Y = int(element.get('Y', '0'))
+            self.Function = element.get('Type', None)
+            self.Operand = element.get('Operand', None)
+
+            if self.Type in ('ICon', 'OCon'):
+                self.Signal = element.get('Name', None)
 
         from core.registry.instructionregistry import InstructionRegistry
 
@@ -56,29 +59,29 @@ class FBDBlock:
             self.instance = None
 
     async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
-        with Hierarchy.scope(f"Block[{self._Type}, {str(self.Function)}]"):
+        with Hierarchy.scope(f"Block[{self.Type}, {str(self.Function)}]"):
             with PLCFaultHandler.minor():
                 if self.Operand and self.Value is None:
                     self.Value = getMemory(self.Operand)
 
-                if self._Type == 'ICon':
+                if self.Type == 'ICon':
                     if self.Signal:
                         if self.Signal in ctx.RoutineRef.Signals:
                             self.Value = ctx.RoutineRef.Signals[self.Signal]
                             if self.Value is not None:
                                 for wire in self.outgoing_wires:
                                     wire.Value = self.Value
-                elif self._Type == 'OCon':
+                elif self.Type == 'OCon':
                     if self.Signal:
                         for wire in self.incoming_wires:
                             ctx.RoutineRef.Signals[self.Signal] = wire.Value
                             break
-                elif self._Type == 'IRef':
+                elif self.Type == 'IRef':
                     for wire in self.outgoing_wires:
                         wire.Value = self.Value
-                elif self._Type == 'Function' or self._Type == 'Block':
+                elif self.Type == 'Function' or self.Type == 'Block':
                     await self.instance.fbd(ctx, self)
-                elif self._Type == 'ORef':
+                elif self.Type == 'ORef':
                     for wire in self.incoming_wires:
                         if wire.Value is not None:
                             setMemory(self.Operand, wire.Value)

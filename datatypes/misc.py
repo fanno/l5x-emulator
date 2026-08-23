@@ -6,7 +6,7 @@ from datatypes.custom.string import STRING
 from datatypes.custom.numbers import DINT, UDINT, REAL, INT, LINT, SINT
 from datatypes.custom.bool import BOOL
 from datatypes.custom.array import Array
-from datatypes.custom.udt import UDT
+from datatypes.custom.udt import UDT, ROCKWELL_UDT
 
 @DataTypeRegistry.register
 @dataclass
@@ -431,23 +431,23 @@ class COORDINATE_SYSTEM(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class TIMER(UDT):
-    PRE: DINT = field(init=False, default_factory=DINT)
-    ACC: DINT = field(init=False, default_factory=DINT) 
+class TIMER(ROCKWELL_UDT):
     EN: BOOL = field(init=False, default_factory=BOOL)
     DN: BOOL = field(init=False, default_factory=BOOL)
     TT: BOOL = field(init=False, default_factory=BOOL)
-
-@DataTypeRegistry.register
-@dataclass
-class COUNTER(UDT):
     PRE: DINT = field(init=False, default_factory=DINT)
     ACC: DINT = field(init=False, default_factory=DINT)
+    
+@DataTypeRegistry.register
+@dataclass
+class COUNTER(ROCKWELL_UDT):
     CU: BOOL = field(init=False, default_factory=BOOL)
     CD: BOOL = field(init=False, default_factory=BOOL)
     DN: BOOL = field(init=False, default_factory=BOOL)
     OV: BOOL = field(init=False, default_factory=BOOL)
     UN: BOOL = field(init=False, default_factory=BOOL)
+    PRE: DINT = field(init=False, default_factory=DINT)
+    ACC: DINT = field(init=False, default_factory=DINT)
 
 @DataTypeRegistry.register
 @dataclass

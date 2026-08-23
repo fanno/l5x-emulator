@@ -2,14 +2,14 @@ from __future__ import annotations
 import re
 
 from dataclasses import dataclass, field, InitVar, fields
-from typing import Optional, ClassVar
+from typing import Optional, ClassVar, Iterator
 from asyncua import ua
 from core.registry.datatyperegistry import DataTypeRegistry
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.numbers import DINT, SINT
 from datatypes.custom.array import Array
 from datatypes.custom.compare import COMPARE
-from datatypes.custom.bool import BOOL
+from datatypes.custom.bool import BOOL, MEMORY_BIT
 
 from core.memory.uimemory import DT
 from core.l5k.l5kreader import L5KReader
@@ -74,6 +74,7 @@ class STRING(COMPARE, DataVariant):
             if len > self._maxlength:
                 len = self._maxlength
             data = self.DATA.getUAValue()
+            data = [(b + 256) % 256 for b in data[:len]]
             value = bytes(data[:len]).decode('utf-8')
         return value
     
@@ -120,6 +121,15 @@ class STRING(COMPARE, DataVariant):
     def __len__(self) -> int:
         return self.LEN.getPLCValue()
 
+    def __iter__(self) -> Iterator[SINT]:
+        for bit_index in range(len(self)):
+            yield self[bit_index]
+
+    def iterbit(self) -> Iterator[MEMORY_BIT]:
+        for sint in self:
+            for bit in sint:
+                yield bit
+
     @staticmethod
     def chartToHex(text):
         result = []
@@ -146,6 +156,11 @@ class STRING(COMPARE, DataVariant):
 
         value = cls.hexToChar(value)
         return value
+
+    def fromL5K(self, data):
+        length , string = data
+        self.setValue(string)
+        self.LEN.setValue(length)
 
 @DataTypeRegistry.register
 @dataclass

@@ -11,13 +11,15 @@ from engine.aoi.aoi import AOI, AOIRegistry
 
 from engine.aoi.aoi import AOI_CLASS    
 
+from datatypes.custom.udt import AOI_UDT
+
 from core.events import LoadingEvent
 from eventbus.eventbus import EventBus
 
 async def loadAoiDefinition(controller:Element, opcua:OpcuaTag):
 
     for instruction in controller.findall("./AddOnInstructionDefinitions//AddOnInstructionDefinition"):
-        AOIRegistry.register(AOI(_Element=instruction))
+        AOIRegistry.register(AOI(element=instruction))
 
         name = instruction.get("Name")
         EventBus.get().dispatch(LoadingEvent(f"AOI: {name}"))
@@ -25,15 +27,44 @@ async def loadAoiDefinition(controller:Element, opcua:OpcuaTag):
         parameters = instruction.findall("./Parameters//Parameter")
         
         struct = Structure(name)
-        for parameter in parameters:
-            usage = parameter.get("Usage")
-            if usage == "Input" or usage == "Output":
-                dataType = parameter.get("DataType")
-                
-                field = StructureField(parameter.get("Name"), getUAVariantType(dataType), dataType)
-                struct.fields.append(field)
+
+        EnableIn = next((p for p in parameters if p.get("Name") == "EnableIn"), None)
+        if isinstance(EnableIn, Element):
+            struct.fields.append(createField(EnableIn))
+            parameters.remove(EnableIn)
+
+        EnableOut = next((p for p in parameters if p.get("Name") == "EnableOut"), None)
+        if isinstance(EnableOut, Element):
+            struct.fields.append(createField(EnableOut))
+            parameters.remove(EnableOut)
+
+        for parameter in [p for p in parameters if p.get("Usage") == "Input" and p.get("DataType") == "BOOL"]:
+            if isinstance(parameter, Element):
+                struct.fields.append(createField(parameter))
+                parameters.remove(parameter)
+
+        for parameter in [p for p in parameters if p.get("Usage") == "Output" and p.get("DataType") == "BOOL"]:
+            if isinstance(parameter, Element):
+                struct.fields.append(createField(parameter))
+                parameters.remove(parameter)
+
+        for parameter in [p for p in parameters if p.get("Usage") == "Local" and p.get("DataType") == "BOOL"]:
+            if isinstance(parameter, Element):
+                struct.fields.append(createField(parameter))
+                parameters.remove(parameter)
+
+        for parameter in [p for p in parameters if p.get("Usage") == "Input" or p.get("Usage") == "Output"]:
+            if isinstance(parameter, Element):
+                struct.fields.append(createField(parameter))
+                parameters.remove(parameter)
+
+        struct.base = (AOI_UDT,)
 
         DataTypes.add(struct)
 
         InstructionRegistry.register_local(AOI_CLASS, name)
     await opcua.createDataTypes()
+
+def createField(element:Element)  -> StructureField:
+    dataType = element.get("DataType")
+    return StructureField(name=element.get("Name"), type=getUAVariantType(dataType), dataType=dataType, usage=element.get("Usage"))

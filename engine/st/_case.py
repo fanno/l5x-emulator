@@ -25,6 +25,7 @@ def CASE(line:str, st:"engine.st.st.ST") -> bool:
             st.removeIndent()
             st.out.append(st.getIndent() + "case _:")
             st.addIndent()
+            st.out.append(st.getIndent() + f"pass")
 
             if rest:
                 rest = rest.rstrip(";").strip()
@@ -48,6 +49,7 @@ def CASE(line:str, st:"engine.st.st.ST") -> bool:
             st.removeIndent()
             st.out.append(st.getIndent() + f"case {value}:")
             st.addIndent()
+            st.out.append(st.getIndent() + f"pass")
             return True
 
     if RE_END_CASE.match(line):

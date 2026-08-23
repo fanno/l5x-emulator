@@ -23,18 +23,23 @@ NUMBER_RE = re.compile(r"""
 def split_args(arg_str):
     args = []
     current = []
-    depth = 0
+    paren_depth  = 0
+    bracket_depth = 0
 
     for ch in arg_str:
-        if ch == "," and depth == 0:
+        if ch == "," and paren_depth  == 0 and bracket_depth  == 0:
             args.append("".join(current).strip())
             current = []
             continue
 
         if ch == "(":
-            depth += 1
+            paren_depth  += 1
         elif ch == ")":
-            depth -= 1
+            paren_depth  -= 1
+        elif ch == "[":
+            bracket_depth += 1
+        elif ch == "]":
+            bracket_depth -= 1
 
         current.append(ch)
 
@@ -42,16 +47,6 @@ def split_args(arg_str):
         args.append("".join(current).strip())
 
     return args
-'''
-def format_call_arg(arg):
-    # Number → pass as-is
-    if NUMBER_RE.match(arg):
-        return arg
-
-    # Everything else → string literal
-    escaped = arg.replace("\\", "\\\\").replace('"', '\\"')
-    return f'"{escaped}"'
-'''
 
 def format_call_arg(arg, st):
     arg = arg.strip()
@@ -130,3 +125,14 @@ def CALL(line, st:"engine.st.st.ST"):
         return True
 
     return False
+
+'''
+def format_call_arg(arg):
+    # Number → pass as-is
+    if NUMBER_RE.match(arg):
+        return arg
+
+    # Everything else → string literal
+    escaped = arg.replace("\\", "\\\\").replace('"', '\\"')
+    return f'"{escaped}"'
+'''

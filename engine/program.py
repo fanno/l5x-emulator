@@ -6,9 +6,9 @@ from contextlib import asynccontextmanager
 from engine.hierarchy import Hierarchy
 from lxml.etree import _Element as Element
 
-from typing import Optional, Dict, TYPE_CHECKING, Set
+from typing import Optional, Dict, TYPE_CHECKING
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 from asyncua import Server
 
@@ -35,9 +35,10 @@ from typing import ClassVar
 
 @dataclass
 class Program():
+    element: InitVar[Element]
+
     _next_program_id: ClassVar[int] = 1
 
-    _Element: Element = field(init=True)
     server:Server = field(init=True)
 
     ID:int = field(init=False)
@@ -72,26 +73,28 @@ class Program():
     MajorFaultRecord: Array[DINT] = field(init=False, default_factory=lambda: Array.create(DINT, 11))
     MinorFaultRecord: Array[DINT] = field(init=False, default_factory=lambda: Array.create(DINT, 11))
 
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
-            self.Name = self._Element.get("Name")
-            self.MainRoutineName = self._Element.get("MainRoutineName", None)
-            self.Class = self._Element.get("Class", None)
+    def __post_init__(self, element:Element):
+        if isinstance(element, Element):
+            self._Element = element
 
-            self.Type=self._Element.get("Type"),
-            self.TestEdits=self._Element.get("TestEdits"),
-            self.PreStateRoutineName=self._Element.get("PreStateRoutineName"),
-            self.FaultRoutineName=self._Element.get("FaultRoutineName"),
-            self.InitialStepIndex=self._Element.get("InitialStepIndex"),
-            self.InitialState=self._Element.get("InitialState"),
-            self.CompleteStateIfNotImpl=self._Element.get("CompleteStateIfNotImpl"),
-            self.LossOfCommCmd=self._Element.get("LossOfCommCmd"),
-            self.ExternalRequestAction=self._Element.get("ExternalRequestAction"),
-            self.UseAsFolder=self._Element.get("ExterUseAsFoldernalRequestAction"),
-            self.AutoValueAssignStepToPhase=self._Element.get("AutoValueAssignStepToPhase"),
-            self.AutoValueAssignPhaseToStepOnComplete=self._Element.get("AutoValueAssignPhaseToStepOnComplete"),
-            self.AutoValueAssignPhaseToStepOnStopped=self._Element.get("AutoValueAssignPhaseToStepOnStopped"),
-            self.AutoValueAssignPhaseToStepOnAborted=self._Element.get("AutoValueAssignPhaseToStepOnAborted")
+            self.Name = element.get("Name")
+            self.MainRoutineName = element.get("MainRoutineName", None)
+            self.Class = element.get("Class", None)
+
+            self.Type=element.get("Type"),
+            self.TestEdits=element.get("TestEdits"),
+            self.PreStateRoutineName=element.get("PreStateRoutineName"),
+            self.FaultRoutineName=element.get("FaultRoutineName"),
+            self.InitialStepIndex=element.get("InitialStepIndex"),
+            self.InitialState=element.get("InitialState"),
+            self.CompleteStateIfNotImpl=element.get("CompleteStateIfNotImpl"),
+            self.LossOfCommCmd=element.get("LossOfCommCmd"),
+            self.ExternalRequestAction=element.get("ExternalRequestAction"),
+            self.UseAsFolder=element.get("ExterUseAsFoldernalRequestAction"),
+            self.AutoValueAssignStepToPhase=element.get("AutoValueAssignStepToPhase"),
+            self.AutoValueAssignPhaseToStepOnComplete=element.get("AutoValueAssignPhaseToStepOnComplete"),
+            self.AutoValueAssignPhaseToStepOnStopped=element.get("AutoValueAssignPhaseToStepOnStopped"),
+            self.AutoValueAssignPhaseToStepOnAborted=element.get("AutoValueAssignPhaseToStepOnAborted")
 
         self.ID = Program._next_program_id
         Program._next_program_id += 1
@@ -123,6 +126,8 @@ class Program():
             from core.memory.helper import getMemory
             self.phase:PHASE = getMemory(self.Name)
             changeState(self.phase, self.InitialStepIndex, PhaseStates[self.InitialState])            
+
+        self._Element = None
 
     @asynccontextmanager
     async def program_context(self):

@@ -1,6 +1,6 @@
 from lxml.etree import _Element as Element
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 from datatypes.custom.bool import BOOL
 
@@ -12,7 +12,7 @@ import engine.sfc.step
 
 @dataclass
 class Transition:
-    _Element: Element = field(init=True, default=None)
+    element: InitVar[Element]
 
     ID: int = field(init=False, default=None)
     X: str = field(init=False, default=None)
@@ -22,15 +22,15 @@ class Transition:
 
     outgoing: list["engine.sfc.step.Step"] = field(default_factory=list)
 
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
-            self.ID = int(self._Element.get('ID'))
-            self.X = int(self._Element.get('X'))
-            self.Y = int(self._Element.get('Y'))
-            self.Operand = self._Element.get('Operand')
+    def __post_init__(self, element:Element):
+        if isinstance(element, Element):
+            self.ID = int(element.get('ID'))
+            self.X = int(element.get('X'))
+            self.Y = int(element.get('Y'))
+            self.Operand = element.get('Operand')
 
             from engine.st.st import ST
-            content = self._Element.find('./Condition/STContent')
+            content = element.find('./Condition/STContent')
             st = ST(content)
             self.ST = st.getPython(isReturn=True)
 
@@ -40,7 +40,7 @@ class Transition:
     async def execute(self, ctx:"engine.context.ExecutionContext") -> list["engine.sfc.step.Step"]:
         from engine.st.hooks import run_exec_env
 
-        evaluated = await run_exec_env(self.ST, ctx, f"Transition: {self.ID}", False)
+        evaluated = await run_exec_env(self.ST, ctx, f"Transition: {self.ID}")
 
         result = []
         if evaluated:

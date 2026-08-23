@@ -2,7 +2,7 @@ from asyncua import Server
 
 from dataclasses import dataclass, field
 
-from typing import TYPE_CHECKING, Set
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:    
     from core.memory.memory import Memory
@@ -12,7 +12,6 @@ from core.constants import SYSTEMTAGS
 from opcua.tag import OpcuaTag, Tag
 from opcua.mapping import Mapping
 from opcua.helpers import createVariant
-from opcua.updater import OPCUAUpdater
 
 from core.plcclock import PLCClock
 

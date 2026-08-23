@@ -108,7 +108,8 @@ class RELATIVETIME(DataVariant):
                 seconds = int(m["seconds"] or 0)
                 millis = int(m["millis"] or 0)
                 micros = int(m["micros"] or 0)
-                nanos = int(m["nanos"] or 0)
+                #nanos = int(m["nanos"] or 0)
+                nanos = 0
 
                 result = (
                     days * 86_400

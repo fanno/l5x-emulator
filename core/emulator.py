@@ -295,19 +295,19 @@ class Emulator(threading.Thread):
                         taskStatus:dict[str, StatusScan] = {}
                         programStatus:dict[str, dict[str, StatusScan]] = {}
                         for tname, task in self.tasks.items():
-                            taskStatus[tname] = StatusScan(Max=task.MaxScanTime.getPLCValue()/10000000, Last=task.LastScanTime.getPLCValue()/10000000, Count=task.scanCount)
+                            taskStatus[tname] = StatusScan(Max=task.MaxScanTime.getPLCValue()/1000000, Last=task.LastScanTime.getPLCValue()/1000000, Count=task.scanCount)
 
                             programStatus[tname] = {}
 
                             for pname in task._programs:
                                 program = self.programs[pname]
-                                programStatus[tname][pname] = StatusScan(Max=program.MAXSCANTIME.getPLCValue()/10000000, Last=program.LASTSCANTIME.getPLCValue()/10000000)
+                                programStatus[tname][pname] = StatusScan(Max=program.MAXSCANTIME.getPLCValue()/1000000, Last=program.LASTSCANTIME.getPLCValue()/1000000)
                         
                         EventBus.get().dispatch(StatusEvent(Runing=True,
                                                 StatusRequest=self.statusRequestEvent,
                                                 Scan=StatusScan(Max=difTimeMax, Last=timer.elapsed, Count=self.scanCount),
-                                                OpcUaRead=StatusScan(Max=self.OpcUaReadTimeMax/10000000, Last=self.OpcUaReadTime/10000000),
-                                                OpcUaWrite=StatusScan(Max=self.OpcUaWriteTimeMax/10000000, Last=self.OpcUaWriteTime/10000000),
+                                                OpcUaRead=StatusScan(Max=self.OpcUaReadTimeMax/1000000, Last=self.OpcUaReadTime/1000000),
+                                                OpcUaWrite=StatusScan(Max=self.OpcUaWriteTimeMax/1000000, Last=self.OpcUaWriteTime/1000000),
                                                 Tasks=taskStatus,
                                                 Programs=programStatus,
                                                 ScanDelayed=scanDelayTime,

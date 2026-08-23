@@ -1,6 +1,6 @@
 from lxml.etree import _Element as Element
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 from datatypes.sfc import SFC_STEP
 from datatypes.custom.numbers import DINT
@@ -20,7 +20,7 @@ import engine.context
 
 @dataclass
 class Step:
-    _Element: Element = field(init=True, default=None)
+    element: InitVar[Element]
 
     ID:int = field(init=False, default=-1)
     X:str = field(init=False, default=-1)
@@ -42,32 +42,32 @@ class Step:
 
     last:DINT = field(init=False, default_factory=DINT)
 
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
-            self.ID = int(self._Element.get('ID', '-1'))
-            self.X = int(self._Element.get('X', '-1'))
-            self.Y = int(self._Element.get('Y', '-1'))
-            self.Operand = self._Element.get('Operand')
-            self.InitialStep = bool(self._Element.get('InitialStep', 'false'))
-            self.PresetUsesExpr = bool(self._Element.get('PresetUsesExpr', 'false'))
-            self.LimitHighUsesExpr = bool(self._Element.get('LimitHighUsesExpr', 'false'))
-            self.LimitLowUsesExpr = bool(self._Element.get('LimitLowUsesExpr', 'false'))
-            self.ShowActions = bool(self._Element.get('ShowActions', 'false'))
+    def __post_init__(self, element:Element):
+        if isinstance(element, Element):
+            self.ID = int(element.get('ID', '-1'))
+            self.X = int(element.get('X', '-1'))
+            self.Y = int(element.get('Y', '-1'))
+            self.Operand = element.get('Operand')
+            self.InitialStep = bool(element.get('InitialStep', 'false'))
+            self.PresetUsesExpr = bool(element.get('PresetUsesExpr', 'false'))
+            self.LimitHighUsesExpr = bool(element.get('LimitHighUsesExpr', 'false'))
+            self.LimitLowUsesExpr = bool(element.get('LimitLowUsesExpr', 'false'))
+            self.ShowActions = bool(element.get('ShowActions', 'false'))
 
             if self.PresetUsesExpr:
-                st = ST(self._Element.find('./Preset/STContent'))
+                st = ST(element.find('./Preset/STContent'))
                 self.PresetExpr = st.getPython(True)
 
             if self.LimitHighUsesExpr:
-                st = ST(self._Element.find('./LimitHigh/STContent'))
+                st = ST(element.find('./LimitHigh/STContent'))
                 self.LimitHighExpr = st.getPython(True)
 
             if self.LimitLowUsesExpr:
-                st = ST(self._Element.find('./LimitLow/STContent'))
+                st = ST(element.find('./LimitLow/STContent'))
                 self.LimitLowExpr = st.getPython(True)
 
         # Actions
-        for action in self._Element.findall('./Action'):
+        for action in element.findall('./Action'):
                 self.actions.append(Action(action))
 
     async def preScan(self, ctx:"engine.context.ExecutionContext") -> None:
@@ -91,15 +91,15 @@ class Step:
 
     async def execute(self, ctx:"engine.context.ExecutionContext") -> None:
         if self.PresetUsesExpr:
-            value = await run_exec_env(self.PresetExpr, ctx, f"PresetExpr: {self.ID}", False)
+            value = await run_exec_env(self.PresetExpr, ctx, f"PresetExpr: {self.ID}")
             self.Value.PRE.setValue(value)
 
         if self.LimitHighUsesExpr:
-            value = await run_exec_env(self.LimitHighExpr, ctx, f"LimitHighExpr: {self.ID}", False)
+            value = await run_exec_env(self.LimitHighExpr, ctx, f"LimitHighExpr: {self.ID}")
             self.Value.AlarmHigh.setValue(value)
 
         if self.LimitLowUsesExpr:
-            value = await run_exec_env(self.LimitLowExpr, ctx, f"LimitLowExpr: {self.ID}", False)
+            value = await run_exec_env(self.LimitLowExpr, ctx, f"LimitLowExpr: {self.ID}")
             self.Value.AlarmLow.setValue(value)
 
         for action in self.actions:

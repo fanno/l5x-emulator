@@ -19,7 +19,7 @@ async def loadPrograms(controller:Element, server:Server, programs:Dict[str, "Pr
     for program in controller.findall("./Programs//Program"):
         EventBus.get().dispatch(LoadingEvent(f"Program: {program.get("Name")}"))
 
-        p = Program(_Element=program,
+        p = Program(element=program,
                     server=server)
         
         await p.init()

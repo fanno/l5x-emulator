@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict
 
 from contextlib import asynccontextmanager
 
@@ -21,14 +21,14 @@ from datatypes.custom.string import STRING
 
 @dataclass
 class EventInfo():
-    _Element: Element = field(init=True)
+    element: InitVar[Element]
 
     EventTrigger:STRING = field(init=False, default_factory=STRING)
     EnableTimeout:BOOL = field(init=False, default_factory=BOOL)
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
-            self.EventTrigger = STRING(self._Element.get("EventTrigger", None))
-            self.EnableTimeout = STRING(self._Element.get("EnableTimeout", None))
+    def __post_init__(self, element:Element):
+        if isinstance(element, Element):
+            self.EventTrigger = STRING(element.get("EventTrigger", None))
+            self.EnableTimeout = STRING(element.get("EnableTimeout", None))
 
 @dataclass
 class Task():

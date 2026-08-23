@@ -1,7 +1,10 @@
 from __future__ import annotations
 from dataclasses import dataclass, field, InitVar
-from typing import ClassVar, Any
+from typing import ClassVar, Any, Iterator
 from datetime import datetime, timezone
+
+import struct
+import math
 
 from lxml.etree import _Element as Element
 
@@ -9,12 +12,11 @@ from asyncua import ua
 
 from core.registry.datatyperegistry import DataTypeRegistry
 from core.memory.uimemory import DT
-from core.l5k.l5kreader import L5KReader
 
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.math import MATH
 from datatypes.custom.compare import COMPARE
-from datatypes.custom.bool import BOOL
+from datatypes.custom.bool import BOOL, MEMORY_BIT
 
 from protocols.memory import SupportsGetPLCValue
 
@@ -73,14 +75,13 @@ class INTIGER(COMPARE, MATH, DataVariant):
             case "Binary":
                 binary = format(masked_value, f'0{bit_size}b')
                 chunks = [binary[i:i+4] for i in range(0, len(binary), 4)]
-                chunks.reverse()  # ← ADD THIS FOR LITTLE-ENDIAN
+                chunks.reverse()
                 return f"2#" + "_".join(chunks)
             case "Hex":
                 hex_chars = bit_size // 4
                 hex_str = format(masked_value, f'0{hex_chars}X')
-                # Reverse the chunks (little-endian)
                 chunks = [hex_str[i:i+4] for i in range(0, len(hex_str), 4)]
-                chunks.reverse()  # ← ADD THIS FOR LITTLE-ENDIAN
+                chunks.reverse()
                 return f"16#" + "_".join(chunks)
             case "Decimal":
                 return str(masked_value)
@@ -122,18 +123,25 @@ class INTIGER(COMPARE, MATH, DataVariant):
             value = int(value)
 
         return PLC_TYPE_MAP[type_name.upper()](value).value
+
+    def __len__(self) -> int:
+        return self.getBitSize()
     
     def __int__(self) -> int:
         return self._value
 
-    def __getitem__(self, bit: int) -> INTIGER_BIT:
+    def __iter__(self) -> Iterator[MEMORY_BIT]:
+        for bit_index in range(len(self)):
+            yield self[bit_index]
+
+    def __getitem__(self, bit: int) -> MEMORY_BIT:
         if not isinstance(bit, int):
             raise TypeError("Bit index must be an integer")
 
         if bit < 0 or bit >= self.getBitSize():
             raise IndexError(f"Bit index {bit} out of range")
 
-        return INTIGER_BIT(self, bit)
+        return MEMORY_BIT(self, bit)
 
     def __setitem__(self, bit: int, value: bool):
         if not isinstance(bit, int):
@@ -143,48 +151,12 @@ class INTIGER(COMPARE, MATH, DataVariant):
             raise IndexError(f"Bit index {bit} out of range")
 
         current = self.getPLCValue()
-        value = BOOL.toValue(value)
-        if value:
+        if BOOL.toValue(value):
             old |= 1 << bit
         else:
             old &= ~(1 << bit)
 
         self.setValue(current)
-
-@dataclass(repr=False, eq=False)
-class INTIGER_BIT:
-    parent:InitVar[INTIGER]
-    bit:InitVar[int]
-
-    _parent:INTIGER = field(init=False, repr=False, default=None)
-    _bit:int = field(init=False, repr=False, default=None)
-
-    def __post_init__(self, parent:INTIGER, bit:int) -> None:
-        self._parent = parent
-        self._bit = bit
-
-    def getPLCValue(self) -> bool:
-        current = self._parent.getPLCValue()
-        return bool(current & (1 << self._bit))
-
-    def getUAValue(self) -> bool:
-        return self.getPLCValue()
-
-    def __bool__(self) -> bool:
-        return self.getPLCValue()
-
-    def setValue(self, value: str | int | bool):
-        current = self._parent.getPLCValue()
-
-        if BOOL.toValue(value):
-            current |= 1 << self._bit
-        else:
-            current &= ~(1 << self._bit)
-
-        self._parent.setValue(current)
-
-    def __repr__(self):
-        return repr(self.getPLCValue())
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
@@ -239,12 +211,19 @@ class SINT(INTIGER):
 class REAL(COMPARE, MATH, DataVariant):
     init: InitVar[Any] = None
 
-    _value:float = field(init=False, repr=False, default=0.0)
+    _value: float = field(init=False, repr=False, default=0.0)
     _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.Float
     _py_variant: ClassVar[type] = float
-    _type:ClassVar[DT] = DT.REAL
+    _type: ClassVar[DT] = DT.REAL
 
-    def __post_init__(self, init:Any=None) -> None:
+    FOFRMAT: ClassVar[float] = 'f'
+    PRECISION_EPSILON: ClassVar[float] = 1e-6
+    CLAMP_MIN: ClassVar[float] = -3.40282347e+38
+    CLAMP_MAX: ClassVar[float] = 3.40282347e+38
+    ALLOW_SPECIAL_VALUES: ClassVar[bool] = True
+
+    def __post_init__(self, init: Any = None) -> None:
+
         self.setValue(init)
 
     def getPLCValue(self) -> float:
@@ -253,12 +232,38 @@ class REAL(COMPARE, MATH, DataVariant):
     def getUAValue(self) -> float:
         return self._value
 
-    def toL5X(self, element:Element) -> None:
+    def _clamp(self, value: float) -> float:
+        if math.isnan(value):
+            if self.ALLOW_SPECIAL_VALUES:
+                return value
+            raise ValueError(f"NaN not allowed for {self.__class__.__name__} type")
+        
+        if math.isinf(value):
+            if self.ALLOW_SPECIAL_VALUES:
+                return value
+            raise ValueError(f"Infinity not allowed for {self.__class__.__name__} type")
+        
+        if value > self.CLAMP_MAX:
+            value = self.CLAMP_MAX
+        elif value < self.CLAMP_MIN:
+            value = self.CLAMP_MIN
+        
+        try:
+            packed = struct.pack(self.FOFRMAT, value)
+            reconstructed = struct.unpack(self.FOFRMAT, packed)[0]
+            
+            if abs(value - reconstructed) > abs(value) * self.PRECISION_EPSILON:
+                value = reconstructed
+            
+            return value
+        except (struct.error, OverflowError) as e:
+            raise ValueError(f"Value {value} exceeds {self.__class__.__name__} representation: {e}")
+
+    def toL5X(self, element: Element) -> None:
         if isinstance(element, Element):
             element.set("Value", str(self._value))
 
-    @staticmethod
-    def toValue(value:str|int|float):
+    def toValue(self, value: str | int | float) -> float:
         if value is None:
             value = 0.0
 
@@ -269,21 +274,27 @@ class REAL(COMPARE, MATH, DataVariant):
             from core.memory import helper
             value = helper.strNumber(value)
         if isinstance(value, bool):
-            if value:
-                value = 1.0
-            else:
-                value = 0.0
+            value = 1.0 if value else 0.0
 
         if not isinstance(value, float):
             value = float(value)
-
-        return float(value)
+            
+        value = self._clamp(value)
+        return value
 
     def __float__(self) -> float:
         return self._value
+
+    def __repr__(self) -> str:
+        return repr(self.getPLCValue())
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)
 class LREAL(REAL):
     _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.Double
-    _type:ClassVar[DT] = DT.LREAL
+    _type: ClassVar[DT] = DT.LREAL
+
+    FOFRMAT: ClassVar[float] = 'd'
+    PRECISION_EPSILON: ClassVar[float] = 1e-14
+    CLAMP_MIN: ClassVar[float] = -1.7976931348623157e+308
+    CLAMP_MAX: ClassVar[float] = 1.7976931348623157e+308

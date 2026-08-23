@@ -8,12 +8,9 @@ from opcua.mapping import Mapping
 if TYPE_CHECKING:    
     from core.memory.memory import Memory
 
-import core.memory.memory
-
 from core.helpers import createMemory
 from core.registry.datatyperegistry import DataTypeRegistry
 from core.errors import UnhandeledTag, ParseTagException
-from core.l5k.l5kreader import L5KReader
 
 from datatypes.custom.array import Array
 from datatypes.custom.string import STRING
@@ -113,33 +110,13 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
 
     from core.memory.memory import TagMetadata, OpcUaAccess
 
-    '''
-    l5k = tag.find("Data[@Format='L5K']")
-    if isinstance(l5k, Element):
-        dataType = tag.get('DataType')
-        dimensions = tag.get('Dimensions', None)
-        text = l5k.text.strip()
-        print(name, dataType, text)
-        if dataType:
-            cls = DataTypeRegistry.get(dataType)
-            if dimensions is None:
-                if issubclass(cls, BOOL):
-                    value = cls(text)
-                else:
-                    value = cls()
-                    print(name, dataType, value, text)
-                    value.fromL5K(text)
-            else:
-                dimensions = dimensions.split(" ")
-                dims = []
-                for dim in dimensions:
-                    dims.append(int(dim))
-                value = Array.create(cls, dims)
-                print(text)
-                value.fromL5K(text)
-    '''
+    data_nodes = tag.findall("Data")
 
-    decorated = tag.find("Data[@Format='Decorated']")
+    decorated = next(
+        (node for node in data_nodes if node.get("Format") == "Decorated"),
+        None
+    )
+    #decorated = tag.find("Data[@Format='Decorated']")
     if isinstance(decorated, Element):
         passStructures = ['Structure', 'DataValue']
 
@@ -160,12 +137,18 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
             else:
                 raise UnhandeledTag(name, decorated, element)
     else:
-        datatype = tag.get('DataType')
+        data = next(
+            (
+                node for node in data_nodes
+                if node.get("Format") not in ("Decorated", "L5K")
+            ),
+            None
+        )
 
-        value = DataTypeRegistry.get(datatype)()
-
-        data = tag.find('./Data')
+        #data = tag.find('./Data')
         if isinstance(data, Element):
+            datatype = tag.get('DataType')
+            value = DataTypeRegistry.get(datatype)()
             params = data.find('.*')
             if isinstance(params, Element):
                 for k,v in params.attrib.items():
@@ -177,10 +160,38 @@ async def loadTag(tag:Element, opcua:OpcuaTag, memory:"Memory", mapping:Mapping)
                             raise UnhandeledTag(k, v, params)
                     else:
                         raise UnhandeledTag(k, v, params)
-        memory.set(name, value)
+            memory.set(name, value)
+            medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")), XMlElement=data)
+            memory.set_metadata(name, medatata)
+        else:
+            l5k = next(
+                (node for node in data_nodes if node.get("Format") == "L5K"),
+                None
+            )
+            if isinstance(l5k, Element):
+                datatype = tag.get('DataType')
+                dimensions = tag.get('Dimensions', None)
 
-        medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")), XMlElement=data)
-        memory.set_metadata(name, medatata)
+                if datatype:
+                    text = l5k.text.strip()
+                    cls = DataTypeRegistry.get(datatype)
+                    if dimensions is None:
+                        if issubclass(cls, BOOL):
+                            value = cls(text)
+                        else:
+                            value = cls()
+                            value.fromL5K(text)
+                    else:
+                        dimensions = dimensions.split(" ")
+                        dims = []
+                        for dim in dimensions:
+                            dims.append(int(dim))
+                        value = Array.create(cls, dims)
+                        value.fromL5K(text)
+
+                    memory.set(name, value)
+                    medatata = TagMetadata(OpcUa_Access=OpcUaAccess.from_string(tag.get("OpcUaAccess")), XMlElement=data)
+                    memory.set_metadata(name, medatata)
 
 async def createTagsMemory(opcua:OpcuaTag, memory:"Memory", mapping:Mapping):
     for name, tag in opcua.tags.items():

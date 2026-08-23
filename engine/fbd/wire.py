@@ -2,11 +2,11 @@ from typing import Any
 
 from lxml.etree import _Element as Element
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 @dataclass  
 class Wire:
-    _Element: Element = field(init=True)
+    element: InitVar[Element]
 
     FromID:int = field(init=False, default=None)
     ToID:int = field(init=False, default=None)
@@ -18,12 +18,12 @@ class Wire:
 
     _idx: int = 1
 
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
+    def __post_init__(self, element:Element):
+        if isinstance(element, Element):
             self.ID = Wire._idx
             Wire._idx += 1
 
-            self.FromID = int(self._Element.get('FromID', '-1'))
-            self.ToID = int(self._Element.get('ToID', '-1'))
-            self.ToParam = self._Element.get('ToParam', None)
-            self.FromParam = self._Element.get('FromParam', None)
+            self.FromID = int(element.get('FromID', '-1'))
+            self.ToID = int(element.get('ToID', '-1'))
+            self.ToParam = element.get('ToParam', None)
+            self.FromParam = element.get('FromParam', None)

@@ -1,10 +1,10 @@
 from lxml.etree import _Element as Element
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 @dataclass  
 class Branch:
-    _Element: Element = field(init=True)
+    element: InitVar[Element]
 
     ID:int = field(init=False, default=None)
     Y:int = field(init=False, default=None)
@@ -14,13 +14,13 @@ class Branch:
 
     legs:list[int] = field(init=False, default_factory=list)
 
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
-            self.ID = int(self._Element.get('ID', '-1'))
-            self.Y = int(self._Element.get('Y', '-1'))
-            self.BranchType = self._Element.get('BranchType', None)
-            self.BranchFlow = self._Element.get('BranchFlow', None)
-            self.Priority = self._Element.get('Priority', None)
+    def __post_init__(self, element:Element):
+        if isinstance(element, Element):
+            self.ID = int(element.get('ID', '-1'))
+            self.Y = int(element.get('Y', '-1'))
+            self.BranchType = element.get('BranchType', None)
+            self.BranchFlow = element.get('BranchFlow', None)
+            self.Priority = element.get('Priority', None)
 
-            for leg in self._Element.findall('.//Leg'):
+            for leg in element.findall('.//Leg'):
                 self.legs.append(int(leg.get('ID', None)))

@@ -1,16 +1,16 @@
 from datetime import datetime, timezone, timedelta
 from dataclasses import dataclass, field, InitVar
-from typing import ClassVar, Any
+from typing import ClassVar, Any, Iterator
 
 from asyncua import ua
 import re
 
 from core.registry.datatyperegistry import DataTypeRegistry
-from core.l5k.l5kreader import L5KReader
 
 from datatypes.custom.datavariant import DataVariant
 from datatypes.custom.compare import COMPARE
 from datatypes.custom.math import MATH
+from datatypes.custom.bool import BOOL, MEMORY_BIT
 
 
 _DT_PATTERN = re.compile(
@@ -173,7 +173,38 @@ class ABSOLUTETIVETIME(COMPARE, MATH, DataVariant):
             result = result.replace(microsecond=microsecond)
             return result
 
-        raise ValueError(f"value '{value}', type '{type(value)}' is not a valid DateTime format")    
+        raise ValueError(f"value '{value}', type '{type(value)}' is not a valid DateTime format")
+
+    def __len__(self) -> int:
+        return 64
+
+    def __iter__(self) -> Iterator[MEMORY_BIT]:
+        for bit_index in range(len(self)):
+            yield self[bit_index]
+
+    def __getitem__(self, bit: int) -> MEMORY_BIT:
+        if not isinstance(bit, int):
+            raise TypeError("Bit index must be an integer")
+
+        if bit < 0 or bit >= self.getBitSize():
+            raise IndexError(f"Bit index {bit} out of range")
+
+        return MEMORY_BIT(self, bit)
+
+    def __setitem__(self, bit: int, value: bool):
+        if not isinstance(bit, int):
+            raise TypeError("Bit index must be an integer")
+
+        if bit < 0 or bit >= 64:
+            raise IndexError(f"Bit index {bit} out of range")
+
+        current = self.getPLCValue()
+        if BOOL.toValue(value):
+            old |= 1 << bit
+        else:
+            old &= ~(1 << bit)
+
+        self.setValue(current)            
 
 @DataTypeRegistry.register
 @dataclass(repr=False, eq=False)

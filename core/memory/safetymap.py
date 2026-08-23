@@ -1,17 +1,17 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, InitVar
 
 from lxml.etree import _Element as Element
 
 @dataclass
 class SafetyMap():
-    _Element: Element = field(init=True, repr=False, default=None)
+    element: InitVar[Element]=None
 
     Pairs:dict[str, str] = field(init=False, default_factory=dict)
     
-    def __post_init__(self):
-        if isinstance(self._Element, Element):
-            if self._Element.text:
-                pairs = self._Element.text.split(',')
+    def __post_init__(self, element:Element=None):
+        if isinstance(element, Element):
+            if element.text:
+                pairs = element.text.split(',')
                 for pair in pairs:
                     pair = pair.strip().split('=')
                     self.Pairs[pair[0]] = pair[1]

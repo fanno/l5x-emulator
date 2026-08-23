@@ -3,8 +3,8 @@ import operator
 import regex as re
 import hashlib
 from datetime import datetime, timezone
+from functools import lru_cache
 
-from typing import Any
 from enum import Enum, auto
 
 from dataclasses import is_dataclass, fields
@@ -15,13 +15,14 @@ from core.constants import SYSTEMTAGS, CONTROLLERTAGS
 from engine.helper import CurrentProgramName
 from engine.scan import PreScan, PostScan
 
-from datatypes.custom.array import Array
 from datatypes.custom.string import STRING
 from datatypes.custom.numbers import REAL, LINT
 
 from protocols.opcua import SupportsVariant
+from protocols.memory import SupportsGetPLCValue
 
 from utils.isplcinstance import isPLCInstance
+
 
 #BASE_OR_DEC_PATTERN = re.compile(
 #    r"""^
@@ -120,10 +121,9 @@ def isBitSet(value: int, index: int) -> bool:
         raise ValueError("index must be between 0 and 63 inclusive")
     return (value >> index) & 1 == 1
 
-
-
 def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
     result = None
+    path:list[str] = []
     try:
         if pathRaw is not None:
             if isinstance(pathRaw, int|float):
@@ -134,11 +134,11 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
                     return STRING(pathRaw[1:-1])
                 elif pathRaw[0].isdigit():
                     return strNumber(pathRaw)
-                elif any(c in pathRaw for c in ['+','-','/','*','%',]):
+                elif any(c in pathRaw for c in ['+','-','/','*','%']):
                     result = resolveMathExpr(pathRaw)
 
             if result is None:
-                path:list[str] = resolvePath(pathRaw)
+                path = resolvePath(pathRaw)
                 
                 from engine.aoi.memory import AOIMemory
                 from engine.aoi.aoi import AOIContextMemory
@@ -161,6 +161,7 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
                     else:
                         name = CurrentProgramName.get()
                         memory = PlcMemory.getContainer(name)
+
                         if memory and memory.has(path):
                             result = memory.get(path)
                         else:
@@ -173,58 +174,61 @@ def getMemory(pathRaw:list[str] | str, dataVariant:OutputType=OutputType.Raw):
                                     result = memory.get(path)
 
             raw = result
-            if isPLCInstance(result, SupportsVariant):
-                match dataVariant:
-                    case OutputType.PLC:
+            
+            match dataVariant:
+                case OutputType.PLC:
+                    if isPLCInstance(result, SupportsGetPLCValue):
                         result = result.getPLCValue()
-                    case OutputType.UA:
+                case OutputType.UA:
+                    if isPLCInstance(result, SupportsVariant):
                         result = result.getUAValue()
     except Exception as e:
-        raise MemoryException("getMemory1", pathRaw).with_traceback(e.__traceback__)
+        raise MemoryException(f"getMemory1 {path}", pathRaw).with_traceback(e.__traceback__)
     
     if result is None:
-        raise MemoryException("getMemory2", pathRaw)
+        raise MemoryException(f"getMemory2 {path}", pathRaw)
+    
     return result    
 
 def setMemory(path:list[str] | str, value):
     if PreScan.isActive() or PostScan.isActive():
         return
+    
     if path is not None:
         path = resolvePath(path)
         if value is None:
             raise MemoryException("setMemory", path)
         try:
-            if isinstance(path, list):
-                from engine.aoi.memory import AOIMemory
-                from engine.aoi.aoi import AOIContextMemory
-                aoi = AOIContextMemory.get()
-                if isinstance(aoi, AOIMemory):
-                    if aoi.memory.has(path):
-                        aoi.memory.set(path, value)
-                    else:
-                        from core.memory.memory import PlcMemory
-                        memory = PlcMemory.getContainer(SYSTEMTAGS)
-                        if memory.has(path):
-                            memory.set(path, value)
+            from engine.aoi.memory import AOIMemory
+            from engine.aoi.aoi import AOIContextMemory
+            aoi = AOIContextMemory.get()
+            if isinstance(aoi, AOIMemory):
+                if aoi.memory.has(path):
+                    aoi.memory.set(path, value)
                 else:
                     from core.memory.memory import PlcMemory
-                    memory = None
-                    if path[0].startswith("\\"):
-                        program = path[0].lstrip("\\")
-                        path.pop(0)
-                        memory = PlcMemory.getContainer(program)
-                    else:
-                        name = CurrentProgramName.get()
-                        memory = PlcMemory.getContainer(name) if name else None
+                    memory = PlcMemory.getContainer(SYSTEMTAGS)
+                    if memory.has(path):
+                        memory.set(path, value)
+            else:
+                from core.memory.memory import PlcMemory
+                memory = None
+                if path[0].startswith("\\"):
+                    program = path[0].lstrip("\\")
+                    path.pop(0)
+                    memory = PlcMemory.getContainer(program)
+                else:
+                    name = CurrentProgramName.get()
+                    memory = PlcMemory.getContainer(name) if name else None
+                    
+                    if memory is None or not memory.has(path):
+                        memory = PlcMemory.getContainer(CONTROLLERTAGS)
 
                         if memory is None or not memory.has(path):
-                            memory = PlcMemory.getContainer(CONTROLLERTAGS)
+                            memory = PlcMemory.getContainer(SYSTEMTAGS)
 
-                            if memory is None or not memory.has(path):
-                                memory = PlcMemory.getContainer(SYSTEMTAGS)
-
-                    if memory is not None:
-                        memory.set(path, value)
+                if memory is not None:
+                    memory.set(path, value)
         except Exception as e:
             raise MemoryException("setMemory", path, value).with_traceback(e.__traceback__)
     else:
@@ -304,7 +308,26 @@ def resolveExpr(path: str) -> int | float:
         resolved = resolved.replace(match, str(value))
     return evalMath(resolved)
 
-def resolvePath(path: str) -> list[str|int|float]:
+def resolvePath(path: str|list|tuple) -> tuple[str|int]:
+    if isinstance(path, str):
+        if '[' in path:
+            in_bracket = False
+            for char in path:
+                if char == '[':
+                    in_bracket = True
+                elif char == ']':
+                    in_bracket = False
+                elif in_bracket and char.isalpha():
+                    return resolvePath_raw(path)
+    
+        return _resolvePath_cached(path)
+    return pathToTuple(path)
+
+@lru_cache(maxsize=5000)
+def _resolvePath_cached(path) -> tuple[str|int]:
+    return resolvePath_raw(path)
+
+def resolvePath_raw(path: str) -> tuple[str|int]:
     out:list[str] = []
     for part in parsePath(path):
         if isinstance(part, Expr):
@@ -315,7 +338,14 @@ def resolvePath(path: str) -> list[str|int|float]:
         int(x) if isinstance(x, str) and x.isdigit() else x
         for x in out
     ]
-    return out
+    return pathToTuple(out)
+
+def pathToTuple(path:str|list|tuple) -> tuple[str|int]:
+    if isinstance(path, str):
+        path = path.split(".")
+    if isinstance(path, list):
+        path = tuple(path)
+    return path
 
 def parsePath(s: str|list|tuple) -> list[str|int]:
     if isinstance(s, str):
@@ -366,8 +396,6 @@ def resolveMathExpr(expr: str) -> str:
 
 #FUNC_CALL_RE = re.compile(r'(?P<func>[A-Za-z_]\w*)\s*\((?:P<arg>[^()]+|(?R))*)\)')
 FUNC_CALL_RE = re.compile(r'(?P<func>[A-Za-z_]\w*)\s*\((?P<arg>(?:[^()]+|(?R))*)\)')
-
-
 
 def _apply_function(func_name: str, arg_expr: str) -> int | float:
     resolved_arg = substituteVariables(arg_expr)   # recursion

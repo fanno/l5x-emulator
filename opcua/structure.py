@@ -34,6 +34,7 @@ class StructureField:
     type:int = field(init=True, default=0)
     dataType:str = field(init=True, default=None)
     dimension:list[int] | str = field(init=True, default_factory=lambda : [])
+    usage:str = field(init=True, default=None)
 
     def __post_init__(self):
         if isinstance(self.dimension, str):

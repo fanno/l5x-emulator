@@ -163,12 +163,15 @@ class Array(Generic[T], DataVariant):
     def fromL5K(self, data:L5KReader|str|list|None) -> Any:
         reader = self.getReader(data)
 
-        for value in self._data:
+        from datatypes.custom.string import STRING
+
+        for idx, value in enumerate(self._data):
+
             if isinstance(value, BOOL):
                 value.setValue(reader.nextBool())
             elif isinstance(value, Array):
                 value.fromL5K(reader)
-            elif isinstance(value, UDT):
+            elif isinstance(value, STRING|UDT):
                 value.fromL5K(reader.nextRaw())
             else:
                 value.setValue(reader.nextRaw())

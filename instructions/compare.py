@@ -1,24 +1,30 @@
 import math
+from typing import Any
+
+from core.registry.instructionregistry import InstructionRegistry
+from core.memory.memory import Memory
+
 from engine.context import ExecutionContext
 from engine.instruction import Instruction
-from core.registry.instructionregistry import InstructionRegistry
-
 from engine.st.helper import hook_expression
+from engine.fbd.block import FBDBlock
 
 from instructions.helper import getPLCValue
-from engine.fbd.block import FBDBlock
-from typing import Any
+
 from datatypes.fdb import FBD_COMPARE
 
 @InstructionRegistry.register
 class CMP(Instruction):
 
+    def __init__(self, name:str = None, args:list[str] = None, memory:Memory = None):
+        super().__init__(name, args, memory)
+
+        self.expression = "return " + hook_expression(self.args[0])
+
     async def ladder_execute(self, ctx:"ExecutionContext") -> None:
         if ctx.RLL.RungStatus:
-            expression = "return " + hook_expression(self.args[0])
-
             from engine.st.hooks import run_exec_env
-            ctx.RLL.RungStatus = await run_exec_env(expression, ctx, "CMP")
+            ctx.RLL.RungStatus = await run_exec_env(self.expression, ctx, "CMP")
 
 @InstructionRegistry.register
 class LIM(Instruction):
