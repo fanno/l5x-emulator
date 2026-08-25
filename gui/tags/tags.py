@@ -36,7 +36,6 @@ class TagsTabs(Frame):
 
         self.data = {}
 
-
     def deep_merge(self, base: dict, override: dict) -> dict:
         result = base.copy()
         for key, value in override.items():
@@ -52,14 +51,6 @@ class TagsTabs(Frame):
 
     def  updateTags(self, data: dict[str, Memory]):
         self.data = self.deep_merge(self.data or {}, data)
-        '''
-        if not self.data:
-            self.data = data
-        else:
-            self.data.update(data)
-            #for key, value in data.items():
-            #    self.data[key] = value
-        '''
 
         tag_names = list(self.data.keys())
         self.tag_dropdown['values'] = tag_names
