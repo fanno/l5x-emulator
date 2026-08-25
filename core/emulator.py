@@ -250,47 +250,42 @@ class Emulator(threading.Thread):
 
                     if lastDrawUi < timer.start:
                         data = {}
+                        data[PLCSYSTEM.NAME] = {}
+                        data[self.NAME] = {}
+                        for pname, program in self.programs.items():
+                            data[program.Name] = {}
 
-                        if self.statusRequestEvent.Initial or True:
-                            data[PLCSYSTEM.NAME] = {}
+                        if self.statusRequestEvent.Initial:
                             for key, variable in PLCSYSTEM.memory.getMemoryAll().items():
                                 if isPLCInstance(variable, SupportsToUi):
                                     data[PLCSYSTEM.NAME][key] = variable.toUI(key)
 
-                            data[self.NAME] = {}
                             for key, variable in self.memory.getMemoryAll().items():               
                                 if isPLCInstance(variable, SupportsToUi):
                                     data[self.NAME][key] = variable.toUI(key)
 
                             for pname, program in self.programs.items():
-                                data[program.Name] = {}
                                 for key, variable in program.memory.getMemoryAll().items():
                                     if isPLCInstance(variable, SupportsToUi):
                                         data[program.Name][key] = variable.toUI(key)
-                        else:
-                            data[PLCSYSTEM.NAME] = {}
-                            data[self.NAME] = {}
-                            for pname, program in self.programs.items():
-                                data[program.Name] = {}
-
-                            if self.statusRequestEvent.Container:
-                                container = None
-                                if self.statusRequestEvent.Container == PLCSYSTEM.NAME:
-                                    container = PLCSYSTEM.memory
-                                elif self.statusRequestEvent.Container == self.NAME:
-                                    container = self.memory
-                                else:
-                                    for pname, program in self.programs.items():
-                                        if self.statusRequestEvent.Container == pname:
-                                            container = program.memory
-                                            break
-                                    
-                                if container is not None:
-                                    for key, item in self.statusRequestEvent.Paths.items():
-                                        value = container.get(key)
-                                        if value is not None:
-                                            if isPLCInstance(variable, SupportsToUi):
-                                                data[self.statusRequestEvent.Container][key] = value.toUI(key, item)
+                        elif self.statusRequestEvent.Container:
+                            container = None
+                            if self.statusRequestEvent.Container == PLCSYSTEM.NAME:
+                                container = PLCSYSTEM.memory
+                            elif self.statusRequestEvent.Container == self.NAME:
+                                container = self.memory
+                            else:
+                                for pname, program in self.programs.items():
+                                    if self.statusRequestEvent.Container == pname:
+                                        container = program.memory
+                                        break
+                                
+                            if container is not None:
+                                for key, item in self.statusRequestEvent.Paths.items():
+                                    value = container.get(key)
+                                    if value is not None:
+                                        if isPLCInstance(value, SupportsToUi):
+                                            data[self.statusRequestEvent.Container][key] = value.toUI(key, item)
 
                         taskStatus:dict[str, StatusScan] = {}
                         programStatus:dict[str, dict[str, StatusScan]] = {}

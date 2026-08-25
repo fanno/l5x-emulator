@@ -47,8 +47,7 @@ class L5KReader:
     def _next(self):
         self.index += 1
         self._resetBit()
-        next = self._current()
-        return next
+        return self._current()
 
     def _current(self):
         if isinstance(self.data , list):
@@ -79,7 +78,5 @@ class L5KReader:
                     self.index += 1
                 self.bit_index = self.bit_start
         self.bool = True
-
-        curent = self._current()
         
-        return bool(curent & (1 << self.bit_index))
+        return bool(self._current() & (1 << self.bit_index))

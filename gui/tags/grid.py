@@ -141,12 +141,12 @@ class Grid(Treeview):
 
     def updateData(self, Container:str, data):
         self.visible_iids = self.get_visible_items()
-        
         self.rawData = data
-        if self.Container != Container:
+        if self.Container == None or self.Container != Container:
             self.delete(*self.get_children())
             self._populate(parent='', data=self.rawData[Container], path=[], create=True)
             self._update_stripes()
+
         self.Container = Container
 
     def updateTask(self, event:Event = None):

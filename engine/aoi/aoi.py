@@ -168,7 +168,6 @@ class AOIRegistry:
     def getCache(key:str) -> Instruction:
         return AOIRegistry._cache[key]
 
-
 class AOI_CLASS(Instruction):
     aoiObject:AOI
     aoiName:str
