@@ -33,11 +33,12 @@ async def create_struct(struct:Structure, server:Server, id):
     newFields:list[StructureField] = []
     
     for field in struct.fields:
-        struct_field = new_struct_field(name=field.name,
-                                        dtype=field.type,
-                                        array=bool(field.dimension))
+        if field.usage != "Local":
+            struct_field = new_struct_field(name=field.name,
+                                            dtype=field.type,
+                                            array=bool(field.dimension))
 
-        newFields.append(struct_field)
+            newFields.append(struct_field)
 
     struct.snode, struct.nodeid = await new_struct(
         server,

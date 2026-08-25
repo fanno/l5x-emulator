@@ -1,7 +1,7 @@
 from typing import TypeVar, Dict, ClassVar, Any, Optional, Dict, TYPE_CHECKING
 from contextlib import contextmanager
 from lxml.etree import _Element as Element
-from dataclasses import dataclass, field, InitVar
+from dataclasses import dataclass, field, InitVar, fields
 
 from core.objectregistry import ObjectRegistry
 from core.registry.datatyperegistry import DataTypeRegistry
@@ -24,8 +24,6 @@ from datatypes.custom.array import Array
 
 from protocols.memory import HasEnable
 
-from utils.isplcinstance import isPLCInstance
-
 TT = TypeVar("TT", bound=type)
 
 @dataclass
@@ -37,7 +35,7 @@ class Parameter():
 
     def __post_init__(self):
         if isinstance(self.Required , str):
-            self.Required = self.Required == 'true'
+            self.Required = BOOL.toValue(self.Required)
 
 @dataclass
 class Local():
@@ -139,65 +137,11 @@ class AOI():
 
 class AOIRegistry:
     _registry: ClassVar[Dict[str, AOI]] = {}
+    _cache: ClassVar[Dict[str, Any]] = {}
 
     @staticmethod
     def register(cls: AOI) -> None:
-        #if cls.Name in AOIRegistry._registry:
-        #    raise ValueError(f"AOI {cls.Name} already registered")
         AOIRegistry._registry[cls.Name] = cls
-
-    @staticmethod
-    async def execute(name:str, args:list[str], ctx:"ExecutionContext") -> None:
-        with Hierarchy.scope(name):
-            with PLCFaultHandler.minor():
-                if name not in AOIRegistry._registry:
-                    raise KeyError(f"AOI {name} not supported")
-                
-                from core.memory.helper import getMemory, setMemory
-                try:
-                    instance = args[0]
-                    rest = args[1:]
-
-                    aoiObject = AOIRegistry._registry[name]
-
-                    aoiData = getMemory(instance)
-
-                    if isPLCInstance(aoiData, HasEnable):
-                        aoiData.EnableIn.setValue(ctx.RLL.RungEnabled)
-                    else:
-                        raise TypeError("Returned AOI does not implement EnableIn/EnableOut")
-
-                    from engine.aoi.memory import AOIMemory
-                    aoi = ObjectRegistry.get(aoiData, AOIMemory)
-
-                    if aoi.memory.size() == 0:
-                        for local in aoiObject.Locals:
-                            aoi.memory.set(local.Name, local.getVariable())
-
-                    for attr, value in aoiData.__dict__.items():
-                        aoi.memory.set(attr, value)
-
-                    i = 0
-                    for p in aoiObject.Parameters:
-                        if p.Required or p.Usage == 'InOut':
-                            value = getMemory(rest[i])
-                            
-                            aoi.memory.set(p.Name, value)
-                            i += 1
-
-                    with AOIContextMemory.scope(aoi):
-                        await aoiObject.execute(args, ctx)
-                finally:
-                    i = 0
-                    for p in aoiObject.Parameters:
-                        if p.Required or p.Usage == 'InOut':
-                            if p.Usage != 'Input':
-                                value = aoi.memory.get(p.Name)
-                                setMemory(rest[i], value)
-                            i += 1
-                        if p.Usage == 'Output':
-                            value = aoi.memory.get(p.Name)
-                            setattr(aoiData, p.Name, value)
 
     @staticmethod
     def has(name:str) -> bool:
@@ -210,6 +154,20 @@ class AOIRegistry:
     @staticmethod
     def clear() -> None:
         AOIRegistry._registry = {}
+        AOIRegistry._cache = {}
+
+    @staticmethod
+    def registerCache(key:str, cls: Instruction) -> None:
+        AOIRegistry._cache[key] = cls
+
+    @staticmethod
+    def hasCache(key:str) -> bool:
+        return key in AOIRegistry._cache
+    
+    @staticmethod
+    def getCache(key:str) -> Instruction:
+        return AOIRegistry._cache[key]
+
 
 class AOI_CLASS(Instruction):
     aoiObject:AOI
@@ -220,7 +178,7 @@ class AOI_CLASS(Instruction):
         self.aoiName = self.args[0]
         self.args = self.args[1:]
 
-        self.aoiObject = AOIRegistry._registry[self.name]
+        self.aoiObject = AOIRegistry.get(self.name)
 
     async def execute(self, ctx:"ExecutionContext") -> None:
         with Hierarchy.scope(self.aoiName):
@@ -230,7 +188,7 @@ class AOI_CLASS(Instruction):
                     aoiData = getMemory(self.aoiName)
 
                     if isinstance(aoiData, HasEnable):
-                        aoiData.EnableIn.setValue(ctx.RLL.RungEnabled)
+                        aoiData.EnableIn.setValue(ctx.RLL.RungStatus)
                     else:
                         raise TypeError("Returned AOI does not implement EnableIn/EnableOut")
 
@@ -238,11 +196,9 @@ class AOI_CLASS(Instruction):
                     aoi = ObjectRegistry.get(aoiData, AOIMemory)
 
                     if aoi.memory.size() == 0:
-                        for local in self.aoiObject.Locals:
-                            aoi.memory.set(local.Name, local.getVariable())
-
-                    for attr, value in aoiData.__dict__.items():
-                        aoi.memory.set(attr, value)
+                        for field in fields(aoiData):
+                            if field.repr:
+                                aoi.memory.set(field.name, getattr(aoiData, field.name))
 
                     i = 0
                     for p in self.aoiObject.Parameters:
@@ -252,6 +208,8 @@ class AOI_CLASS(Instruction):
                             i += 1
                     with AOIContextMemory.scope(aoi):
                         await self.aoiObject.execute(self.args, ctx)
+
+                    ctx.RLL.RungStatus = aoiData.EnableOut.getPLCValue()
                 except Exception as e:
                     raise e
                 finally:

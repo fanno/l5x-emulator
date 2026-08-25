@@ -1,6 +1,9 @@
 import ast
 import re
 
+L5KBOOLBYTEEND = "lk5.bool.byte.end"
+L5KSKIP = "lk5.skip"
+
 class L5KReader:
     debugging = {}
 
@@ -56,6 +59,9 @@ class L5KReader:
     def nextRaw(self):
         return self._next()
 
+    def nextBoolByte(self):
+        self.bool = False
+        
     def nextBool(self):
         if not self.bool:
             self.index += 1

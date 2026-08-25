@@ -12,7 +12,8 @@ from opcua.helpers import *
 from core.events import LoadingEvent
 from eventbus.eventbus import EventBus
 
-async def loadDataTypes(controller:Element, opcua:OpcuaTag):
+async def loadDataTypes(controller:Element, opcua:OpcuaTag) -> int:
+    loaded:int = 0
     process = True
     while process:
         process = False
@@ -40,7 +41,9 @@ async def loadDataTypes(controller:Element, opcua:OpcuaTag):
 
                     DataTypes.add(struct)
                     await opcua.createDataType(struct)
-                process = True
+                    process = True
+                    loaded += 1
+    return loaded
 
 def _canCreateDataType(tag:Element):
     name = tag.get("Name")
@@ -53,7 +56,6 @@ def _canCreateDataType(tag:Element):
     members = tag.findall("./Members//Member")
     for member in members:
         if member.get("Hidden") == "false":
-            dt = member.get("DataType")
-            if not DataTypes.has(dt):
+            if not DataTypes.has(member.get("DataType")):
                 return False
     return True

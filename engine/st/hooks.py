@@ -32,14 +32,21 @@ def setHook(name, value):
     from core.memory.helper import setMemory
     setMemory(name, value)
 
-def build_exec_env(ctx: "engine.context.ExecutionContext") -> dict:
+def build_exec_env(ctx: "engine.context.ExecutionContext", st:str) -> dict:
     from core.registry.instructionregistry import InstructionRegistry
     from engine.instruction import Instruction
+    from engine.aoi.aoi import AOIRegistry
 
     async def callHook(name, args):
         with Hierarchy.scope(name):
             with PLCFaultHandler.minor():
-                instance: Instruction = InstructionRegistry.get(name)(name=name, args=args)
+                key = (id(st), name, tuple(args))
+                if AOIRegistry.hasCache(key) and isinstance(st, types.CodeType):
+                    instance = AOIRegistry.getCache(key)
+                else:
+                    instance: Instruction = InstructionRegistry.get(name)(name=name, args=args)
+                    AOIRegistry.registerCache(key, instance)
+
                 return await instance.st(ctx)
 
     return {
@@ -49,7 +56,7 @@ def build_exec_env(ctx: "engine.context.ExecutionContext") -> dict:
     }
 
 async def run_exec_env(expression: str, ctx: "engine.context.ExecutionContext",  error_tag: str, timeout: Optional[float] = 5.0) -> Any:
-    exec_env = build_exec_env(ctx)
+    exec_env = build_exec_env(ctx, expression)
     
     if not isinstance(expression, types.CodeType):
         expression = make_async_st(expression)

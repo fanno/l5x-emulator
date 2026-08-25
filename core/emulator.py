@@ -354,9 +354,11 @@ class Emulator(threading.Thread):
                     if module.Vendor == vendor:
                         logging.debug(f"Loaded HW module: {dev_id}, {info}")
                         self.modulesLogic[name] = HWLogic(info['data'])
-
-        await loadAoiDefinition(self.controller, self.opcua)
-        await loadDataTypes(self.controller, self.opcua)
+        looad = 1
+        while looad:
+            looad = 0
+            looad += await loadDataTypes(self.controller, self.opcua)
+            looad += await loadAoiDefinition(self.controller, self.opcua)
 
         await self.opcua.createDataTypes()
 

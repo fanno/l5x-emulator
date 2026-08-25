@@ -14,6 +14,7 @@ from opcua.updater import OPCUAU
 from datatypes.custom.l5k import L5K
 from datatypes.custom.bool import BOOL
 
+from core.l5k.l5kreader import L5KSKIP, L5KBOOLBYTEEND
 
 @dataclass
 class UDT(OPCUAU, L5K):
@@ -43,7 +44,7 @@ class UDT(OPCUAU, L5K):
         raise ValueError(f"Classlass {dt_name}, not founed")
 
     def _reset(self):
-        for f in self.__dataclass_fields__.values():
+        for f in fields(self):
             if f.repr:
                 current = getattr(self, f.name, None)
                 if isPLCInstance(current, Resettable):
@@ -52,22 +53,27 @@ class UDT(OPCUAU, L5K):
     def toUI(self, name:str, path_filter: dict[str, dict] | None = None) -> UIMemoryObject:
         members = {}
 
-        for f in self.__dataclass_fields__.values():
+        for f in fields(self):
             if f.repr:
-                if path_filter is None or f.name in path_filter:
-                    child = getattr(self, f.name)
+                showInUI = True
+                if f.metadata.get("usage") == "Local":
+                    showInUI = False
 
-                    if isPLCInstance(child, SupportsToUi):
-                        next = None
-                        if path_filter:
-                            next = path_filter[f.name]
-                        members[f.name] = child.toUI(f.name, next)
+                if showInUI:
+                    if path_filter is None or f.name in path_filter:
+                        child = getattr(self, f.name)
+
+                        if isPLCInstance(child, SupportsToUi):
+                            next = None
+                            if path_filter:
+                                next = path_filter[f.name]
+                            members[f.name] = child.toUI(f.name, next)
 
         return UIMemoryObject(name, Class=self.__class__.__name__, Datatype=self._type, Value=members)
 
     def toL5X(self, element:Element) -> None:
         if isinstance(element , Element):
-            for f in self.__dataclass_fields__.values():
+            for f in fields(self):
                 if f.repr:
                     current = getattr(self, f.name, None)
 
@@ -79,7 +85,7 @@ class UDT(OPCUAU, L5K):
         if type(self).__name__ != type(value).__name__:
             raise TypeError(f"Expected ({type(self)}, {type(self).__name__}), got ({type(value)}, {type(value).__name__})")
 
-        for f in self.__dataclass_fields__.values():
+        for f in fields(self):
             if f.repr:            
                 current = getattr(self, f.name, None)
                 if isPLCInstance(current, SupportsSetValue):
@@ -90,14 +96,14 @@ class UDT(OPCUAU, L5K):
         if self._on_change is None:
             self._on_change = on_change
 
-        for f in self.__dataclass_fields__.values():
+        for f in fields(self):
             if f.repr:
                 current = getattr(self, f.name, None)
                 if isPLCInstance(current, SupportsOPCUA):
                     current.setOnChange(self._child_changed)
 
     def _register_change(self):
-        for f in self.__dataclass_fields__.values():
+        for f in fields(self):
             if f.repr:
                 current = getattr(self, f.name, None)
                 if isPLCInstance(current, SupportsOPCUA):
@@ -118,17 +124,20 @@ class UDT(OPCUAU, L5K):
             
             value = getattr(self, field.name)
 
-            if isinstance(value, BOOL):
-                value.setValue(reader.nextBool())
-            elif isinstance(value, Array):
-                value.fromL5K(reader.nextRaw())
-            elif isinstance(value, STRING):
-                string = reader.nextRaw()
-                value.fromL5K(string)
-            elif isinstance(value, UDT):
-                value.fromL5K(reader.nextRaw())
-            else:
-                value.setValue(reader.nextRaw())
+            if not field.metadata.get(L5KSKIP, False):
+                if isinstance(value, BOOL):
+                    value.setValue(reader.nextBool())
+                    if field.metadata.get(L5KBOOLBYTEEND, False):
+                        reader.nextBoolByte()                    
+                elif isinstance(value, Array):
+                    value.fromL5K(reader.nextRaw())
+                elif isinstance(value, STRING):
+                    string = reader.nextRaw()
+                    value.fromL5K(string)
+                elif isinstance(value, UDT):
+                    value.fromL5K(reader.nextRaw())
+                else:
+                    value.setValue(reader.nextRaw())
 
 @dataclass
 class ROCKWELL_UDT(UDT):

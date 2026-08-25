@@ -32,7 +32,6 @@ class DataTypeRegistry:
 
     @staticmethod
     def register_local(cls: T) -> T:
-        # ADD THIS CHECK:
         if isinstance(cls, list):
             raise TypeError(f"Cannot register a list! Got: {cls}")
 

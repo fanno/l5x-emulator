@@ -5,7 +5,7 @@ from asyncua import ua
 
 from core.registry.datatyperegistry import DataTypeRegistry
 
-from opcua.structure import Structure
+from opcua.structure import Structure, sanitizeName
 from opcua.helpers import getPythonVariantType
 
 from datatypes.custom.array import Array
@@ -75,11 +75,12 @@ def createClassFromStructure(struct:Structure) -> Type:
             scalar_default = make_array_factory()
         else:
             scalar_default = py_type
-
+            
         _field = field(
             init=False,
             repr=True,
-            default_factory=scalar_default
+            default_factory=scalar_default,
+            metadata={"usage":f.usage}
         )
 
         schema.append((f.name, py_type, _field))
@@ -119,10 +120,12 @@ class DataTypes:
     
     @staticmethod
     def get(name:str) -> Structure:
+        name = sanitizeName(name)
         return DataTypes._dataTypes.get(name.upper())
 
     @staticmethod
     def has(name:str) -> bool:
+        name = sanitizeName(name)
         return name.upper() in DataTypes._dataTypes
 
     @staticmethod
