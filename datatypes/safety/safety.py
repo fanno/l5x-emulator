@@ -4,11 +4,13 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, INT, REAL, SINT
 from datatypes.custom.bool import BOOL
-from datatypes.custom.udt import UDT
+from datatypes.custom.udt import UDT, _32BIT_UDT
+
+from core.l5k.l5kreader import L5KBOOLBYTEEND
 
 @DataTypeRegistry.register
 @dataclass
-class LIGHT_CURTAIN(UDT):
+class LIGHT_CURTAIN(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ResetType: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
@@ -28,7 +30,7 @@ class LIGHT_CURTAIN(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class MUTING_FOUR_SENSOR_BIDIR(UDT):
+class MUTING_FOUR_SENSOR_BIDIR(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
     LightCurtain: BOOL = field(init=False, default_factory=BOOL)
@@ -58,7 +60,7 @@ class MUTING_FOUR_SENSOR_BIDIR(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class MUTING_TWO_SENSOR_ASYM(UDT):
+class MUTING_TWO_SENSOR_ASYM(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
     LightCurtain: BOOL = field(init=False, default_factory=BOOL)
@@ -86,10 +88,9 @@ class MUTING_TWO_SENSOR_ASYM(UDT):
     FaultCode: DINT = field(init=False, default_factory=DINT)
     DiagnosticCode: DINT = field(init=False, default_factory=DINT)
 
-
 @DataTypeRegistry.register
 @dataclass
-class MUTING_TWO_SENSOR_SYM(UDT):
+class MUTING_TWO_SENSOR_SYM(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
     LightCurtain: BOOL = field(init=False, default_factory=BOOL)
@@ -124,7 +125,7 @@ class REDUNDANT_INPUT(UDT):
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     ChannelB: BOOL = field(init=False, default_factory=BOOL)
     CircuitReset: BOOL = field(init=False, default_factory=BOOL)
-    FaultReset: BOOL = field(init=False, default_factory=BOOL)
+    FaultReset: BOOL = field(init=False, default_factory=BOOL, metadata=L5KBOOLBYTEEND)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     O1: BOOL = field(init=False, default_factory=BOOL)
     CI: BOOL = field(init=False, default_factory=BOOL)
@@ -140,7 +141,7 @@ class REDUNDANT_OUTPUT(UDT):
     Enable: BOOL = field(init=False, default_factory=BOOL)
     Feedback1: BOOL = field(init=False, default_factory=BOOL)
     Feedback2: BOOL = field(init=False, default_factory=BOOL)
-    FaultReset: BOOL = field(init=False, default_factory=BOOL)
+    FaultReset: BOOL = field(init=False, default_factory=BOOL, metadata=L5KBOOLBYTEEND)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     O1: BOOL = field(init=False, default_factory=BOOL)
     O2: BOOL = field(init=False, default_factory=BOOL)
@@ -257,7 +258,7 @@ class SAFE_BREAK_CONTROL(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class SAFE_DIRECTION(UDT):
+class SAFE_DIRECTION(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
@@ -274,7 +275,7 @@ class SAFE_DIRECTION(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class SAFE_OPERATING_STOP(UDT):
+class SAFE_OPERATING_STOP(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
@@ -295,7 +296,7 @@ class SAFE_OPERATING_STOP(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class SAFE_STOP_1(UDT):
+class SAFE_STOP_1(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
@@ -318,7 +319,7 @@ class SAFE_STOP_1(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class SAFE_STOP_2(UDT):
+class SAFE_STOP_2(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     RestartType: BOOL = field(init=False, default_factory=BOOL)
@@ -348,7 +349,7 @@ class SAFE_STOP_2(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class TWO_HAND_RUN_STATION(UDT):
+class TWO_HAND_RUN_STATION(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ActivePinType: BOOL = field(init=False, default_factory=BOOL)
     ActivePin: BOOL = field(init=False, default_factory=BOOL)
@@ -356,7 +357,7 @@ class TWO_HAND_RUN_STATION(UDT):
     RightButtonNormallyClosed: BOOL = field(init=False, default_factory=BOOL)
     LeftButtonNormallyOpen: BOOL = field(init=False, default_factory=BOOL)
     LeftButtonNormallyClosed: BOOL = field(init=False, default_factory=BOOL)
-    FaultReset: BOOL = field(init=False, default_factory=BOOL)
+    FaultReset: BOOL = field(init=False, default_factory=BOOL, metadata=L5KBOOLBYTEEND)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     BP: BOOL = field(init=False, default_factory=BOOL)
     SA: BOOL = field(init=False, default_factory=BOOL)

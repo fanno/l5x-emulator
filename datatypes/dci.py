@@ -4,11 +4,11 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, REAL
 from datatypes.custom.bool import BOOL
-from datatypes.custom.udt import ROCKWELL_UDT
+from datatypes.custom.udt import _R32BIT_UDT
 
 @DataTypeRegistry.register
 @dataclass
-class DCAF_INPUT(ROCKWELL_UDT):
+class DCAF_INPUT(_R32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     InputStatus: BOOL = field(init=False, default_factory=BOOL)
     Reset: BOOL = field(init=False, default_factory=BOOL)    
@@ -33,7 +33,7 @@ class DCAF_INPUT(ROCKWELL_UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class DCA_INPUT(ROCKWELL_UDT):
+class DCA_INPUT(_R32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     InputStatus: BOOL = field(init=False, default_factory=BOOL)
     Reset: BOOL = field(init=False, default_factory=BOOL)    
@@ -57,7 +57,7 @@ class DCA_INPUT(ROCKWELL_UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_MONITOR(ROCKWELL_UDT):
+class DCI_MONITOR(_R32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     EnablChannelBeIn: BOOL = field(init=False, default_factory=BOOL)
@@ -75,7 +75,7 @@ class DCI_MONITOR(ROCKWELL_UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_START(ROCKWELL_UDT):
+class DCI_START(_R32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     ChannelB: BOOL = field(init=False, default_factory=BOOL)
@@ -94,7 +94,7 @@ class DCI_START(ROCKWELL_UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_STOP(ROCKWELL_UDT):
+class DCI_STOP(_R32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     ChannelB: BOOL = field(init=False, default_factory=BOOL)
@@ -114,7 +114,7 @@ class DCI_STOP(ROCKWELL_UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_STOP_TEST(ROCKWELL_UDT):
+class DCI_STOP_TEST(_R32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     ChannelB: BOOL = field(init=False, default_factory=BOOL)
@@ -135,7 +135,7 @@ class DCI_STOP_TEST(ROCKWELL_UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_STOP_TEST_LOCK(ROCKWELL_UDT):
+class DCI_STOP_TEST_LOCK(_R32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     ChannelB: BOOL = field(init=False, default_factory=BOOL)
@@ -160,7 +160,7 @@ class DCI_STOP_TEST_LOCK(ROCKWELL_UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class DCI_STOP_TEST_MUTE(ROCKWELL_UDT):
+class DCI_STOP_TEST_MUTE(_R32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ChannelA: BOOL = field(init=False, default_factory=BOOL)
     ChannelB: BOOL = field(init=False, default_factory=BOOL)

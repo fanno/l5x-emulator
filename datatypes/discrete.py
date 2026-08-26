@@ -3,12 +3,20 @@ from dataclasses import dataclass, field
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, REAL
-from datatypes.custom.bool import BOOL
-from datatypes.custom.udt import UDT
+from datatypes.custom.bool import BOOL, MEMORY_BIT
+from datatypes.custom.udt import _R32BIT_UDT
+
+from core.l5k.l5kreader import L5KBOOLBYTEEND, L5KSKIP
 
 @DataTypeRegistry.register
 @dataclass
-class DISCRETE_2STATE(UDT):
+class DISCRETE_2STATE(_R32BIT_UDT):
+
+    def __post_init__(self):
+        self.InstructFault = MEMORY_BIT(self.Status, 0)
+        self.FaultTimeInv = MEMORY_BIT(self.Status, 1)
+        self.OperReqInv = MEMORY_BIT(self.Status, 2)
+
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     ProgCommand: BOOL = field(init=False, default_factory=BOOL)
     Oper0Req: BOOL = field(init=False, default_factory=BOOL)
@@ -35,7 +43,7 @@ class DISCRETE_2STATE(UDT):
     ProgHandReq: BOOL = field(init=False, default_factory=BOOL)
     OperProgReq: BOOL = field(init=False, default_factory=BOOL)
     OperOperReq: BOOL = field(init=False, default_factory=BOOL)
-    ProgValueReset: BOOL = field(init=False, default_factory=BOOL)
+    ProgValueReset: BOOL = field(init=False, default_factory=BOOL, metadata=L5KBOOLBYTEEND)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Out: BOOL = field(init=False, default_factory=BOOL)
     Device0State: BOOL = field(init=False, default_factory=BOOL)
@@ -47,13 +55,22 @@ class DISCRETE_2STATE(UDT):
     Override: BOOL = field(init=False, default_factory=BOOL)
     Hand: BOOL = field(init=False, default_factory=BOOL)
     Status: DINT = field(init=False, default_factory=DINT)
-    InstructFault: BOOL = field(init=False, default_factory=BOOL)
-    FaultTimeInv: BOOL = field(init=False, default_factory=BOOL)
-    OperReqInv: BOOL = field(init=False, default_factory=BOOL)
+    InstructFault: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    FaultTimeInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    OperReqInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
 
 @DataTypeRegistry.register
 @dataclass
-class DISCRETE_3STATE(UDT):
+class DISCRETE_3STATE(_R32BIT_UDT):
+
+    def __post_init__(self):
+        self.InstructFault = MEMORY_BIT(self.Status, 0)
+        self.FaultTimeInv = MEMORY_BIT(self.Status, 1)
+        self.OverrideStateInv = MEMORY_BIT(self.Status, 2)
+        self.ProgCommandInv = MEMORY_BIT(self.Status, 3)
+        self.OperReqInv = MEMORY_BIT(self.Status, 4)
+        self.HandCommandInv = MEMORY_BIT(self.Status, 5)
+
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Prog0Command: BOOL = field(init=False, default_factory=BOOL)
     Prog1Command: BOOL = field(init=False, default_factory=BOOL)
@@ -71,7 +88,6 @@ class DISCRETE_3STATE(UDT):
     HandFB0: BOOL = field(init=False, default_factory=BOOL)
     HandFB1: BOOL = field(init=False, default_factory=BOOL)
     HandFB2: BOOL = field(init=False, default_factory=BOOL)
-    FaultTime: REAL = field(init=False, default_factory=REAL)
     FaultAlarmLatch: BOOL = field(init=False, default_factory=BOOL)
     FaultAlmUnlatch: BOOL = field(init=False, default_factory=BOOL)
     OverrideOnInit: BOOL = field(init=False, default_factory=BOOL)
@@ -85,7 +101,6 @@ class DISCRETE_3STATE(UDT):
     Out2State0: BOOL = field(init=False, default_factory=BOOL)
     Out2State1: BOOL = field(init=False, default_factory=BOOL)
     Out2State2: BOOL = field(init=False, default_factory=BOOL)
-    OverrideState: BOOL = field(init=False, default_factory=BOOL)
     FB0State0: BOOL = field(init=False, default_factory=BOOL)
     FB0State1: BOOL = field(init=False, default_factory=BOOL)
     FB0State2: BOOL = field(init=False, default_factory=BOOL)
@@ -105,6 +120,8 @@ class DISCRETE_3STATE(UDT):
     OperProgReq: BOOL = field(init=False, default_factory=BOOL)
     OperOperReq: BOOL = field(init=False, default_factory=BOOL)
     ProgValueReset: BOOL = field(init=False, default_factory=BOOL)
+    FaultTime: REAL = field(init=False, default_factory=REAL)    
+    OverrideState: DINT = field(init=False, default_factory=DINT)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Out0: BOOL = field(init=False, default_factory=BOOL)
     Out1: BOOL = field(init=False, default_factory=BOOL)
@@ -121,9 +138,9 @@ class DISCRETE_3STATE(UDT):
     Override: BOOL = field(init=False, default_factory=BOOL)
     Hand: BOOL = field(init=False, default_factory=BOOL)
     Status: DINT = field(init=False, default_factory=DINT)
-    InstructFault: BOOL = field(init=False, default_factory=BOOL)
-    FaultTimeInv: BOOL = field(init=False, default_factory=BOOL)
-    OverrideStateInv: BOOL = field(init=False, default_factory=BOOL)
-    ProgCommandInv: BOOL = field(init=False, default_factory=BOOL)
-    OperReqInv: BOOL = field(init=False, default_factory=BOOL)
-    HandCommandInv: BOOL = field(init=False, default_factory=BOOL)
+    InstructFault: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    FaultTimeInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    OverrideStateInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    ProgCommandInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    OperReqInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    HandCommandInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)

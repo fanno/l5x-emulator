@@ -3,13 +3,24 @@ from dataclasses import dataclass, field
 from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT, REAL, LINT
-from datatypes.custom.bool import BOOL
+from datatypes.custom.bool import BOOL, MEMORY_BIT
 from datatypes.custom.udt import UDT
 from datatypes.custom.string import STRING
+
+from core.l5k.l5kreader import L5KSKIP
 
 @DataTypeRegistry.register
 @dataclass
 class ALARM(UDT):
+
+    def __post_init__(self):
+        self.InstructFault = MEMORY_BIT(self.Status, 0)
+        self.DeadbandInv = MEMORY_BIT(self.Status, 1)
+        self.ROCPosLimitInv = MEMORY_BIT(self.Status, 2)
+        self.ROCNegLimitInv = MEMORY_BIT(self.Status, 3)
+        self.PresetInv = MEMORY_BIT(self.Status, 4)
+        self.ROCPeriodInv = MEMORY_BIT(self.Status, 5)
+
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In: REAL = field(init=False, default_factory=REAL)
     HHLimit: REAL = field(init=False, default_factory=REAL)
@@ -28,11 +39,11 @@ class ALARM(UDT):
     ROCNegAlarm: BOOL = field(init=False, default_factory=BOOL)
     ROC: REAL = field(init=False, default_factory=REAL)
     Status: DINT = field(init=False, default_factory=DINT)
-    InstructFault: BOOL = field(init=False, default_factory=BOOL)
-    DeadbandInv: BOOL = field(init=False, default_factory=BOOL)
-    ROCPosLimitInv: BOOL = field(init=False, default_factory=BOOL)
-    ROCNegLimitInv: BOOL = field(init=False, default_factory=BOOL)
-    ROCPeriodInv: BOOL = field(init=False, default_factory=BOOL)
+    InstructFault: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    DeadbandInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    ROCPosLimitInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    ROCNegLimitInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    ROCPeriodInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
     
 @DataTypeRegistry.register
 @dataclass

@@ -14,10 +14,14 @@ from opcua.updater import OPCUAU
 from datatypes.custom.l5k import L5K
 from datatypes.custom.bool import BOOL
 
-from core.l5k.l5kreader import L5KSKIP, L5KBOOLBYTEEND
+from core.l5k.l5kreader import L5KSKIP_KEY, L5KBOOLBYTEEND_KEY
 
 @dataclass
 class UDT(OPCUAU, L5K):
+    _l5k_bool_bit: ClassVar[int] = 0
+    _l5k_bool_step: ClassVar[int] = 1
+    _l5k_bool_end: ClassVar[int] = 7
+
     _ua_variant: ClassVar[ua.VariantType] = ua.VariantType.ExtensionObject
     _type:ClassVar[DT] = DT.UDT
 
@@ -115,7 +119,7 @@ class UDT(OPCUAU, L5K):
         
         reader = self.getReader(data)
 
-        if isinstance(self, (ROCKWELL_UDT, AOI_UDT)):
+        if isinstance(self, UDT):
             reader.setBitRules(self._l5k_bool_bit, self._l5k_bool_step, self._l5k_bool_end)
 
         for field in fields(self):
@@ -124,10 +128,10 @@ class UDT(OPCUAU, L5K):
             
             value = getattr(self, field.name)
 
-            if not field.metadata.get(L5KSKIP, False):
+            if not field.metadata.get(L5KSKIP_KEY, False):
                 if isinstance(value, BOOL):
                     value.setValue(reader.nextBool())
-                    if field.metadata.get(L5KBOOLBYTEEND, False):
+                    if field.metadata.get(L5KBOOLBYTEEND_KEY, False):
                         reader.nextBoolByte()                    
                 elif isinstance(value, Array):
                     value.fromL5K(reader.nextRaw())
@@ -140,13 +144,13 @@ class UDT(OPCUAU, L5K):
                     value.setValue(reader.nextRaw())
 
 @dataclass
-class ROCKWELL_UDT(UDT):
+class _R32BIT_UDT(UDT):
     _l5k_bool_bit: ClassVar[int] = 31
     _l5k_bool_step: ClassVar[int] = -1
     _l5k_bool_end: ClassVar[int] = 0
 
 @dataclass
-class AOI_UDT(UDT):
+class _32BIT_UDT(UDT):
     _l5k_bool_bit: ClassVar[int] = 0
     _l5k_bool_step: ClassVar[int] = 1
     _l5k_bool_end: ClassVar[int] = 31

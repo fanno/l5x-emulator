@@ -4,9 +4,8 @@ from core.registry.datatyperegistry import DataTypeRegistry
 from core.l5k.l5kreader import L5KBOOLBYTEEND, L5KSKIP
 
 from datatypes.custom.numbers import DINT, REAL
-from datatypes.custom.bool import BOOL
-from datatypes.custom.udt import UDT, AOI_UDT
-
+from datatypes.custom.bool import BOOL, MEMORY_BIT
+from datatypes.custom.udt import UDT
 
 @DataTypeRegistry.register
 @dataclass
@@ -22,7 +21,7 @@ class FBD_BIT_FIELD_DISTRIBUTE(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_BOOLEAN_AND(AOI_UDT):
+class FBD_BOOLEAN_AND(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In1: BOOL = field(init=False, default_factory=BOOL)
     In2: BOOL = field(init=False, default_factory=BOOL)
@@ -31,21 +30,21 @@ class FBD_BOOLEAN_AND(AOI_UDT):
     In5: BOOL = field(init=False, default_factory=BOOL)
     In6: BOOL = field(init=False, default_factory=BOOL)
     In7: BOOL = field(init=False, default_factory=BOOL)
-    In8: BOOL = field(init=False, default_factory=BOOL, metadata={L5KBOOLBYTEEND:True})
+    In8: BOOL = field(init=False, default_factory=BOOL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Out: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_BOOLEAN_NOT(AOI_UDT):
+class FBD_BOOLEAN_NOT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
-    In: BOOL = field(init=False, default_factory=BOOL, metadata={L5KBOOLBYTEEND:True})
+    In: BOOL = field(init=False, default_factory=BOOL, metadata=L5KBOOLBYTEEND)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Out: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_BOOLEAN_OR(AOI_UDT):
+class FBD_BOOLEAN_OR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In1: BOOL = field(init=False, default_factory=BOOL)
     In2: BOOL = field(init=False, default_factory=BOOL)
@@ -54,16 +53,16 @@ class FBD_BOOLEAN_OR(AOI_UDT):
     In5: BOOL = field(init=False, default_factory=BOOL)
     In6: BOOL = field(init=False, default_factory=BOOL)
     In7: BOOL = field(init=False, default_factory=BOOL)
-    In8: BOOL = field(init=False, default_factory=BOOL, metadata={L5KBOOLBYTEEND:True})
+    In8: BOOL = field(init=False, default_factory=BOOL, metadata=L5KBOOLBYTEEND)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Out: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
-class FBD_BOOLEAN_XOR(AOI_UDT):
+class FBD_BOOLEAN_XOR(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     In1: BOOL = field(init=False, default_factory=BOOL)
-    In2: BOOL = field(init=False, default_factory=BOOL, metadata={L5KBOOLBYTEEND:True})
+    In2: BOOL = field(init=False, default_factory=BOOL, metadata=L5KBOOLBYTEEND)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Out: BOOL = field(init=False, default_factory=BOOL)
 
@@ -170,16 +169,21 @@ class FBD_MATH_ADVANCED(UDT):
 @dataclass
 class FBD_ONESHOT(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
-    InputBit: BOOL = field(init=False, default_factory=BOOL, metadata={L5KBOOLBYTEEND:True})
+    InputBit: BOOL = field(init=False, default_factory=BOOL, metadata=L5KBOOLBYTEEND)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     OutputBit: BOOL = field(init=False, default_factory=BOOL)
 
 @DataTypeRegistry.register
 @dataclass
 class FBD_TIMER(UDT):
+
+    def __post_init__(self):
+        self.InstructFault = MEMORY_BIT(self.Status, 0)
+        self.PresetInv = MEMORY_BIT(self.Status, 1)
+
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     TimerEnable: BOOL = field(init=False, default_factory=BOOL)
-    Reset: BOOL = field(init=False, default_factory=BOOL, metadata={L5KBOOLBYTEEND:True})
+    Reset: BOOL = field(init=False, default_factory=BOOL, metadata=L5KBOOLBYTEEND)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     EN: BOOL = field(init=False, default_factory=BOOL)
     TT: BOOL = field(init=False, default_factory=BOOL)
@@ -187,8 +191,8 @@ class FBD_TIMER(UDT):
     PRE: DINT = field(init=False, default_factory=DINT)
     ACC: DINT = field(init=False, default_factory=DINT)
     Status: DINT = field(init=False, default_factory=DINT)
-    InstructFault: BOOL = field(init=False, default_factory=BOOL, metadata={L5KSKIP:True})
-    PresetInv: BOOL = field(init=False, default_factory=BOOL, metadata={L5KSKIP:True})
+    InstructFault: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    PresetInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
 
 @DataTypeRegistry.register
 @dataclass

@@ -10,7 +10,7 @@ from engine.aoi.aoi import AOI, AOIRegistry
 
 from engine.aoi.aoi import AOI_CLASS    
 
-from datatypes.custom.udt import AOI_UDT
+from datatypes.custom.udt import _32BIT_UDT
 
 from core.events import LoadingEvent
 from eventbus.eventbus import EventBus
@@ -68,7 +68,7 @@ async def loadAoiDefinition(controller:Element, opcua:OpcuaTag) -> int:
                             struct.fields.append(createField(localTag))
                             localTags.remove(localTag)
 
-                    struct.base = (AOI_UDT,)
+                    struct.base = (_32BIT_UDT,)
                     DataTypes.add(struct)
                     InstructionRegistry.register_local(AOI_CLASS, name)
                     process = True

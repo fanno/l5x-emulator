@@ -1,8 +1,10 @@
 import ast
 import re
 
-L5KBOOLBYTEEND = "lk5.bool.byte.end"
-L5KSKIP = "lk5.skip"
+L5KBOOLBYTEEND_KEY = "lk5.bool.byte.end"
+L5KBOOLBYTEEND = {L5KBOOLBYTEEND_KEY: True}
+L5KSKIP_KEY = "lk5.skip"
+L5KSKIP = {L5KSKIP_KEY: True}
 
 class L5KReader:
     debugging = {}

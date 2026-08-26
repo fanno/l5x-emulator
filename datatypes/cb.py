@@ -4,11 +4,13 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT
 from datatypes.custom.bool import BOOL
-from datatypes.custom.udt import UDT
+from datatypes.custom.udt import UDT, _32BIT_UDT
+
+from core.l5k.l5kreader import L5KBOOLBYTEEND
 
 @DataTypeRegistry.register
 @dataclass
-class CB_CONTINUOUS_MODE(UDT):
+class CB_CONTINUOUS_MODE(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     AckType: BOOL = field(init=False, default_factory=BOOL)
     TakeoverMode: BOOL = field(init=False, default_factory=BOOL)
@@ -30,7 +32,7 @@ class CB_CONTINUOUS_MODE(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class CB_CRANKSHAFT_POS_MONITOR(UDT):
+class CB_CRANKSHAFT_POS_MONITOR(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     CamProfile: BOOL = field(init=False, default_factory=BOOL)
     Enable: BOOL = field(init=False, default_factory=BOOL)
@@ -40,7 +42,7 @@ class CB_CRANKSHAFT_POS_MONITOR(UDT):
     InputStatus: BOOL = field(init=False, default_factory=BOOL)
     Reverse: BOOL = field(init=False, default_factory=BOOL)
     Reset: BOOL = field(init=False, default_factory=BOOL)
-    PressMotionStatus: BOOL = field(init=False, default_factory=BOOL)
+    PressMotionStatus: BOOL = field(init=False, default_factory=BOOL, metadata=L5KBOOLBYTEEND)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     TZ: BOOL = field(init=False, default_factory=BOOL)
     DZ: BOOL = field(init=False, default_factory=BOOL)
@@ -52,7 +54,7 @@ class CB_CRANKSHAFT_POS_MONITOR(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class CB_INCH_MODE(UDT):
+class CB_INCH_MODE(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     AckType: BOOL = field(init=False, default_factory=BOOL)
     Enable: BOOL = field(init=False, default_factory=BOOL)
@@ -70,7 +72,7 @@ class CB_INCH_MODE(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class CB_SINGLE_STROKE_MODE(UDT):
+class CB_SINGLE_STROKE_MODE(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     AckType: BOOL = field(init=False, default_factory=BOOL)
     TakeoverMode: BOOL = field(init=False, default_factory=BOOL)

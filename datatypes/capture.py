@@ -10,8 +10,8 @@ from datatypes.custom.udt import UDT
 @dataclass
 class MAXIMUM_CAPTURE(UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
-    In: REAL = field(init=False, default_factory=REAL)
     Reset: BOOL = field(init=False, default_factory=BOOL)
+    In: REAL = field(init=False, default_factory=REAL)
     ResetValue: REAL = field(init=False, default_factory=REAL)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Out: REAL = field(init=False, default_factory=REAL)

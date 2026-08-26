@@ -4,9 +4,10 @@ from core.registry.datatyperegistry import DataTypeRegistry
 from datatypes.custom.string import STRING
 
 from datatypes.custom.numbers import DINT, UDINT, REAL, INT, LINT, SINT
-from datatypes.custom.bool import BOOL
+from datatypes.custom.bool import BOOL, MEMORY_BIT
 from datatypes.custom.array import Array
-from datatypes.custom.udt import UDT, ROCKWELL_UDT
+from datatypes.custom.udt import UDT, _R32BIT_UDT
+from core.l5k.l5kreader import L5KSKIP
 
 @DataTypeRegistry.register
 @dataclass
@@ -431,7 +432,7 @@ class COORDINATE_SYSTEM(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class TIMER(ROCKWELL_UDT):
+class TIMER(_R32BIT_UDT):
     EN: BOOL = field(init=False, default_factory=BOOL)
     DN: BOOL = field(init=False, default_factory=BOOL)
     TT: BOOL = field(init=False, default_factory=BOOL)
@@ -440,7 +441,7 @@ class TIMER(ROCKWELL_UDT):
     
 @DataTypeRegistry.register
 @dataclass
-class COUNTER(ROCKWELL_UDT):
+class COUNTER(_R32BIT_UDT):
     CU: BOOL = field(init=False, default_factory=BOOL)
     CD: BOOL = field(init=False, default_factory=BOOL)
     DN: BOOL = field(init=False, default_factory=BOOL)
@@ -1430,21 +1431,29 @@ class PROP_INT(UDT):
 @DataTypeRegistry.register
 @dataclass
 class PULSE_MULTIPLIER(UDT):
+
+    def __post_init__(self):
+        self.InstructFault = MEMORY_BIT(self.Status, 0)
+        self.WordSizeInv = MEMORY_BIT(self.Status, 1)
+        self.OutOverflow = MEMORY_BIT(self.Status, 2)
+        self.LostPrecision = MEMORY_BIT(self.Status, 3)
+        self.MultiplierInv = MEMORY_BIT(self.Status, 4)
+
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
-    In: REAL = field(init=False, default_factory=REAL)
     Initialize: BOOL = field(init=False, default_factory=BOOL)
-    InitialValue: DINT = field(init=False, default_factory=DINT)
     Mode: BOOL = field(init=False, default_factory=BOOL)
+    In: REAL = field(init=False, default_factory=REAL)
+    InitialValue: DINT = field(init=False, default_factory=DINT)
     WordSize: DINT = field(init=False, default_factory=DINT)
     Multiplier: DINT = field(init=False, default_factory=DINT)	
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     Out: REAL = field(init=False, default_factory=REAL)
     Status: DINT = field(init=False, default_factory=DINT)
-    InstructFault: BOOL = field(init=False, default_factory=BOOL)
-    WordSizeInv: BOOL = field(init=False, default_factory=BOOL)
-    OutOverflow: BOOL = field(init=False, default_factory=BOOL)
-    LostPrecision: BOOL = field(init=False, default_factory=BOOL)
-    MultiplierInv: BOOL = field(init=False, default_factory=BOOL)
+    InstructFault: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    WordSizeInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    OutOverflow: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    LostPrecision: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
+    MultiplierInv: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)
 
 @DataTypeRegistry.register
 @dataclass
