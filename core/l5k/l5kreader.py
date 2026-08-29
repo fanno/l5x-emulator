@@ -5,6 +5,9 @@ L5KBOOLBYTEEND_KEY = "lk5.bool.byte.end"
 L5KBOOLBYTEEND = {L5KBOOLBYTEEND_KEY: True}
 L5KSKIP_KEY = "lk5.skip"
 L5KSKIP = {L5KSKIP_KEY: True}
+L5KBIT_KEY = "lk5.bit"
+def L5KBIT(bit=0):
+    return {L5KBIT_KEY: bit}
 
 class L5KReader:
     debugging = {}
@@ -62,8 +65,15 @@ class L5KReader:
 
     def nextBoolByte(self):
         self.bool = False
-        
-    def nextBool(self):
+
+    def currentBool(self, bit:int) -> bool:
+        if not self.bool:
+            self.index += 1
+        self.bool = True
+
+        return bool(self._current() & (1 << bit))
+
+    def nextBool(self) -> bool:
         if not self.bool:
             self.index += 1
         

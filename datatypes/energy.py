@@ -11,15 +11,15 @@ from datatypes.odometer import ODOMETER, SIGNED_ODOMETER
 @DataTypeRegistry.register
 @dataclass
 class ENERGY_BASE(UDT):
-    EnergyResourceType: INT = field(init=False, default_factory=BOOL)
-    BaseEnergyObjectCapabilities: INT = field(init=False, default_factory=BOOL)
-    EnergyAccuracy: INT = field(init=False, default_factory=BOOL)
-    DataStatus: INT = field(init=False, default_factory=BOOL)
+    EnergyResourceType: INT = field(init=False, default_factory=INT)
+    BaseEnergyObjectCapabilities: INT = field(init=False, default_factory=INT)
+    EnergyAccuracy: INT = field(init=False, default_factory=INT)
+    DataStatus: INT = field(init=False, default_factory=INT)
     ConsumedEnergyOdometer: ODOMETER = field(init=False, default_factory=ODOMETER)
     GeneratedEnergyOdometer: ODOMETER = field(init=False, default_factory=ODOMETER)
     NetEnergyOdometer: SIGNED_ODOMETER = field(init=False, default_factory=SIGNED_ODOMETER)
     EnergyTransferRate: REAL = field(init=False, default_factory=REAL)
-    ExtendedDataStatus: INT = field(init=False, default_factory=BOOL)
+    ExtendedDataStatus: INT = field(init=False, default_factory=INT)
 
 @DataTypeRegistry.register
 @dataclass
@@ -29,4 +29,4 @@ class ENERGY_ELLECTRICAL(UDT):
     RealEnergyNetOdometer: SIGNED_ODOMETER = field(init=False, default_factory=SIGNED_ODOMETER)
     TotalRealPower: REAL = field(init=False, default_factory=REAL)
     ThreePhaseTruePowerFactor: REAL = field(init=False, default_factory=REAL)
-    PhaseRotation: INT = field(init=False, default_factory=BOOL)
+    PhaseRotation: INT = field(init=False, default_factory=INT)

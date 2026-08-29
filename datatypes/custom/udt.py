@@ -3,7 +3,7 @@ from dataclasses import dataclass, fields
 from asyncua import ua
 from lxml.etree import _Element as Element
 
-from protocols.memory import SupportsSetValue, Resettable, SupportsToL5X, SupportsToUi, SupportsGetPLCValue
+from protocols.memory import SupportsSetValue, Resettable, SupportsToL5X, SupportsToUi
 from protocols.opcua import SupportsOPCUA, SupportsVariant
 from  utils.isplcinstance import isPLCInstance
 
@@ -14,7 +14,7 @@ from opcua.updater import OPCUAU
 from datatypes.custom.l5k import L5K
 from datatypes.custom.bool import BOOL
 
-from core.l5k.l5kreader import L5KSKIP_KEY, L5KBOOLBYTEEND_KEY
+from core.l5k.l5kreader import L5KSKIP_KEY, L5KBOOLBYTEEND_KEY, L5KBIT_KEY
 
 @dataclass
 class UDT(OPCUAU, L5K):
@@ -130,7 +130,12 @@ class UDT(OPCUAU, L5K):
 
             if not field.metadata.get(L5KSKIP_KEY, False):
                 if isinstance(value, BOOL):
-                    value.setValue(reader.nextBool())
+                    bit = field.metadata.get(L5KBIT_KEY, None)
+                    if bit is None:
+                        value.setValue(reader.nextBool())
+                    else:
+                        value.setValue(reader.currentBool(bit))
+
                     if field.metadata.get(L5KBOOLBYTEEND_KEY, False):
                         reader.nextBoolByte()                    
                 elif isinstance(value, Array):
@@ -154,4 +159,3 @@ class _32BIT_UDT(UDT):
     _l5k_bool_bit: ClassVar[int] = 0
     _l5k_bool_step: ClassVar[int] = 1
     _l5k_bool_end: ClassVar[int] = 31
-    

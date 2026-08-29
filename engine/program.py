@@ -28,6 +28,7 @@ from opcua.tag import OpcuaTag
 from opcua.mapping import Mapping
 
 from datatypes.custom.numbers import SINT, DINT, INT
+from datatypes.custom.bool import BOOL
 from datatypes.custom.array import Array
 from datatypes.phase import PHASE
 
@@ -36,44 +37,40 @@ from typing import ClassVar
 @dataclass
 class Program():
     element: InitVar[Element]
+    server: InitVar[Server]
 
     _next_program_id: ClassVar[int] = 1
 
-    server:Server = field(init=True)
-
     ID:int = field(init=False)
     phase:PHASE = field(init=False, default_factory=PHASE)
-
-    Name:str = field(init=True, default=None)
-    Type:str = field(init=True, default=None)
-    PreStateRoutineName:str = field(init=True, default=None)
-    FaultRoutineName:str = field(init=True, default=None)
-    TestEdits:bool = field(init=True, default=False)
-    InitialStepIndex:INT = field(init=True, default_factory=INT)
-    InitialState:str = field(init=True, default=None)
-    CompleteStateIfNotImpl:str = field(init=True, default=None)
-    LossOfCommCmd:str = field(init=True, default=None)
-    ExternalRequestAction:str = field(init=True, default=None)
-    UseAsFolder:bool = field(init=True, default=False)
-    AutoValueAssignStepToPhase:bool = field(init=True, default=False)
-    AutoValueAssignPhaseToStepOnComplete:bool = field(init=True, default=False)
-    AutoValueAssignPhaseToStepOnStopped:bool = field(init=True, default=False)
-    AutoValueAssignPhaseToStepOnAborted:bool = field(init=True, default=False)
-
+    Name:str = field(init=False, default=None)
+    Type:str = field(init=False, default=None)
+    PreStateRoutineName:str = field(init=False, default=None)
+    FaultRoutineName:str = field(init=False, default=None)
+    TestEdits:BOOL = field(init=False, default_factory=BOOL)
+    Disabled:BOOL = field(init=False, default_factory=BOOL)
+    InitialStepIndex:INT = field(init=False, default_factory=INT)
+    InitialState:str = field(init=False, default=None)
+    CompleteStateIfNotImpl:str = field(init=False, default=None)
+    LossOfCommCmd:str = field(init=False, default=None)
+    ExternalRequestAction:str = field(init=False, default=None)
+    UseAsFolder:BOOL = field(init=False, default_factory=BOOL)
+    AutoValueAssignStepToPhase:BOOL = field(init=False, default_factory=BOOL)
+    AutoValueAssignPhaseToStepOnComplete:BOOL = field(init=False, default_factory=BOOL)
+    AutoValueAssignPhaseToStepOnStopped:BOOL = field(init=False, default_factory=BOOL)
+    AutoValueAssignPhaseToStepOnAborted:BOOL = field(init=False, default_factory=BOOL)
     Routines: Dict[str, "Routine"] = field(init=False, default_factory=lambda: {})
     Class: Optional[str] = field(init=False, default=None)
     MainRoutineName: Optional[str] = field(init=False, default=None)
     memory:"Memory" = field(init=False)
     mapping:Mapping = field(init=False, default_factory=Mapping)
     opcua:OpcuaTag = field(init=False)
-
-    DisableFlag:SINT = field(init=False, default_factory=SINT)
     LASTSCANTIME:DINT = field(init=False, default_factory=DINT)
     MAXSCANTIME:DINT = field(init=False, default_factory=DINT)
     MajorFaultRecord: Array[DINT] = field(init=False, default_factory=lambda: Array.create(DINT, 11))
     MinorFaultRecord: Array[DINT] = field(init=False, default_factory=lambda: Array.create(DINT, 11))
 
-    def __post_init__(self, element:Element):
+    def __post_init__(self, element:Element, server:Server):
         if isinstance(element, Element):
             self._Element = element
 
@@ -81,20 +78,24 @@ class Program():
             self.MainRoutineName = element.get("MainRoutineName", None)
             self.Class = element.get("Class", None)
 
-            self.Type=element.get("Type"),
-            self.TestEdits=element.get("TestEdits"),
-            self.PreStateRoutineName=element.get("PreStateRoutineName"),
-            self.FaultRoutineName=element.get("FaultRoutineName"),
-            self.InitialStepIndex=element.get("InitialStepIndex"),
-            self.InitialState=element.get("InitialState"),
-            self.CompleteStateIfNotImpl=element.get("CompleteStateIfNotImpl"),
-            self.LossOfCommCmd=element.get("LossOfCommCmd"),
-            self.ExternalRequestAction=element.get("ExternalRequestAction"),
-            self.UseAsFolder=element.get("ExterUseAsFoldernalRequestAction"),
-            self.AutoValueAssignStepToPhase=element.get("AutoValueAssignStepToPhase"),
-            self.AutoValueAssignPhaseToStepOnComplete=element.get("AutoValueAssignPhaseToStepOnComplete"),
-            self.AutoValueAssignPhaseToStepOnStopped=element.get("AutoValueAssignPhaseToStepOnStopped"),
-            self.AutoValueAssignPhaseToStepOnAborted=element.get("AutoValueAssignPhaseToStepOnAborted")
+            self.Type=element.get("Type")
+            self.TestEdits.setValue(element.get("TestEdits"))
+            self.Disabled.setValue(element.get("Disabled"))
+
+            self.PreStateRoutineName=element.get("PreStateRoutineName")
+            self.FaultRoutineName=element.get("FaultRoutineName")
+            self.InitialStepIndex=element.get("InitialStepIndex")
+            self.InitialState=element.get("InitialState")
+            self.CompleteStateIfNotImpl=element.get("CompleteStateIfNotImpl")
+            self.LossOfCommCmd=element.get("LossOfCommCmd")
+            self.ExternalRequestAction=element.get("ExternalRequestAction")
+
+            self.UseAsFolder.setValue(element.get("ExterUseAsFoldernalRequestAction"))
+            self.AutoValueAssignStepToPhase.setValue(element.get("AutoValueAssignStepToPhase"))
+            self.AutoValueAssignPhaseToStepOnComplete.setValue(element.get("AutoValueAssignPhaseToStepOnComplete"))
+            self.AutoValueAssignPhaseToStepOnStopped.setValue(element.get("AutoValueAssignPhaseToStepOnStopped"))
+            self.AutoValueAssignPhaseToStepOnAborted.setValue(element.get("AutoValueAssignPhaseToStepOnAborted"))
+
 
         self.ID = Program._next_program_id
         Program._next_program_id += 1
@@ -104,7 +105,7 @@ class Program():
         PlcMemory.addContainer(self.memory)
 
         self.opcua = OpcuaTag(NAME=self.Name,
-                              SERVER=self.server,
+                              SERVER=server,
                               memory=self.memory,
                               mapping=self.mapping)
 
@@ -145,9 +146,9 @@ class Program():
             CurrentProgramName.reset(token)
 
     async def execute(self):
-        with Hierarchy.scope(self.Name):
-            with PLCFaultHandler.minor():
-                if self.DisableFlag == 0:
+        if not self.Disabled:        
+            with Hierarchy.scope(self.Name):
+                with PLCFaultHandler.minor():
                     timer = ExecutionTimer()
                     with timer:
                         if self.Type != 'EquipmentPhase':
@@ -192,9 +193,9 @@ class Program():
 
                     if self.MAXSCANTIME < timer.μs:
                         self.MAXSCANTIME.setValue(timer.μs)
-                else:
-                    self.LASTSCANTIME.setValue(0)
-                    self.MAXSCANTIME.setValue(0)
+        else:
+            self.LASTSCANTIME.setValue(0)
+            self.MAXSCANTIME.setValue(0)
 
     async def run(self, name:str) -> "engine.context.ExecutionContext":
         async with self.program_context():

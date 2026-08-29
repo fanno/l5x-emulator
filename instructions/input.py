@@ -409,7 +409,7 @@ class GSV(Instruction):
                         case 'DisableFlag':
                             dest = self.getMemory(self.args[3])
                             if isinstance(dest, (SINT, DINT)):
-                                dest.setValue(emulator.programs[instance].DisableFlag)
+                                dest.setValue(emulator.programs[instance].Disabled.getPLCValue())
                                 return                   
                         case 'LASTSCANTIME':
                             dest = self.getMemory(self.args[3])
@@ -886,7 +886,7 @@ class SSV(Instruction):
                         case 'DisableFlag':
                             source = self.getMemory(self.args[3])
                             if isinstance(source, SINT):
-                                emulator.programs[instance].DisableFlag.setValue(source)
+                                emulator.programs[instance].Disabled.setValue(source > 0)
                                 return
                         case 'LASTSCANTIME':
                             source = self.getMemory(self.args[3])

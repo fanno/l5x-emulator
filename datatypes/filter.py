@@ -138,4 +138,3 @@ class FIVE_POS_MODE_SELECTOR(UDT):
     NM: BOOL = field(init=False, default_factory=BOOL)
     MMS: BOOL = field(init=False, default_factory=BOOL)
     FP: BOOL = field(init=False, default_factory=BOOL)
-
