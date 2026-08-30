@@ -8,8 +8,8 @@ L5KSKIP = {L5KSKIP_KEY: True}
 L5KBIT_KEY = "lk5.bit"
 def L5KBIT(bit=0):
     return {L5KBIT_KEY: bit}
-L5KDUDMMY_KEY = "lk5.dummy"
-L5KDUDMMY = {L5KDUDMMY_KEY: True}
+L5KDUMMY_KEY = "lk5.dummy"
+L5KDUDMMY = {L5KDUMMY_KEY: True}
 
 class L5KReader:
     debugging = {}

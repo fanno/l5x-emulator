@@ -104,13 +104,13 @@ class PHASE(UDT):
 class PHASE_INSTRUCTION(UDT):
     
     def __post_init__(self):
-        self.EN = MEMORY_BIT(self.State, 31)
-        self.ER = MEMORY_BIT(self.State, 28)
-        self.PC = MEMORY_BIT(self.State, 27)
-        self.IP = MEMORY_BIT(self.State, 26)
-        self.IP = MEMORY_BIT(self.State, 25)
-        self.WA = MEMORY_BIT(self.State, 24)
-        self.ABORT = MEMORY_BIT(self.State, 23)
+        self.EN = MEMORY_BIT(self.Status, 31)
+        self.ER = MEMORY_BIT(self.Status, 28)
+        self.PC = MEMORY_BIT(self.Status, 27)
+        self.IP = MEMORY_BIT(self.Status, 26)
+        self.IP = MEMORY_BIT(self.Status, 25)
+        self.WA = MEMORY_BIT(self.Status, 24)
+        self.ABORT = MEMORY_BIT(self.Status, 23)
 
     Status: DINT = field(init=False, default_factory=DINT)
     EN: BOOL = field(init=False, default_factory=BOOL, metadata=L5KSKIP)

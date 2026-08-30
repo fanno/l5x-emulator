@@ -1098,16 +1098,6 @@ class MESSAGE(UDT):
 @dataclass
 class MMC(_32BIT_UDT):
     def __post_init__(self):
-        self.InstructFault = MEMORY_BIT(self.Status, 0)
-        self.IGainInv = MEMORY_BIT(self.Status, 1)
-        self.HighLowLimsInv = MEMORY_BIT(self.Status, 2)
-        self.TimingModeInv = MEMORY_BIT(self.Status, 3)
-        self.RTSMissed = MEMORY_BIT(self.Status, 29)
-        self.RTSTimeInv = MEMORY_BIT(self.Status, 30)
-        self.RTSTimeStampInv = MEMORY_BIT(self.Status, 30)
-        self.DeltaTInv = MEMORY_BIT(self.Status, 31)
-
-
         self.AtuneCV1PV1Fault = MEMORY_BIT(self.AtuneCV1PV1Status, 0)
         self.AtuneCV1PV1OutOfLimit = MEMORY_BIT(self.AtuneCV1PV1Status, 1)
         self.AtuneCV1PV1ModeInv = MEMORY_BIT(self.AtuneCV1PV1Status, 2)

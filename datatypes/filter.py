@@ -3,8 +3,8 @@ from core.registry.datatyperegistry import DataTypeRegistry
 from dataclasses import dataclass, field
 
 from datatypes.custom.numbers import DINT, REAL
-from datatypes.custom.bool import BOOL
-from datatypes.custom.udt import UDT, MEMORY_BIT
+from datatypes.custom.bool import BOOL, MEMORY_BIT
+from datatypes.custom.udt import UDT
 
 from core.l5k.l5kreader import L5KBOOLBYTEEND, L5KSKIP
 
