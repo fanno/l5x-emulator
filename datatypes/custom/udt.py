@@ -14,7 +14,7 @@ from opcua.updater import OPCUAU
 from datatypes.custom.l5k import L5K
 from datatypes.custom.bool import BOOL
 
-from core.l5k.l5kreader import L5KSKIP_KEY, L5KBOOLBYTEEND_KEY, L5KBIT_KEY
+from core.l5k.l5kreader import L5KSKIP_KEY, L5KBOOLBYTEEND_KEY, L5KBIT_KEY, L5KDUMMY_KEY
 
 @dataclass
 class UDT(OPCUAU, L5K):
@@ -124,6 +124,8 @@ class UDT(OPCUAU, L5K):
 
         for field in fields(self):
             if not field.repr:
+                if field.metadata.get(L5KDUMMY_KEY, False):
+                    reader.nextRaw()
                 continue
             
             value = getattr(self, field.name)

@@ -4,7 +4,9 @@ from core.registry.datatyperegistry import DataTypeRegistry
 
 from datatypes.custom.numbers import DINT
 from datatypes.custom.bool import BOOL
-from datatypes.custom.udt import UDT
+from datatypes.custom.udt import UDT, _32BIT_UDT
+
+from core.l5k.l5kreader import L5KBOOLBYTEEND, L5KSKIP
 
 @DataTypeRegistry.register
 @dataclass
@@ -37,7 +39,7 @@ class MANUAL_VALVE_CONTROL(UDT):
     Actuate: BOOL = field(init=False, default_factory=BOOL)
     InputStatus: BOOL = field(init=False, default_factory=BOOL)
     OutputStatus: BOOL = field(init=False, default_factory=BOOL)
-    Reset: BOOL = field(init=False, default_factory=BOOL)
+    Reset: BOOL = field(init=False, default_factory=BOOL, metadata=L5KBOOLBYTEEND)
     EnableOut: BOOL = field(init=False, default_factory=BOOL)
     O1: BOOL = field(init=False, default_factory=BOOL)
     FP: BOOL = field(init=False, default_factory=BOOL)
@@ -46,7 +48,7 @@ class MANUAL_VALVE_CONTROL(UDT):
 
 @DataTypeRegistry.register
 @dataclass
-class AUX_VALVE_CONTROL(UDT):
+class AUX_VALVE_CONTROL(_32BIT_UDT):
     EnableIn: BOOL = field(init=False, default_factory=BOOL)
     Actuate: BOOL = field(init=False, default_factory=BOOL)
     DelayType: BOOL = field(init=False, default_factory=BOOL)
