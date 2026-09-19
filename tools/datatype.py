@@ -119,6 +119,12 @@ def build_one_line(name: str, base_type: str, array: int) -> str:
         # TurnsCounters: Array[INT] = field(init=False,
         #                                   default_factory=lambda: ArrayINT,
         #                                   metadata={"ua_type": ua.VariantType.Int16})
+
+        return (
+            f'    {name}: Array[{factory}] = field('
+            f'init=False, '
+            f'default_factory=lambda: Array[{factory}]({factory},[{factory}()] * {array}))'
+        )
         return (
             f'    {name}: Array[{factory}] = field('
             f'init=False, '
@@ -130,6 +136,11 @@ def build_one_line(name: str, base_type: str, array: int) -> str:
         # EnableIn: BOOL = field(init=False,
         #                         default_factory=BOOL,
         #                         metadata={"ua_type": ua.VariantType.Boolean})
+        return (
+            f'    {name}: {factory} = field('
+            f'init=False, '
+            f'default_factory={factory})'
+        )
         return (
             f'    {name}: {factory} = field('
             f'init=False, '

@@ -1,18 +1,208 @@
-RunMode	BOOL	Decimal		Read/Write
-ConnectionFaulted	BOOL	Decimal		Read/Write
-DiagnosticActive	BOOL	Decimal		Read/Write
-DiagnosticSequenceCount	SINT	Decimal		Read/Write
-CurrentSaturated	BOOL	Decimal		Read/Write
-CurrentFixed	BOOL	Decimal		Read/Write
-MoreStatusAvailable	BOOL	Decimal		Read/Write
-CurrentMismatch	BOOL	Decimal		Read/Write
-ConfigurationChanged	BOOL	Decimal		Read/Write
-Malfunction	BOOL	Decimal		Read/Write
-LoopCurrent	CHANNEL_AI:I:0	NullType		Read/Write
-PV	CHANNEL_AI_HART:I:0	NullType		Read/Write
-SV	CHANNEL_AI_HART:I:0	NullType		Read/Write
-TV	CHANNEL_AI_HART:I:0	NullType		Read/Write
-QV	CHANNEL_AI_HART:I:0	NullType		Read/Write
-Static	AB:5000_HART_Static_Struct:I:0	NullType		Read/Write
-ChDataAtSignal4	REAL	Float		Read/Write
-ChDataAtSignal20	REAL	Float		Read/Write
+EnableIn	BOOL	Decimal		Read Only
+EnableOut	BOOL	Decimal		Read Only
+Inp_InitializeReq	BOOL	Decimal		Read/Write
+Inp_OwnerCmd	DINT	Decimal		Read/Write
+Inp_OpenedFdbkData	BOOL	Decimal		Read/Write
+Inp_ClosedFdbkData	BOOL	Decimal		Read/Write
+Inp_PosFdbk	REAL	Float		Read/Write
+Inp_HandFdbk	REAL	Float		Read/Write
+Inp_IntlkOK	BOOL	Decimal		Read/Write
+Inp_NBIntlkOK	BOOL	Decimal		Read/Write
+Inp_IntlkAvailable	BOOL	Decimal		Read/Write
+Inp_IntlkTripInh	BOOL	Decimal		Read/Write
+Inp_SmartDvcSts	DINT	Decimal		Read/Write
+Inp_SmartDvcDiagAvailable	BOOL	Decimal		Read/Write
+Inp_IOFault	BOOL	Decimal		Read/Write
+Inp_DeviceFault	BOOL	Decimal		Read/Write
+Inp_Hand	BOOL	Decimal		Read/Write
+Inp_Ovrd	BOOL	Decimal		Read/Write
+Inp_OvrdCV	REAL	Float		Read/Write
+Inp_ExtInh	BOOL	Decimal		Read/Write
+Inp_RdyReset	BOOL	Decimal		Read/Write
+Inp_Reset	BOOL	Decimal		Read/Write
+Cfg_AllowDisable	BOOL	Decimal		Read/Write
+Cfg_AllowShelve	BOOL	Decimal		Read/Write
+Cfg_StuckTime	REAL	Float		Read/Write
+Cfg_HasSmartDvc	BOOL	Decimal		Read/Write
+Cfg_SetTrack	BOOL	Decimal		Read/Write
+Cfg_ShedHold	BOOL	Decimal		Read/Write
+Cfg_SkipRoCLim	BOOL	Decimal		Read/Write
+Cfg_SetTrackOvrdHand	BOOL	Decimal		Read/Write
+Cfg_FdbkFail	BOOL	Decimal		Read/Write
+Cfg_HasOpenedFdbk	BOOL	Decimal		Read/Write
+Cfg_HasClosedFdbk	BOOL	Decimal		Read/Write
+Cfg_HasPosFdbk	BOOL	Decimal		Read/Write
+Cfg_UseOpenedFdbk	BOOL	Decimal		Read/Write
+Cfg_UseClosedFdbk	BOOL	Decimal		Read/Write
+Cfg_UsePosFdbk	BOOL	Decimal		Read/Write
+Cfg_HasCombinedFdbk	BOOL	Decimal		Read/Write
+Cfg_UseCombinedFdbk	BOOL	Decimal		Read/Write
+Cfg_HasPulseOut	BOOL	Decimal		Read/Write
+Cfg_HasOutNav	BOOL	Decimal		Read/Write
+Cfg_OvrdIntlk	BOOL	Decimal		Read/Write
+Cfg_ShedOnDeviceFault	BOOL	Decimal		Read/Write
+Cfg_ShedOnIOFault	BOOL	Decimal		Read/Write
+Cfg_CVLoLim	REAL	Float		Read/Write
+Cfg_CVHiLim	REAL	Float		Read/Write
+Cfg_CVRoCIncrLim	REAL	Float		Read/Write
+Cfg_CVRoCDecrLim	REAL	Float		Read/Write
+Cfg_CVIntlk	REAL	Float		Read/Write
+Cfg_CVEUMin	REAL	Float		Read/Write
+Cfg_CVEUMax	REAL	Float		Read/Write
+Cfg_CVRawMin	REAL	Float		Read/Write
+Cfg_CVRawMax	REAL	Float		Read/Write
+Cfg_MaxInactiveCV	REAL	Float		Read/Write
+Cfg_HiDevLim	REAL	Float		Read/Write
+Cfg_LoDevLim	REAL	Float		Read/Write
+Cfg_DevDly	REAL	Float		Read/Write
+Cfg_CycleTime	REAL	Float		Read/Write
+Cfg_OpenRate	REAL	Float		Read/Write
+Cfg_CloseRate	REAL	Float		Read/Write
+Cfg_MaxOnTime	REAL	Float		Read/Write
+Cfg_MinOnTime	REAL	Float		Read/Write
+Cfg_BumpTime	REAL	Float		Read/Write
+Cfg_DeadTime	REAL	Float		Read/Write
+Cfg_MaxClosedPos	REAL	Float		Read/Write
+Cfg_HasIntlkObj	BOOL	Decimal		Read/Write
+Cfg_HasOper	BOOL	Decimal		Read/Write
+Cfg_HasOperLocked	BOOL	Decimal		Read/Write
+Cfg_HasProg	BOOL	Decimal		Read/Write
+Cfg_HasProgLocked	BOOL	Decimal		Read/Write
+Cfg_HasExt	BOOL	Decimal		Read/Write
+Cfg_HasMaint	BOOL	Decimal		Read/Write
+Cfg_HasMaintOoS	BOOL	Decimal		Read/Write
+Cfg_OvrdOverLock	BOOL	Decimal		Read/Write
+Cfg_ExtOverLock	BOOL	Decimal		Read/Write
+Cfg_ProgPwrUp	BOOL	Decimal		Read/Write
+Cfg_ProgNormal	BOOL	Decimal		Read/Write
+Cfg_PCmdPriority	BOOL	Decimal		Read/Write
+Cfg_PCmdProgAsLevel	BOOL	Decimal		Read/Write
+Cfg_PCmdLockAsLevel	BOOL	Decimal		Read/Write
+Cfg_ExtAcqAsLevel	BOOL	Decimal		Read/Write
+Cfg_CVDecPlcs	SINT	Decimal		Read/Write
+Cfg_CnfrmReqd	SINT	Decimal		Read/Write
+Cfg_CVPwrUpSel	SINT	Decimal		Read/Write
+Cfg_CVPwrUp	REAL	Float		Read/Write
+Cfg_HasMoreObj	BOOL	Decimal		Read/Write
+Cfg_HasPosFdbkNav	BOOL	Decimal		Read/Write
+Cfg_HasHistTrend	SINT	Decimal		Read/Write
+PSet_CV	REAL	Float		Read/Write
+PSet_Owner	DINT	Decimal		Read/Write
+PCmd_Oper	BOOL	Decimal		Read/Write
+PCmd_Prog	BOOL	Decimal		Read/Write
+PCmd_Lock	BOOL	Decimal		Read/Write
+PCmd_Unlock	BOOL	Decimal		Read/Write
+PCmd_Normal	BOOL	Decimal		Read/Write
+PCmd_Reset	BOOL	Decimal		Read/Write
+PCmd_Physical	BOOL	Decimal		Read/Write
+PCmd_Virtual	BOOL	Decimal		Read/Write
+XSet_CV	REAL	Float		Read/Write
+XCmd_Acq	BOOL	Decimal		Read/Write
+XCmd_BumpClose	BOOL	Decimal		Read/Write
+XCmd_BumpOpen	BOOL	Decimal		Read/Write
+XCmd_Rel	BOOL	Decimal		Read/Write
+XCmd_Reset	BOOL	Decimal		Read/Write
+XCmd_ResetAckAll	BOOL	Decimal		Read/Write
+Out_CVData	REAL	Float		Read Only
+Out_CVOpenData	BOOL	Decimal		Read Only
+Out_CVCloseData	BOOL	Decimal		Read Only
+Out_Reset	BOOL	Decimal		Read Only
+Val_Dev	REAL	Float		Read Only
+Val_Pos	REAL	Float		Read Only
+Val_CVSet	REAL	Float		Read Only
+Val_CVOut	REAL	Float		Read Only
+Val_CVEUMin	REAL	Float		Read Only
+Val_CVEUMax	REAL	Float		Read Only
+Out_SmartDvcSts	DINT	Decimal		Read Only
+Out_OwnerSts	DINT	Decimal		Read Only
+Sts_Initialized	BOOL	Decimal		Read Only
+Sts_SmartDvcDiagAvailable	BOOL	Decimal		Read Only
+Sts_CVInfNaN	BOOL	Decimal		Read Only
+Sts_PosInfNaN	BOOL	Decimal		Read Only
+Sts_BumpOpen	BOOL	Decimal		Read Only
+Sts_BumpClose	BOOL	Decimal		Read Only
+Sts_PosStuck	BOOL	Decimal		Read Only
+Sts_Ramping	BOOL	Decimal		Read Only
+Sts_Clamped	BOOL	Decimal		Read Only
+Sts_WindupHi	BOOL	Decimal		Read Only
+Sts_WindupLo	BOOL	Decimal		Read Only
+Sts_SkipRoCLim	BOOL	Decimal		Read Only
+Sts_Active	BOOL	Decimal		Read Only
+Sts_FdbkFail	BOOL	Decimal		Read Only
+Sts_Virtual	BOOL	Decimal		Read Only
+SrcQ_IO	SINT	Decimal		Read Only
+SrcQ	SINT	Decimal		Read Only
+Sts_eFdbk	SINT	Decimal		Read Only
+Sts_eSts	SINT	Decimal		Read Only
+Sts_eFault	SINT	Decimal		Read Only
+Sts_eNotify	SINT	Decimal		Read Only
+Sts_eNotifyAll	SINT	Decimal		Read Only
+Sts_eNotifyIOFault	SINT	Decimal		Read Only
+Sts_eNotifyDeviceFault	SINT	Decimal		Read Only
+Sts_eNotifyDev	SINT	Decimal		Read Only
+Sts_eNotifyIntlkTrip	SINT	Decimal		Read Only
+Sts_UnackAlmCount	DINT	Decimal		Read Only
+Sts_eSrc	INT	Decimal		Read Only
+Sts_bSrc	INT	Decimal		Read Only
+Sts_Available	BOOL	Decimal		Read Only
+Sts_IntlkAvailable	BOOL	Decimal		Read Only
+Sts_Bypass	BOOL	Decimal		Read Only
+Sts_BypActive	BOOL	Decimal		Read Only
+Sts_MaintByp	BOOL	Decimal		Read Only
+Sts_NotRdy	BOOL	Decimal		Read Only
+Sts_NrdyOoS	BOOL	Decimal		Read Only
+Sts_NrdyCfgErr	BOOL	Decimal		Read Only
+Sts_NrdyDeviceFault	BOOL	Decimal		Read Only
+Sts_NrdyIntlk	BOOL	Decimal		Read Only
+Sts_NrdyIOFault	BOOL	Decimal		Read Only
+Sts_Err	BOOL	Decimal		Read Only
+Sts_ErrCVRaw	BOOL	Decimal		Read Only
+Sts_ErrCVEU	BOOL	Decimal		Read Only
+Sts_ErrCVRoCDecrLim	BOOL	Decimal		Read Only
+Sts_ErrCVRoCIncrLim	BOOL	Decimal		Read Only
+Sts_ErrLim	BOOL	Decimal		Read Only
+Sts_ErrHiDevLim	BOOL	Decimal		Read Only
+Sts_ErrLoDevLim	BOOL	Decimal		Read Only
+Sts_ErrDevDly	BOOL	Decimal		Read Only
+Sts_ErrCVIntlk	BOOL	Decimal		Read Only
+Sts_ErrCVPwrUp	BOOL	Decimal		Read Only
+Sts_ErrCycleTime	BOOL	Decimal		Read Only
+Sts_ErrOpenRate	BOOL	Decimal		Read Only
+Sts_ErrCloseRate	BOOL	Decimal		Read Only
+Sts_ErrStuckTime	BOOL	Decimal		Read Only
+Sts_ErrMaxClosedPos	BOOL	Decimal		Read Only
+Sts_ErrMaxOnTime	BOOL	Decimal		Read Only
+Sts_ErrMinOnTime	BOOL	Decimal		Read Only
+Sts_ErrBumpTime	BOOL	Decimal		Read Only
+Sts_ErrDeadTime	BOOL	Decimal		Read Only
+Sts_ErrAlm	BOOL	Decimal		Read Only
+Sts_Hand	BOOL	Decimal		Read Only
+Sts_OoS	BOOL	Decimal		Read Only
+Sts_Maint	BOOL	Decimal		Read Only
+Sts_Ovrd	BOOL	Decimal		Read Only
+Sts_Ext	BOOL	Decimal		Read Only
+Sts_Prog	BOOL	Decimal		Read Only
+Sts_ProgLocked	BOOL	Decimal		Read Only
+Sts_Oper	BOOL	Decimal		Read Only
+Sts_OperLocked	BOOL	Decimal		Read Only
+Sts_ProgOperSel	BOOL	Decimal		Read Only
+Sts_ProgOperLock	BOOL	Decimal		Read Only
+Sts_Normal	BOOL	Decimal		Read Only
+Sts_ExtReqInh	BOOL	Decimal		Read Only
+Sts_ProgReqInh	BOOL	Decimal		Read Only
+Sts_MAcqRcvd	BOOL	Decimal		Read Only
+Sts_Alm	BOOL	Decimal		Read Only
+Sts_AlmInh	BOOL	Decimal		Read Only
+Sts_IOFault	BOOL	Decimal		Read Only
+Sts_DeviceFault	BOOL	Decimal		Read Only
+Sts_Dev	BOOL	Decimal		Read Only
+Sts_IntlkTrip	BOOL	Decimal		Read Only
+Sts_RdyAck	BOOL	Decimal		Read Only
+Sts_RdyReset	BOOL	Decimal		Read Only
+XRdy_Acq	BOOL	Decimal		Read Only
+XRdy_BumpClose	BOOL	Decimal		Read Only
+XRdy_BumpOpen	BOOL	Decimal		Read Only
+XRdy_Rel	BOOL	Decimal		Read Only
+XRdy_Reset	BOOL	Decimal		Read Only
+XRdy_ResetAckAll	BOOL	Decimal		Read Only
+Val_Owner	DINT	Decimal		Read Only
